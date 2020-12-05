@@ -4,9 +4,12 @@
 ns plugin add @triniwiz/nativescript-star-ratings
 ```
 
-## Usage
 
-// TODO
+## API documentation
+
+[Documentation for the latest stable release](https://triniwiz.github.io/nativescript-plugins/api-reference/star-ratings.html)
+
+
 
 ## License
 

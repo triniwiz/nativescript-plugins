@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-star-ratings",
-	"version": "2.0.0",
+	"version": "2.0.1",
 	"description": "NativeScript star ratings UI component plugin.",
 	"main": "index",
 	"typings": "index.d.ts",
@@ -12,7 +12,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/triniwiz/plugins.git"
+		"url": "https://github.com/triniwiz/nativescript-plugins.git"
 	},
 	"keywords": [
 		"NativeScript",
@@ -25,11 +25,23 @@
 		"name": "Osei Fortune",
 		"email": "fortune.osei@yahoo.com"
 	},
+	"contributors": [
+		{
+			"name": "Sean Perkins",
+			"email": "sean@devonite.com",
+			"url": "https://github.com/sean-perkins"
+		},
+		{
+			"name": "Yeshwanth Alampalli",
+			"email": "yeshwanth.alampalli@gmail.com",
+			"url": "https://github.com/Alampalli-Yeshwanth"
+		}
+	],
 	"bugs": {
-		"url": "https://github.com/triniwiz/plugins/issues"
+		"url": "https://github.com/triniwiz/nativescript-plugins/issues"
 	},
 	"license": "Apache-2.0",
-	"homepage": "https://github.com/triniwiz/plugins",
+	"homepage": "https://github.com/triniwiz/nativescript-plugins",
 	"readmeFilename": "README.md",
 	"bootstrapper": "@nativescript/plugin-seed"
 }
