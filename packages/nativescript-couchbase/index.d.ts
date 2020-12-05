@@ -1,4 +1,4 @@
-import {Common, ConcurrencyMode, Query, ReplicatorBase} from './common';
+import { Common, ConcurrencyMode, Query, ReplicatorBase } from './common';
 
 export {
   ConcurrencyMode,
@@ -20,7 +20,7 @@ export declare class CouchBase extends Common {
 
   close();
 
-  createDocument(data: Object, documentId?: string): any;
+  createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode): any;
 
   setBlob(id: string, name: string, blob: any, mimeType?: string): void;
 
@@ -28,9 +28,9 @@ export declare class CouchBase extends Common {
 
   getDocument(documentId: string): any;
 
-  updateDocument(documentId: string, data: any): void;
+  updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode): void;
 
-  deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode): any;
+  deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): any;
 
   destroyDatabase(): void;
 
@@ -42,9 +42,9 @@ export declare class CouchBase extends Common {
 
   createPushReplication(remoteUrl: string, username?: string, password?: string): Replicator;
 
-  addDatabaseChangeListener(callback: any): void;
+  addDatabaseChangeListener(callback: (ids?: string[]) => void): void;
 
-  removeDatabaseChangeListener(callback: any): void;
+  removeDatabaseChangeListener(callback: (ids?: string[]) => void): void;
 
   inBatch(batch: () => void): void;
 }

@@ -1,4 +1,5 @@
 export * from './utils';
+export * from './nativescript-accelerometer';
 export * from './nativescript-accordion';
 export * from './nativescript-autocomplete';
 export * from './nativescript-awesome-loaders';

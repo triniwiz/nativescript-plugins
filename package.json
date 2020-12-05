@@ -9,7 +9,8 @@
 		"add-angular": "nx g @nativescript/plugin-tools:add-angular",
 		"config": "nx g @nativescript/plugin-tools:config",
 		"publish-packages": "nx g @nativescript/plugin-tools:publish",
-		"docs:build": "cd docs && vuepress build src"
+		"docs:build": "cd docs && vuepress build src",
+		"docs:dev": "cd docs && vuepress dev src"
 	},
 	"private": true,
 	"devDependencies": {

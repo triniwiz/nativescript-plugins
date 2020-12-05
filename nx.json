@@ -145,6 +145,9 @@
 		},
 		"nativescript-pager": {
 			"tags": []
+		},
+		"nativescript-accelerometer": {
+			"tags": []
 		}
 	},
 	"workspaceLayout": {

@@ -12,14 +12,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/triniwiz/plugins.git"
+    "url": "https://github.com/triniwiz/nativescript-plugins.git"
   },
   "keywords": [
     "NativeScript",
     "JavaScript",
     "TypeScript",
     "iOS",
-    "Android"
+    "Android",
+    "couchbase",
+    "couchbase mobile",
+    "couchbase lite",
+    "nosql",
+    "nativescript"
   ],
   "author": {
     "name": "Osei Fortune",
@@ -33,10 +38,10 @@
     }
   ],
   "bugs": {
-    "url": "https://github.com/triniwiz/plugins/issues"
+    "url": "https://github.com/triniwiz/nativescript-plugins/issues"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/triniwiz/plugins",
+  "homepage": "https://github.com/triniwiz/nativescript-plugins",
   "readmeFilename": "README.md",
   "bootstrapper": "@nativescript/plugin-seed"
 }

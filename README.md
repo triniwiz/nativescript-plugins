@@ -5,6 +5,7 @@ npm run setup
 npm start
 ```
 
+- @triniwiz/nativescript-accelerometer
 - @triniwiz/nativescript-accordion
 - @triniwiz/nativescript-autocomplete
 - @triniwiz/nativescript-awesome-loaders

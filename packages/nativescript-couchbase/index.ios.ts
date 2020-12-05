@@ -8,8 +8,8 @@ import {
   QueryMeta,
   ReplicatorBase
 } from './common';
-import {getClass, isNullOrUndefined} from "@nativescript/core/utils/types";
-import {knownFolders, path} from "@nativescript/core";
+import { getClass, isNullOrUndefined } from "@nativescript/core/utils/types";
+import { knownFolders, path } from "@nativescript/core";
 
 export {
   Query, QueryMeta, QueryArrayOperator, QueryComparisonOperator, QueryLogicalOperator, QueryOrderItem, QueryWhereItem
@@ -53,7 +53,7 @@ export class CouchBase extends Common {
     this.ios.inBatchUsingBlock(errorRef, batch);
   }
 
-  createDocument(data: Object, documentId?: string) {
+  createDocument(data: Object, documentId?: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     let doc: CBLMutableDocument;
     if (documentId) {
       doc = CBLMutableDocument.alloc().initWithID(documentId);
@@ -66,11 +66,20 @@ export class CouchBase extends Common {
       const item = data[key];
       this.serialize(item, doc, key);
     }
-    this.ios.saveDocumentError(doc);
+    let saved = false;
+    if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+      saved = this.ios.saveDocumentConcurrencyControlError(doc, CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict)
+    } else {
+      saved = this.ios.saveDocumentError(doc);
+    }
+    if (!saved) {
+      return null;
+    }
+
     return doc.id;
   }
 
-  setBlob(id: string, name: string, blob: any, mimeType: string = 'application/octet-stream') {
+  setBlob(id: string, name: string, blob: any, mimeType: string = 'application/octet-stream', concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     try {
       const document = this.ios.documentWithID(id).toMutable();
       if (typeof blob === 'string') {
@@ -93,6 +102,12 @@ export class CouchBase extends Common {
           // TODO what else to check?
         }
         this.ios.saveDocumentError(document);
+
+        if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+          this.ios.saveDocumentConcurrencyControlError(document, CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict)
+        } else {
+          this.ios.saveDocumentError(document);
+        }
       } else {
         // TODO what else to check ... maybe native objects ??
       }
@@ -335,7 +350,7 @@ export class CouchBase extends Common {
     return data;
   }
 
-  updateDocument(documentId: string, data: any) {
+  updateDocument(documentId: string, data: any, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     const original = this.ios.documentWithID(documentId);
     const newDoc = original.toMutable();
     const keys = Object.keys(data);
@@ -343,7 +358,12 @@ export class CouchBase extends Common {
       const item = data[key];
       this.serialize(item, newDoc, key);
     }
-    this.ios.saveDocumentError(newDoc);
+
+    if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+      this.ios.saveDocumentConcurrencyControlError(newDoc, CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict)
+    } else {
+      this.ios.saveDocumentError(newDoc);
+    }
   }
 
   deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = 1) {
@@ -567,7 +587,7 @@ export class CouchBase extends Common {
     return nativeQuery;
   }
 
-  query(query: Query = {select: [QueryMeta.ALL, QueryMeta.ID]}) {
+  query(query: Query = { select: [QueryMeta.ALL, QueryMeta.ID] }) {
     const items = [];
     let select = [];
     let from;

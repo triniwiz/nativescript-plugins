@@ -1,5 +1,7 @@
 # Nativescript Stripe
 
+## Installation
+
 ```bash
 ns plugin add @triniwiz/nativescript-stripe
 ```

@@ -1,3 +1,4 @@
+ // Generated with v2.8.1
 
 declare class CBLArray extends NSObject implements CBLArrayProtocol, NSCopying, NSMutableCopying {
 
@@ -323,6 +324,8 @@ declare class CBLDatabase extends NSObject {
 	initWithNameError(name: string): this;
 
 	objectForKeyedSubscript(documentID: string): CBLDocumentFragment;
+
+	performMaintenanceError(type: CBLMaintenanceType): boolean;
 
 	purgeDocumentError(document: CBLDocument): boolean;
 
@@ -1006,7 +1009,7 @@ declare class CBLLog extends NSObject {
 
 declare const enum CBLLogDomain {
 
-	kCBLLogDomainAll = 15,
+	kCBLLogDomainAll = 31,
 
 	kCBLLogDomainDatabase = 1,
 
@@ -1061,6 +1064,15 @@ declare var CBLLogger: {
 
 	prototype: CBLLogger;
 };
+
+declare const enum CBLMaintenanceType {
+
+	kCBLMaintenanceTypeCompact = 0,
+
+	kCBLMaintenanceTypeReindex = 1,
+
+	kCBLMaintenanceTypeIntegrityCheck = 2
+}
 
 declare class CBLMutableArray extends CBLArray implements CBLMutableArrayProtocol {
 
@@ -2067,6 +2079,10 @@ declare class CBLQueryMeta extends NSObject {
 
 	static new(): CBLQueryMeta; // inherited from NSObject
 
+	static revisionID(): CBLQueryExpression;
+
+	static revisionIDFrom(alias: string): CBLQueryExpression;
+
 	static sequence(): CBLQueryExpression;
 
 	static sequenceFrom(alias: string): CBLQueryExpression;
@@ -2292,6 +2308,8 @@ declare class CBLReplicator extends NSObject {
 
 	readonly config: CBLReplicatorConfiguration;
 
+	readonly serverCertificate: any;
+
 	readonly status: CBLReplicatorStatus;
 
 	constructor(o: { config: CBLReplicatorConfiguration; });
@@ -2306,11 +2324,17 @@ declare class CBLReplicator extends NSObject {
 
 	initWithConfig(config: CBLReplicatorConfiguration): this;
 
+	isDocumentPendingError(documentID: string): boolean;
+
+	pendingDocumentIDs(): NSSet<string>;
+
 	removeChangeListenerWithToken(token: CBLListenerToken): void;
 
 	resetCheckpoint(): void;
 
 	start(): void;
+
+	startWithReset(reset: boolean): void;
 
 	stop(): void;
 }

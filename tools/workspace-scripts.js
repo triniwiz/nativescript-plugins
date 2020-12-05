@@ -343,6 +343,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-pager: Build',
 				},
 			},
+			// @triniwiz/nativescript-accelerometer
+			'nativescript-accelerometer': {
+				build: {
+					script: 'nx run nativescript-accelerometer:build.all',
+					description: '@triniwiz/nativescript-accelerometer: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run all:build',
 				description: 'Build all packages',
@@ -512,6 +519,10 @@ module.exports = {
 			'nativescript-pager': {
 				script: 'nx run nativescript-pager:focus',
 				description: 'Focus on @triniwiz/nativescript-pager',
+			},
+			'nativescript-accelerometer': {
+				script: 'nx run nativescript-accelerometer:focus',
+				description: 'Focus on @triniwiz/nativescript-accelerometer',
 			},
 			reset: {
 				script: 'nx run all:focus',

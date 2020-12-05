@@ -1,2 +1,3 @@
+platform :ios, '10.0'
 use_frameworks!
-pod 'CouchbaseLite', '~> 2.7.0'
+pod 'CouchbaseLite', '~> 2.8.1'

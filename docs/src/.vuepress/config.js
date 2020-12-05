@@ -44,6 +44,10 @@ module.exports = {
         link: '/api-reference/'
       },
       {
+        text: 'Github',
+        link: 'https://github.com/triniwiz/nativescript-plugins'
+      },
+      {
         text: 'NativeScript',
         link: 'https://www.nativescript.org'
       }
@@ -55,7 +59,6 @@ module.exports = {
           collapsable: false,
           children: [
             '',
-            'using-vue',
           ]
         }
       ],

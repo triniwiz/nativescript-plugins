@@ -8,8 +8,8 @@ import {
   QueryMeta,
   ReplicatorBase
 } from './common';
-import {isNullOrUndefined} from "@nativescript/core/utils/types";
-import {knownFolders, path, Utils} from "@nativescript/core";
+import { isNullOrUndefined } from "@nativescript/core/utils/types";
+import { knownFolders, path, Utils } from "@nativescript/core";
 
 export {
   Query,
@@ -52,7 +52,7 @@ export class CouchBase extends Common {
     this.android.inBatch(runnable);
   }
 
-  createDocument(data: Object, documentId?: string) {
+  createDocument(data: Object, documentId?: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     try {
       let doc;
       if (documentId) {
@@ -65,7 +65,12 @@ export class CouchBase extends Common {
         const item = data[key];
         this.serialize(item, doc, key);
       }
-      this.android.save(doc);
+      if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+        this.android.save(doc, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT);
+      } else {
+        this.android.save(doc);
+      }
+
       return doc.getId();
     } catch (e) {
       console.error(e.message);
@@ -73,7 +78,7 @@ export class CouchBase extends Common {
     }
   }
 
-  setBlob(id: string, name: string, blob: any, mimeType: string = 'application/octet-stream') {
+  setBlob(id: string, name: string, blob: any, mimeType: string = 'application/octet-stream', concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     try {
       const document = this.android.getDocument(id).toMutable();
       if (typeof blob === 'string') {
@@ -95,7 +100,12 @@ export class CouchBase extends Common {
         } else {
           // TODO what else to check?
         }
-        this.android.save(document);
+
+        if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+          this.android.save(document, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT);
+        } else {
+          this.android.save(document);
+        }
       } else {
         // TODO what else to check ... maybe native objects ??
       }
@@ -201,7 +211,7 @@ export class CouchBase extends Common {
     return dateFormat.format(date);
   }
 
-  updateDocument(documentId: string, data: any) {
+  updateDocument(documentId: string, data: any, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     try {
       const origin = this.android.getDocument(
         documentId
@@ -213,7 +223,11 @@ export class CouchBase extends Common {
           const item = data[key];
           this.serialize(item, doc, key);
         }
-        this.android.save(doc);
+        if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+          this.android.save(doc, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT);
+        } else {
+          this.android.save(doc);
+        }
       }
     } catch (e) {
       console.error(e.message);
@@ -554,7 +568,7 @@ export class CouchBase extends Common {
     return nativeQuery;
   }
 
-  query(query: Query = {select: [QueryMeta.ALL, QueryMeta.ID]}) {
+  query(query: Query = { select: [QueryMeta.ALL, QueryMeta.ID] }) {
     const items = [];
     let select = [];
     let isAll = false;
@@ -718,7 +732,6 @@ export class CouchBase extends Common {
   addDatabaseChangeListener(callback: any) {
     const listener = (com as any).couchbase.lite.DatabaseChangeListener.extend({
       changed(changes: any) {
-        console.log(changes)
         if (callback && typeof callback === 'function') {
           const ids = [];
           const documentIds = changes.getDocumentIDs();

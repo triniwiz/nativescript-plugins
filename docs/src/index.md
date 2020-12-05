@@ -3,7 +3,7 @@ home: true
 heroImage: ./dev_activity.svg
 tagline: Sweet {N} plugin docs of what I work on.
 actionText: Quick Start →
-actionLink: /guide/
+actionLink: /api-reference/
 # features:
 # - title: Feature 1 Title
 #   details: Feature 1 Description
