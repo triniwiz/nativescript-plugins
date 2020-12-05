@@ -14,7 +14,7 @@
     ns plugin add @triniwiz/nativescript-star-ratings
 ```
 
-# Configuration
+## Configuration
 
 ### Core
 
