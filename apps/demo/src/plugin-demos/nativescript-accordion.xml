@@ -1,0 +1,38 @@
+<Page xmlns:accordion="@triniwiz/nativescript-accordion" xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+    <Page.actionBar>
+        <ActionBar title="nativescript-accordion" icon="" class="action-bar">
+        </ActionBar>
+    </Page.actionBar>
+  <StackLayout class="p-20">
+    <Button text="View Multi Template" tap="goToMulti"/>
+    <accordion:Accordion height="100%" items="{{items}}" allowMultiple="false" selectedIndexes="{{selectedIndexes}}">
+
+      <accordion:Accordion.headerTemplate>
+        <StackLayout  backgroundColor="green" >
+          <Label text="{{headerText}}"/>
+        </StackLayout>
+      </accordion:Accordion.headerTemplate>
+
+
+      <accordion:Accordion.itemHeaderTemplate>
+        <GridLayout backgroundColor="blue">
+          <Label height="100%" text="{{title}}"/>
+        </GridLayout>
+      </accordion:Accordion.itemHeaderTemplate>
+
+      <accordion:Accordion.itemContentTemplate>
+        <StackLayout backgroundColor="orange">
+          <Image height="200" decodeWidth="200" decodeHeight="200"  src="{{image}}"/>
+          <Label text="{{text}}"/>
+        </StackLayout>
+      </accordion:Accordion.itemContentTemplate>
+
+
+      <accordion:Accordion.footerTemplate>
+        <StackLayout backgroundColor="yellow">
+          <Label text="{{footerText}}"/>
+        </StackLayout>
+      </accordion:Accordion.footerTemplate>
+    </accordion:Accordion>
+  </StackLayout>
+</Page>

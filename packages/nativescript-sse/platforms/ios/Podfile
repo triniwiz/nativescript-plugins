@@ -1,0 +1,1 @@
+pod 'IKEventSource', :git => 'https://github.com/triniwiz/EventSource', :branch => 'v7'

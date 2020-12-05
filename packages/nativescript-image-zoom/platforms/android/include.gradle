@@ -1,0 +1,11 @@
+repositories {
+  maven { url "https://jitpack.io" }
+  maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
+}
+
+dependencies {
+  implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+  implementation 'com.squareup.picasso:picasso:3.0.0-SNAPSHOT'
+  implementation 'com.squareup.picasso:picasso-provider:3.0.0-SNAPSHOT'
+  implementation 'jp.wasabeef:picasso-transformations:2.3.1'
+}

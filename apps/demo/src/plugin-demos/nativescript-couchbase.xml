@@ -1,0 +1,19 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-couchbase" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <GridLayout rows="auto, auto, auto, auto, *" class="p-20" flexDirection="column">
+    <Button row="0" text="View Search" tap="goToSearch"/>
+    <Label row="1" col="0" colSpan="2" text="Add New Item" class="t-20 text-center c-black" textWrap="true"/>
+    <TextField row="2" id="input" hint="Enter text here..." col="0"/>
+    <Button row="3" col="!" text="Add" tap="addNew"/>
+    <ListView row="4" colSpan="2" items="{{items}}">
+      <ListView.itemTemplate>
+        <GridLayout>
+          <Label text="{{title}}"/>
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+  </GridLayout>
+</Page>

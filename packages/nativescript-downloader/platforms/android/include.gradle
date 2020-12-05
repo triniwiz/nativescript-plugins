@@ -1,0 +1,9 @@
+repositories {
+  maven {
+    url 'https://maven.google.com'
+  }
+}
+
+dependencies {
+  implementation 'co.fitcom:fancydownloader:0.+'
+}

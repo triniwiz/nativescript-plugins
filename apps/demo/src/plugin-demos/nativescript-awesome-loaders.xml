@@ -1,0 +1,66 @@
+<Page xmlns:al="@triniwiz/nativescript-awesome-loaders" xmlns="http://schemas.nativescript.org/tns.xsd"
+      navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-awesome-loaders" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <ActionBar title="{N} Awesome Loaders"/>
+  <GridLayout rows="*,*,*,*,*,*,*,*">
+    <GridLayout columns="*,*,*,*">
+      <al:AwesomeLoaders width="60" height="60" indicator="BallPulse" indicatorColor="#414BA3"/>
+      <al:AwesomeLoaders indicatorColor="#36364F" col="1" width="60" height="60" indicator="BallGridPulse"/>
+      <al:AwesomeLoaders indicatorColor="#FCF89B" col="2" width="60" height="60" indicator="BallClipRotate"/>
+      <al:AwesomeLoaders indicatorColor="#DEC06F" col="3" width="60" height="60" indicator="BallClipRotatePulse"/>
+    </GridLayout>
+
+    <GridLayout row="1" columns="*,*,*,*">
+      <al:AwesomeLoaders indicatorColor="#9C27B0" width="60" height="60" indicator="SquareSpin"/>
+      <al:AwesomeLoaders indicatorColor="#000000" col="1" width="60" height="60" indicator="BallClipRotateMultiple"/>
+      <al:AwesomeLoaders indicatorColor="#AA55BB" col="2" width="60" height="60" indicator="BallPulseRise"/>
+      <al:AwesomeLoaders indicatorColor="#1EFF65" col="3" width="60" height="60" indicator="BallRotate"/>
+    </GridLayout>
+
+    <GridLayout row="2" columns="*,*,*,*">
+      <al:AwesomeLoaders indicatorColor="#4CAF50" width="60" height="60" indicator="CubeTransition"/>
+      <al:AwesomeLoaders indicatorColor="red" col="1" width="60" height="60" indicator="BallZigZag"/>
+      <al:AwesomeLoaders indicatorColor="black" col="2" width="60" height="60" indicator="BallZigZagDeflect"/>
+      <al:AwesomeLoaders indicatorColor="purple" col="3" width="60" height="60" indicator="BallTrianglePath"/>
+    </GridLayout>
+
+    <GridLayout row="3" columns="*,*,*,*">
+      <al:AwesomeLoaders indicatorColor="#FF9800" width="60" height="60" indicator="BallScale"/>
+      <al:AwesomeLoaders indicatorColor="#47772E" col="1" width="60" height="60" indicator="LineScale"/>
+      <al:AwesomeLoaders indicatorColor="#93BF17" col="2" width="60" height="60" indicator="LineScaleParty"/>
+      <al:AwesomeLoaders indicatorColor="#159979" col="3" width="60" height="60" indicator="BallScaleMultiple"/>
+    </GridLayout>
+
+    <GridLayout row="4" columns="*,*,*,*">
+      <al:AwesomeLoaders indicatorColor="#FF5722" width="60" height="60" indicator="BallPulseSync"/>
+      <al:AwesomeLoaders indicatorColor="#FE2D2B" col="1" width="60" height="60" indicator="BallBeat"/>
+      <al:AwesomeLoaders indicatorColor="#B11E6A" col="2" width="60" height="60" indicator="LineScalePulseOut"/>
+      <al:AwesomeLoaders indicatorColor="#0E1810" col="3" width="60" height="60" indicator="LineScalePulseOutRapid"/>
+    </GridLayout>
+
+    <GridLayout row="5" columns="*,*,*,*">
+      <al:AwesomeLoaders indicatorColor="#795548" width="60" height="60" indicator="BallScaleRipple"/>
+      <al:AwesomeLoaders indicatorColor="#16FCC9" col="1" width="60" height="60" indicator="BallScaleRippleMultiple"/>
+      <al:AwesomeLoaders indicatorColor="#FAFC06" col="2" width="60" height="60" indicator="BallSpinFadeLoader"/>
+      <al:AwesomeLoaders indicatorColor="#CE5F0F" col="3" width="60" height="60" indicator="LineSpinFadeLoader"/>
+    </GridLayout>
+
+    <GridLayout row="6" columns="*,*,*,*" id="gl">
+      <al:AwesomeLoaders col="0" indicatorColor="#820CF7" width="60" height="60" indicator="TriangleSkewSpin"/>
+      <al:AwesomeLoaders col="1" indicatorColor="yellow" width="60" height="60" indicator="Pacman"/>
+      <al:AwesomeLoaders indicatorColor="#D9FF03" col="2" width="60" height="60" indicator="BallGridBeat"/>
+      <al:AwesomeLoaders indicatorColor="#FF9E03" col="3" width="60" height="60" indicator="SemiCircleSpin"/>
+    </GridLayout>
+
+    <GridLayout row="7" columns="*,*,*,*">
+      <al:AwesomeLoaders col="0" indicatorColor="#ECC2B2" width="60" height="60" indicator="BallRotateChase"/>
+      <al:AwesomeLoaders col="1" indicatorColor="#F89290" width="60" height="60" indicator="Orbit"/>
+      <al:AwesomeLoaders indicatorColor="#DB672A" col="2" width="60" height="60" indicator="AudioEqualizer"/>
+      <al:AwesomeLoaders indicatorColor="#FF7681" col="3" width="60" height="60" indicator="CircleStrokeSpin"/>
+    </GridLayout>
+
+  </GridLayout>
+</Page>

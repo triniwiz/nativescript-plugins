@@ -1,0 +1,36 @@
+<Page xmlns:stripe="@triniwiz/nativescript-stripe" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar><ActionBar title="Details" class="action-bar"/></Page.actionBar>
+  <StackLayout class="page p-10">
+    <GridLayout rows="auto" columns="auto,*">
+      <Label row="0" col="0" text="{{ item.name }}" class="h2"></Label>
+      <Label row="0" col="1" text="{{ '$' + item.price/100 }}" class="text-right text-muted"></Label>
+    </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <GridLayout rows="auto" columns="*,auto" tap="showPaymentMethods" class="list-group-item">
+      <Label row="0" col="0" text="Payment Type"></Label>
+      <StackLayout row="0" col="1" orientation="horizontal">
+        <Image width="32" height="20" src="{{ paymentImage }}"></Image>
+        <Label text="{{ paymentType }}" class="text-right text-muted" visibility="{{ !isLoading ? 'visible' : 'collapse' }}"></Label>
+      </StackLayout>
+      <ActivityIndicator row="0" col="1" busy="{{ isLoading }}" visibility="{{ isLoading ? 'visible' : 'collapse' }}"></ActivityIndicator>
+    </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <GridLayout rows="auto" columns="auto,*" tap="showShipping" class="list-group-item">
+      <Label row="0" col="0" text="Shipping Method"></Label>
+      <Label row="0" col="1" text="{{ shippingType }}" class="text-right text-muted"></Label>
+    </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <GridLayout rows="auto" columns="auto,*" class="list-group-item">
+      <Label row="0" col="0" text="Total"></Label>
+      <Label row="0" col="1" text="{{ '$' + (total / 100) }}" class="text-right"></Label>
+    </GridLayout>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <Label text="{{ errorMessage }}" class="text-danger" textWrap="true"></Label>
+    <Button text="Buy" isEnabled="{{ canBuy }}" class="btn btn-primary btn-active" tap="buy"></Button>
+    <ActivityIndicator busy="{{ paymentInProgress }}" visibility="{{ paymentInProgress ? 'visible' : 'collapse' }}"></ActivityIndicator>
+    <Label text="{{ successMessage }}" class="text-primary" textWrap="true"></Label>
+    <StackLayout class="hr-light m-10"></StackLayout>
+    <Label text="Debug Info"></Label>
+    <Label text="{{ debugInfo }}" class="body" textWrap="true"></Label>
+  </StackLayout>
+</Page>

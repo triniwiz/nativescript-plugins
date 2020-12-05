@@ -1,0 +1,22 @@
+android {
+  compileSdkVersion 30
+  defaultConfig {
+    minSdkVersion 22
+    targetSdkVersion 30
+    generatedDensities = []
+  }
+  aaptOptions {
+    additionalParameters "--no-version-vectors"
+  }
+
+  compileOptions {
+    targetCompatibility 1.8
+    sourceCompatibility 1.8
+  }
+}
+
+
+project.ext {
+  kotlinVersion = "1.4.20"
+  useKotlin = true
+}

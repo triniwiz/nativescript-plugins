@@ -1,0 +1,38 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-downloader" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <ScrollView>
+    <StackLayout class="p-20">
+      <Label>
+        <FormattedString>
+          <Span text="File Download Speed "/>
+          <Span text="{{fileSpeed + 'bytes/s'}}"/>
+        </FormattedString>
+      </Label>
+      <Label>
+        <FormattedString>
+          <Span text="Image Download Speed "/>
+          <Span text="{{imageSpeed + 'bytes/s'}}"/>
+        </FormattedString>
+      </Label>
+
+      <Label text="File Progress"/>
+      <Label text="{{fileProgress}}"/>
+      <Progress value="{{fileProgress}}"/>
+
+      <Label text="Image Progress"/>
+      <Label text="{{imageProgress}}"/>
+      <Progress value="{{imageProgress}}"/>
+
+      <Image height="40%" src="{{ image }}"/>
+      <Button text="Generate Downloads" tap="{{ generateDownloads }}"/>
+      <Button text="Generate and Start Downloads" tap="{{ generateAndStart }}"/>
+      <Button text="Download Test File" tap="{{ downloadFile }}"/>
+      <Button text="Pause Test File" tap="{{ pauseFile }}"/>
+      <Button text="Resume Test File" tap="{{ resumeFile }}"/>
+      <Button text="Download Image" tap="{{ downloadImage }}"/>
+    </StackLayout>
+  </ScrollView>
+</Page>

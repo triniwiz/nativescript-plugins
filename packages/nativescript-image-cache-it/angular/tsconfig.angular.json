@@ -1,0 +1,15 @@
+{
+  "extends": "../../../node_modules/ng-packagr/lib/ts/conf/tsconfig.ngc.json",
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "types": [
+      "node"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@triniwiz/nativescript-image-cache-it": [
+        "../../../dist/packages/nativescript-image-cache-it"
+      ]
+    }
+  }
+}

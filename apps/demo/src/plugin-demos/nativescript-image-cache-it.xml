@@ -1,0 +1,61 @@
+<Page xmlns:ui="@triniwiz/nativescript-image-cache-it" xmlns="http://schemas.nativescript.org/tns.xsd"
+      navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-image-cache-it" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <GridLayout width="100%" height="100%" rows="auto,*">
+    <GridLayout columns="*,auto,auto">
+      <TextField text="{{newImg}}"/>
+      <Button col="1" text="Add Image" tap="{{addImage}}"/>
+      <Button tap="{{ deleteRandom }}" text="Delete Random"/>
+    </GridLayout>
+
+
+    <ListView id="listView" row="1" items="{{ images }}" itemTemplateSelector="$index % 2 === 0 ? 'even' : 'odd'">
+      <ListView.itemTemplates>
+        <template key="even">
+          <GridLayout rows="150" columns="150,*" paddingLeft="10">
+            <ui:ImageCacheIt loaded="{{$parents['ListView'].imageLoaded}}" fallback="~/nativescript-image-cache-it/assets/mario-plant.png"
+                             headers="{{ auth ? auth : defaultHeaders }}"
+                             placeHolder="{{ $parents['ListView'].placeHolder }}" stretch="aspectFill"
+                             tap="{{$parents['ListView'].onTapEven}}" class="even" src="{{url}}"/>
+            <stack-layout col="1">
+              <Label text="{{url}}"/>
+              <Label text="{{$index}}"/>
+            </stack-layout>
+          </GridLayout>
+        </template>
+
+        <template key="odd">
+          <GridLayout rows="150" columns="150,*" paddingLeft="10">
+            <ui:ImageCacheIt loaded="{{$parents['ListView'].imageLoaded}}" headers="{{ auth ? auth : defaultHeaders }}"
+                             placeHolder="res://law" errorHolder="res://error" stretch="fill"
+                             tap="{{$parents['ListView'].onTapOdd}}" class="odd"
+                             src="{{url}}"/>
+            <stack-layout col="1">
+              <Label text="{{url}}"/>
+              <Label text="{{$index}}"/>
+            </stack-layout>
+          </GridLayout>
+        </template>
+
+      </ListView.itemTemplates>
+    </ListView>
+
+
+    <!--<StackLayout>
+      <ScrollView width="100%" height="100%" row="1">
+        <Repeater items="{{ images }}">
+          <Repeater.itemsLayout>
+            <StackLayout backgroundColor="red"/>
+          </Repeater.itemsLayout>
+          <Repeater.itemTemplate>
+            <ui:ImageCacheIt fallback="~/assets/images/mario-plant.png" headers="{{ auth ? auth : defaultHeaders }}"
+                             stretch="aspectFill" src="{{$value.url}}"/>
+          </Repeater.itemTemplate>
+        </Repeater>
+      </ScrollView>
+    </StackLayout>-->
+  </GridLayout>
+</Page>

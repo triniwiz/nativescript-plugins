@@ -1,0 +1,3 @@
+include ':couchbase'
+include ':app'
+rootProject.name = "TNSCouchbase"

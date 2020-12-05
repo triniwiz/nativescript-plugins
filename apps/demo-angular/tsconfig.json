@@ -1,0 +1,25 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": [
+      ".",
+      "../.."
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "src/*"
+      ],
+      "@demo/shared": [
+        "../../tools/demo/index.ts"
+      ],
+      "@triniwiz/*": [
+        "../../dist/packages/*"
+      ]
+    }
+  },
+  "files": [
+    "./references.d.ts",
+    "./src/main.ts"
+  ]
+}

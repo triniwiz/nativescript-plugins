@@ -1,0 +1,3 @@
+include ':imageoptimize'
+include ':app'
+rootProject.name = "ImageOptimzeDemo"

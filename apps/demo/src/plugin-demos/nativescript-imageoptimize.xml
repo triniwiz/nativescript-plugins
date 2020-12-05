@@ -1,0 +1,11 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-imageoptimize" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <StackLayout class="p-20">
+    <!-- <Image src="~/destiny_2.jpg"/>  -->
+    <Image src="{{result}}"/>
+    <Button tap="{{ optimize}}" text="Optimize"/>
+  </StackLayout>
+</Page>

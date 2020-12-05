@@ -1,0 +1,3 @@
+dependencies {
+  implementation 'com.amazonaws:aws-android-sdk-core:2.19.0'
+}

@@ -1,0 +1,1 @@
+pod 'NVActivityIndicatorView', :git => 'https://github.com/triniwiz/NVActivityIndicatorView.git', :tag => '5.0.2'

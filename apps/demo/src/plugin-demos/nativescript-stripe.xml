@@ -1,0 +1,13 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-stripe" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <StackLayout class="p-10">
+    <Label text="Standard Integration" class="h2"/>
+    <Button text="Demo" tap="{{stdDemo}}" class="btn btn-primary btn-active"/>
+    <StackLayout class="hr-light m-10"/>
+    <Label text="Custom Integration" class="h2"/>
+    <Button text="CreditCardView" tap="{{ccViewDemo}}" class="btn btn-primary btn-active"/>
+  </StackLayout>
+</Page>

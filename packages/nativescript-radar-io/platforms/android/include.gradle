@@ -1,0 +1,3 @@
+dependencies {
+  implementation 'io.radar:sdk:3.0.0'
+}

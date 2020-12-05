@@ -1,0 +1,9 @@
+{
+  "uses": [
+    "com.github.triniwiz.imagecacheit:*",
+    "com.squareup.okhttp3:*",
+    "jp.wasabeef:*",
+    "com.github.bumptech.glide:*",
+    "com.bumptech.glide:*"
+  ]
+}

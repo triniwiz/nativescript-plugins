@@ -1,0 +1,13 @@
+<Page xmlns:atv="@triniwiz/nativescript-autocomplete" xmlns="http://schemas.nativescript.org/tns.xsd"
+      navigatingTo="navigatingTo"
+      class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-autocomplete" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <StackLayout>
+    <atv:AutoComplete hint="Enter Text" items="{{list}}" itemTap="itemTapped"/>
+    <TextField hint="Suggestion" text="{{ text }}"/>
+    <Button text="Add Suggestion" tap="{{ addText }}"/>
+  </StackLayout>
+</Page>

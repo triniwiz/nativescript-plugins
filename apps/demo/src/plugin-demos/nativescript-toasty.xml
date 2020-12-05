@@ -1,0 +1,26 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-toasty" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <ScrollView>
+    <StackLayout>
+      <Button text="Go To Modal" tap="openModal" class="btn btn-pink"/>
+
+      <Button text="Short Toast" tap="{{shortToast}}" class="btn btn-pink"/>
+
+      <Button text="Long Toast" tap="{{longToast}}" class="btn btn-pink"/>
+
+      <Label
+        text="Toasts can be position by setting the `position` property of the `Toasty` instance or calling `setToastPosition(value)` on the `Toasty` instance."
+        class="h3 m-5" textWrap="true"/>
+      <Button text="Position Toast" tap="{{positionToast}}" class="btn btn-pink"/>
+
+      <Label text="You can chain the toast methods for setting position and duration." class="h3 m-5" textWrap="true"/>
+      <Button text="Chained Toast" tap="{{chainedToast}}" class="btn btn-pink"/>
+
+      <Label text="You can cancel a Toast (hide it)." class="h3 m-5" textWrap="true"/>
+      <Button text="Cancel Toast" tap="{{cancelToast}}" class="btn btn-pink"/>
+    </StackLayout>
+  </ScrollView>
+</Page>

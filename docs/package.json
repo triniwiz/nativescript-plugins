@@ -1,0 +1,19 @@
+{
+  "name": "triniwiz-n-plugins",
+  "version": "0.0.1",
+  "description": "All the docs for the any of my {N} plugins",
+  "main": "index.js",
+  "authors": {
+    "name": "Osei Fortune",
+    "email": "fortune.osei@yahoo.com"
+  },
+  "repository": "https://github.com/triniwiz/nativescript-plugins-doc.git",
+  "scripts": {
+    "dev": "vuepress dev src",
+    "build": "vuepress build src"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "vuepress": "^1.5.3"
+  }
+}

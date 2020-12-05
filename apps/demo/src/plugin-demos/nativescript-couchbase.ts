@@ -1,0 +1,33 @@
+import {Observable, EventData, Page, Frame} from '@nativescript/core';
+import {DemoSharedNativescriptCouchbase} from '@demo/shared';
+import {} from '@triniwiz/nativescript-couchbase';
+
+let page;
+
+export function navigatingTo(args: EventData) {
+  page = <Page>args.object;
+  page.bindingContext = new DemoModel();
+
+  page.getViewById('input').on('textChange', (args: any) => {
+    page.bindingContext.set('input', args.object.text);
+  });
+}
+
+export function pageLoaded(args: EventData) {
+}
+
+export function addNew(args) {
+  page.bindingContext.addItem();
+  const input = page.getViewById('input') as any;
+  if (input) {
+    input.text = '';
+  }
+}
+
+export function goToSearch(args) {
+  Frame.topmost().navigate('~/plugin-demos/nativescript-couchbase-search/nativescript-couchbase-search');
+}
+
+
+export class DemoModel extends DemoSharedNativescriptCouchbase {
+}

@@ -1,0 +1,10 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd">
+    <ActionBar title="Second Modal" color="#fff" backgroundColor="#4b0082">
+    </ActionBar>
+    <StackLayout>
+        <Label text="First Nest Lvl 2"/>
+        <Button text="Close Modal" tap="close" class="btn btn-pink"/>
+        <Button text="Show Modal Toast" tap="modalToast" class="btn btn-pink"/>
+        <Button text="Go to Lvl3" tap="navigate" class="btn btn-pink"/>
+    </StackLayout>
+</Page>

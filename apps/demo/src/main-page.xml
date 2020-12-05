@@ -1,0 +1,51 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+  <Page.actionBar>
+    <ActionBar title="Plugin Demos" icon="" class="action-bar"/>
+  </Page.actionBar>
+  <StackLayout class="p-20">
+    <ScrollView class="h-full">
+      <StackLayout>
+        <Button text="nativescript-accordion" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-autocomplete" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-awesome-loaders" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-aws-sdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-aws-sdk-s3" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-card-io" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-couchbase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-ddp-login" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-downloader" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-fancy-camera" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-fancy-list-view" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-ffmpeg" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-here" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-image-cache-it" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-image-zoom" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-imageoptimize" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-mongo-stitch-core" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-mongo-stitch-sdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-mongo-stitch-services-mongodb-remote" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-nested-scrollview" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-pager" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-popup" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-pubnub" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-pusher-beams" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-pusher-channels" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-radar-io" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-sinch" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-socketio" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-splashscreen" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-sse" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-star-ratings" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-stripe" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-textdrawable" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-toasty" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-tooltip" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-twitter" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-video-editor" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-videorecorder" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+      </StackLayout>
+    </ScrollView>
+  </StackLayout>
+</Page>

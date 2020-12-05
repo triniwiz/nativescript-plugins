@@ -1,0 +1,20 @@
+<Page xmlns:ui="@triniwiz/nativescript-star-ratings" xmlns="http://schemas.nativescript.org/tns.xsd"
+      navigatingTo="navigatingTo"
+      class="page">
+  <Page.actionBar>
+    <ActionBar title="nativescript-star-ratings" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <StackLayout class="p-20">
+    <Label verticalAlignment="center" text="{{'Rating : '  +  value}}"/>
+    <Button text="Full Fill" tap="{{ full }}"/>
+    <Button text="Half Fill" tap="{{ half }}"/>
+    <Button text="Precise Fill" tap="{{ precise }}"/>
+    <GridLayout height="60" borderRadius="5" backgroundColor="lightgray">
+      <ui:StarRating fillMode="{{ fillMode }}" horizontalAlignment="center" verticalAlignment="center" id="rating"
+                     emptyBorderColor="black"
+                     emptyColor="white" filledBorderColor="black" filledColor="black" value="{{value}}" max="{{max}}"
+                     isindicator="false"/>
+    </GridLayout>
+  </StackLayout>
+</Page>

@@ -1,0 +1,38 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded"
+      xmlns:c="@triniwiz/nativescript-pager"
+      xmlns:i="@triniwiz/nativescript-image-cache-it"
+      title="Pager Demo"
+>
+    <Page.actionBar>
+        <ActionBar title="Pager Nested Demo"/>
+    </Page.actionBar>
+    <GridLayout iosOverflowSafeArea="false"  height="100%" width="100%" rows="*,*">
+        <c:Pager scroll="onScroll" selectedIndex="2"
+                 selectedIndexChange="selectedIndexChange"
+                 items="{{items}}" id="pager"
+                 backgroundColor="lightsteelblue">
+            <c:Pager.itemTemplate>
+                <GridLayout id="{{ title }}" loaded="loaded" rows="auto,*,*" columns="*">
+                    <Label row="0" text="{{title}}"/>
+                    <i:ImageCacheIt width="150" height="150" stretch="aspectFill" loaded="loadedImage" row="1"
+                                    src="{{ image }}"/>
+                    <c:Pager row="2" items="{{ inner }}" orientation="vertical">
+                        <c:Pager.itemTemplate>
+                            <GridLayout rows="auto,*" columns="*">
+                                <Label row="0" text="{{title}}"/>
+                                <i:ImageCacheIt width="150" height="150" stretch="aspectFill" loaded="loadedImage" row="1"
+                                                src="{{ image }}"/>
+                            </GridLayout>
+                        </c:Pager.itemTemplate>
+                    </c:Pager>
+                </GridLayout>
+            </c:Pager.itemTemplate>
+        </c:Pager>
+        <ScrollView row="1">
+            <StackLayout >
+                <Label row="1" text="{{index}}"/>
+                <Button text="goBack" row="1" tap="goBack"/>
+            </StackLayout>
+        </ScrollView>
+    </GridLayout>
+</Page>

@@ -1,0 +1,10 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="onPageLoaded">
+    <ActionBar title="First Modal" color="#fff" backgroundColor="#4b0082">
+    </ActionBar>
+    <StackLayout>
+        <Label text="Lvl 1"/>
+        <Button text="Close Modal" tap="close" class="btn btn-pink"/>
+        <Button text="Show Modal Toast" tap="modalToast" class="btn btn-pink"/>
+        <Button text="Go to Lvl2" tap="navigate" class="btn btn-pink"/>
+    </StackLayout>
+</Page>

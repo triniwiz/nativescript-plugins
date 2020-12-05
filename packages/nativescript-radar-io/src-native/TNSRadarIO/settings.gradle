@@ -1,0 +1,3 @@
+include ':RadarIO'
+include ':app'
+rootProject.name = "TNSRadarIO"
