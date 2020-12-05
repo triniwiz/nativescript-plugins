@@ -14,6 +14,9 @@
 		"nx.json": "*"
 	},
 	"projects": {
+		"docs": {
+			"tags": []
+		},
 		"demo": {
 			"tags": []
 		},

@@ -1,6 +1,21 @@
 {
 	"version": 1,
 	"projects": {
+		"docs": {
+			"root": "docs/",
+			"sourceRoot": "socs/src",
+			"projectType": "application",
+			"prefix": "docs",
+			"architect": {
+				"deploy": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["sh ./tools/scripts/deploy_docs.sh"],
+						"parallel": false
+					}
+				}
+			}
+		},
 		"demo": {
 			"root": "apps/demo/",
 			"sourceRoot": "apps/demo/src",
@@ -196,11 +211,19 @@
 						]
 					}
 				},
+				"build.react": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options":{
+						"commands": ["tsc react/index.tsx --noEmitHelpers true --module commonjs --lib es2015,dom --jsx \"react\" --skipLibCheck true --experimentalDecorators true --declaration true"],
+						"parallel": false,
+						"cwd": "packages/nativescript-stripe"
+					}
+				},
 				"build.all": {
 					"builder": "@nrwl/workspace:run-commands",
 					"outputs": ["dist/packages"],
 					"options": {
-						"commands": ["nx run nativescript-stripe:build", "node tools/scripts/build-finish.ts nativescript-stripe"],
+						"commands": ["nx run nativescript-stripe:build.react","nx run nativescript-stripe:build", "node tools/scripts/build-finish.ts nativescript-stripe"],
 						"parallel": false
 					}
 				},

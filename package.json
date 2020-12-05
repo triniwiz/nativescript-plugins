@@ -8,7 +8,8 @@
 		"add": "nx g @nativescript/plugin-tools:add-package",
 		"add-angular": "nx g @nativescript/plugin-tools:add-angular",
 		"config": "nx g @nativescript/plugin-tools:config",
-		"publish-packages": "nx g @nativescript/plugin-tools:publish"
+		"publish-packages": "nx g @nativescript/plugin-tools:publish",
+		"docs:build": "cd docs && vuepress build src"
 	},
 	"private": true,
 	"devDependencies": {
@@ -26,12 +27,18 @@
 		"@nativescript/plugin-tools": "~1.0.0",
 		"@nativescript/types": "~7.0.0",
 		"@nativescript/webpack": "~3.0.0",
+		"@types/react-reconciler": "^0.18.0",
 		"@ngtools/webpack": "~10.1.0",
 		"nativescript-vue": "~2.8.0",
 		"nativescript-vue-template-compiler": "~2.8.0",
 		"ng-packagr": "~10.1.0",
+		"react": "^16.8.6",
+		"react-nativescript": "~1.0.6",
 		"rxjs": "~6.6.0",
+		"svelte": "3.24.1",
+		"svelte-native": "0.9.0-alpha",
 		"typescript": "~3.9.7",
+		"vuepress": "^1.5.3",
 		"zone.js": "0.11.1"
 	},
 	"husky": {

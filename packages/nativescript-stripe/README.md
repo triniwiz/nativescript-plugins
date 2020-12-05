@@ -1,12 +1,12 @@
 # Nativescript Stripe
 
-```javascript
+```bash
 ns plugin add @triniwiz/nativescript-stripe
 ```
 
 ## API documentation
 
-[Documentation for the latest stable release]()
+[Documentation for the latest stable release](https://triniwiz.github.io/nativescript-plugins/api-reference/stripe.html)
 
 ## License
 

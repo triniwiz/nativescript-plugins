@@ -1,5 +1,5 @@
 import {Utils} from "@nativescript/core";
-declare const com, Stripe;
+declare const com, Stripe, NSDictionary;
 export const init = (apiKey: string) => {
   if (global.isIOS) {
     Stripe.setDefaultPublishableKey(apiKey);

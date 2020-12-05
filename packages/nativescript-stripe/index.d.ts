@@ -268,7 +268,7 @@ export declare class PaymentMethodCardWalletMasterpass implements IPaymentMethod
   readonly email: string;
   readonly name: string;
   readonly shippingAddress: PaymentMethodAddress;
-  readonly android: com.stripe.android.model.wallets.Wallet.MasterpassWallet;
+  readonly android: any;
 }
 
 export declare class PaymentMethodCardWalletAmexExpressCheckout implements IPaymentMethodCardWalletAmexExpressCheckout {
@@ -327,17 +327,12 @@ export declare class PaymentMethodCard implements IPaymentMethodCard {
 }
 
 export declare class CreditCardView extends CreditCardViewBase {
-  readonly android: com.stripe.android.view.CardInputWidget;
+  readonly android: any;
   readonly cardParams: CardParams;
 }
 
-export declare class CardMultilineWidget extends CardMultilineWidgetBase {
-  readonly android: com.stripe.android.view.CardMultilineWidget;
-  readonly card: CardParams;
-}
-
 export declare class PaymentMethod implements IPaymentMethod {
-  readonly native: com.stripe.android.model.PaymentMethod;
+  readonly native: any;
   readonly id: string;
   readonly created: Date;
   readonly type: PaymentMethodType;
@@ -348,7 +343,7 @@ export declare class PaymentMethod implements IPaymentMethod {
 }
 
 declare class StripeIntent {
-  native: com.stripe.android.model.PaymentIntent | com.stripe.android.model.SetupIntent;
+  native: any;
 
   get id(): string;
 
@@ -368,9 +363,9 @@ declare class StripeIntent {
 }
 
 export declare class StripePaymentIntent extends StripeIntent implements IStripePaymentIntent {
-  native: com.stripe.android.model.PaymentIntent;
+  native: any;
 
-  static fromNative(native: com.stripe.android.model.PaymentIntent): StripePaymentIntent;
+  static fromNative(native: any): StripePaymentIntent;
 
   static fromApi(json: any): StripePaymentIntent;
 
@@ -389,19 +384,19 @@ export declare class StripePaymentIntentParams {
   sourceId: string;
   returnURL: string;
 
-  get native(): com.stripe.android.model.ConfirmPaymentIntentParams;
+  get native(): any;
 }
 
 export declare class StripeSetupIntentParams {
-  native: com.stripe.android.model.ConfirmSetupIntentParams;
+  native: any;
 
   constructor(paymentMethodId: string, clientSecret: string);
 }
 
 export declare class StripeSetupIntent extends StripeIntent {
-  native: com.stripe.android.model.SetupIntent;
+  native: any;
 
-  static fromNative(native: com.stripe.android.model.SetupIntent): StripeSetupIntent;
+  static fromNative(native: any): StripeSetupIntent;
 
   get paymentMethodId(): string;
 }
