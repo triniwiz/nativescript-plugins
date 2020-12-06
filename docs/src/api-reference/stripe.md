@@ -1,5 +1,9 @@
 # Stripe
 
+
+[![npm](https://img.shields.io/npm/v/@triniwiz/nativescript-stripe.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-stripe)
+[![npm](https://img.shields.io/npm/dt/@triniwiz/nativescript-stripe.svg?label=npm%20downloads)](https://www.npmjs.com/package/@triniwiz/nativescript-stripe)
+
 |   Android Device  |   Android Emulator    |   iOS Device  |   iOS Simulator   |
 | :-------------:     |:-------------:        |:-------------:| :-----:            |
 | :white_check_mark:|:white_check_mark:     |:white_check_mark:|    :white_check_mark:| 
@@ -7,7 +11,7 @@
 
 ## Installing 
 
-```base
+```bash
     ns plugin add @triniwiz/nativescript-stripe
 ```
 
@@ -45,9 +49,9 @@ export class AppModule { }
 
 ```ts
 import Vue from 'nativescript-vue';
-import Pager from 'triniwiz/nativescript-stripe/vue';
+import CreditCardView from '@triniwiz/nativescript-stripe/vue';
 
-Vue.use(Pager);
+Vue.use(CreditCardView);
 ```
 
 
@@ -58,7 +62,7 @@ Vue.use(Pager);
 ## React 
 
 ```tsx
-import {creditCardView} from 'triniwiz/nativescript-stripe/react';
+import {creditCardView} from '@triniwiz/nativescript-stripe/react';
 return (
 <creditCardView/>
 )
@@ -75,7 +79,7 @@ import "@triniwiz/nativescript-stripe/svelte";
 
 # Usage
 
-IMPORTANT: Make sure you include `xmlns:stripe="nativescript-stripe"` on the Page tag
+IMPORTANT: Make sure you include `xmlns:stripe="@triniwiz/nativescript-stripe"` on the Page tag
 
 ### Using from view
 ```xml
@@ -93,14 +97,14 @@ cc.name = "Osei Fortune";
 
 TypeScript
 ```ts
-import { CreditCardView, Card } from 'nativescript-stripe';
+import { CreditCardView, Card } from '@triniwiz/nativescript-stripe';
 const ccView:CreditCardView = page.getViewById("card");
 const cc:Card = ccView.card;
 cc.name = "Osei Fortune";
 ```
 ### Using from code
 ```ts
-import { Card } from 'nativescript-stripe';
+import { Card } from '@triniwiz/nativescript-stripe';
 const cc = new Card("1111111111111111",2,18,"123");
 cc.name = "Osei Fortune";
 ```
@@ -132,10 +136,10 @@ Create a Payment Session
 let paymentSession = new StripeStandardPaymentSession(page, customerSession, price, "usd", listener);
 ```
 
-See [Stripe Docs](https://stripe.com/docs/mobile) for more information.
+See [Stripe Docs](httpsope will require [Strong Customer Authentication](https://stripe.com/payments/strong-customer-authent://stripe.com/docs/mobile) for more information.
 
 # Strong Customer Authentication
-PSD2 regulations in Europe will require [Strong Customer Authentication](https://stripe.com/payments/strong-customer-authentication)
+PSD2 regulations in Eurication)
 for some credit card purchases. Stripe supports this, though most of the work to make it happen is
 required on the backend server and in the mobile app, outside the `@triniwiz/nativescript-stripe` plugin.
 

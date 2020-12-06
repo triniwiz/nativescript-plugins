@@ -1,5 +1,8 @@
 # ImageZoom
 
+[![npm](https://img.shields.io/npm/v/@triniwiz/nativescript-image-zoom.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom)
+[![npm](https://img.shields.io/npm/dt/@triniwiz/nativescript-image-zoom.svg?label=npm%20downloads)](https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom)
+
 |   Android Device  |   Android Emulator    |   iOS Device  |   iOS Simulator   |
 | :-------------:     |:-------------:        |:-------------:| :-----:            |
 | :white_check_mark:|:white_check_mark:     |:white_check_mark:|    :white_check_mark:| 

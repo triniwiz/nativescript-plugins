@@ -14,7 +14,6 @@ export class SSE extends BaseSSE {
     this._url = NSURL.alloc().initWithString(url);
     this._headers = NSDictionary.alloc().initWithDictionary(headers);
     this._es = EventSource.alloc().initWithUrlHeaders(this._url, this._headers);
-    console.log(this._es);
     const ref = new WeakRef(this);
     const owner = ref.get();
     this._es.onMessage((id, event, data) => {

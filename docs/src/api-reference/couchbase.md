@@ -182,7 +182,7 @@ Creates or opens a database
 | :---:   | :---:   |
 | name    | string  |
 
-**Returns**: 
+**Returns**: [Couchbase](couchbase.md#couchbase-2) 
 
 ---
 

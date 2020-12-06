@@ -1,15 +1,22 @@
 # Toasty
 
+[![npm](https://img.shields.io/npm/v/@triniwiz/nativescript-toasty.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-toasty)
+[![npm](https://img.shields.io/npm/dt/@triniwiz/nativescript-toasty.svg?label=npm%20downloads)](https://www.npmjs.com/package/@triniwiz/nativescript-toasty)
+
 |   Android Device  |   Android Emulator    |   iOS Device  |   iOS Simulator   |
 | :-------------:     |:-------------:        |:-------------:| :-----:            |
 | :white_check_mark:|:white_check_mark:     |:white_check_mark:|    :white_check_mark:| 
 
+
+A toast :bread: provides simple feedback about an operation in a small popup
 
 ## Installing 
 
 ```base
     ns plugin add @triniwiz/nativescript-toasty
 ```
+
+- [Toasty(...)](toasty.md#toasty-2)
 
 
 ## Usage
@@ -62,141 +69,114 @@ toast.show();
 
 ## API
 
-```typescript
-export interface Toasty {
+### Methods
 
-  constructor(opts: ToastyOptions);
-
-  position: ToastPosition;
-
-  duration: ToastDuration;
-
-  textColor: Color | string;
-
-  backgroundColor: Color | string;
-
-  yAxisOffset?: Length | number;
-
-  xAxisOffset?: Length | number;
-
-  readonly width: number;
-
-  readonly height: number;
-
-
-  /**
-   * Show the Toasty
-   */
-  show();
-
-  /**
-   * Cancels the Toasty
-   */
-  cancel();
-
-/**
- * Sets the Toast position.
- */
-  setToastPosition(value: ToastPosition): Toasty;
-
-/**
- * Sets the Toast duration.
- */
-  setToastDuration(value: ToastDuration): Toasty;
-
-/**
-  * Set the text color of the toast.
-  * @param value [Color | string] - Color of the string message.
-  */
-  setTextColor(value: Color | string): Toasty;
-
-/**
-  * Set the background color of the toast.
-  * @param value [Color |  string] - Color of the background.
-  * On Android this currently removes the default Toast rounded borders.
-  */
-  setBackgroundColor(value: Color | string): Toasty;
-
-}
+#### Toasty(...)
+```ts
+new Toasty({ text: 'Some Message' });
 ```
+Creates a toast instance that you can show later on.
 
-```typescript
-export enum ToastDuration {
-  'SHORT',
-  'LONG',
-}
+**Return**: [Toasty](toasty.md#toasty-2)
 
-export enum ToastPosition {
-  'BOTTOM',
-  'BOTTOM_LEFT',
-  'BOTTOM_RIGHT',
-  'CENTER',
-  'CENTER_LEFT',
-  'CENTER_RIGHT',
-  'TOP',
-  'TOP_LEFT',
-  'TOP_RIGHT',
-}
-
-export interface ToastyOptions {
-  /**
-   * Message text of the Toast.
-   */
-  text: string;
-
-  /**
-   * Duration to show the Toast.
-   */
-  duration?: ToastDuration;
-
-  /**
-   * Position of the Toast.
-   */
-  position?: ToastPosition;
-
-  /**
-   * Text color of the Toast message.
-   */
-  textColor?: Color | string;
-
-  /**
-   * Background Color of the Toast.
-   */
-  backgroundColor?: Color | string;
-
-  /**
-   * Android specific configuration options.
-   */
-  android?: any;
-
-  /**
-   * iOS Specific configuration options.
-   */
-  ios?: {
-    /**
-     * The native iOS view to anchor the Toast to.
-     */
-    anchorView?: any;
-
-    /**
-     * The number of lines to allow for the toast message.
-     */
-    messageNumberOfLines?: number;
-
-    /**
-     * The corner radius of the Toast.
-     */
-    cornerRadius?: number;
-
-    /**
-     * True to display a shadow for the Toast.
-     */
-    displayShadow?: boolean;
-
-    /**
-     * The color of the shadow. Only visible if `displayShadow` is true.
-     */
-    shadowColor?: Color | string;
-  };
-}
+---
+#### show()
+```ts
+show(): void;
 ```
+Show the Toasty
+
+---
+#### cancel()
+```ts
+cancel(): void;
+```
+Cancels the Toasty
+
+---
+#### setToastPosition(...)
+```ts
+setToastPosition(value: ToastPosition): Toasty;
+```
+Sets the Toast position.
+
+**Returns**: [Toasty](toasty.md#toasty-2)
+
+---
+#### setToastDuration(...)
+```ts
+setToastDuration(value: ToastDuration): Toasty;
+```
+Sets the Toast duration.
+
+**Returns**: [Toasty](toasty.md#toasty-2)
+
+---
+#### setTextColor(...)
+```ts
+setTextColor(value: Color | string): Toasty;
+```
+Set the text color of the toast.
+
+**Returns**: [Toasty](toasty.md#toasty-2)
+
+---
+#### setBackgroundColor(...)
+```ts
+setBackgroundColor(value: Color | string): Toasty;
+```
+:::tip
+On Android this currently removes the default Toast rounded borders.
+:::
+Set the background color of the toast.
+
+**Returns**: [Toasty](toasty.md#toasty-2)
+
+
+
+## Interfaces
+
+### ToastDuration
+
+| Prop      | Type  |
+| :---:     | :---: |
+| SHORT    |   SHORT  |
+| LONG    |   LONG  |
+
+
+### ToastPosition
+
+| Prop      | Type  |
+| :---:     | :---: |
+| BOTTOM    |   BOTTOM  |
+| BOTTOM_LEFT    |   BOTTOM_LEFT  |
+| BOTTOM_RIGHT    |   BOTTOM_RIGHT  |
+| CENTER    |   CENTER  |
+| CENTER_LEFT    |   CENTER_LEFT  |
+| CENTER_RIGHT    |   CENTER_RIGHT  |
+| TOP    |   TOP  |
+| TOP_LEFT    |   TOP_LEFT  |
+| TOP_RIGHT    |   TOP_RIGHT  |
+
+### ToastyOptions
+
+| Prop      | Type  | Description |
+| :---:     | :---: | :---: |
+| text    |   string  | Message text of the Toast. |
+| duration    |   [ToastDuration](toasty.md#toastduration)  | Duration to show the Toast. |
+| position    |   [ToastPosition](toasty.md#toastposition)  | Position of the Toast. |
+| textColor    |   `Color | string`  | Text color of the Toast message. |
+| backgroundColor    |   `Color | string`  | Background Color of the Toast. |
+| android    |   any  | Android specific configuration options. |
+| ios    |  [ToastyIOSOptions](toasty.md#toastyiosoptions)   |
+
+### ToastyIOSOptions
+
+| Prop      | Type  | Description |
+| :---:     | :---: | :---: |
+| anchorView    |   any  | The native iOS view to anchor the Toast to. |
+| messageNumberOfLines    |   number |The number of lines to allow for the toast message. |
+| cornerRadius    |   number  | The corner radius of the Toast.. |
+| displayShadow    |   boolean  | True to display a shadow for the Toast.. |
+| shadowColor    |   `Color | string`  | The color of the shadow. Only visible if `displayShadow` is true.. |
+
