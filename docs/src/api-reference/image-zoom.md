@@ -8,6 +8,11 @@
 | :white_check_mark:|:white_check_mark:     |:white_check_mark:|    :white_check_mark:| 
 
 
+## Installing 
+
+```bash
+    ns plugin add @triniwiz/nativescript-image-zoom
+```
 
 ## Configuration
 

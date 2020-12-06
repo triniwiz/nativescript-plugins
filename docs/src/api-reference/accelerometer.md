@@ -15,7 +15,7 @@ An acceleration sensor measures the acceleration applied to the device, includin
 
 ## Installing 
 
-```base
+```bash
     ns plugin add @triniwiz/nativescript-accelerometer
 ```
 

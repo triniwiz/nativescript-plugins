@@ -60,7 +60,7 @@ The minimum required platform is version 10
 
 ## Installing 
 
-```base
+```bash
     ns plugin add @triniwiz/nativescript-couchbase
 ```
 

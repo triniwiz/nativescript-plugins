@@ -7,7 +7,7 @@
 
 ## Installing 
 
-```base
+```bash
     ns plugin add @triniwiz/nativescript-pager
 ```
 

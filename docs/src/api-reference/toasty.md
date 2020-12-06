@@ -12,11 +12,20 @@ A toast :bread: provides simple feedback about an operation in a small popup
 
 ## Installing 
 
-```base
+```bash
     ns plugin add @triniwiz/nativescript-toasty
 ```
 
 - [Toasty(...)](toasty.md#toasty-2)
+- [show()](toasty.md#show)
+- [cancel()](toasty.md#cancel)
+- [setToastPosition(...)](toasty.md#showtoastposition)
+- [setToastDuration(...)](toasty.md#settoastduration)
+- [setTextColor(...)](toasty.md#settextcolor)
+- [setBackgroundColor(...)](toasty.md#setbackgroundcolor)
+- [Props](toasty.md#props)
+- [Interfaces](toasty.md#interfaces)]
+
 
 
 ## Usage
@@ -132,6 +141,18 @@ Set the background color of the toast.
 
 **Returns**: [Toasty](toasty.md#toasty-2)
 
+## Props
+
+| Prop      | Type  |
+| position    |   [ToastPosition](toasty.md#toastposition)  |
+| duration    |   [ToastDuration](toasty.md#toastduration)  |
+| textColor    |   `Color | string`  |
+| backgroundColor    |   `Color | string`  |
+| xAxisOffset? | `Length | number` |
+| yAxisOffset? | `Length | number` |
+| width    |   number  |
+| width    |  number   |
+
 
 
 ## Interfaces
@@ -168,7 +189,7 @@ Set the background color of the toast.
 | textColor    |   `Color | string`  | Text color of the Toast message. |
 | backgroundColor    |   `Color | string`  | Background Color of the Toast. |
 | android    |   any  | Android specific configuration options. |
-| ios    |  [ToastyIOSOptions](toasty.md#toastyiosoptions)   |
+| ios    |  [ToastyIOSOptions](toasty.md#toastyiosoptions)   | iOS Specific configuration options. |
 
 ### ToastyIOSOptions
 
