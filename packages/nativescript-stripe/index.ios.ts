@@ -155,7 +155,7 @@ export class BankAccount implements IBankAccount {
   }
 
   public static fromNative(bankAccount: STPBankAccount) {
-    if(bankAccount){
+    if (bankAccount) {
       return new BankAccount(bankAccount);
     }
     return null;
@@ -309,19 +309,33 @@ export class Stripe {
     );
   }
 
+
+  private get _rootViewController(): UIViewController | undefined {
+    const keyWindow = UIApplication.sharedApplication.keyWindow;
+    return keyWindow != null ? keyWindow.rootViewController : undefined;
+  }
+
   /*
    *. Private
    */
 
-  private _getAuthentificationContext(): STPPaymentContext {
-    const authContext = STPPaymentContext.alloc();
-    const rootVC = Frame.topmost().currentPage.ios;
+  private _getAuthentificationContext(): STPAuthenticationContext {
+    const rootVC = Frame.topmost().currentPage.ios || this._rootViewController;
+    return STPAuthenticationContextImp.initWithViewController(Utils.ios.getVisibleViewController(rootVC));
+  }
+}
 
-    authContext.hostViewController = Utils.ios.getVisibleViewController(rootVC);
-    authContext.authenticationPresentingViewController = () => {
-      return authContext.hostViewController;
-    };
-    return authContext;
+@NativeClass
+class STPAuthenticationContextImp extends NSObject implements STPAuthenticationContext {
+  static ObjCProtocols = [STPAuthenticationContext];
+  private _vc: UIViewController;
+  public static initWithViewController(vc: UIViewController) {
+    const delegate = <STPAuthenticationContextImp>STPAuthenticationContextImp.new();
+    delegate._vc = vc;
+    return delegate;
+  }
+  authenticationPresentingViewController(): UIViewController {
+    return this._vc;
   }
 }
 
@@ -412,14 +426,57 @@ export class Card implements ICard {
 export class CardParams implements ICardParams {
   private _cardParams: STPCardParams;
 
-  private constructor(
-    params: STPCardParams
-  ) {
-    this._cardParams = params;
+  constructor()
+  constructor(params: STPCardParams)
+  constructor(number: string, expMonth: number, expYear: number, cvc: string)
+  constructor(...args) {
+    if (args[0] instanceof STPCardParams) {
+      this._cardParams = args[0];
+    } else if (args.length === 4) {
+      this._cardParams = STPCardParams.alloc().init();
+      this._cardParams.number = args[0];
+      this._cardParams.expMonth = args[1];
+      this._cardParams.expYear = args[2];
+      this._cardParams.cvc = args[3];
+    } else {
+      this._cardParams = STPCardParams.alloc().init();
+    }
   }
 
   public static fromNative(card: STPCardParams): CardParams {
     return new CardParams(card);
+  }
+
+  get number() {
+    return this._cardParams.number;
+  }
+
+  set number(number: string) {
+    this._cardParams.number = number;
+  }
+
+  get expMonth() {
+    return this._cardParams.expMonth;
+  }
+
+  set expMonth(month: number) {
+    this._cardParams.expMonth = month;
+  }
+
+  get expYear() {
+    return this._cardParams.expYear;
+  }
+
+  set expYear(year: number) {
+    this._cardParams.expYear = year;
+  }
+
+  get cvc() {
+    return this._cardParams.cvc
+  }
+
+  set cvc(cvc: string) {
+    this._cardParams.cvc = cvc;
   }
 
   get address(): Address {
@@ -703,9 +760,8 @@ export class StripeSetupIntentParams {
   native: STPSetupIntentConfirmParams;
 
   constructor(paymentMethodId: string, clientSecret: string) {
-    this.native = STPSetupIntentConfirmParams.alloc();
+    this.native = STPSetupIntentConfirmParams.alloc().initWithClientSecret(clientSecret);
     this.native.paymentMethodID = paymentMethodId;
-    this.native.clientSecret = clientSecret;
   }
 }
 
