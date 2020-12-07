@@ -787,12 +787,40 @@ export class CardParams implements ICardParams {
   _cardParams: com.stripe.android.model.CardParams;
   _address = new com.stripe.android.model.Address.Builder;
 
-  private constructor(
+  constructor()
+  constructor(
     params: com.stripe.android.model.CardParams
-  ) {
-    this._cardParams = params;
+  )
+  constructor(number: string, expMonth: number, expYear: number, cvc: string)
+  constructor(...args) {
+    if (args[0] instanceof com.stripe.android.model.CardParams) {
+      this._cardParams = args[0];
+      this._address = new com.stripe.android.model.Address.Builder();
+      const address = this._cardParams.getAddress();
+      if (address) {
+        this._address.setCity(address.getCity());
+        this._address.setState(address.getState());
+        this._address.setLine1(address.getLine1());
+        this._address.setLine2(address.getLine2());
+        this._address.setPostalCode(address.getPostalCode());
+        this._address.setCountry(address.getCountry());
+      }
+    } else if (args.length === 4) {
+      this._cardParams = new com.stripe.android.model.CardParams(args[0], args[1], args[2], args[3]);
+      this._address = new com.stripe.android.model.Address.Builder();
+    } else {
+      this._number = "";
+      this._expMonth = 0;
+      this._expYear = 0;
+      this._cvc = "";
+      this._cardParams = new com.stripe.android.model.CardParams("", 0, 0);
+      this._address = new com.stripe.android.model.Address.Builder();
+    }
+  }
+
+  private _copyAddress(oldParams: com.stripe.android.model.CardParams, newParams: com.stripe.android.model.CardParams) {
     this._address = new com.stripe.android.model.Address.Builder();
-    const address = this._cardParams.getAddress();
+    const address = oldParams.getAddress();
     if (address) {
       this._address.setCity(address.getCity());
       this._address.setState(address.getState());
@@ -800,47 +828,64 @@ export class CardParams implements ICardParams {
       this._address.setLine2(address.getLine2());
       this._address.setPostalCode(address.getPostalCode());
       this._address.setCountry(address.getCountry());
+      this._cardParams.setAddress(newParams.getAddress())
     }
   }
 
   public static fromNative(card: com.stripe.android.model.CardParams): CardParams {
-    const address = card.getAddress();
-    const newCard = new CardParams(card);
-    if (address) {
-      newCard._address.setCountry(address.getCountry());
-      newCard._address.setCity(address.getCity());
-      newCard._address.setLine1(address.getLine1());
-      newCard._address.setLine2(address.getLine2());
-      newCard._address.setPostalCode(address.getPostalCode());
-      newCard._address.setState(address.getState());
+    if (!card) {
+      return undefined;
     }
-    return newCard;
+    return new CardParams(card);
   }
 
-  /*
-  public static fromNativePaymentMethod(pm: com.stripe.android.model.PaymentMethod): Card {
-    const pmCard = pm.component8(); // card
-
-    const newCard = new Card();
-    newCard._last4 = pmCard.component7(); // last4
-    newCard._brand = GetBrand(pmCard.component1()); // brand
-    newCard._cardParams = new com.stripe.android.model.CardParams(
-      null,
-      pmCard.expiryMonth as any,
-      pmCard.expiryYear as any
-    );
-    // pmCard.component3()
-    newCard._address.setCountry(pmCard.country);
-    newCard._cardParams.setAddress(newCard._address.build());
-    // newCard._cardParams = new com.stripe.android.model.CardParams(
-    //   null,
-    //   pmCard.component4(), // expiryMonth
-    //   pmCard.component5(), // expiryYear
-    //   null).country(pmCard.component3()); // country
-
-    return newCard;
+  private _number: string;
+  get number() {
+    return this._number;
   }
-  */
+
+  set number(number: string) {
+    this._number = number;
+    const newParams = new com.stripe.android.model.CardParams(number, this.expMonth, this.expYear, this.cvc);
+    this._copyAddress(this._cardParams, newParams);
+    this._cardParams = newParams;
+  }
+
+  private _expMonth: number;
+  get expMonth() {
+    return this._expMonth;
+  }
+
+  set expMonth(month: number) {
+    this._expMonth = month;
+    const newParams = new com.stripe.android.model.CardParams(this.number, month, this.expYear, this.cvc);
+    this._copyAddress(this._cardParams, newParams);
+    this._cardParams = newParams;
+  }
+
+  private _expYear;
+  get expYear() {
+    return this._expYear;
+  }
+
+  set expYear(year: number) {
+    this._expMonth = year;
+    const newParams = new com.stripe.android.model.CardParams(this.number, this.expMonth, year, this.cvc);
+    this._copyAddress(this._cardParams, newParams);
+    this._cardParams = newParams;
+  }
+
+  private _cvc: string;
+  get cvc() {
+    return this._cvc
+  }
+
+  set cvc(cvc: string) {
+    this._cvc = cvc;
+    const newParams = new com.stripe.android.model.CardParams(this.number, this.expMonth, this.expYear, cvc);
+    this._copyAddress(this._cardParams, newParams);
+    this._cardParams = newParams;
+  }
 
   get address(): Address {
     return Address.fromNativeBuilder(this._address);
@@ -896,9 +941,9 @@ export class CreditCardView extends CreditCardViewBase {
   }
 
   public createNativeView(): com.stripe.android.view.CardInputWidget | com.stripe.android.view.CardMultilineWidget {
-    if(android.os.Build.VERSION.SDK_INT < 21){
+    if (android.os.Build.VERSION.SDK_INT < 21) {
       this._widget = new com.stripe.android.view.CardInputWidget(this._context);
-    }else {
+    } else {
       this._widget = new com.stripe.android.view.CardMultilineWidget(this._context);
     }
     return this._widget;
