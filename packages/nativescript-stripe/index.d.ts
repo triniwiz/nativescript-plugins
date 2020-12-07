@@ -48,7 +48,7 @@ import {
   IPaymentMethodCardWalletSamsungPay
 } from './common';
 
-export {init} from './utils';
+export { init } from './utils';
 
 export declare class Address implements IAddress {
   readonly ios: any;
@@ -232,10 +232,17 @@ export declare class Stripe {
 }
 
 export declare class CardParams implements ICardParams {
-  address: Address;
   readonly native: any
+  constructor()
+  constructor(params: STPCardParams)
+  constructor(number: string, expMonth: number, expYear: number, cvc: string)
+  address: Address;
   name: string;
   currency: string;
+  number: string;
+  expMonth: number;
+  expYear: number;
+  cvc: string;
 }
 
 export declare class PaymentMethodCardChecks implements IPaymentMethodCardChecks {
