@@ -1,12 +1,12 @@
-# Couchbase
+# CouchBase
 
 <p>
 <a href="https://www.npmjs.com/package/@triniwiz/nativescript-couchbase">
 <img src="https://img.shields.io/npm/v/@triniwiz/nativescript-couchbase.svg?style=for-the-badge"
-            alt="NativeScript Couchbase on NPM"/></a>
+            alt="NativeScript CouchBase on NPM"/></a>
 
 <a href="https://www.npmjs.com/package/@triniwiz/nativescript-couchbase">
-<img src="https://img.shields.io/npm/dt/@triniwiz/nativescript-couchbase.svg?style=for-the-badge&label=npm%20downloads&" alt="NativeScript Couchbase on NPM"></a>
+<img src="https://img.shields.io/npm/dt/@triniwiz/nativescript-couchbase.svg?style=for-the-badge&label=npm%20downloads&" alt="NativeScript CouchBase on NPM"></a>
 
 <a href="https://twitter.com/intent/follow?screen_name=triniwiz">
 <img src="https://img.shields.io/twitter/follow/triniwiz?style=style=for-the-badge&logo=twitter" alt="follow on Twitter"></a>
@@ -22,7 +22,7 @@
 You can use Couchbase Lite as a standalone embedded database within your mobile apps, or with [Sync Gateway](https://docs.couchbase.com/sync-gateway/current/introduction.html) and [Couchbase Server](https://docs.couchbase.com/home/server.html) to provide a complete cloud to edge synchronized solution
 
 
-- [Couchbase(...)](couchbase.md#couchbase-2)
+- [CouchBase(...)](couchbase.md#couchbase-2)
 - [close()](couchbase.md#close)
 - [createDocument(...)](couchbase.md#createdocument)
 - [setBlob(...)](couchbase.md#setblob)
@@ -78,8 +78,8 @@ The minimum required platform is version 10
 ## Usage
 
 ```ts
-import { Couchbase, ConcurrencyMode } from '@triniwiz/nativescript-couchbase';
-const database = new Couchbase('my-database');
+import { CouchBase, ConcurrencyMode } from '@triniwiz/nativescript-couchbase';
+const database = new CouchBase('my-database');
 
 const documentId = database.createDocument({
     "firstname": "O",
@@ -107,8 +107,8 @@ const isDeleted = database.deleteDocument(documentId, ConcurrencyMode.FailOnConf
 ### Synchronization with Couchbase Sync Gateway and Couchbase Server
 
 ```ts
-import { Couchbase } from '@triniwiz/nativescript-couchbase';
-const database = new Couchbase('my-database');
+import { CouchBase } from '@triniwiz/nativescript-couchbase';
+const database = new CouchBase('my-database');
 
 const push = database.createPushReplication(
   'ws://sync-gateway-host:4984/my-database'
@@ -153,8 +153,8 @@ const results = database.query({
 Using the method `inBatch` to run group of database operations in a batch/transaction. Use this when performing bulk write operations like multiple inserts/updates; it saves the overhead of multiple database commits, greatly improving performance.
 
 ```ts
-import { Couchbase } from '@triniwiz/nativescript-couchbase';
-const database = new Couchbase('my-database');
+import { CouchBase } from '@triniwiz/nativescript-couchbase';
+const database = new CouchBase('my-database');
 
 database.inBatch(() => {
     const documentId = database.createDocument({
@@ -181,9 +181,9 @@ database.inBatch(() => {
 
 ## API
 
-### Couchbase(...)
+### CouchBase(...)
 ```ts
- new Couchbase("nsDB");
+ new CouchBase("nsDB");
 ```
 
 Creates or opens a database
@@ -192,7 +192,7 @@ Creates or opens a database
 | :---:   | :---:   |
 | name    | string  |
 
-**Returns**: [Couchbase](couchbase.md#couchbase-2) 
+**Returns**: [CouchBase](couchbase.md#couchbase-2) 
 
 ---
 
