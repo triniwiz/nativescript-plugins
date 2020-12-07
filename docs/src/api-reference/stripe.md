@@ -91,21 +91,21 @@ IMPORTANT: Make sure you include `xmlns:stripe="@triniwiz/nativescript-stripe"` 
 JavaScript
 ```js
 const ccView = page.getViewById("card");
-const cc = ccView.card;
+const cc = ccView.cardParams;
 cc.name = "Osei Fortune";
 ```
 
 TypeScript
 ```ts
-import { CreditCardView, Card } from '@triniwiz/nativescript-stripe';
-const ccView:CreditCardView = page.getViewById("card");
-const cc:Card = ccView.card;
+import { CreditCardView, CardParams } from '@triniwiz/nativescript-stripe';
+const ccView: CreditCardView = page.getViewById("card");
+const cc: CardParams = ccView.cardParams;
 cc.name = "Osei Fortune";
 ```
 ### Using from code
 ```ts
-import { Card } from '@triniwiz/nativescript-stripe';
-const cc = new Card("1111111111111111",2,18,"123");
+import { CardParams } from '@triniwiz/nativescript-stripe';
+const cc = new CardParams("4242424242424242",2,18,"123");
 cc.name = "Osei Fortune";
 ```
 
