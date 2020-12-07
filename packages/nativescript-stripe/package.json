@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-stripe",
-  "version": "7.0.0-alpha1",
+  "version": "7.0.0-alpha2",
   "description": "NativeScript Stripe SDK",
   "main": "index",
   "typings": "index.d.ts",
