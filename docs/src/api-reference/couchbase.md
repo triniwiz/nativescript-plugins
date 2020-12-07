@@ -1,7 +1,17 @@
 # Couchbase
 
-[![npm](https://img.shields.io/npm/v/@triniwiz/nativescript-couchbase.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-couchbase)
-[![npm](https://img.shields.io/npm/dt/@triniwiz/nativescript-couchbase.svg?label=npm%20downloads)](https://www.npmjs.com/package/@triniwiz/nativescript-couchbase)
+<p>
+<a href="https://www.npmjs.com/package/@triniwiz/nativescript-couchbase">
+<img src="https://img.shields.io/npm/v/@triniwiz/nativescript-couchbase.svg?style=for-the-badge"
+            alt="NativeScript Couchbase on NPM"/></a>
+
+<a href="https://www.npmjs.com/package/@triniwiz/nativescript-couchbase">
+<img src="https://img.shields.io/npm/dt/@triniwiz/nativescript-couchbase.svg?style=for-the-badge&label=npm%20downloads&" alt="NativeScript Couchbase on NPM"></a>
+
+<a href="https://twitter.com/intent/follow?screen_name=triniwiz">
+<img src="https://img.shields.io/twitter/follow/triniwiz?style=style=for-the-badge&logo=twitter" alt="follow on Twitter"></a>
+</p>
+ 
 
 |   Android Device  |   Android Emulator    |   iOS Device  |   iOS Simulator   |
 | :-------------:     |:-------------:        |:-------------:| :-----:            |

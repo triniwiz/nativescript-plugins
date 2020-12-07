@@ -1,7 +1,17 @@
 # ImageZoom
 
-[![npm](https://img.shields.io/npm/v/@triniwiz/nativescript-image-zoom.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom)
-[![npm](https://img.shields.io/npm/dt/@triniwiz/nativescript-image-zoom.svg?label=npm%20downloads)](https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom)
+<p>
+<a href="https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom">
+<img src="https://img.shields.io/npm/v/@triniwiz/nativescript-image-zoom.svg?style=for-the-badge"
+            alt="NativeScript ImageZoom on NPM"/></a>
+
+<a href="https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom">
+<img src="https://img.shields.io/npm/dt/@triniwiz/nativescript-image-zoom.svg?style=for-the-badge&label=npm%20downloads&" alt="NativeScript ImageZoom on NPM"></a>
+
+<a href="https://twitter.com/intent/follow?screen_name=triniwiz">
+<img src="https://img.shields.io/twitter/follow/triniwiz?style=style=for-the-badge&logo=twitter" alt="follow on Twitter"></a>
+</p>
+ 
 
 |   Android Device  |   Android Emulator    |   iOS Device  |   iOS Simulator   |
 | :-------------:     |:-------------:        |:-------------:| :-----:            |
