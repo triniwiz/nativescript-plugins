@@ -592,6 +592,10 @@ export interface ICardParams {
   name: string;
   currency: string;
   address: IAddress;
+  number: string;
+  expMonth: number;
+  expYear: number;
+  cvc: string;
 }
 
 export interface IToken {
