@@ -8,12 +8,13 @@ export interface RadarIOTrackingOptions {
   priority?: 'responsiveness' | 'efficiency';
   sync?: 'possibleStateChanges' | 'all';
   replay?: 'stops' | 'none';
-  desiredAccuracy?: 'high' | 'medium' |'low';
+  desiredAccuracy?: 'high' | 'medium' | 'low';
   desiredMovingUpdateInterval?: number;
   desiredStoppedUpdateInterval?: number;
   desiredSyncInterval?: number;
   movingGeofenceRadius?: number;
   showBlueBar?: boolean;
+  offline: 'replayOff' | 'replayStopped'
 }
 
 export interface RadarIOLocation {

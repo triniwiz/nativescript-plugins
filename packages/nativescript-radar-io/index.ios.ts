@@ -1,3 +1,5 @@
+import { Application, fromObject, Observable } from "@nativescript/core";
+import { isNullOrUndefined, isObject } from "@nativescript/core/utils/types";
 import {
   RadarIOChain,
   RadarIOEvent,
@@ -16,9 +18,9 @@ import {
   RadarIOTrackingOptions,
   RadarIOUser
 } from './common';
-import {Application, fromObject, Observable} from "@nativescript/core";
-import {isNullOrUndefined, isObject} from "@nativescript/core/utils/types";
-import RadarTrackingOffline = io.radar.sdk.Radar.RadarTrackingOffline;
+
+
+declare const Radar, RadarPlacesProvider
 
 export {
   RadarIOResult,
@@ -86,9 +88,9 @@ export class RadarIO {
 
   public static setPlacesProvider(provider: string) {
     if (provider === 'facebook') {
-      Radar.setPlacesProvider(RadarPlacesProvider.Facebook);
+      Radar.setPlacesProvider(RadarPlacesProvider.FACEBOOK);
     } else {
-      Radar.setPlacesProvider(RadarPlacesProvider.None);
+      Radar.setPlacesProvider(RadarPlacesProvider.NONE);
     }
   }
 

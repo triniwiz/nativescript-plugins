@@ -1,6 +1,6 @@
 import {
   AfterContentInit,
-  Component,
+
   ContentChild,
   Directive,
   DoCheck,
@@ -19,26 +19,24 @@ import {
   TemplateRef,
   ViewChild,
   ViewContainerRef,
-  ɵisListLikeIterable as isListLikeIterable,
+  ɵisListLikeIterable as isListLikeIterable
 } from "@angular/core";
-import { ItemEventData, ItemsSource } from "@nativescript/core/ui/list-view";
-import { isIOS, KeyedTemplate, View } from "@nativescript/core";
-import { EventData, LayoutBase, Template } from "@nativescript/core";
-import { ObservableArray } from "@nativescript/core/data/observable-array";
-import { profile } from "@nativescript/core/profiling";
-
 import {
   getSingleViewRecursive,
   isInvisibleNode,
-  registerElement,
+  registerElement
 } from "@nativescript/angular";
-import { Trace } from "@nativescript/core";
+import { EventData, isIOS, KeyedTemplate, LayoutBase, Template, Trace, View } from "@nativescript/core";
+import { ObservableArray } from "@nativescript/core/data/observable-array";
+import { profile } from "@nativescript/core/profiling";
+import { ItemEventData, ItemsSource } from "@nativescript/core/ui/list-view";
 import {
   Pager,
   PagerError,
   PagerItem,
-  PagerLog,
+  PagerLog
 } from "@triniwiz/nativescript-pager";
+
 
 registerElement("Pager", () => Pager);
 registerElement("PagerItem", () => PagerItem);
@@ -84,7 +82,7 @@ export class ItemContext {
     public index?: number,
     public even?: boolean,
     public odd?: boolean
-  ) {}
+  ) { }
 }
 
 export interface SetupItemViewArgs {
@@ -93,9 +91,7 @@ export interface SetupItemViewArgs {
   index: number;
   context: ItemContext;
 }
-@Component({
-  template: "",
-})
+@Directive()
 export abstract class TemplatedItemsComponent
   implements DoCheck, OnDestroy, AfterContentInit {
   public abstract get nativeElement(): Pager;
@@ -411,7 +407,7 @@ export function getItemViewRoot(
 
 export const TEMPLATED_ITEMS_COMPONENT = new InjectionToken<
   TemplatedItemsComponent
-  >("TemplatedItemsComponent");
+>("TemplatedItemsComponent");
 
 @Directive({
   selector: "[pagerItem]",
@@ -425,7 +421,7 @@ export class PagerItemDirective implements OnInit {
     @Host()
     private owner: TemplatedItemsComponent,
     private viewContainer: ViewContainerRef
-  ) {}
+  ) { }
 
   private ensureItem() {
     if (!this.item) {
@@ -464,7 +460,7 @@ export class TemplateKeyDirective {
     @Inject(TEMPLATED_ITEMS_COMPONENT)
     @Host()
     private comp: TemplatedItemsComponent
-  ) {}
+  ) { }
 
   @Input()
   set pagerTemplateKey(value: any) {
