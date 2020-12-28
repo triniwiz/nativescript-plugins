@@ -1,1 +1,22 @@
 @import '~nativescript-theme-core/css/core.light.css';
+
+.even {
+    border-top-color: red;
+    border-right-color: red;
+    border-left-color: red;
+    border-bottom-color: red;
+    border-width: 2;
+    width: 100;
+    height: 100;
+    border-radius: 50%;
+    filter: saturate(4);
+}
+
+.odd {
+    width: 80;
+    height: 80;
+    border-radius: 10;
+    border-width: 1;
+    border-color: blue;
+    filter: opacity(0.8) sepia(50%);
+}

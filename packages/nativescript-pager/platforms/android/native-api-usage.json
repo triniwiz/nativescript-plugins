@@ -1,0 +1,11 @@
+{
+    "uses": [
+      "androidx.viewpager2*:*",
+      "androidx.recyclerview.widget:RecyclerView*",
+      "com.rd*:*",
+      "androidx.lifecycle*:*",
+      "androidx.core.app*:*",
+      "com.github.triniwiz.pager*:*"
+    ]
+  }
+  

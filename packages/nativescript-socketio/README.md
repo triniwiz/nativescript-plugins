@@ -4,9 +4,10 @@
 ns plugin add @triniwiz/nativescript-socketio
 ```
 
-## Usage
+## API documentation
 
-// TODO
+[Documentation for the latest stable release](https://triniwiz.github.io/nativescript-plugins/api-reference/socketio.html)
+
 
 ## License
 

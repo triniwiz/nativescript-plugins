@@ -32,16 +32,18 @@ declare var CBLDatabase,
   CBLQueryMeta;
 
 export class CouchBase extends Common {
-
-  private __nativeInstance: CBLDatabase;
+  readonly android: any;
+  #couchbase: CBLDatabase;
+  #listenerMap = {};
+  #docChangeListenerMap = {};
 
   get ios() {
-    return this.__nativeInstance;
+    return this.#couchbase;
   }
 
   constructor(databaseName: string) {
-    super(databaseName);
-    this.__nativeInstance = CBLDatabase.alloc().initWithNameError(databaseName);
+    super();
+    this.#couchbase = CBLDatabase.alloc().initWithNameError(databaseName);
   }
 
   close() {
@@ -410,9 +412,28 @@ export class CouchBase extends Common {
     return this.createReplication(remoteUrl, 'pull');
   }
 
-  private _listenerMap = {};
 
-  addDatabaseChangeListener(callback: any) {
+  addDocumentChangeListener(documentId: string, callback: (id: string) => void) {
+    const token = this.ios.addDocumentChangeListenerWithIDListener(documentId, (change: any) => {
+      if (callback && typeof callback === 'function') {
+        callback(change);
+      }
+    });
+    if (!isNullOrUndefined(token)) {
+      this.#docChangeListenerMap[callback as any] = token;
+    }
+  }
+
+  removeDocumentChangeListener(callback: (id: string) => void) {
+    const token = this.#docChangeListenerMap[callback as any];
+    if (!isNullOrUndefined(token)) {
+      this.ios.removeChangeListenerWithToken(token);
+      delete this.#docChangeListenerMap[callback as any];
+    }
+  }
+
+
+  addDatabaseChangeListener(callback: (ids: string[]) => void) {
     const token = this.ios.addChangeListener((change: any) => {
       if (callback && typeof callback === 'function') {
         const ids = [];
@@ -426,15 +447,15 @@ export class CouchBase extends Common {
       }
     });
     if (!isNullOrUndefined(token)) {
-      this._listenerMap[callback] = token;
+      this.#listenerMap[callback as any] = token;
     }
   }
 
-  removeDatabaseChangeListener(callback: any) {
-    const token = this._listenerMap[callback];
+  removeDatabaseChangeListener(callback: (ids: string[]) => void) {
+    const token = this.#listenerMap[callback as any];
     if (!isNullOrUndefined(token)) {
       this.ios.removeChangeListenerWithToken(token);
-      delete this._listenerMap[callback];
+      delete this.#listenerMap[callback as any];
     }
   }
 
@@ -782,13 +803,14 @@ export class Replicator extends ReplicatorBase {
 
 
 export class Blob extends BlobBase {
-
+  #blob: any;
+  readonly android: any;
   constructor(blob: any) {
-    super(blob);
+    super();
   }
 
   get ios() {
-    return this.blob;
+    return this.#blob;
   }
 
   get content(): any {

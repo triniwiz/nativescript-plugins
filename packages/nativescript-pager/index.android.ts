@@ -311,7 +311,16 @@ export class Pager extends PagerBase {
       this.indicatorView.setCount(this._childrenCount);
     }
     if (this.pagerAdapter) {
-      switch (args.action) {
+      com.github.triniwiz.pager.Utils.updateCollection(
+        JSON.stringify({
+          action: args.action,
+          index: args.index,
+          addedCount: args.addedCount,
+          removedCount: args.removed ? args.removed.length : 0
+        }),
+        this.pagerAdapter
+      );
+      /*switch (args.action) {
         case ChangeType.Add:
           this.pagerAdapter.notifyItemRangeInserted(
             args.index,
@@ -344,6 +353,8 @@ export class Pager extends PagerBase {
         default:
           break;
       }
+      */
+
       this._initAutoPlay(this.autoPlay);
     }
   }

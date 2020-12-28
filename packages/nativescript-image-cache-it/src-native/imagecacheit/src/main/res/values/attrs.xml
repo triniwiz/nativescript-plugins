@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources package="com.github.triniwiz.imagecacheit">
-    <declare-styleable name="ImageViewOld">
+    <declare-styleable name="ImageView">
         <attr name="borderRadius" format="dimension" />
         <attr name="borderTopLeftRadius" format="dimension" />
         <attr name="borderTopRightRadius" format="dimension" />

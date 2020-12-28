@@ -1,6 +1,16 @@
-import {CssProperty, InheritedCssProperty, Property, Style, View, Color, CSSType} from '@nativescript/core';
-
-export type Stretch = 'none' | 'fill' | 'aspectFill' | 'aspectFit';
+import {
+  booleanConverter,
+  CssProperty,
+  CSSType,
+  InheritedCssProperty,
+  Property,
+  Style,
+  View,
+  Color,
+  ImageAsset, ImageSource, isIOS, Trace
+} from '@nativescript/core';
+import { Stretch } from '@nativescript/core/ui/enums';
+import { isDataURI, isFileOrResourcePath, isFontIconURI, RESOURCE_PREFIX } from "@nativescript/core/utils/utils";
 
 export enum Transition {
   Fade = 'fade',
@@ -13,8 +23,22 @@ export enum Priority {
   High
 }
 
+export const progressProperty = new Property<ImageCacheItBase, number>({
+  name: 'progress',
+  defaultValue: 0
+});
+
+export const loadModeProperty = new Property<ImageCacheItBase, 'sync' | 'async'>({
+  name: 'loadMode',
+  defaultValue: 'async',
+});
+
+export const imageSourceProperty = new Property<ImageCacheItBase, ImageSource>({
+  name: 'imageSource',
+});
+
 export const srcProperty = new Property<ImageCacheItBase, any>({
-  name: 'src'
+  name: 'src',
 });
 export const placeHolderProperty = new Property<ImageCacheItBase, any>({
   name: 'placeHolder'
@@ -22,18 +46,9 @@ export const placeHolderProperty = new Property<ImageCacheItBase, any>({
 export const errorHolderProperty = new Property<ImageCacheItBase, string>({
   name: 'errorHolder'
 });
-export const resizeProperty = new Property<ImageCacheItBase, string>({
-  name: 'resize'
-});
 export const stretchProperty = new Property<ImageCacheItBase, Stretch>({
   name: 'stretch',
-  affectsLayout: global.isIOS,
-});
-export const decodedWidthProperty = new Property<ImageCacheItBase, number>({
-  name: 'decodedWidth'
-});
-export const decodedHeightProperty = new Property<ImageCacheItBase, number>({
-  name: 'decodedHeight'
+  affectsLayout: isIOS,
 });
 export const filterProperty = new CssProperty<Style, string>({
   name: 'filter',
@@ -60,24 +75,40 @@ export const tintColorProperty = new InheritedCssProperty<Style, Color | string>
   equalityComparer: Color.equals, valueConverter: (value) => new Color(value)
 });
 
+export const overlayColorProperty = new CssProperty<Style, Color | string>({
+  name: 'overLayColor',
+  cssName: 'overlay-color',
+  equalityComparer: Color.equals, valueConverter: (value) => new Color(value)
+});
+
+
 export const headersProperty = new Property<ImageCacheItBase, Map<string, string>>({
   name: 'headers'
 });
 
+export const isLoadingProperty = new Property<ImageCacheItBase, boolean>({
+  name: 'isLoading',
+  defaultValue: false,
+  valueConverter: booleanConverter,
+});
+
+export * from '@nativescript/core/ui/core/view';
+
 @CSSType('ImageCacheIt')
 export class ImageCacheItBase extends View {
+  public imageSource: ImageSource;
   public src: any;
   public placeHolder: any;
   public errorHolder: any;
-  public resize: string;
   public stretch: Stretch;
-  public decodedHeight: number;
-  public decodedWidth: number;
   public filter: string;
   public transition: Transition;
   public fallback: any;
   public priority: Priority;
-
+  public loadMode: 'async' | 'sync';
+  public isLoading: boolean;
+  public progress: number;
+  public overlayColor: string | Color;
   get tintColor(): Color | string {
     return this.style.tintColor;
   }
@@ -129,19 +160,121 @@ export class ImageCacheItBase extends View {
       image
     });
   }
+
+
+  /**
+   * @internal
+   */
+  public _createImageSourceFromSrc(value: string | ImageSource | ImageAsset): void {
+    const originalValue = value;
+    const sync = this.loadMode === 'sync';
+    if (typeof value === 'string' || value instanceof String) {
+      value = value.trim();
+      this.imageSource = null;
+      this['_url'] = value;
+
+      this.isLoading = true;
+
+      const imageLoaded = (source: ImageSource) => {
+        let currentValue = this.src;
+        if (currentValue !== originalValue) {
+          return;
+        }
+        this.imageSource = source;
+        this.isLoading = false;
+      };
+
+      if (isFontIconURI(value)) {
+        const fontIconCode = value.split('//')[1];
+        if (fontIconCode !== undefined) {
+          // support sync mode only
+          const font = this.style.fontInternal;
+          const color = this.style.color;
+          imageLoaded(ImageSource.fromFontIconCodeSync(fontIconCode, font, color));
+        }
+      } else if (isDataURI(value)) {
+        const base64Data = value.split(',')[1];
+        if (base64Data !== undefined) {
+          if (sync) {
+            imageLoaded(ImageSource.fromBase64Sync(base64Data));
+          } else {
+            ImageSource.fromBase64(base64Data).then(imageLoaded);
+          }
+        }
+      } else if (isFileOrResourcePath(value)) {
+        if (value.indexOf(RESOURCE_PREFIX) === 0) {
+          const resPath = value.substr(RESOURCE_PREFIX.length);
+          if (sync) {
+            imageLoaded(ImageSource.fromResourceSync(resPath));
+          } else {
+            this.imageSource = null;
+            ImageSource.fromResource(resPath).then(imageLoaded);
+          }
+        } else {
+          if (sync) {
+            imageLoaded(ImageSource.fromFileSync(value));
+          } else {
+            this.imageSource = null;
+            ImageSource.fromFile(value).then(imageLoaded);
+          }
+        }
+      } else {
+        this.imageSource = null;
+        ImageSource.fromUrl(value).then(
+          (r) => {
+            if (this['_url'] === value) {
+              this.imageSource = r;
+              this.isLoading = false;
+            }
+          },
+          (err) => {
+            // catch: Response content may not be converted to an Image
+            this.isLoading = false;
+            if (Trace.isEnabled()) {
+              if (typeof err === 'object' && err.message) {
+                err = err.message;
+              }
+              Trace.write(err, Trace.categories.Debug);
+            }
+          }
+        );
+      }
+    } else if (value instanceof ImageSource) {
+      // Support binding the imageSource trough the src property
+      this.imageSource = value;
+      this.isLoading = false;
+    } else if (value instanceof ImageAsset) {
+      ImageSource.fromAsset(value).then((result) => {
+        this.imageSource = result;
+        this.isLoading = false;
+      });
+    } else {
+      this.imageSource = new ImageSource(value);
+      this.isLoading = false;
+    }
+  }
 }
 
-ImageCacheItBase.prototype.recycleNativeView = 'auto';
+export type Stretch = 'none' | 'fill' | 'aspectFill' | 'aspectFit';
+progressProperty.register(ImageCacheItBase);
+isLoadingProperty.register(ImageCacheItBase);
+loadModeProperty.register(ImageCacheItBase);
+imageSourceProperty.register(ImageCacheItBase);
 srcProperty.register(ImageCacheItBase);
 placeHolderProperty.register(ImageCacheItBase);
 errorHolderProperty.register(ImageCacheItBase);
-resizeProperty.register(ImageCacheItBase);
 stretchProperty.register(ImageCacheItBase);
-decodedHeightProperty.register(ImageCacheItBase);
-decodedWidthProperty.register(ImageCacheItBase);
 filterProperty.register(Style);
 transitionProperty.register(ImageCacheItBase);
 fallbackProperty.register(ImageCacheItBase);
 priorityProperty.register(ImageCacheItBase);
 tintColorProperty.register(Style);
 headersProperty.register(ImageCacheItBase);
+overlayColorProperty.register(Style);
+
+declare module '@nativescript/core/ui/styling/style' {
+  interface Style {
+    filter: string;
+    overLayColor: string | Color
+  }
+}

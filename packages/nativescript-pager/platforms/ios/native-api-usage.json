@@ -1,0 +1,8 @@
+{
+    "uses": [
+      "CHIPageControl*:*",
+      "Dispatch*:*",
+      "Darwin*:*",
+      "nsswiftsupport:PagerUtils*"
+    ]
+  }

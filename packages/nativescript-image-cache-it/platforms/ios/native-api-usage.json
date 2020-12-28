@@ -1,15 +1,17 @@
 {
   "uses": [
-    "SDWebImage*:*",
-    "Metal.MTLDevice:*",
-    "CoreImage.CIContext:*",
-    "CoreImage.CIFilter:*",
-    "CoreImage.CIImage:*",
-    "CoreImage.CIVector:*",
-    "Dispatch*:*",
-    "Darwin*:*",
-    "ObjectiveC*:*",
-    "ObjectiveCRuntime*:*",
-    "OpenGLES*:*"
+	"SDWebImage*:*",
+	"Metal.MTLDevice:*",
+	"CoreImage.CIContext:*",
+	 "CoreImage.CIColor:*",
+	"CoreImage.CIFilter:*",
+	"CoreImage.CIImage:*",
+	"CoreImage.CIVector:*",
+	"Dispatch*:*",
+	"Darwin*:*",
+	"ObjectiveC*:*",
+	"ObjectiveCRuntime*:*",
+	"OpenGLES*:*",
+	  "nsswiftsupport:ImageCacheItUtils*"
   ]
 }

@@ -118,10 +118,13 @@ export class DemoSharedNativescriptPager extends DemoSharedBase {
 
   pagerLoaded(event) {
     this.pager = event.object;
+    this.pager.on('loadMore',()=>{
+      console.log('loadMore');
+    })
   }
 
   public resetItems() {
-    this.items.splice(0, this.items.length);
+    this.items.splice(0);
     this.items.push(...this._originalItems);
   }
 
@@ -235,47 +238,19 @@ export class DemoSharedNativescriptPager extends DemoSharedBase {
   loadMoreItems(event) {
     const selectedIndex = event.object.get('selectedIndex');
     this.set('index', selectedIndex);
-    this.items.push({
-      title: 'Slide ' + (this.items.length + 1),
-      image: `https://robohash.org/${this.items.length + 1}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 2),
-      image: `https://robohash.org/${this.items.length + 2}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 3),
-      image: `https://robohash.org/${this.items.length + 3}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 4),
-      image: `https://robohash.org/${this.items.length + 4}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 5),
-      image: `https://robohash.org/${this.items.length + 5}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 6),
-      image: `https://robohash.org/${this.items.length + 6}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 7),
-      image: `https://robohash.org/${this.items.length + 7}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 8),
-      image: `https://robohash.org/${this.items.length + 8}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 9),
-      image: `https://robohash.org/${this.items.length + 9}.png`,
-      items: this._items
-    }, {
-      title: 'Slide ' + (this.items.length + 10),
-      image: `https://robohash.org/${this.items.length + 10}.png`,
-      items: this._items
-    });
+    this.items.push(...this.generateMore(10));
+  }
+
+  generateMore(count: number = 0){
+    const array = [];
+    for(let i = 0;i < count;i++){
+      array.push({
+        title: 'Slide ' + (this.items.length + (i + 1)),
+        image: `https://robohash.org/${this.items.length + (i + 1)}.png`,
+        items: this._items
+      })
+    }
+    return array;
   }
 
   navigate() {

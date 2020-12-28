@@ -4,9 +4,9 @@
 ns plugin add @triniwiz/nativescript-pager
 ```
 
-## Usage
+## API documentation
 
-// TODO
+[Documentation for the latest stable release](https://triniwiz.github.io/nativescript-plugins/api-reference/pager.html)
 
 ## License
 
