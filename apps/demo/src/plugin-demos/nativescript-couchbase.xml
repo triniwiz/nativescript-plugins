@@ -3,12 +3,14 @@
     <ActionBar title="nativescript-couchbase" icon="" class="action-bar">
     </ActionBar>
   </Page.actionBar>
-  <GridLayout rows="auto, auto, auto, auto, *" class="p-20" flexDirection="column">
+  <GridLayout rows="auto, auto, auto,auto, auto,auto, *" class="p-20" flexDirection="column">
     <Button row="0" text="View Search" tap="goToSearch"/>
     <Label row="1" col="0" colSpan="2" text="Add New Item" class="t-20 text-center c-black" textWrap="true"/>
-    <TextField row="2" id="input" hint="Enter text here..." col="0"/>
-    <Button row="3" col="!" text="Add" tap="addNew"/>
-    <ListView row="4" colSpan="2" items="{{items}}">
+    <Button row="2" col="!" text="Add Large Item" tap="addLargeItem"/>
+    <Button row="3" col="!" text="Nuke Data 💥" tap="nukeIt"/>
+    <TextField row="4" id="input" hint="Enter text here..." col="0"/>
+    <Button row="5" col="!" text="Add" tap="addNew"/>
+    <ListView row="6" colSpan="2" items="{{items}}">
       <ListView.itemTemplate>
         <GridLayout>
           <Label text="{{title}}"/>

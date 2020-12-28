@@ -55,13 +55,13 @@ function notifyForItemAtIndex(
   return args;
 }
 
-import {CHIPageControlAji} from './ios/CHIPageControlAji';
-import {CHIPageControlAleppo} from './ios/CHIPageControlAleppo';
-import {CHIPageControlChimayo} from './ios/CHIPageControlChimayo';
-import {CHIPageControlFresno} from './ios/CHIPageControlFresno';
-import {CHIPageControlJalapeno} from './ios/CHIPageControlJalapeno';
-import {CHIPageControlJaloro} from './ios/CHIPageControlJaloro';
-import {CHIPageControlPuya} from './ios/CHIPageControlPuya';
+declare var CHIPageControlAji,
+    CHIPageControlAleppo,
+    CHIPageControlChimayo,
+    CHIPageControlFresno,
+    CHIPageControlJalapeno,
+    CHIPageControlJaloro,
+    CHIPageControlPuya;
 
 const main_queue = dispatch_get_current_queue();
 
@@ -281,7 +281,7 @@ export class Pager extends PagerBase {
         : 0;
   }
 
-  public itemTemplateUpdated(oldData: any, newData: any): void {}
+  public itemTemplateUpdated(oldData: any, newData: any): void { }
 
   public _setNativeClipToBounds(): void {
     this.pager.clipsToBounds = true;
@@ -423,40 +423,26 @@ export class Pager extends PagerBase {
 
     const collectionView = this.pager as UICollectionView;
     if (collectionView) {
-      try {
-        let offset = 0;
-        collectionView.performBatchUpdatesCompletion(() => {
-          this._isRefreshing = true;
-          const array = [];
-          switch (args.action) {
-            case ChangeType.Add:
-              for (let i = 0; i < args.addedCount; i++) {
-                array.push(
-                  NSIndexPath.indexPathForRowInSection(
-                    args.index + i,
-                    0
-                  )
-                );
-              }
-              offset =
-                collectionView.contentSize.width -
-                collectionView.contentOffset.x;
-              collectionView.insertItemsAtIndexPaths(array);
-              break;
-            case ChangeType.Delete:
-              for (let i = 0; i < args.removed.length; i++) {
-                array.push(
-                  NSIndexPath.indexPathForItemInSection(
-                    args.index + i,
-                    0
-                  )
-                );
-              }
-              collectionView.deleteItemsAtIndexPaths(array);
-              break;
-            case ChangeType.Splice:
-              if (args.removed && args.removed.length > 0) {
-                for (let i = 0; i < args.removed.length; i++) {
+      // @ts-ignore
+      PagerUtils.updateCollection(
+        {
+          action: args.action,
+          index: args.index,
+          addedCount: args.addedCount,
+          removedCount: args.removed ? args.removed.length : 0
+        },
+        collectionView
+      );
+
+
+      /*  try {
+          let offset = 0;
+          collectionView.performBatchUpdatesCompletion(() => {
+            this._isRefreshing = true;
+            const array = [];
+            switch (args.action) {
+              case ChangeType.Add:
+                for (let i = 0; i < args.addedCount; i++) {
                   array.push(
                     NSIndexPath.indexPathForRowInSection(
                       args.index + i,
@@ -464,43 +450,71 @@ export class Pager extends PagerBase {
                     )
                   );
                 }
-                collectionView.deleteItemsAtIndexPaths(array);
-              } else {
-                const addedArray = [];
-                for (let i = 0; i < args.addedCount; i++) {
-                  addedArray.push(
-                    NSIndexPath.indexPathForRowInSection(
+                offset =
+                  collectionView.contentSize.width -
+                  collectionView.contentOffset.x;
+                collectionView.insertItemsAtIndexPaths(array);
+                break;
+              case ChangeType.Delete:
+                for (let i = 0; i < args.removed.length; i++) {
+                  array.push(
+                    NSIndexPath.indexPathForItemInSection(
                       args.index + i,
                       0
                     )
                   );
                 }
-                collectionView.insertItemsAtIndexPaths(
-                  addedArray
-                );
-              }
-              break;
-            case ChangeType.Update:
-              collectionView.reloadItemsAtIndexPaths([
-                NSIndexPath.indexPathForRowInSection(
-                  args.index,
-                  0
-                ),
-              ]);
-              break;
-            default:
-              break;
-          }
-          this._initAutoPlay(this.autoPlay);
-          if (this.itemCount === 0) {
-            this._isInit = false;
-          }
-        }, null);
-      } catch (err) {}
+                collectionView.deleteItemsAtIndexPaths(array);
+                break;
+              case ChangeType.Splice:
+                if (args.removed && args.removed.length > 0) {
+                  for (let i = 0; i < args.removed.length; i++) {
+                    array.push(
+                      NSIndexPath.indexPathForRowInSection(
+                        args.index + i,
+                        0
+                      )
+                    );
+                  }
+                  collectionView.deleteItemsAtIndexPaths(array);
+                } else {
+                  const addedArray = [];
+                  for (let i = 0; i < args.addedCount; i++) {
+                    addedArray.push(
+                      NSIndexPath.indexPathForRowInSection(
+                        args.index + i,
+                        0
+                      )
+                    );
+                  }
+                  collectionView.insertItemsAtIndexPaths(
+                    addedArray
+                  );
+                }
+                break;
+              case ChangeType.Update:
+                collectionView.reloadItemsAtIndexPaths([
+                  NSIndexPath.indexPathForRowInSection(
+                    args.index,
+                    0
+                  ),
+                ]);
+                break;
+              default:
+                break;
+            }
+            this._initAutoPlay(this.autoPlay);
+            if (this.itemCount === 0) {
+              this._isInit = false;
+            }
+          }, null);
+        } catch (err) {}
+  
+        */
     }
   };
 
-  _onItemsChanged(oldValue: any, newValue: any): void {}
+  _onItemsChanged(oldValue: any, newValue: any): void { }
 
   _scrollToIndexAnimated(index: number, animate: boolean) {
     if (!this.pager) return;
@@ -1071,7 +1085,7 @@ class UICollectionDelegateImpl
       let progress = percent * (owner.itemCount - 1);
       if (
         owner.indicatorView &&
-        owner.indicatorView.setProgressAnimated &&
+        owner.indicatorView.setWithProgressAnimated &&
         !Number.isNaN(progress)
       ) {
         owner.indicatorView.progress = progress;
@@ -1094,82 +1108,6 @@ class UICollectionDelegateImpl
         });
         owner.lastEvent = 1;
       }
-
-      // (scrollView as any).scrollToItemAtIndexPathAtScrollPositionAnimated(
-      //     NSIndexPath.indexPathForRowInSection(Math.round(width),0), UICollectionViewScrollPosition.CenteredHorizontally, true
-      // );
-
-      // if(owner.circularMode){
-      //     if(nextIndex === 0){
-      //         selectedIndexProperty.nativeValueChange(owner, owner._childrenCount - 3);
-      //     }else if(nextIndex === owner._childrenCount -1){
-      //         selectedIndexProperty.nativeValueChange(owner, 0);
-      //     }else {
-      //         selectedIndexProperty.nativeValueChange(owner, nextIndex - 1);
-      //     }
-      // }else {
-      //     selectedIndexProperty.nativeValueChange(owner, nextIndex);
-      // }
-
-      /* if (!Number.isNaN(width)) {
-           let page = Math.ceil(width);
-           const doScroll = () => {
-               if (!Number.isNaN(width)) {
-                   // scrollView.setContentOffsetAnimated(point, false);
-                   scrollView.contentOffset = CGPointMake(Math.ceil(w) * page, scrollView.contentOffset.y);
-               }
-           };
-           console.log('page', page, owner.itemCount, page === owner.itemCount);
-           if (page === 0) {
-               page = owner.itemCount - 2;
-               doScroll();
-               // selectedIndexProperty.nativeValueChange(owner, owner.itemCount - 3);
-           } else if (page === owner.itemCount) {
-               page = 1;
-               doScroll();
-               //  selectedIndexProperty.nativeValueChange(owner, 0);
-           } else {
-               if (page === owner._childrenCount + 1) {
-                   //    selectedIndexProperty.nativeValueChange(owner, 0);
-               } else {
-                   //   selectedIndexProperty.nativeValueChange(owner, page - 1);
-               }
-           }
-       } */
-
-      /* if(owner){
-           let width = 0;
-           let w = (layout.toDeviceIndependentPixels(owner._effectiveItemWidth) - (((owner.perPage * 2) * owner._getSpacing()) + (owner._getPeaking() * 2))) / owner.perPage;
-           let h = (layout.toDeviceIndependentPixels(owner._effectiveItemHeight) - (((owner.perPage * 2) * owner._getSpacing()) + (owner._getPeaking() * 2))) / owner.perPage;
-           width = scrollView.contentOffset.x / w;
-           if (!Number.isNaN(width)) {
-               let page = Math.ceil(width);
-               const doScroll = () => {
-                   if (!Number.isNaN(width)) {
-                       const point = CGPointMake(Math.ceil(w) * page, scrollView.contentOffset.y);
-                       scrollView.setContentOffsetAnimated(point, false);
-                   }
-               };
-               if (page === 0) {
-                   page = owner.itemCount - 2;
-                   doScroll();
-                   selectedIndexProperty.nativeValueChange(owner, owner.itemCount - 3);
-               } else if (page === owner.itemCount -1) {
-                   page = 1;
-                   doScroll();
-                   selectedIndexProperty.nativeValueChange(owner, 0);
-               } else {
-                   if(page === owner.itemCount + 1){
-                       selectedIndexProperty.nativeValueChange(owner, 0);
-                   }else {
-                       selectedIndexProperty.nativeValueChange(owner, page - 1);
-                   }
-               }
-           }
-       } */
-
-      // scrollView.setContentOffsetAnimated(CGPointMake((w * width) + 1, 0),false);
-      // (owner.nativeView as UICollectionView).setContentOffsetAnimated(CGPointMake((w * width) + 1, 0),false);
     }
   }
 
@@ -1221,97 +1159,6 @@ class UICollectionDelegateImpl
       });
       owner.lastEvent = 0;
     }
-    // const collection = owner.pager as UICollectionView;
-    // const contentSize =
-    //     owner.orientation === "vertical"
-    //         ? collection.contentSize.height
-    //         : collection.contentSize.width;
-    // if (contentSize === 0) {
-    //     return;
-    // }
-
-    // const target = (targetContentOffset as any).value;
-
-    // const size = this._getRealWidthHeight();
-    // let width = 0;
-    // let currentVelocity = 0;
-    // let offset = 0;
-    // if (owner.orientation === "vertical") {
-    //     currentVelocity = velocity.y;
-    //     offset = this._startingScrollingOffset.y;
-    //     width = size.height;
-    // } else {
-    //     currentVelocity = velocity.x;
-    //     offset = this._startingScrollingOffset.x;
-    //     width = size.width;
-    // }
-
-    // let next = 0;
-    // console.log(
-    //     "scrollViewWillEndDraggingWithVelocityTargetContentOffset",
-    //     currentVelocity
-    // );
-    // if (currentVelocity >= 0.5) {
-    //     next = 1;
-    //     this._indexOfCellBeforeDragging = Math.floor(offset / width);
-    //     this._indexOfCellBeforeDragging = Math.min(
-    //         this._indexOfCellBeforeDragging,
-    //         owner.selectedIndex
-    //     );
-    // } else if (currentVelocity <= -0.5) {
-    //     next = -1;
-    //     this._indexOfCellBeforeDragging = Math.round(offset / width);
-    //     this._indexOfCellBeforeDragging = Math.min(
-    //         this._indexOfCellBeforeDragging,
-    //         owner.selectedIndex
-    //     );
-    // } else {
-    //     this._indexOfCellBeforeDragging = Math.floor(offset / width);
-    //     scrollView.setContentOffsetAnimated(
-    //         CGPointMake(target.x, target.y),
-    //         false
-    //     );
-    //     console.log(
-    //         "scrollToItemAtIndexPathAtScrollPositionAnimated",
-    //         owner.selectedIndex,
-    //         NSIndexPath.indexPathForRowInSection(owner.selectedIndex, 0)
-    //     );
-    //     // set offset as current offset then animate scroll to stop jank
-    //     (scrollView as any).scrollToItemAtIndexPathAtScrollPositionAnimated(
-    //         NSIndexPath.indexPathForRowInSection(owner.selectedIndex, 0),
-    //         UICollectionViewScrollPosition.CenteredHorizontally,
-    //         true
-    //     );
-    //     return;
-    // }
-    // let nextIndex = this._indexOfCellBeforeDragging + next;
-    // if (owner.circularMode) {
-    //     if (nextIndex === 0) {
-    //         nextIndex = owner.itemCount - 2;
-    //     } else if (nextIndex === owner.itemCount - 1) {
-    //         nextIndex = 1;
-    //     } else if (nextIndex > owner.itemCount - 1) {
-    //         nextIndex = owner.itemCount - 1;
-    //     }
-    // } else {
-    //     if (nextIndex <= -1) {
-    //         nextIndex = 0;
-    //     } else if (nextIndex >= owner.lastIndex) {
-    //         nextIndex = owner.lastIndex;
-    //     }
-    // }
-    // this._nextIndex = nextIndex;
-    // (targetContentOffset as any).value = this._getPointFromAttrOffset(
-    //     collection.collectionViewLayout.layoutAttributesForItemAtIndexPath(
-    //         NSIndexPath.indexPathForRowInSection(nextIndex, 0)
-    //     ),
-    //     target
-    // );
-    // console.log("nextIndex", nextIndex);
-    // setTimeout(() => {
-    //     owner.selectedIndex = nextIndex;
-    //     // selectedIndexProperty.nativeValueChange(owner, nextIndex);
-    // });
   }
 
   private _getPointFromAttrOffset(attribute, target) {
@@ -1545,7 +1392,9 @@ class UICollectionViewFlowLinearLayoutImpl extends UICollectionViewFlowLayout {
     const attrs = super.initialLayoutAttributesForAppearingItemAtIndexPath(
       itemIndexPath
     );
-    attrs.alpha = 1;
+    if (attrs) {
+      attrs.alpha = 1;
+    }
     return attrs;
   }
 
@@ -1555,7 +1404,9 @@ class UICollectionViewFlowLinearLayoutImpl extends UICollectionViewFlowLayout {
     const attrs = super.finalLayoutAttributesForDisappearingItemAtIndexPath(
       itemIndexPath
     );
-    attrs.alpha = 1;
+    if (attrs) {
+      attrs.alpha = 1;
+    }
     return attrs;
   }
 
@@ -1576,7 +1427,6 @@ class UICollectionViewFlowLinearLayoutImpl extends UICollectionViewFlowLayout {
     ) {
       // Page width used for estimating and calculating paging.
       let pageWidth = size.width + this.minimumInteritemSpacing;
-
       // Make an estimation of the current page position.
       let approximatePage =
         this.collectionView.contentOffset.x / pageWidth;
@@ -1585,24 +1435,40 @@ class UICollectionViewFlowLinearLayoutImpl extends UICollectionViewFlowLayout {
         velocity.x == 0
           ? Math.round(approximatePage)
           : velocity.x < 0.0
-          ? Math.floor(approximatePage)
-          : Math.ceil(approximatePage);
+            ? Math.floor(approximatePage)
+            : Math.ceil(approximatePage);
+      currentPage = owner.selectedIndex;
 
-      // Create custom flickVelocity.
-      let flickVelocity = velocity.x * 0.3;
-
-      // Check how many pages the user flicked, if <= 1 then flickedPages should return 0.
-      let flickedPages =
-        Math.abs(Math.round(flickVelocity)) <= 1
-          ? 0
-          : Math.round(flickVelocity);
-
+      let flickedPages = 0;
+      if(velocity.x >= 0.5){
+        flickedPages = 1;
+      }else if(velocity.x <= -0.5) {
+        flickedPages = -1;
+      }
+   
+     // currentPage = owner.selectedIndex;
       const newPageIndex = currentPage + flickedPages;
+
       selectedIndexProperty.nativeValueChange(owner, Math.max(newPageIndex, 0));
       // Calculate newHorizontalOffset.
       let newHorizontalOffset =
         newPageIndex * pageWidth -
         this.collectionView.contentInset.left;
+
+        const cell = this.collectionView.cellForItemAtIndexPath(
+          NSIndexPath.indexPathForRowInSection(
+            newPageIndex, 0
+          )
+        );
+
+        if(newPageIndex > owner.itemCount || !cell){
+          return super.targetContentOffsetForProposedContentOffsetWithScrollingVelocity(
+            proposedContentOffset,
+            velocity
+          );
+        }
+
+        newHorizontalOffset = cell.frame.origin.x - (owner._getPeaking() + owner._getSpacing());   
 
       return CGPointMake(newHorizontalOffset, proposedContentOffset.y);
     } else {
@@ -1618,8 +1484,8 @@ class UICollectionViewFlowLinearLayoutImpl extends UICollectionViewFlowLayout {
         velocity.y == 0
           ? Math.round(approximatePage)
           : velocity.y < 0.0
-          ? Math.floor(approximatePage)
-          : Math.ceil(approximatePage);
+            ? Math.floor(approximatePage)
+            : Math.ceil(approximatePage);
 
       // Create custom flickVelocity.
       let flickVelocity = velocity.y * 0.3;

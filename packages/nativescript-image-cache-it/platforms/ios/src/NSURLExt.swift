@@ -1,4 +1,3 @@
-
 import Foundation
 extension NSURL {
  private struct NSURLProps {

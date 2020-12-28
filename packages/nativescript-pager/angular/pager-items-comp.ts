@@ -13,6 +13,7 @@ import {
   Input,
   IterableDiffer,
   IterableDiffers,
+  NgZone,
   OnDestroy,
   OnInit,
   Output,
@@ -84,7 +85,7 @@ export class ItemContext {
     public index?: number,
     public even?: boolean,
     public odd?: boolean
-  ) {}
+  ) { }
 }
 
 export interface SetupItemViewArgs {
@@ -93,9 +94,8 @@ export interface SetupItemViewArgs {
   index: number;
   context: ItemContext;
 }
-@Component({
-  template: "",
-})
+
+@Directive()
 export abstract class TemplatedItemsComponent
   implements DoCheck, OnDestroy, AfterContentInit {
   public abstract get nativeElement(): Pager;
@@ -164,7 +164,8 @@ export abstract class TemplatedItemsComponent
 
   constructor(
     _elementRef: ElementRef,
-    private _iterableDiffers: IterableDiffers
+    private _iterableDiffers: IterableDiffers,
+    private zone: NgZone
   ) {
     this.templatedItemsView = _elementRef.nativeElement;
 
@@ -372,8 +373,10 @@ export abstract class TemplatedItemsComponent
       PagerLog(`Manually detect changes in child: ${index}`);
     }
 
-    viewRef.markForCheck();
-    viewRef.detectChanges();
+    this.zone.run(() => {
+      viewRef.markForCheck();
+      viewRef.detectChanges();
+    })
   }
 
   ngDoCheck() {
@@ -411,7 +414,7 @@ export function getItemViewRoot(
 
 export const TEMPLATED_ITEMS_COMPONENT = new InjectionToken<
   TemplatedItemsComponent
-  >("TemplatedItemsComponent");
+>("TemplatedItemsComponent");
 
 @Directive({
   selector: "[pagerItem]",
@@ -425,7 +428,7 @@ export class PagerItemDirective implements OnInit {
     @Host()
     private owner: TemplatedItemsComponent,
     private viewContainer: ViewContainerRef
-  ) {}
+  ) { }
 
   private ensureItem() {
     if (!this.item) {
@@ -464,7 +467,7 @@ export class TemplateKeyDirective {
     @Inject(TEMPLATED_ITEMS_COMPONENT)
     @Host()
     private comp: TemplatedItemsComponent
-  ) {}
+  ) { }
 
   @Input()
   set pagerTemplateKey(value: any) {

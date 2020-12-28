@@ -37,6 +37,8 @@ You can use Couchbase Lite as a standalone embedded database within your mobile 
 - [createPushReplication(...)](couchbase.md#createpushreplication)
 - [addDatabaseChangeListener(...)](couchbase.md#adddatabasechangelistener)
 - [removeDatabaseChangeListener(...)](couchbase.md#removedatabasechangelistener)
+- [addDocumentChangeListener(...)](couchbase.md#adddocumentchangelistener)
+- [removeDocumentChangeListener(...)](couchbase.md#removedocumentchangelistener)
 - [inBatch(...)](couchbase.md#inbatch)
 - [Classes](couchbase.md#classes)
 - [Intefaces](couchbase.md#interfaces)
@@ -128,12 +130,20 @@ pull.start();
 
 ### Listening for Changes
 
+#### Datebase
 ```ts
 database.addDatabaseChangeListener(function(changes) {
   for (var i = 0; i < changes.length; i++) {
     const documentId = changes[i];
     console.log(documentId);
   }
+});
+```
+
+#### Document
+```ts
+database.addDocumentChangeListener("document-id-to-watch",function(documentId) {
+    console.log(documentId);
 });
 ```
 
@@ -283,6 +293,8 @@ Gets  a document
 
 Updates a document
 
+**Return**: <code>Boolean</code>
+
 ---
 
 
@@ -297,6 +309,8 @@ Updates a document
 | data    | [ConcurrencyMode](couchbase.md#concurrencymode)  |
 
 Deletes a document
+
+**Return**: <code>Boolean</code>
 
 ---
 
@@ -379,12 +393,12 @@ Creates a push replicator which can be used later on to sync updates with a remo
 
 ### addDatabaseChangeListener(...)
 ```ts
- addDatabaseChangeListener(callback: (ids?: string[]) => void): void;
+ addDatabaseChangeListener(callback: (ids: string[]) => void): void;
 ```
 
 | Param   | Type    |
 | :---:   | :---:   |
-| callback    | (ids?: string[]) => void |
+| callback    | (ids: string[]) => void |
 
 Adds a database change listener
 
@@ -392,14 +406,41 @@ Adds a database change listener
 
 ### removeDatabaseChangeListener(...)
 ```ts
-  removeDatabaseChangeListener(callback: (ids?: string[]) => void): void;
+  removeDatabaseChangeListener(callback: (ids: string[]) => void): void;
 ```
 
 | Param   | Type    |
 | :---:   | :---:   |
-| callback    | (ids?: string[]) => void |
+| callback    | (ids: string[]) => void |
 
 Removes a database change listener
+
+
+---
+
+### addDocumentChangeListener(...)
+```ts
+ addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
+```
+
+| Param   | Type    |
+| :---:   | :---:   |
+| callback    | (documentId: string, id: string) => void |
+
+Adds a document change listener
+
+---
+
+### removeDocumentChangeListener(...)
+```ts
+  removeDocumentChangeListener(callback: (id: string) => void): void;
+```
+
+| Param   | Type    |
+| :---:   | :---:   |
+| callback    | (id: string) => void |
+
+Removes a document change listener
 
 
 ---

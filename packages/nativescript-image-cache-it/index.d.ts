@@ -3,7 +3,7 @@ import {ImageCacheItBase} from './common';
 export declare class ImageCacheIt extends ImageCacheItBase {
   public static getItem(src: string): Promise<string>;
 
-  public static deleteItem(src: string): Promise<string>;
+  public static deleteItem(src: string): Promise<any>;
 
   public static hasItem(src: string): Promise<any>;
 

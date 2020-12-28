@@ -1,3 +1,3 @@
-import { NativescriptNestedScrollviewCommon } from './common';
+import { ScrollView } from '@nativescript/core';
 
-export class NativescriptNestedScrollview extends NativescriptNestedScrollviewCommon {}
+export class NestedScrollView extends ScrollView { }

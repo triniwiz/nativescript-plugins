@@ -5,6 +5,7 @@ import {
   forwardRef,
   IterableDiffers,
   NgModule,
+  NgZone,
   NO_ERRORS_SCHEMA
 } from '@angular/core';
 
@@ -40,8 +41,8 @@ export class PagerComponent extends TemplatedItemsComponent {
 
   protected templatedItemsView: Pager;
 
-  constructor(_elementRef: ElementRef, _iterableDiffers: IterableDiffers) {
-    super(_elementRef, _iterableDiffers);
+  constructor(_elementRef: ElementRef, _iterableDiffers: IterableDiffers, zone: NgZone) {
+    super(_elementRef, _iterableDiffers, zone);
   }
 }
 

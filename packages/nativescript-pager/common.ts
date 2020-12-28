@@ -117,7 +117,7 @@ export abstract class PagerBase
   public transformers: string;
   public loadMoreCount: number = 1;
   public _childrenViews: Map<number, View>;
-  readonly _childrenCount: number;
+  readonly abstract _childrenCount: number;
   public disableSwipe: boolean = false;
   public showIndicator: boolean;
   public indicatorColor: Color | string;
@@ -530,6 +530,9 @@ disableSwipeProperty.register(PagerBase);
 export const perPageProperty = new Property<PagerBase, number>({
   name: "perPage",
   defaultValue: 1,
+  valueConverter: (value) =>{
+    return Number(value);
+  },
 });
 
 perPageProperty.register(PagerBase);

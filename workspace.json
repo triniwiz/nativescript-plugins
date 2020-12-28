@@ -25,7 +25,7 @@
 				"ios": {
 					"builder": "@nrwl/workspace:run-commands",
 					"options": {
-						"commands": ["ns debug ios --no-hmr --env.testing"],
+						"commands": ["ns debug ios --emulator --no-hmr --env.testing"],
 						"cwd": "apps/demo",
 						"parallel": false
 					}
@@ -1842,15 +1842,30 @@
 								"glob": "**/*",
 								"input": "packages/nativescript-pager/platforms/",
 								"output": "./platforms/"
+							},
+							{
+								"glob": "package.json",
+								"input": "packages/nativescript-pager/react/",
+								"output": "./react/"
 							}
 						]
+					}
+				},
+				"build.react": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"cwd": "packages/nativescript-pager",
+						"commands": [
+							"tsc react/index.tsx --noEmitHelpers true --target es2017 --module commonjs --lib es2015,dom,es2017 --outDir \"../../dist/packages/nativescript-pager\" --jsx \"react\" --skipLibCheck true --experimentalDecorators true --declaration true"
+						],
+						"parallel": false
 					}
 				},
 				"build.all": {
 					"builder": "@nrwl/workspace:run-commands",
 					"outputs": ["dist/packages"],
 					"options": {
-						"commands": ["nx run nativescript-pager:build", "node tools/scripts/build-finish.ts nativescript-pager"],
+						"commands": ["nx run nativescript-pager:build", "nx run nativescript-pager:build.react", "node tools/scripts/build-finish.ts nativescript-pager"],
 						"parallel": false
 					}
 				},

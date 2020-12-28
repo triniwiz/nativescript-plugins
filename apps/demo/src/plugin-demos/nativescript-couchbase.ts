@@ -24,6 +24,14 @@ export function addNew(args) {
   }
 }
 
+export function addLargeItem(args){
+  page.bindingContext.addLargeItem();
+}
+
+export function nukeIt(args){
+  page.bindingContext.nukeIt();
+}
+
 export function goToSearch(args) {
   Frame.topmost().navigate('~/plugin-demos/nativescript-couchbase-search/nativescript-couchbase-search');
 }

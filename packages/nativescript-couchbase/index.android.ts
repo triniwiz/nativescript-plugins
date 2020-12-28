@@ -22,20 +22,23 @@ export {
 } from './common';
 
 declare const com;
-
+let didInit = false;
 export class CouchBase extends Common {
-  config: com.couchbase.lite.DatabaseConfiguration;
-  android: com.couchbase.lite.Database;
-  private static didInit = false;
-
+  readonly ios: any;
+  #config: com.couchbase.lite.DatabaseConfiguration;
+  #couchbase: com.couchbase.lite.Database;
   constructor(name: string) {
-    super(name);
-    if (!CouchBase.didInit) {
-      CouchBase.didInit = true;
+    super();
+    if (!didInit) {
+      didInit = true;
       com.couchbase.lite.CouchbaseLite.init(Utils.ad.getApplicationContext());
     }
-    this.config = new com.couchbase.lite.DatabaseConfiguration();
-    this.android = new com.couchbase.lite.Database(name, this.config);
+    this.#config = new com.couchbase.lite.DatabaseConfiguration();
+    this.#couchbase = new com.couchbase.lite.Database(name, this.#config);
+  }
+
+  get android(): any {
+    return this.#couchbase;
   }
 
   close() {
@@ -52,26 +55,15 @@ export class CouchBase extends Common {
     this.android.inBatch(runnable);
   }
 
-  createDocument(data: Object, documentId?: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
+  createDocument(data: Object, documentId?: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins): string | null {
     try {
-      let doc;
-      if (documentId) {
-        doc = new com.couchbase.lite.MutableDocument(documentId);
-      } else {
-        doc = new com.couchbase.lite.MutableDocument();
-      }
-      const keys = Object.keys(data);
-      for (let key of keys) {
-        const item = data[key];
-        this.serialize(item, doc, key);
-      }
+      let resultId = null;
       if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
-        this.android.save(doc, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT);
+        resultId = com.github.triniwiz.couchbase.Couchbase.saveFromJSON(this.android, JSON.stringify(data), documentId ? documentId : null, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT)
       } else {
-        this.android.save(doc);
+        resultId = com.github.triniwiz.couchbase.Couchbase.saveFromJSON(this.android, JSON.stringify(data), documentId ? documentId : null)
       }
-
-      return doc.getId();
+      return resultId
     } catch (e) {
       console.error(e.message);
       return null;
@@ -110,7 +102,7 @@ export class CouchBase extends Common {
         // TODO what else to check ... maybe native objects ??
       }
     } catch (e) {
-      console.debug(e);
+      console.error(e);
     }
   }
 
@@ -122,69 +114,10 @@ export class CouchBase extends Common {
     return new Blob(blob);
   }
 
-  private deserialize(data: any) {
-    if (
-      typeof data === 'string' ||
-      typeof data === 'number' ||
-      typeof data === 'boolean' ||
-      typeof data !== 'object'
-    )
-      return data;
-
-    if (isNullOrUndefined(data)) {
-      return data;
-    }
-
-    switch (data.getClass().getName()) {
-      case 'java.lang.String':
-        return String(data);
-      case 'java.lang.Boolean':
-        return String(data) === 'true';
-      case 'java.lang.Integer':
-      case 'java.lang.Long':
-      case 'java.lang.Double':
-      case 'java.lang.Short':
-      case 'java.lang.Float':
-        return Number(data);
-      case 'com.couchbase.lite.Dictionary':
-        const keys = data.getKeys();
-        const length = keys.size();
-        const object = {};
-        for (let i = 0; i < length; i++) {
-          const key = keys.get(i);
-          const nativeItem = data.getValue(key);
-          object[key] = this.deserialize(nativeItem);
-        }
-        return object;
-      case 'com.couchbase.lite.Array':
-        const array = [];
-        const size = data.count();
-        for (let i = 0; i < size; i++) {
-          const nativeItem = data.getValue(i);
-          const item = this.deserialize(nativeItem);
-          array.push(item);
-        }
-        return array;
-      default:
-        return data;
-    }
-  }
-
-  getDocument(documentId: string): any {
+  getDocument(documentId: string): any | null {
     try {
       const doc = this.android.getDocument(documentId);
-      if (!doc) return null;
-      const keys = doc.getKeys();
-      const size = keys.size();
-      let object = {};
-      object['id'] = doc.getId();
-      for (let i = 0; i < size; i++) {
-        const key = keys.get(i);
-        const nativeItem = doc.getValue(key);
-        const newItem = {};
-        newItem[key] = this.deserialize(nativeItem);
-        object = Object.assign(object, newItem);
-      }
+      const object = JSON.parse(com.github.triniwiz.couchbase.Couchbase.toJSON(doc));
       return object;
     } catch (e) {
       console.error(e.message);
@@ -192,201 +125,11 @@ export class CouchBase extends Common {
     }
   }
 
-  private static fromISO8601UTC(date: string) {
-    const dateFormat = new java.text.SimpleDateFormat(
-      'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
-    );
-    const tz = java.util.TimeZone.getTimeZone('UTC');
-    dateFormat.setTimeZone(tz);
-    return dateFormat.parse(date);
-  }
-
-  private static toISO8601UTC(date: Date) {
-    const dateFormat = new java.text.SimpleDateFormat(
-      'yyyy-MM-dd\'T\'HH:mm:ss.SSS'
-    );
-    const tz = java.util.TimeZone.getTimeZone('UTC');
-    dateFormat.setTimeZone(tz);
-
-    return dateFormat.format(date);
-  }
-
-  updateDocument(documentId: string, data: any, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
-    try {
-      const origin = this.android.getDocument(
-        documentId
-      ) as com.couchbase.lite.Document;
-      if (origin) {
-        const doc = origin.toMutable();
-        const keys = Object.keys(data);
-        for (let key of keys) {
-          const item = data[key];
-          this.serialize(item, doc, key);
-        }
-        if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
-          this.android.save(doc, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT);
-        } else {
-          this.android.save(doc);
-        }
-      }
-    } catch (e) {
-      console.error(e.message);
-    }
-  }
-
-  private serializeObject(item: any, object: com.couchbase.lite.MutableDictionary, key: string) {
-    if (item === null) {
-      object.setValue(key, null);
-      return;
-    }
-
-    switch (typeof item) {
-      case 'object':
-        if (item instanceof Date) {
-          object.setDate(key, CouchBase.fromISO8601UTC(item.toISOString()));
-          return;
-        }
-
-        if (Array.isArray(item)) {
-          const array = new com.couchbase.lite.MutableArray();
-          item.forEach(data => {
-            this.serializeArray(data, array);
-          });
-          object.setArray(key, array);
-          return;
-        }
-
-        const nativeObject = new com.couchbase.lite.MutableDictionary();
-        Object.keys(item).forEach(itemKey => {
-          const obj = item[itemKey];
-          this.serializeObject(obj, nativeObject, itemKey);
-        });
-        object.setDictionary(key, nativeObject);
-        break;
-      case 'number':
-        if (this.numberIs64Bit(item)) {
-          if (this.numberHasDecimals(item)) {
-            object.setDouble(key, item);
-          } else {
-            object.setLong(key, item);
-          }
-        } else {
-          if (this.numberHasDecimals(item)) {
-            object.setFloat(key, item);
-          } else {
-            object.setInt(key, item);
-          }
-        }
-        break;
-      case 'boolean':
-        object.setBoolean(key, item);
-        break;
-      default:
-        object.setValue(key, item);
-    }
-  }
-
-  private serializeArray(item: any, array: com.couchbase.lite.MutableArray) {
-    if (item === null) {
-      array.addValue(null);
-      return;
-    }
-
-    switch (typeof item) {
-      case 'object':
-        if (item instanceof Date) {
-          array.addDate(CouchBase.fromISO8601UTC(item.toISOString()));
-          return;
-        }
-
-        if (Array.isArray(item)) {
-          const nativeArray = new com.couchbase.lite.MutableArray();
-          item.forEach(data => {
-            this.serializeArray(data, nativeArray);
-          });
-          array.addArray(nativeArray);
-          return;
-        }
-
-        const object = new com.couchbase.lite.MutableDictionary();
-        Object.keys(item).forEach(itemKey => {
-          const obj = item[itemKey];
-          this.serializeObject(obj, object, itemKey);
-        });
-        array.addDictionary(object);
-        break;
-      case 'number':
-        if (this.numberIs64Bit(item)) {
-          if (this.numberHasDecimals(item)) {
-            array.addDouble(item);
-          } else {
-            array.addLong(item);
-          }
-        } else {
-          if (this.numberHasDecimals(item)) {
-            array.addFloat(item);
-          } else {
-            array.addInt(item);
-          }
-        }
-        break;
-      case 'boolean':
-        array.addBoolean(item);
-        break;
-      default:
-        array.addValue(item);
-    }
-  }
-
-  private serialize(item: any, doc: com.couchbase.lite.MutableDocument, key: string) {
-    if (item === null) {
-      doc.setValue(key, null);
-      return;
-    }
-
-    switch (typeof item) {
-      case 'object':
-        if (item instanceof Date) {
-          doc.setDate(key, CouchBase.fromISO8601UTC(item.toISOString()));
-          return;
-        }
-
-        if (Array.isArray(item)) {
-          const array = new com.couchbase.lite.MutableArray();
-          item.forEach(data => {
-            this.serializeArray(data, array);
-          });
-          doc.setArray(key, array);
-          return;
-        }
-
-        const object = new com.couchbase.lite.MutableDictionary();
-        Object.keys(item).forEach(itemKey => {
-          const obj = item[itemKey];
-          this.serializeObject(obj, object, itemKey);
-        });
-        doc.setDictionary(key, object);
-        break;
-      case 'number':
-        if (this.numberIs64Bit(item)) {
-          if (this.numberHasDecimals(item)) {
-            doc.setDouble(key, item);
-          } else {
-            doc.setLong(key, item);
-          }
-        } else {
-          if (this.numberHasDecimals(item)) {
-            doc.setFloat(key, item);
-          } else {
-            doc.setInt(key, item);
-          }
-        }
-        break;
-      case 'boolean':
-        doc.setBoolean(key, item);
-        break;
-      default:
-        doc.setValue(key, item);
+  updateDocument(documentId: string, data: any, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins): boolean {
+    if (concurrencyMode === ConcurrencyMode.FailOnConflict) {
+      return com.github.triniwiz.couchbase.Couchbase.updateFromJSON(this.android, JSON.stringify(data), documentId, com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT)
+    } else {
+      return com.github.triniwiz.couchbase.Couchbase.updateFromJSON(this.android, JSON.stringify(data), documentId)
     }
   }
 
@@ -398,10 +141,10 @@ export class CouchBase extends Common {
     return item < -Math.pow(2, 31) + 1 || item > Math.pow(2, 31) - 1;
   }
 
-  deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = 1) {
+  deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
     try {
       const doc = this.android.getDocument(documentId);
-      return this.android.delete(doc, concurrencyMode === 1 ? com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT :
+      return this.android.delete(doc, concurrencyMode === ConcurrencyMode.FailOnConflict ? com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT :
         com.couchbase.lite.ConcurrencyControl.LAST_WRITE_WINS);
     } catch (e) {
       console.error(e.message);
@@ -569,7 +312,6 @@ export class CouchBase extends Common {
   }
 
   query(query: Query = { select: [QueryMeta.ALL, QueryMeta.ID] }) {
-    const items = [];
     let select = [];
     let isAll = false;
     if (!query.select || query.select.length === 0) {
@@ -662,37 +404,12 @@ export class CouchBase extends Common {
         );
       }
     }
-
-    const result = queryBuilder.execute().allResults();
-    const size = result.size();
-    for (let i = 0; i < size; i++) {
-      const item = result.get(i);
-      const keys = item.getKeys();
-      const keysSize = keys.size();
-      const obj = {};
-      for (let keyId = 0; keyId < keysSize; keyId++) {
-        const key = keys.get(keyId);
-        const nativeItem = item.getValue(key);
-        if (
-          isAll &&
-          nativeItem &&
-          nativeItem.getClass &&
-          nativeItem.getClass() &&
-          nativeItem.getClass().getName() === 'com.couchbase.lite.Dictionary'
-        ) {
-          const cblKeys = nativeItem.getKeys();
-          const cblKeysSize = cblKeys.size();
-          for (let cblKeysId = 0; cblKeysId < cblKeysSize; cblKeysId++) {
-            const cblKey = cblKeys.get(cblKeysId);
-            obj[cblKey] = this.deserialize(nativeItem.getValue(cblKey));
-          }
-        } else {
-          obj[key] = this.deserialize(nativeItem);
-        }
-      }
-      items.push(obj);
+    const results = com.github.triniwiz.couchbase.Couchbase.queryResultsToJSON(queryBuilder, isAll);
+    try {
+      return JSON.parse(results);
+    } catch (e) {
+      return [];
     }
-    return items;
   }
 
   createReplication(remoteUrl: string, direction: 'push' | 'pull' | 'both') {
@@ -728,12 +445,38 @@ export class CouchBase extends Common {
   }
 
   private _listenerMap = {};
+  private _docChangeListenerMap: {} = {};
 
-  addDatabaseChangeListener(callback: any) {
+  addDocumentChangeListener(documentId: string, callback: (id: string) => void) {
+    if (typeof documentId === 'string') {
+      const listener = (com as any).couchbase.lite.DocumentChangeListener.extend({
+        changed(changes: any) {
+          if (callback && typeof callback === 'function') {
+            callback(changes.getDocumentID());
+          }
+        }
+      });
+      const token = this.android.addDocumentChangeListener(documentId, new listener());
+      if (!isNullOrUndefined(token)) {
+        this._docChangeListenerMap[callback as any] = token;
+      }
+    }
+  }
+
+  removeDocumentChangeListener(callback: (id: string) => any) {
+    const token = this._listenerMap[callback as any];
+    if (!isNullOrUndefined(token)) {
+      this.android.removeChangeListener(token);
+      delete this._docChangeListenerMap[callback as any];
+    }
+  }
+
+
+  addDatabaseChangeListener(callback: (ids: string[]) => void) {
     const listener = (com as any).couchbase.lite.DatabaseChangeListener.extend({
       changed(changes: any) {
         if (callback && typeof callback === 'function') {
-          const ids = [];
+          let ids = [];
           const documentIds = changes.getDocumentIDs();
           const size = documentIds.size();
           for (let i = 0; i < size; i++) {
@@ -746,15 +489,15 @@ export class CouchBase extends Common {
     });
     const token = this.android.addChangeListener(new listener());
     if (!isNullOrUndefined(token)) {
-      this._listenerMap[callback] = token;
+      this._listenerMap[callback as any] = token;
     }
   }
 
-  removeDatabaseChangeListener(callback: any) {
-    const token = this._listenerMap[callback];
+  removeDatabaseChangeListener(callback: (ids: string[]) => void) {
+    const token = this._listenerMap[callback as any];
     if (!isNullOrUndefined(token)) {
       this.android.removeChangeListener(token);
-      delete this._listenerMap[callback];
+      delete this._listenerMap[callback as any];
     }
   }
 
@@ -818,12 +561,15 @@ export class Replicator extends ReplicatorBase {
 }
 
 export class Blob extends BlobBase {
+  readonly ios: any;
+  #blob: any;
   constructor(blob: any) {
-    super(blob);
+    super();
+    this.#blob = blob;
   }
 
   get android() {
-    return this.blob;
+    return this.#blob;
   }
 
   get content(): any {

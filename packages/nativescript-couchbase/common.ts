@@ -1,20 +1,17 @@
 export abstract class Common {
-  ios: any;
-  android: any;
-  config: any;
-
-  constructor(databaseName: string) {
-  }
+  abstract ios: any;
+  
+  abstract android: any;
 
   abstract close();
 
-  abstract createDocument(data: Object, documentId?: string);
+  abstract createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode);
 
   abstract getDocument(documentId: string);
 
-  abstract updateDocument(documentId: string, data: any);
+  abstract updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode);
 
-  abstract deleteDocument(documentId: string);
+  abstract deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode);
 
   abstract destroyDatabase();
 
@@ -26,11 +23,17 @@ export abstract class Common {
 
   abstract createReplication(remoteUrl: string, direction: 'push' | 'pull' | 'both');
 
-  abstract addDatabaseChangeListener(callback: any);
+  abstract addDatabaseChangeListener(callback: (ids?: string[]) => void);
+
+  abstract removeDatabaseChangeListener(callback: (ids?: string[]) => void): void;
+
+  abstract addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
+
+  abstract removeDocumentChangeListener(callback: (id: string) => void): void;
 
   abstract inBatch(batch: () => void);
 
-  abstract setBlob(id: string, name: string, blob: any, mimeType: string);
+  abstract setBlob(id: string, name: string, blob: any, mimeType: string, concurrencyMode?: ConcurrencyMode);
 
   abstract getBlob(id: string, name: string);
 }
@@ -121,27 +124,22 @@ export interface QueryOrderItem {
 
 
 export abstract class BlobBase {
-  blob: any;
+  abstract readonly ios: any;
 
-  readonly ios: any;
+  abstract readonly android: any;
 
-  readonly android: any;
+  abstract readonly content: any;
 
-  readonly content: any;
+  abstract readonly contentStream: any;
 
-  readonly contentStream: any;
+  abstract readonly contentType: string;
 
-  readonly contentType: string;
+  abstract readonly length: number;
 
-  readonly length: number;
+  abstract readonly digest: string;
 
-  readonly digest: string;
+  abstract readonly properties: Map<string, any>;
 
-  readonly properties: Map<string, any>;
-
-  constructor(blob: any) {
-    this.blob = blob;
-  }
 }
 
 export enum ConcurrencyMode {

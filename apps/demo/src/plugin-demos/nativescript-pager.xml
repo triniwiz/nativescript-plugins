@@ -8,7 +8,8 @@
   </Page.actionBar>
   <GridLayout rows="*,*">
     <c:Pager
-
+      peaking="10%"
+      spacing="5%"
       scroll="{{onScroll}}" selectedIndex="4"
              loaded="{{ pagerLoaded }}"
              selectedIndexChange="{{selectedIndexChange}}"
@@ -19,7 +20,7 @@
              circularMode="false"
              indicatorColor="red"
              indicatorSelectedColor="blue"
-             loadMore="{{loadMoreItems}}"
+             loadMoreItems="{{loadMoreItems}}"
              autoPlay="{{ autoPlay }}"
     >
       <c:Pager.itemTemplate>

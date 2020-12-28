@@ -12,9 +12,8 @@ export {
 } from './common';
 
 export declare class CouchBase extends Common {
-  config: any;
-  android: any;
-  ios: any;
+  readonly config: any;
+  readonly android: any;
 
   constructor(name: string);
 
@@ -22,15 +21,15 @@ export declare class CouchBase extends Common {
 
   createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode): any;
 
-  setBlob(id: string, name: string, blob: any, mimeType?: string): void;
+  setBlob(id: string, name: string, blob: any, mimeType?: string, concurrencyMode?: ConcurrencyMode): void;
 
   getBlob(id: string, name: string): Blob;
 
   getDocument(documentId: string): any;
 
-  updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode): void;
+  updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode): boolean;
 
-  deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): any;
+  deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): boolean;
 
   destroyDatabase(): void;
 
@@ -45,6 +44,10 @@ export declare class CouchBase extends Common {
   addDatabaseChangeListener(callback: (ids?: string[]) => void): void;
 
   removeDatabaseChangeListener(callback: (ids?: string[]) => void): void;
+
+  addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
+
+  removeDocumentChangeListener(callback: (id: string) => void): void;
 
   inBatch(batch: () => void): void;
 }
