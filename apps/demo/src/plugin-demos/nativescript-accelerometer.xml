@@ -1,14 +1,29 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" navigatingFrom="navigatingFrom" class="page">
     <Page.actionBar>
         <ActionBar title="nativescript-accelerometer" icon="" class="action-bar">
         </ActionBar>
     </Page.actionBar>
-    <StackLayout class="p-20">
-        <ScrollView class="h-full">
-          <StackLayout>
-            <Button text="Test nativescript-accelerometer" tap="{{ testIt }}" class="btn btn-primary"/>
+    <ActionBar title="Accelerometer Demo" />
 
-          </StackLayout>
-        </ScrollView>
-    </StackLayout>
+    <GridLayout rows="auto auto auto auto auto auto auto auto *" columns="auto * auto">
+        <Label row="0" col="0" text="-1" />
+        <Label row="0" col="1" text="{{ x, 'x: ' + x }}" horizontalAlignment="center"/>
+        <Label row="0" col="2" text="-1" />
+        <Progress row="1" colSpan="3" class="meter" value="{{ x * 50 + 50}}" />
+
+        <Label row="2" col="0" text="-1" />
+        <Label row="2" col="1" text="{{ y, 'y: ' + y }}" horizontalAlignment="center"/>
+        <Label row="2" col="2" text="-1" />
+        <Progress row="3" colSpan="3" value="{{ y * 50 + 50}}" />
+
+        <Label row="4" col="0" text="-1" />
+        <Label row="4" col="1" text="{{ z, 'z: ' + z }}" horizontalAlignment="center"/>
+        <Label row="4" col="2" text="-1" />
+        <Progress row="5" colSpan="3" value="{{ z * 50 + 50}}" />
+
+        <Button colSpan="3" row="6" class="-primary" text="{{ isListening ? 'stop updates' : 'start updates'}}" tap="toggleUpdates" />
+        <Label colSpan="3" row="7" text="Shake it!" class="h2"  horizontalAlignment="center" />
+        <Label colSpan="3" row="8" opacity="0" id="shake-view" text="Shake detected!" class="h2" verticalAlignment="center" horizontalAlignment="center" />
+        
+    </GridLayout>
 </Page>

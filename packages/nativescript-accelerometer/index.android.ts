@@ -1,7 +1,7 @@
-
 import { Utils } from "@nativescript/core";
-import { AccelerometerOptions, AccelerometerData } from ".";
-import { startButNotStopped, stopButNotStarted } from "./common";
+import { startButNotStopped, stopButNotStarted, AccelerometerOptions, AccelerometerData, SensorDelay } from "./common";
+
+export { SensorDelay }
 
 const baseAcceleration = -9.81;
 let sensorListener: android.hardware.SensorEventListener;

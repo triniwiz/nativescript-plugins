@@ -1,5 +1,6 @@
-import { AccelerometerOptions, AccelerometerData } from ".";
-import { startButNotStopped, stopButNotStarted } from "./common";
+import { startButNotStopped, stopButNotStarted, AccelerometerOptions, AccelerometerData, SensorDelay } from "./common";
+
+export { SensorDelay }
 
 let accManager;
 let isListeningForUpdates = false;
