@@ -13,46 +13,36 @@ import java.io.File
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
-object ImageCache {
-  var manager: RequestManager? = null
-  var glide: Glide? = null
-  var executorService: ExecutorService? = null
-  fun init(context: Context?) {
-    if (manager == null) {
-      manager = Glide.with(context!!)
-    }
-    if (glide == null) {
-      glide = Glide.get(context!!)
-    }
-    if (executorService == null) {
-      executorService = Executors.newCachedThreadPool()
-    }
-  }
+class ImageCache {
+  companion object {
+    @JvmStatic
+    private var manager: RequestManager? = null
 
-  @SuppressLint("CheckResult")
-  fun hasItem(url: String?, callback: Callback?) {
-    val requestOptions = RequestOptions()
-    requestOptions.onlyRetrieveFromCache(true)
-    manager?.asFile()?.load(url)?.apply(requestOptions)?.listener(object : RequestListener<File> {
-      override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
-        callback?.onError(e)
-        return false
+    @JvmStatic
+    private var glide: Glide? = null
+
+    @JvmStatic
+    private var executorService: ExecutorService? = null
+
+    @JvmStatic
+    fun init(context: Context?) {
+      if (manager == null) {
+        manager = Glide.with(context!!)
       }
-
-      override fun onResourceReady(resource: File, model: Any, target: Target<File>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-        callback?.onSuccess(resource.absolutePath)
-        return false
+      if (glide == null) {
+        glide = Glide.get(context!!)
       }
-    })?.submit()
+      if (executorService == null) {
+        executorService = Executors.newCachedThreadPool()
+      }
+    }
 
-  }
-
-  fun getItem(url: String?, options: Map<String?, String?>?, callback: Callback?) {
-    val requestOptions = RequestOptions()
-    manager?.asFile()
-      ?.load(url)
-      ?.apply(requestOptions)
-      ?.listener(object : RequestListener<File> {
+    @SuppressLint("CheckResult")
+    @JvmStatic
+    fun hasItem(url: String?, callback: Callback?) {
+      val requestOptions = RequestOptions()
+      requestOptions.onlyRetrieveFromCache(true)
+      manager?.asFile()?.load(url)?.apply(requestOptions)?.listener(object : RequestListener<File> {
         override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
           callback?.onError(e)
           return false
@@ -62,14 +52,36 @@ object ImageCache {
           callback?.onSuccess(resource.absolutePath)
           return false
         }
-      })
-      ?.submit()
-  }
+      })?.submit()
 
-  fun clear() {
-    if (glide != null) {
-      glide!!.clearMemory()
-      executorService!!.execute { glide!!.clearDiskCache() }
+    }
+
+    @JvmStatic
+    fun getItem(url: String?, options: Map<String?, String?>?, callback: Callback?) {
+      val requestOptions = RequestOptions()
+      manager?.asFile()
+        ?.load(url)
+        ?.apply(requestOptions)
+        ?.listener(object : RequestListener<File> {
+          override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
+            callback?.onError(e)
+            return false
+          }
+
+          override fun onResourceReady(resource: File, model: Any, target: Target<File>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+            callback?.onSuccess(resource.absolutePath)
+            return false
+          }
+        })
+        ?.submit()
+    }
+
+    @JvmStatic
+    fun clear() {
+      if (glide != null) {
+        glide!!.clearMemory()
+        executorService!!.execute { glide!!.clearDiskCache() }
+      }
     }
   }
 

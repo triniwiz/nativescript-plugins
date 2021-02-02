@@ -11,6 +11,21 @@ import java.util.*
 
 class Couchbase {
   companion object {
+
+    @JvmStatic
+    fun getDocument(database: Database, id: String?): String? {
+      return id?.let {
+        database.getDocument(it)?.let {
+          return toJSON(it)
+        } ?: run {
+          null
+        }
+      } ?: run {
+        null
+      }
+    }
+
+
     @JvmStatic
     fun queryResultsToJSON(query: Query, isAll: Boolean): String {
       val json = JSONArray()

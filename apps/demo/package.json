@@ -4,9 +4,8 @@
 	"license": "SEE LICENSE IN <your-license-filename>",
 	"repository": "<fill-your-repository-here>",
 	"dependencies": {
-		"nativescript-theme-core": "file:../../node_modules/nativescript-theme-core",
 		"@nativescript/core": "file:../../node_modules/@nativescript/core",
-		"@triniwiz/nativescript-pager": "file:../../packages/nativescript-pager",
+		"@triniwiz/nativescript-accelerometer": "file:../../packages/nativescript-accelerometer",
 		"@triniwiz/nativescript-accordion": "file:../../packages/nativescript-accordion",
 		"@triniwiz/nativescript-autocomplete": "file:../../packages/nativescript-autocomplete",
 		"@triniwiz/nativescript-awesome-loaders": "file:../../packages/nativescript-awesome-loaders",
@@ -27,6 +26,7 @@
 		"@triniwiz/nativescript-mongo-stitch-sdk": "file:../../packages/nativescript-mongo-stitch-sdk",
 		"@triniwiz/nativescript-mongo-stitch-services-mongodb-remote": "file:../../packages/nativescript-mongo-stitch-services-mongodb-remote",
 		"@triniwiz/nativescript-nested-scrollview": "file:../../packages/nativescript-nested-scrollview",
+		"@triniwiz/nativescript-pager": "file:../../packages/nativescript-pager",
 		"@triniwiz/nativescript-popup": "file:../../packages/nativescript-popup",
 		"@triniwiz/nativescript-pubnub": "file:../../packages/nativescript-pubnub",
 		"@triniwiz/nativescript-pusher-beams": "file:../../packages/nativescript-pusher-beams",
@@ -46,7 +46,8 @@
 		"@triniwiz/nativescript-videorecorder": "file:../../packages/nativescript-videorecorder",
 		"@triniwiz/nativescript-webrtc": "file:../../packages/nativescript-webrtc",
 		"@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer",
-		"@triniwiz/nativescript-accelerometer": "file:../../packages/nativescript-accelerometer"
+		"nativescript-theme-core": "file:../../node_modules/nativescript-theme-core",
+		"nativescript-videoplayer": "^5.0.1"
 	},
 	"devDependencies": {
 		"@nativescript/android": "7.0.0",
