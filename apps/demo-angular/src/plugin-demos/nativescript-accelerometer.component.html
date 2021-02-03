@@ -1,8 +1,23 @@
 <ActionBar title="nativescript-accelerometer" class="action-bar"> </ActionBar>
 <StackLayout class="p-20">
 	<ScrollView class="h-full">
-		<StackLayout>
-			<Button text="Test nativescript-accelerometer" (tap)="demoShared.testIt()" class="btn btn-primary"></Button>
-		</StackLayout>
+		<GridLayout class="container" rows="auto auto auto auto auto auto auto" columns="auto * auto" *ngIf="data$ | async as data">
+			<Label row="0" col="0" text="-1"></Label>
+			<Label row="0" col="1" [text]="'x: ' + data.x.toFixed(2)" horizontalAlignment="center"></Label>
+			<Label row="0" col="2" text="1"></Label>
+			<Progress row="1" colSpan="3" [value]="data.x * 50 + 50"></Progress>
+
+			<Label row="2" col="0" text="-1"></Label>
+			<Label row="2" col="1" [text]="'y: ' + data.y.toFixed(2)" horizontalAlignment="center"></Label>
+			<Label row="2" col="2" text="1"></Label>
+			<Progress row="3" colSpan="3" [value]="data.y * 50 + 50"></Progress>
+
+			<Label row="4" col="0" text="-1"></Label>
+			<Label row="4" col="1" [text]="'z: ' + data.z.toFixed(2)" horizontalAlignment="center"></Label>
+			<Label row="4" col="2" text="1"></Label>
+			<Progress row="5" colSpan="3" [value]="data.z * 50 + 50"></Progress>
+
+			<Button colSpan="3" row="6" class="-primary" [text]="demoShared.isAccelerometerListening() ? 'stop updates' : 'start updates'" (tap)="toggleUpdates()"></Button>
+		</GridLayout>
 	</ScrollView>
 </StackLayout>

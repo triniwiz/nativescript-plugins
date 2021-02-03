@@ -81,7 +81,7 @@
 			}
 		},
 		"all": {
-			"root": "packages",
+			"root": "packages/",
 			"projectType": "library",
 			"architect": {
 				"build": {

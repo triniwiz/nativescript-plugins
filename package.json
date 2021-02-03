@@ -25,7 +25,7 @@
 		"@angular/router": "~10.1.0",
 		"@nativescript/angular": "~10.1.0",
 		"@nativescript/core": "~7.0.0",
-		"@nativescript/plugin-tools": "~1.0.0",
+		"@nativescript/plugin-tools": "1.0.5",
 		"@nativescript/types": "~7.0.0",
 		"@nativescript/webpack": "~3.0.0",
 		"@types/react-reconciler": "^0.18.0",
