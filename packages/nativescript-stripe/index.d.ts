@@ -358,6 +358,7 @@ export declare class CreditCardView extends CreditCardViewBase {
 	showPostalCode: boolean;
 	isUSZipRequired: boolean;
 
+	on(event: string, callback: (args: EventData) => void, thisArg?: any);
 	on(event: 'numberChanged', callback: (args: NumberChangedEvent) => void, thisArg?: any);
 	on(event: 'expMonthChanged', callback: (args: ExpMonthChangedEvent) => void, thisArg?: any);
 	on(event: 'expYearChanged', callback: (args: ExpYearChangedEvent) => void, thisArg?: any);

@@ -8,7 +8,6 @@ export declare type CreditCardViewAttributes = ViewAttributes & {};
 declare global {
 	module JSX {
 		interface IntrinsicElements {
-			// @ts-ignore
 			creditCardView: NativeScriptProps<CreditCardViewAttributes, CreditCardView>;
 		}
 	}

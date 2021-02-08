@@ -50,7 +50,6 @@ function initWebChromeClient() {
 			#allowsFullscreenVideo: boolean = false;
 			#webView: android.webkit.WebView;
 			#initialRequestedOrientation: any;
-
 			constructor(webView, allowsFullscreenVideo, initialRequestedOrientation) {
 				super();
 				this.#webView = webView;
@@ -137,7 +136,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
 	#client: any;
 	#origin: string;
 	#duration: number = 0;
-	#state: YoutubePlayerState = -1;
+	#state: YoutubePlayerState = YoutubePlayerState.Unstarted;
 	#isReady: boolean = false;
 	#isFullScreen: boolean = false;
 

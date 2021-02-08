@@ -62,6 +62,8 @@ export declare class YoutubePlayer extends YoutubePlayerBase {
 
 	get state(): YoutubePlayerState;
 
+	on(eventNames: string, callback: (args: EventData) => void, thisArg?: any);
+
 	on(eventNames: 'ready', callback: (args: EventData) => void, thisArg?: any);
 
 	on(eventNames: 'apiReady', callback: (args: EventData) => void, thisArg?: any);

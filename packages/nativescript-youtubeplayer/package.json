@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-youtubeplayer",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"description": "YoutubePlayer for Nativescript",
 	"main": "index",
 	"typings": "index.d.ts",
@@ -19,7 +19,8 @@
 		"JavaScript",
 		"TypeScript",
 		"iOS",
-		"Android"
+		"Android",
+		"youtube"
 	],
 	"author": {
 		"name": "Osei Fortune",

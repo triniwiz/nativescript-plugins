@@ -37,7 +37,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
 	#enterFullScreenObserver;
 	#exitFullScreenObserver;
 	#isFullScreen: boolean = false;
-	#state: YoutubePlayerState = YoutubePlayerState.unstarted;
+	#state: YoutubePlayerState = YoutubePlayerState.Unstarted;
 
 	createNativeView() {
 		this.#origin = `http://${NSBundle.mainBundle.bundleIdentifier}`;
