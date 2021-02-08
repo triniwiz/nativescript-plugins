@@ -12,8 +12,7 @@ import SocketIO
 @objcMembers
 public class TNSSocketIO: NSObject {
     public init(url: URL, config: [String: AnyHashable]) {
-        SocketIOClientOption
-        SocketManager.init(socketURL: url, config: SocketIOClientConfiguration)
+       // SocketIOClientOption
+       // SocketManager.init(socketURL: url, config: SocketIOClientConfiguration)
     }
 }
-

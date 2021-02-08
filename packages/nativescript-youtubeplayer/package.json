@@ -1,18 +1,18 @@
 {
 	"name": "@triniwiz/nativescript-youtubeplayer",
-	"version": "1.0.0",
-	"description": "Add a plugin description",
+	"version": "4.0.0",
+	"description": "YoutubePlayer for Nativescript",
 	"main": "index",
 	"typings": "index.d.ts",
 	"nativescript": {
 		"platforms": {
-			"ios": "6.0.0",
-			"android": "6.0.0"
+			"ios": "7.0.0",
+			"android": "7.0.0"
 		}
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/NativeScript/plugins.git"
+		"url": "https://github.com/triniwiz/plugins.git"
 	},
 	"keywords": [
 		"NativeScript",
@@ -22,14 +22,14 @@
 		"Android"
 	],
 	"author": {
-		"name": "NativeScript",
-		"email": "oss@nativescript.org"
+		"name": "Osei Fortune",
+		"email": "fortune.osei@yahoo.com"
 	},
 	"bugs": {
-		"url": "https://github.com/NativeScript/plugins/issues"
+		"url": "https://github.com/triniwiz/plugins/issues"
 	},
 	"license": "Apache-2.0",
-	"homepage": "https://github.com/NativeScript/plugins",
+	"homepage": "https://github.com/triniwiz/plugins",
 	"readmeFilename": "README.md",
 	"bootstrapper": "@nativescript/plugin-seed"
 }

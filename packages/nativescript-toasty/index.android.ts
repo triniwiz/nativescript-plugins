@@ -61,22 +61,25 @@ export class Toasty {
 				},
 			})
 		);
-		if (parseInt(Device.sdkVersion, 10) >= 30) {
-			const callback = (android as any).widget.Toast.Callback.extend({
-				owner: null,
-				onToastShown: function () {
-					this.super.onToastShown();
-					this.owner?.get()?._androidOpts?.onShown?.();
-				},
-				onToastHidden: function () {
-					this.super.onToastHidden();
-					this.owner?.get()?._androidOpts?.onHidden?.();
-				},
-			});
-			const cb = new callback();
-			cb.owner = ref;
-			(this as any)._toast.addCallback(cb);
-		}
+
+		try {
+			if ((android as any).widget.Toast.Callback) {
+				const callback = (android as any).widget.Toast.Callback.extend({
+					owner: null,
+					onToastShown: function () {
+						this.super.onToastShown();
+						this.owner?.get()?._androidOpts?.onShown?.();
+					},
+					onToastHidden: function () {
+						this.super.onToastHidden();
+						this.owner?.get()?._androidOpts?.onHidden?.();
+					},
+				});
+				const cb = new callback();
+				cb.owner = ref;
+				(this as any)._toast.addCallback(cb);
+			}
+		} catch (e) {}
 
 		// set the values
 		this.setToastDuration(this._duration).setToastPosition(this._position).setTextColor(this._textColor).setBackgroundColor(this._backgroundColor);

@@ -1,5 +1,5 @@
 import { Application, Utils } from '@nativescript/core';
-import { BankAccountHolderType, BankAccountStatus, CaptureMethod, CardBrand, CardFunding, CardFundingType, CardMultilineWidgetBase, CreditCardViewBase, GetBrand, IAddress, IBankAccount, ICard, ICardParams, IToken, PaymentMethodCardCheckResult, IPaymentMethod, PaymentMethodType, SourceCard3DSecureStatus, SourceFlow, SourceRedirectStatus, SourceStatus, SourceType, SourceUsage, SourceVerificationStatus, IStripePaymentIntent, StripePaymentIntentStatus } from './common';
+import { BankAccountHolderType, BankAccountStatus, CaptureMethod, CardBrand, CardFunding, CardFundingType, CardMultilineWidgetBase, CreditCardViewBase, GetBrand, IAddress, IBankAccount, ICard, ICardParams, IToken, PaymentMethodCardCheckResult, IPaymentMethod, PaymentMethodType, SourceCard3DSecureStatus, SourceFlow, SourceRedirectStatus, SourceStatus, SourceType, SourceUsage, SourceVerificationStatus, IStripePaymentIntent, StripePaymentIntentStatus, showPostalCodeProperty, isUSZipRequiredProperty } from './common';
 import { PaymentMethodCard } from './paymentMethod';
 import { Source } from './source';
 
@@ -912,6 +912,107 @@ export class CreditCardView extends CreditCardViewBase {
 			this._widget = new com.stripe.android.view.CardMultilineWidget(this._context);
 		}
 		return this._widget;
+	}
+
+	initNativeView() {
+		super.initNativeView();
+		const ref = new WeakRef<CreditCardView>(this);
+		this._widget?.setCardNumberTextWatcher(
+			new android.text.TextWatcher({
+				afterTextChanged(param0: android.text.Editable): void {},
+				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
+				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+					ref.get()?.notify({
+						eventName: CreditCardView.numberChangedEvent,
+						object: ref.get(),
+						number: param0,
+					});
+				},
+			})
+		);
+
+		this._widget?.setExpiryDateTextWatcher(
+			new android.text.TextWatcher({
+				afterTextChanged(param0: android.text.Editable): void {},
+				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
+				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+					const values = param0.split('/');
+					ref.get()?.notify({
+						eventName: CreditCardView.expMonthChangedEvent,
+						object: ref.get(),
+						expMonth: (values?.length ?? 0) > 0 ? values[0] : 0,
+					});
+
+					ref.get()?.notify({
+						eventName: CreditCardView.expYearChangedEvent,
+						object: ref.get(),
+						expYear: (values?.length ?? 0) === 2 ? values[1] : 0,
+					});
+				},
+			})
+		);
+
+		this._widget?.setCvcNumberTextWatcher(
+			new android.text.TextWatcher({
+				afterTextChanged(param0: android.text.Editable): void {},
+				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
+				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+					ref.get()?.notify({
+						eventName: CreditCardView.cvcChangedEvent,
+						object: ref.get(),
+						cvc: param0,
+					});
+				},
+			})
+		);
+		this._widget?.setPostalCodeTextWatcher(
+			new android.text.TextWatcher({
+				afterTextChanged(param0: android.text.Editable): void {},
+				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
+				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+					console.log(CreditCardView.postalCodeChangedEvent, param0);
+					/*const owner = ref.get();
+          if(owner){
+            if(lastExpMonth !== owner._widget.getCardParams())
+            ref.get()?.notify({
+              eventName: CreditCardView.cvcChangedEvent,
+              object: ref.get(),
+              expMonth:
+            })
+          }
+          */
+				},
+			})
+		);
+		if (this.isUSZipRequired) {
+			this._widget.setUsZipCodeRequired(true);
+		}
+
+		if (!this.showPostalCode) {
+			this._widget.setPostalCodeRequired(false);
+			if (android.os.Build.VERSION.SDK_INT < 21) {
+				(<com.stripe.android.view.CardInputWidget>this._widget).setPostalCodeEnabled(false);
+			} else {
+				(<com.stripe.android.view.CardMultilineWidget>this._widget).setShouldShowPostalCode(false);
+			}
+		}
+	}
+
+	[showPostalCodeProperty.setNative](value: boolean) {
+		if (this._widget) {
+			this._widget.setPostalCodeRequired(value);
+			if (android.os.Build.VERSION.SDK_INT < 21) {
+				(<com.stripe.android.view.CardInputWidget>this._widget).setPostalCodeEnabled(value);
+			} else {
+				(<com.stripe.android.view.CardMultilineWidget>this._widget).setShouldShowPostalCode(value);
+			}
+		}
+	}
+
+	[isUSZipRequiredProperty.setNative](value: boolean) {
+		if (this._widget) {
+			this._widget.setUsZipCodeRequired(value);
+		}
 	}
 
 	get cardParams(): CardParams {

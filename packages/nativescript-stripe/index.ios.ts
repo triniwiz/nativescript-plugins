@@ -1,5 +1,5 @@
 import { Frame, Utils, View } from '@nativescript/core';
-import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, IAddress, IBankAccount, ICard, ICardParams, IToken, IPaymentMethod, PaymentMethodType, IStripePaymentIntent, StripePaymentIntentStatus, GetBrand } from './common';
+import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, IAddress, IBankAccount, ICard, ICardParams, IToken, IPaymentMethod, PaymentMethodType, IStripePaymentIntent, StripePaymentIntentStatus, GetBrand, showPostalCodeProperty, isUSZipRequiredProperty } from './common';
 import { PaymentMethodCard } from './paymentMethod';
 import { Source } from './source';
 import { toJSON } from './utils';
@@ -295,11 +295,13 @@ export class Stripe {
 class STPAuthenticationContextImp extends NSObject implements STPAuthenticationContext {
 	static ObjCProtocols = [STPAuthenticationContext];
 	private _vc: UIViewController;
+
 	public static initWithViewController(vc: UIViewController) {
 		const delegate = <STPAuthenticationContextImp>STPAuthenticationContextImp.new();
 		delegate._vc = vc;
 		return delegate;
 	}
+
 	authenticationPresentingViewController(): UIViewController {
 		return this._vc;
 	}
@@ -472,10 +474,64 @@ export class CardParams implements ICardParams {
 	}
 }
 
+@NativeClass
+class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPaymentCardTextFieldDelegate {
+	public static ObjCProtocols = [STPPaymentCardTextFieldDelegate];
+	_owner: WeakRef<CreditCardView>;
+	lastNumber: string;
+	lastExpMonth: number;
+	lastExpYear: number;
+	lastCVC: string;
+	lastPostal: string;
+	public static initWithOwner(owner: WeakRef<CreditCardView>): STPPaymentCardTextFieldDelegateImpl {
+		const delegate = <STPPaymentCardTextFieldDelegateImpl>STPPaymentCardTextFieldDelegateImpl.new();
+		delegate._owner = owner;
+		return delegate;
+	}
+	paymentCardTextFieldDidChange(textField: STPPaymentCardTextField) {
+		if (textField.cardParams?.number !== this.lastNumber) {
+			this?._owner?.get()?.notify({
+				eventName: CreditCardView.numberChangedEvent,
+				object: this?._owner?.get(),
+				number: textField.cardParams?.number,
+			});
+			this.lastNumber = textField.cardParams?.number;
+		}
+
+		if (textField.cardParams?.expMonth !== this.lastExpMonth) {
+			this?._owner?.get()?.notify({
+				eventName: CreditCardView.expMonthChangedEvent,
+				object: this?._owner?.get(),
+				expMonth: textField.cardParams?.expMonth,
+			});
+			this.lastExpMonth = textField.cardParams?.expMonth;
+		}
+
+		if (textField.cardParams?.expYear !== this.lastExpYear) {
+			this?._owner?.get()?.notify({
+				eventName: CreditCardView.expYearChangedEvent,
+				object: this?._owner?.get(),
+				expYear: textField.cardParams?.expYear,
+			});
+			this.lastExpYear = textField.cardParams?.expYear;
+		}
+
+		if (textField.cardParams?.cvc !== this.lastCVC) {
+			this?._owner?.get()?.notify({
+				eventName: CreditCardView.cvcChangedEvent,
+				object: this?._owner?.get(),
+				cvc: textField.cardParams?.cvc,
+			});
+			this.lastCVC = textField.cardParams?.cvc;
+		}
+	}
+}
+
 export class CreditCardView extends CreditCardViewBase {
 	nativeView: STPPaymentCardTextField;
-
+	private delegate: STPPaymentCardTextFieldDelegateImpl;
 	public createNativeView(): STPPaymentCardTextField {
+		this.delegate = STPPaymentCardTextFieldDelegateImpl.initWithOwner(new WeakRef<CreditCardView>(this));
 		return STPPaymentCardTextField.alloc().initWithFrame(CGRectMake(10, 10, 150, 44));
 	}
 
@@ -495,6 +551,30 @@ export class CreditCardView extends CreditCardViewBase {
 		// When nativeView is tapped we get the owning JS object through this field.
 		(<any>this.nativeView).owner = this;
 		super.initNativeView();
+		this.nativeView.delegate = this.delegate;
+		if (this.isUSZipRequired) {
+			this.nativeView.countryCode = 'US';
+		}
+
+		if (!this.showPostalCode) {
+			this.nativeView.postalCodeEntryEnabled = this.showPostalCode;
+		}
+	}
+
+	[showPostalCodeProperty.setNative](value: boolean) {
+		if (this.nativeView) {
+			this.nativeView.postalCodeEntryEnabled = value;
+		}
+	}
+
+	[isUSZipRequiredProperty.setNative](value: boolean) {
+		if (this.nativeView) {
+			if (value) {
+				this.nativeView.countryCode = 'US';
+			} else {
+				this.nativeView.countryCode = null;
+			}
+		}
 	}
 
 	/**

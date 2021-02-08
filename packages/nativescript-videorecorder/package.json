@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-videorecorder",
-	"version": "4.0.0",
+	"version": "4.0.1",
 	"description": "NativeScript Video Recording plugin",
 	"main": "index",
 	"typings": "index.d.ts",
