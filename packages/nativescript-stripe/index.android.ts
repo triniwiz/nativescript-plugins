@@ -935,9 +935,9 @@ export class CreditCardView extends CreditCardViewBase {
 			new android.text.TextWatcher({
 				afterTextChanged(param0: android.text.Editable): void {},
 				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
-				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+				onTextChanged(param0: any, param1: number, param2: number, param3: number) {
 					if (param0) {
-						const str = typeof param0 !== 'string' ? new java.lang.String(param0) : param0;
+						const str = typeof param0 === 'object' ? param0.toString() ?? '' : param0;
 						const values = str?.split?.('/') ?? '';
 						ref.get()?.notify({
 							eventName: CreditCardView.expMonthChangedEvent,
