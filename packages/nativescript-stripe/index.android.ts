@@ -925,7 +925,7 @@ export class CreditCardView extends CreditCardViewBase {
 					ref.get()?.notify({
 						eventName: CreditCardView.numberChangedEvent,
 						object: ref.get(),
-						number: param0,
+						number: typeof param0 !== 'string' ? new java.lang.String(param0) : param0,
 					});
 				},
 			})
@@ -936,18 +936,21 @@ export class CreditCardView extends CreditCardViewBase {
 				afterTextChanged(param0: android.text.Editable): void {},
 				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
 				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
-					const values = param0.split('/');
-					ref.get()?.notify({
-						eventName: CreditCardView.expMonthChangedEvent,
-						object: ref.get(),
-						expMonth: (values?.length ?? 0) > 0 ? values[0] : 0,
-					});
+					if (param0) {
+						const str = typeof param0 !== 'string' ? new java.lang.String(param0) : param0;
+						const values = str?.split?.('/') ?? '';
+						ref.get()?.notify({
+							eventName: CreditCardView.expMonthChangedEvent,
+							object: ref.get(),
+							expMonth: (values?.length ?? 0) > 0 ? values[0] : 0,
+						});
 
-					ref.get()?.notify({
-						eventName: CreditCardView.expYearChangedEvent,
-						object: ref.get(),
-						expYear: (values?.length ?? 0) === 2 ? values[1] : 0,
-					});
+						ref.get()?.notify({
+							eventName: CreditCardView.expYearChangedEvent,
+							object: ref.get(),
+							expYear: (values?.length ?? 0) === 2 ? values[1] : 0,
+						});
+					}
 				},
 			})
 		);
@@ -960,7 +963,7 @@ export class CreditCardView extends CreditCardViewBase {
 					ref.get()?.notify({
 						eventName: CreditCardView.cvcChangedEvent,
 						object: ref.get(),
-						cvc: param0,
+						cvc: typeof param0 !== 'string' ? new java.lang.String(param0) : param0,
 					});
 				},
 			})
@@ -970,17 +973,11 @@ export class CreditCardView extends CreditCardViewBase {
 				afterTextChanged(param0: android.text.Editable): void {},
 				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
 				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
-					console.log(CreditCardView.postalCodeChangedEvent, param0);
-					/*const owner = ref.get();
-          if(owner){
-            if(lastExpMonth !== owner._widget.getCardParams())
-            ref.get()?.notify({
-              eventName: CreditCardView.cvcChangedEvent,
-              object: ref.get(),
-              expMonth:
-            })
-          }
-          */
+					ref.get()?.notify({
+						eventName: CreditCardView.postalCodeChangedEvent,
+						object: ref.get(),
+						postalCode: typeof param0 !== 'string' ? new java.lang.String(param0) : param0,
+					});
 				},
 			})
 		);

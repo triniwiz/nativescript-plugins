@@ -352,6 +352,10 @@ export interface CVCChangedEvent extends EventData {
 	cvc: string;
 }
 
+export interface PostalCodeChangedEvent extends EventData {
+	postalCode: string;
+}
+
 export declare class CreditCardView extends CreditCardViewBase {
 	readonly android: any;
 	readonly cardParams: CardParams;

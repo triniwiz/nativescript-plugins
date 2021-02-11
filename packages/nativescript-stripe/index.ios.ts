@@ -524,6 +524,15 @@ class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPayment
 			});
 			this.lastCVC = textField.cardParams?.cvc;
 		}
+
+		if (textField.postalCode !== this.lastPostal) {
+			this?._owner?.get()?.notify({
+				eventName: CreditCardView.postalCodeChangedEvent,
+				object: this?._owner?.get(),
+				postalCode: textField.postalCode,
+			});
+			this.lastPostal = textField.postalCode;
+		}
 	}
 }
 
