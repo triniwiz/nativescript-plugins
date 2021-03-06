@@ -20,19 +20,19 @@ export function navigatingTo(args: EventData) {
 
 	player.on('stateChange', (event) => {
 		switch (event.state) {
-			case YoutubePlayerState.unstarted:
+			case YoutubePlayerState.Unstarted:
 				break;
-			case YoutubePlayerState.buffering:
+			case YoutubePlayerState.Buffering:
 				break;
-			case YoutubePlayerState.cued:
+			case YoutubePlayerState.Cued:
 				break;
-			case YoutubePlayerState.ended:
+			case YoutubePlayerState.Ended:
 				console.log('ended');
 				break;
-			case YoutubePlayerState.playing:
+			case YoutubePlayerState.Playing:
 				console.log('playing');
 				break;
-			case YoutubePlayerState.paused:
+			case YoutubePlayerState.Paused:
 				console.log('paused');
 				break;
 		}

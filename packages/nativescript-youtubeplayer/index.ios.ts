@@ -40,7 +40,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
 	#state: YoutubePlayerState = YoutubePlayerState.Unstarted;
 
 	createNativeView() {
-		this.#origin = `http://${NSBundle.mainBundle.bundleIdentifier}`;
+		this.#origin = 'https://www.youtube.com';
 		const jScript = `var meta = document.createElement('meta');
                 meta.setAttribute('name', 'viewport');
                 meta.setAttribute('content', 'width=device-width, shrink-to-fit=YES');

@@ -546,7 +546,7 @@ export class Stripe {
 				},
 				onError: function (error) {
 					if (typeof cb === 'function') {
-						cb(new Error(error.getLocalizedMessage()), null);
+						cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 					}
 				},
 			})
@@ -571,8 +571,7 @@ export class Stripe {
 				},
 				onError(error) {
 					if (typeof cb === 'function') {
-						console.log('onError', error);
-						cb(new Error(error.getLocalizedMessage()), null);
+						cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 					}
 				},
 			})
@@ -637,13 +636,13 @@ export class Stripe {
 					cb(null, PaymentMethod.fromNative(result));
 				},
 				onError: (error: any) => {
-					cb(new Error(error.localizedDescription), null);
+					cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 				},
 			});
 			this.stripe.createPaymentMethod(params, apiResultCallback);
 		} catch (error) {
 			if (typeof cb === 'function') {
-				cb(new Error(error.localizedDescription), null);
+				cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 			}
 		}
 	}
@@ -657,14 +656,14 @@ export class Stripe {
 						cb(null, StripePaymentIntent.fromNative(pi));
 					},
 					onError: (error: any) => {
-						cb(new Error(error.localizedDescription), null);
+						cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 					},
 				})
 			);
 			const pi = this.stripe.retrievePaymentIntentSynchronous(clientSecret);
 			cb(null, StripePaymentIntent.fromNative(pi));
 		} catch (error) {
-			cb(new Error(error.localizedDescription), null);
+			cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 		}
 	}
 
@@ -677,7 +676,7 @@ export class Stripe {
 					cb(null, StripeSetupIntent.fromNative(result.getIntent()));
 				},
 				onError: (error: any) => {
-					cb(new Error(error.localizedDescription), null);
+					cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 				},
 			});
 
@@ -686,7 +685,7 @@ export class Stripe {
 			};
 			this.stripe.confirmSetupIntent(activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
 		} catch (error) {
-			cb(new Error(error.localizedDescription), null);
+			cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 		}
 	}
 
@@ -698,7 +697,7 @@ export class Stripe {
 				cb(null, StripeSetupIntent.fromNative(result.getIntent()));
 			},
 			onError: (error: any) => {
-				cb(new Error(error.localizedDescription), null);
+				cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 			},
 		});
 
@@ -718,7 +717,7 @@ export class Stripe {
 					cb(null, StripePaymentIntent.fromNative(result.getIntent()));
 				},
 				onError: (error: any) => {
-					cb(new Error(error.localizedDescription), null);
+					cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 				},
 			});
 
@@ -727,7 +726,7 @@ export class Stripe {
 			};
 			this.stripe.confirmPayment(activity, piParams.native);
 		} catch (error) {
-			cb(new Error(error.localizedDescription), null);
+			cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 		}
 	}
 
@@ -740,7 +739,7 @@ export class Stripe {
 				cb(null, StripePaymentIntent.fromNative(result.getIntent()));
 			},
 			onError: (error: any) => {
-				cb(new Error(error.localizedDescription), null);
+				cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
 			},
 		});
 
@@ -921,11 +920,11 @@ export class CreditCardView extends CreditCardViewBase {
 			new android.text.TextWatcher({
 				afterTextChanged(param0: android.text.Editable): void {},
 				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
-				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+				onTextChanged(param0: any, param1: number, param2: number, param3: number) {
 					ref.get()?.notify({
 						eventName: CreditCardView.numberChangedEvent,
 						object: ref.get(),
-						number: typeof param0 !== 'string' ? new java.lang.String(param0) : param0,
+						number: typeof param0 === 'object' ? param0?.toString() : param0,
 					});
 				},
 			})
@@ -959,11 +958,11 @@ export class CreditCardView extends CreditCardViewBase {
 			new android.text.TextWatcher({
 				afterTextChanged(param0: android.text.Editable): void {},
 				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
-				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+				onTextChanged(param0: any, param1: number, param2: number, param3: number) {
 					ref.get()?.notify({
 						eventName: CreditCardView.cvcChangedEvent,
 						object: ref.get(),
-						cvc: typeof param0 !== 'string' ? new java.lang.String(param0) : param0,
+						cvc: typeof param0 === 'object' ? param0?.toString() : param0,
 					});
 				},
 			})
@@ -972,11 +971,11 @@ export class CreditCardView extends CreditCardViewBase {
 			new android.text.TextWatcher({
 				afterTextChanged(param0: android.text.Editable): void {},
 				beforeTextChanged(param0: string, param1: number, param2: number, param3: number): void {},
-				onTextChanged(param0: string, param1: number, param2: number, param3: number) {
+				onTextChanged(param0: any, param1: number, param2: number, param3: number) {
 					ref.get()?.notify({
 						eventName: CreditCardView.postalCodeChangedEvent,
 						object: ref.get(),
-						postalCode: typeof param0 !== 'string' ? new java.lang.String(param0) : param0,
+						postalCode: typeof param0 === 'object' ? param0?.toString() : param0,
 					});
 				},
 			})

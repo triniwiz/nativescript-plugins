@@ -18,6 +18,8 @@ export declare class CouchBase extends Common {
 
 	getDocument(documentId: string): any;
 
+	getDocuments(documentIds: string[]): any[];
+
 	updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode): boolean;
 
 	deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): boolean;

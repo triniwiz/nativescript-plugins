@@ -1,41 +1,36 @@
-import {Observable, EventData, Page, Frame} from '@nativescript/core';
-import {DemoSharedNativescriptCouchbase} from '@demo/shared';
-import {} from '@triniwiz/nativescript-couchbase';
-
+import { EventData, Page, Frame } from '@nativescript/core';
+import { DemoSharedNativescriptCouchbase } from '@demo/shared';
 let page;
 
 export function navigatingTo(args: EventData) {
-  page = <Page>args.object;
-  page.bindingContext = new DemoModel();
+	page = <Page>args.object;
+	page.bindingContext = new DemoModel();
 
-  page.getViewById('input').on('textChange', (args: any) => {
-    page.bindingContext.set('input', args.object.text);
-  });
+	page.getViewById('input').on('textChange', (args: any) => {
+		page.bindingContext.set('input', args.object.text);
+	});
 }
 
-export function pageLoaded(args: EventData) {
-}
+export function pageLoaded(args: EventData) {}
 
 export function addNew(args) {
-  page.bindingContext.addItem();
-  const input = page.getViewById('input') as any;
-  if (input) {
-    input.text = '';
-  }
+	page.bindingContext.addItem();
+	const input = page.getViewById('input') as any;
+	if (input) {
+		input.text = '';
+	}
 }
 
-export function addLargeItem(args){
-  page.bindingContext.addLargeItem();
+export function addLargeItem(args) {
+	page.bindingContext.addLargeItem();
 }
 
-export function nukeIt(args){
-  page.bindingContext.nukeIt();
+export function nukeIt(args) {
+	page.bindingContext.nukeIt();
 }
 
 export function goToSearch(args) {
-  Frame.topmost().navigate('~/plugin-demos/nativescript-couchbase-search/nativescript-couchbase-search');
+	Frame.topmost().navigate('~/plugin-demos/nativescript-couchbase-search/nativescript-couchbase-search');
 }
 
-
-export class DemoModel extends DemoSharedNativescriptCouchbase {
-}
+export class DemoModel extends DemoSharedNativescriptCouchbase {}

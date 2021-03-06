@@ -144,7 +144,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
 		initWebViewClient();
 		initWebChromeClient();
 		const packageName: android.content.Context = Utils.android.getApplicationContext();
-		this.#origin = `https://${packageName.getPackageName()}`;
+		this.#origin = 'https://www.youtube.com'; //`https://${packageName.getPackageName()}`;
 		this.#webView = new android.webkit.WebView(this._context, null);
 		const settings = this.#webView.getSettings();
 		settings.setJavaScriptEnabled(true);

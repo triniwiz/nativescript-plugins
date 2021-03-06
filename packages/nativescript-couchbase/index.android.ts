@@ -11,7 +11,6 @@ export class CouchBase extends Common {
 	readonly ios: any;
 	readonly #config: com.couchbase.lite.DatabaseConfiguration;
 	readonly #couchbase: com.couchbase.lite.Database;
-
 	constructor(name: string) {
 		super();
 		if (!didInit) {
@@ -103,6 +102,16 @@ export class CouchBase extends Common {
 		try {
 			const doc = com.github.triniwiz.couchbase.Couchbase.getDocument(this.android, documentId);
 			return JSON.parse(doc);
+		} catch (e) {
+			console.error(e.message);
+			return null;
+		}
+	}
+
+	getDocuments(documentIds: string[]): any | null {
+		try {
+			const docs = com.github.triniwiz.couchbase.Couchbase.getDocuments(this.android, documentIds);
+			return JSON.parse(docs);
 		} catch (e) {
 			console.error(e.message);
 			return null;
@@ -371,14 +380,14 @@ export class CouchBase extends Common {
 
 	addDocumentChangeListener(documentId: string, callback: (id: string) => void) {
 		if (typeof documentId === 'string') {
-			const listener = (com as any).couchbase.lite.DocumentChangeListener.extend({
+			const listener = new (com as any).couchbase.lite.DocumentChangeListener({
 				changed(changes: any) {
 					if (callback && typeof callback === 'function') {
 						callback(changes.getDocumentID());
 					}
 				},
 			});
-			const token = this.android.addDocumentChangeListener(documentId, new listener());
+			const token = this.android.addDocumentChangeListener(documentId, listener);
 			if (!isNullOrUndefined(token)) {
 				this._docChangeListenerMap[callback as any] = token;
 			}
@@ -394,7 +403,7 @@ export class CouchBase extends Common {
 	}
 
 	addDatabaseChangeListener(callback: (ids: string[]) => void) {
-		const listener = (com as any).couchbase.lite.DatabaseChangeListener.extend({
+		const listener = new com.couchbase.lite.DatabaseChangeListener({
 			changed(changes: any) {
 				if (callback && typeof callback === 'function') {
 					let ids = [];
@@ -408,7 +417,7 @@ export class CouchBase extends Common {
 				}
 			},
 		});
-		const token = this.android.addChangeListener(new listener());
+		const token = this.android.addChangeListener(listener);
 		if (!isNullOrUndefined(token)) {
 			this._listenerMap[callback as any] = token;
 		}

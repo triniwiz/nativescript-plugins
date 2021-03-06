@@ -11,16 +11,15 @@
 <a href="https://twitter.com/intent/follow?screen_name=triniwiz">
 <img src="https://img.shields.io/twitter/follow/triniwiz?style=style=for-the-badge&logo=twitter" alt="follow on Twitter"></a>
 </p>
- 
 
-|   Android Device  |   Android Emulator    |   iOS Device  |   iOS Simulator   |
-| :-------------:     |:-------------:        |:-------------:| :-----:            |
-| :white_check_mark:|:white_check_mark:     |:white_check_mark:|    :white_check_mark:| 
+
+|   Android Device   |  Android Emulator  |     iOS Device     |   iOS Simulator    |
+| :----------------: | :----------------: | :----------------: | :----------------: |
+| :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 [Couchbase Lite](https://docs.couchbase.com/couchbase-lite/current/introduction.html) is an embedded, NoSQL JSON Document Style database for your mobile apps.
 
 You can use Couchbase Lite as a standalone embedded database within your mobile apps, or with [Sync Gateway](https://docs.couchbase.com/sync-gateway/current/introduction.html) and [Couchbase Server](https://docs.couchbase.com/home/server.html) to provide a complete cloud to edge synchronized solution
-
 
 - [CouchBase(...)](couchbase.md#couchbase-2)
 - [close()](couchbase.md#close)
@@ -28,6 +27,7 @@ You can use Couchbase Lite as a standalone embedded database within your mobile 
 - [setBlob(...)](couchbase.md#setblob)
 - [getBlob(...)](couchbase.md#getblob)
 - [getDocument(...)](couchbase.md#getDocument)
+- [getDocuments(...)](couchbase.md#getDocuments)
 - [updateDocument(...)](couchbase.md#updateDocument)
 - [deleteDocument(...)](couchbase.md#deleteDocument)
 - [destroyDatabase(...)](couchbase.md#destroydatabase)
@@ -63,19 +63,20 @@ android {
     }
 }
 ```
+
 :::
 
 ## iOS
+
 ::: warning Note
 The minimum required platform is version 10
 :::
 
-## Installing 
+## Installing
 
 ```bash
     ns plugin add @triniwiz/nativescript-couchbase
 ```
-
 
 ## Usage
 
@@ -84,27 +85,25 @@ import { CouchBase, ConcurrencyMode } from '@triniwiz/nativescript-couchbase';
 const database = new CouchBase('my-database');
 
 const documentId = database.createDocument({
-    "firstname": "O",
-    "lastname": "Fortune",
-    "address": {
-        "country": "Trinidad and Tobago"
-    },
-    "twitter": "https://www.twitter.com/triniwiz"
+	firstname: 'O',
+	lastname: 'Fortune',
+	address: {
+		country: 'Trinidad and Tobago',
+	},
+	twitter: 'https://www.twitter.com/triniwiz',
 });
 
 const person = database.getDocument(documentId);
 
-
 database.updateDocument(documentId, {
-    "firstname": "Osei",
-    "lastname": "Fortune",
-    "twitter": "https://www.twitter.com/triniwiz"
+	firstname: 'Osei',
+	lastname: 'Fortune',
+	twitter: 'https://www.twitter.com/triniwiz',
 });
 
 // Default concurrency mode is FailOnConflict if you don't pass it
 const isDeleted = database.deleteDocument(documentId, ConcurrencyMode.FailOnConflict);
 ```
-
 
 ### Synchronization with Couchbase Sync Gateway and Couchbase Server
 
@@ -112,15 +111,11 @@ const isDeleted = database.deleteDocument(documentId, ConcurrencyMode.FailOnConf
 import { CouchBase } from '@triniwiz/nativescript-couchbase';
 const database = new CouchBase('my-database');
 
-const push = database.createPushReplication(
-  'ws://sync-gateway-host:4984/my-database'
-);
-push.setUserNameAndPassword("user","password");
-const pull = database.createPullReplication(
-  'ws://sync-gateway-host:4984/my-database'
-);
-pull.setSessionId("SomeId");
-pull.setSessionIdAndCookieName("SomeId","SomeCookieName");
+const push = database.createPushReplication('ws://sync-gateway-host:4984/my-database');
+push.setUserNameAndPassword('user', 'password');
+const pull = database.createPullReplication('ws://sync-gateway-host:4984/my-database');
+pull.setSessionId('SomeId');
+pull.setSessionIdAndCookieName('SomeId', 'SomeCookieName');
 
 push.setContinuous(true);
 pull.setContinuous(true);
@@ -131,19 +126,21 @@ pull.start();
 ### Listening for Changes
 
 #### Datebase
+
 ```ts
-database.addDatabaseChangeListener(function(changes) {
-  for (var i = 0; i < changes.length; i++) {
-    const documentId = changes[i];
-    console.log(documentId);
-  }
+database.addDatabaseChangeListener(function (changes) {
+	for (var i = 0; i < changes.length; i++) {
+		const documentId = changes[i];
+		console.log(documentId);
+	}
 });
 ```
 
 #### Document
+
 ```ts
-database.addDocumentChangeListener("document-id-to-watch",function(documentId) {
-    console.log(documentId);
+database.addDocumentChangeListener('document-id-to-watch', function (documentId) {
+	console.log(documentId);
 });
 ```
 
@@ -151,15 +148,16 @@ database.addDocumentChangeListener("document-id-to-watch",function(documentId) {
 
 ```ts
 const results = database.query({
-  select: [], // Leave empty to query for all
-  from: 'otherDatabaseName', // Omit or set null to use current db
-  where: [{ property: 'firstName', comparison: 'equalTo', value: 'Osei' }],
-  order: [{ property: 'firstName', direction: 'desc' }],
-  limit: 2
+	select: [], // Leave empty to query for all
+	from: 'otherDatabaseName', // Omit or set null to use current db
+	where: [{ property: 'firstName', comparison: 'equalTo', value: 'Osei' }],
+	order: [{ property: 'firstName', direction: 'desc' }],
+	limit: 2,
 });
 ```
 
 ### Transactions
+
 Using the method `inBatch` to run group of database operations in a batch/transaction. Use this when performing bulk write operations like multiple inserts/updates; it saves the overhead of multiple database commits, greatly improving performance.
 
 ```ts
@@ -175,16 +173,16 @@ database.inBatch(() => {
         }
         "twitter": "https://www.twitter.com/triniwiz"
     });
-    
+
     const person = database.getDocument(documentId);
-    
-    
+
+
     database.updateDocument(documentId, {
         "firstname": "Osei",
         "lastname": "Fortune",
         "twitter": "https://www.twitter.com/triniwiz"
     });
-    
+
     const isDeleted = database.deleteDocument(documentId);
 });
 ```
@@ -192,21 +190,23 @@ database.inBatch(() => {
 ## API
 
 ### CouchBase(...)
+
 ```ts
- new CouchBase("nsDB");
+new CouchBase('nsDB');
 ```
 
 Creates or opens a database
 
-| Param   | Type    |
-| :---:   | :---:   |
-| name    | string  |
+| Param |  Type  |
+| :---: | :----: |
+| name  | string |
 
-**Returns**: [CouchBase](couchbase.md#couchbase-2) 
+**Returns**: [CouchBase](couchbase.md#couchbase-2)
 
 ---
 
 ### close()
+
 ```ts
  close(): void;
 ```
@@ -216,48 +216,51 @@ Closes the currently opened database
 ---
 
 ### createDocument(...)
+
 ```ts
  createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode): string;
 ```
 
 Creates a new document
 
-| Param   | Type    |
-| :---:   | :---:   |
-| data    | Object  |
-| documentId    | string  | *set optional id of the created document
-| concurrencyMode   |  [ConcurrencyMode](couchbase.md#concurrencymode) |
+|      Param      |                      Type                       |
+| :-------------: | :---------------------------------------------: |
+|      data       |                     Object                      |
+|   documentId    |                     string                      | \*set optional id of the created document |
+| concurrencyMode | [ConcurrencyMode](couchbase.md#concurrencymode) |
 
 **Returns**: <code>string</code>
 
---- 
+---
 
 ### setBlob(...)
+
 ```ts
  setBlob(id: string, name: string, blob: any, mimeType?: string, concurrencyMode?: ConcurrencyMode): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| id    | string  |
-| name    | string  |
-| blob  | any |
-|mimeType   | string |
-| concurrencyMode   |  [ConcurrencyMode](couchbase.md#concurrencymode) |
+|      Param      |                      Type                       |
+| :-------------: | :---------------------------------------------: |
+|       id        |                     string                      |
+|      name       |                     string                      |
+|      blob       |                       any                       |
+|    mimeType     |                     string                      |
+| concurrencyMode | [ConcurrencyMode](couchbase.md#concurrencymode) |
 
 Adds a blob to a document
 
 ---
 
 ### getBlob(...)
+
 ```ts
  getBlob(id: string, name: string): Blob;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| id    | string  |
-| name    | string  |
+| Param |  Type  |
+| :---: | :----: |
+|  id   | string |
+| name  | string |
 
 Gets a blob from a document
 
@@ -266,30 +269,48 @@ Gets a blob from a document
 ---
 
 ### getDocument(...)
+
 ```ts
  getDocument(documentId: string): Object;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| documentId    | string  |
+|   Param    |  Type  |
+| :--------: | :----: |
+| documentId | string |
 
-Gets  a document
+Gets a document
 
 **Return**: <code>Object</code>
 
 ---
 
+### getDocuments(...)
+
+```ts
+ getDocuments(documentIds: string[]): Object[];
+```
+
+|    Param    |   Type   |
+| :---------: | :------: |
+| documentIds | string[] |
+
+Get a list of documents by id
+
+**Return**: <code>Object[]</code>
+
+---
+
 ### updateDocument(...)
+
 ```ts
  updateDocument(documentId: string, data: Object, concurrencyMode?: ConcurrencyMode): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| documentId    | string  |
-| data    | Object  |
-| concurrencyMode   |  [ConcurrencyMode](couchbase.md#concurrencymode) |
+|      Param      |                      Type                       |
+| :-------------: | :---------------------------------------------: |
+|   documentId    |                     string                      |
+|      data       |                     Object                      |
+| concurrencyMode | [ConcurrencyMode](couchbase.md#concurrencymode) |
 
 Updates a document
 
@@ -297,16 +318,16 @@ Updates a document
 
 ---
 
-
 ### deleteDocument(...)
+
 ```ts
  deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| documentId    | string  |
-| data    | [ConcurrencyMode](couchbase.md#concurrencymode)  |
+|   Param    |                      Type                       |
+| :--------: | :---------------------------------------------: |
+| documentId |                     string                      |
+|    data    | [ConcurrencyMode](couchbase.md#concurrencymode) |
 
 Deletes a document
 
@@ -314,8 +335,8 @@ Deletes a document
 
 ---
 
-
 ### destroyDatabase(...)
+
 ```ts
  destroyDatabase(): void;
 ```
@@ -325,14 +346,14 @@ Destroys the currently opened database
 ---
 
 ### query(...)
+
 ```ts
  query(query?: Query): Array<Object>;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| query    | [Query](couchbase.md#query-2) |
-
+| Param |             Type              |
+| :---: | :---------------------------: |
+| query | [Query](couchbase.md#query-2) |
 
 Queries the currently opened database
 
@@ -341,14 +362,15 @@ Queries the currently opened database
 ---
 
 ### createReplication(...)
+
 ```ts
  createReplication(remoteUrl: string, direction: 'push' | 'pull' | 'both'): Replicator;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| remoteUrl    | string |
-| direction    | `'push' | 'pull' | 'both'` |
+|   Param   |  Type   |
+| :-------: | :-----: |
+| remoteUrl | string  |
+| direction | `'push' | 'pull' | 'both'` |
 
 Creates a replicator which can be used later on to sync updates with a remote database
 
@@ -357,15 +379,16 @@ Creates a replicator which can be used later on to sync updates with a remote da
 ---
 
 ### createPullReplication(...)
+
 ```ts
  createPullReplication(remoteUrl: string, username?: string, password?: string): Replicator;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| remoteUrl    | string |
-| username    | string |
-| password    | string |
+|   Param   |  Type  |
+| :-------: | :----: |
+| remoteUrl | string |
+| username  | string |
+| password  | string |
 
 Creates a pull replicator which can be used later on to sync updates with a remote database
 
@@ -374,15 +397,16 @@ Creates a pull replicator which can be used later on to sync updates with a remo
 ---
 
 ### createPushReplication(...)
+
 ```ts
  createPushReplication(remoteUrl: string, username?: string, password?: string): Replicator;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| remoteUrl    | string |
-| username    | string |
-| password    | string |
+|   Param   |  Type  |
+| :-------: | :----: |
+| remoteUrl | string |
+| username  | string |
+| password  | string |
 
 Creates a push replicator which can be used later on to sync updates with a remote database
 
@@ -390,171 +414,166 @@ Creates a push replicator which can be used later on to sync updates with a remo
 
 ---
 
-
 ### addDatabaseChangeListener(...)
+
 ```ts
  addDatabaseChangeListener(callback: (ids: string[]) => void): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| callback    | (ids: string[]) => void |
+|  Param   |          Type           |
+| :------: | :---------------------: |
+| callback | (ids: string[]) => void |
 
 Adds a database change listener
 
 ---
 
 ### removeDatabaseChangeListener(...)
+
 ```ts
   removeDatabaseChangeListener(callback: (ids: string[]) => void): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| callback    | (ids: string[]) => void |
+|  Param   |          Type           |
+| :------: | :---------------------: |
+| callback | (ids: string[]) => void |
 
 Removes a database change listener
-
 
 ---
 
 ### addDocumentChangeListener(...)
+
 ```ts
  addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| callback    | (documentId: string, id: string) => void |
+|  Param   |                   Type                   |
+| :------: | :--------------------------------------: |
+| callback | (documentId: string, id: string) => void |
 
 Adds a document change listener
 
 ---
 
 ### removeDocumentChangeListener(...)
+
 ```ts
   removeDocumentChangeListener(callback: (id: string) => void): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| callback    | (id: string) => void |
+|  Param   |         Type         |
+| :------: | :------------------: |
+| callback | (id: string) => void |
 
 Removes a document change listener
 
-
 ---
 
-
 ### inBatch(...)
+
 ```ts
  inBatch(batch: () => void): void;
 ```
 
-| Param   | Type    |
-| :---:   | :---:   |
-| batch    | Function |
+| Param |   Type   |
+| :---: | :------: |
+| batch | Function |
 
 Runs a group of operations in a batch. Use this when performing bulk write operations like multiple create/update; it saves the overhead of multiple database commits, greatly improving performance.
 
-
 ---
-
 
 ## Classes
 
 ### Replicator
 
-| Method    | Type  |
-| :---:     |:---: |
-| start()   | void|
-| stop()    |void  |
-| isRunning()| boolean |
-| setContinuous(isContinuous: boolean) | void  |
-| setUserNameAndPassword(username: string, password: string) |  void    |
-| setChannels(channels: string[])  |  void |
-| setSessionIdAndCookieName(sessionId: string, cookieName: string)   |  void | 
-| setSessionId(sessionId: string)   | void   |
-
+|                              Method                              |  Type   |
+| :--------------------------------------------------------------: | :-----: |
+|                             start()                              |  void   |
+|                              stop()                              |  void   |
+|                           isRunning()                            | boolean |
+|               setContinuous(isContinuous: boolean)               |  void   |
+|    setUserNameAndPassword(username: string, password: string)    |  void   |
+|                 setChannels(channels: string[])                  |  void   |
+| setSessionIdAndCookieName(sessionId: string, cookieName: string) |  void   |
+|                 setSessionId(sessionId: string)                  |  void   |
 
 ### Blob
 
-| Prop      | Type                                              |
-| :---:     | :---:                                             |
-| ios    |   any                                          |
-| android     |  any  |
-| content   |   any                                             |
-| contentStream     |  any |
-| contentType     |   any                                             |
-| length    |   number                                             |
-| digest      |   string                                          |
-| properties      |   Map<string, any>                                          |
+|     Prop      |       Type       |
+| :-----------: | :--------------: |
+|      ios      |       any        |
+|    android    |       any        |
+|    content    |       any        |
+| contentStream |       any        |
+|  contentType  |       any        |
+|    length     |      number      |
+|    digest     |      string      |
+|  properties   | Map<string, any> |
 
 ## Interfaces
 
 ### Query
-| Prop      | Type                                              |
-| :---:     | :---:                                             |
-| select    |   any[]                                           |
-| where     |  [QueryWhereItem](couchbase.md#querywhereitem)[]  |
-| groupBy   |   any                                             |
-| order     |  [QueryOrderItem](couchbase.md#queryorderitem)[]  |
-| limit     |   any                                             |
-| offset    |   any                                             |
-| from      |   string                                          |
+
+|  Prop   |                      Type                       |
+| :-----: | :---------------------------------------------: |
+| select  |                      any[]                      |
+|  where  | [QueryWhereItem](couchbase.md#querywhereitem)[] |
+| groupBy |                       any                       |
+|  order  | [QueryOrderItem](couchbase.md#queryorderitem)[] |
+|  limit  |                       any                       |
+| offset  |                       any                       |
+|  from   |                     string                      |
 
 ### QueryWhereItem
 
-| Prop      | Type                                              |
-| :---:     | :---:                                             |
-| logical   |  [QueryLogicalOperator](couchbase.md#querylogicaloperator)|
-| property  |  string  |
-| comparison|   [QueryComparisonOperator](couchbase.md#querycomparisonoperator)|
-| value     |  any|
+|    Prop    |                              Type                               |
+| :--------: | :-------------------------------------------------------------: |
+|  logical   |    [QueryLogicalOperator](couchbase.md#querylogicaloperator)    |
+|  property  |                             string                              |
+| comparison | [QueryComparisonOperator](couchbase.md#querycomparisonoperator) |
+|   value    |                               any                               |
 
 ### QueryOrderItem
 
-| Prop      | Type |
-| :---:     | :---:|
-| property  |  string  |
-| direction|   'asc' | 'desc' |
-
+|   Prop    |  Type  |
+| :-------: | :----: |
+| property  | string |
+| direction | 'asc'  | 'desc' |
 
 ## Enums
 
 ### QueryMeta
 
-| Members | Value           |
-| :---:   | :---:           |
-| ALL     | "COUCHBASE_ALL" |
-| ID      | "COUCHBASE_ID"  |
+| Members |      Value      |
+| :-----: | :-------------: |
+|   ALL   | "COUCHBASE_ALL" |
+|   ID    | "COUCHBASE_ID"  |
 
 ### QueryLogicalOperator
 
 | Members | Value |
-| :---:   | :---: |
-| AND     | "and" |
-| OR      | "or"  |
+| :-----: | :---: |
+|   AND   | "and" |
+|   OR    | "or"  |
 
 ### QueryArrayOperator
 
-| Members   | Value     |
-| :---:     | :---:     |
-| CONTAINS  | "contains" |
-
+| Members  |   Value    |
+| :------: | :--------: |
+| CONTAINS | "contains" |
 
 ### ConcurrencyMode
 
-| Members   | Value     | Description |
-| :---:     | :---:     | :---       |
-| LastWriteWins    | 0  | (default) The last operation wins if there is a conflict. |
-| FailOnConflict      | 1    | The operation will fail if there is a conflict. |
-
+|    Members     | Value | Description                                               |
+| :------------: | :---: | :-------------------------------------------------------- |
+| LastWriteWins  |   0   | (default) The last operation wins if there is a conflict. |
+| FailOnConflict |   1   | The operation will fail if there is a conflict.           |
 
 ## Types
 
 ### QueryComparisonOperator
-
 
 <code>
 "modulo"            |<br/>
