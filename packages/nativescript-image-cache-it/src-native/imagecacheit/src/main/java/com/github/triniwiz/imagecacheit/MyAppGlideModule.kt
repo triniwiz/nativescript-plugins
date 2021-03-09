@@ -61,7 +61,7 @@ class MyAppGlideModule : AppGlideModule() {
   private class DispatchingProgressListener internal constructor() : ResponseProgressListener {
     private val LISTENERS: MutableMap<String, ImageViewProgressListener> = WeakHashMap()
     private val PROGRESSES: MutableMap<String, Long> = HashMap()
-    private val handler: Handler
+    private val handler: Handler = Handler(Looper.getMainLooper())
     fun forget(key: String) {
       LISTENERS.remove(key)
       PROGRESSES.remove(key)
@@ -96,9 +96,6 @@ class MyAppGlideModule : AppGlideModule() {
       }
     }
 
-    init {
-      handler = Handler(Looper.getMainLooper())
-    }
   }
 
   private class OkHttpProgressResponseBody internal constructor(
@@ -144,8 +141,11 @@ class MyAppGlideModule : AppGlideModule() {
 
   companion object {
     private val progressListener = DispatchingProgressListener()
+    @JvmStatic
     var maxDiskCacheSize: Long = 0
+    @JvmStatic
     var maxMemoryCacheSize: Long = 0
+    @JvmStatic
     var maxDiskCacheAge: Long = 0
     private fun createInterceptor(listener: ResponseProgressListener): Interceptor {
       return Interceptor { chain ->

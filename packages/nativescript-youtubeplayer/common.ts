@@ -1,106 +1,112 @@
 export enum YoutubePlayerState {
-    unstarted = -1,
-    ended = 0,
-    playing = 1,
-    paused = 2,
-    buffering = 3,
-    cued = 5
+	Unstarted = -1,
+	Ended = 0,
+	Playing = 1,
+	Paused = 2,
+	Buffering = 3,
+	Cued = 5,
 }
 
 export enum YoutubePlayerQuality {
-    Small = 'small',
-    Medium = 'medium',
-    Large = 'large',
-    HD720 = 'hd720',
-    HD1080 = 'hd1080',
-    Highres = 'highres'
+	Small = 'small',
+	Medium = 'medium',
+	Large = 'large',
+	HD720 = 'hd720',
+	HD1080 = 'hd1080',
+	HighRes = 'highres',
 }
 
 export enum YoutubePlayerErrors {
-    InvalidParam = 'The request contains an invalid parameter value',
-    HTML5Error = 'The requested content cannot be played in an HTML5 player',
-    VideoNotFound = 'The video requested was not found',
-    NotEmbeddable = 'The owner of the requested video does not allow it to be played in embedded players.',
+	InvalidParam = 'The request contains an invalid parameter value',
+	HTML5Error = 'The requested content cannot be played in an HTML5 player',
+	VideoNotFound = 'The video requested was not found',
+	NotEmbeddable = 'The owner of the requested video does not allow it to be played in embedded players.',
 }
 
 export enum YoutubePlayerInternalErrors {
-    InvalidParamErrorCode = 2,
-    HTML5ErrorCode = 5,
-    VideoNotFoundErrorCode = 100,
-    NotEmbeddableErrorCode = 101,
-    CannotFindVideoErrorCode = 105,
-    SameAsNotEmbeddableErrorCode = 150
+	InvalidParamErrorCode = 2,
+	HTML5ErrorCode = 5,
+	VideoNotFoundErrorCode = 100,
+	NotEmbeddableErrorCode = 101,
+	CannotFindVideoErrorCode = 105,
+	SameAsNotEmbeddableErrorCode = 150,
 }
 
 import { booleanConverter, CSSType, Property, View } from '@nativescript/core';
-export const srcProperty = new Property<YoutubePlayerBase, string>({
-    name: 'src'
+
+export const videoIdProperty = new Property<YoutubePlayerBase, string>({
+	name: 'videoId',
 });
+
 export const showRelatedVideosProperty = new Property<YoutubePlayerBase, boolean>({
-    name: 'showRelatedVideos',
-    defaultValue: false,
-    valueConverter: booleanConverter
+	name: 'showRelatedVideos',
+	defaultValue: false,
+	valueConverter: booleanConverter,
 });
 export const showYoutubeLogoProperty = new Property<YoutubePlayerBase, boolean>({
-    name: 'showYoutubeLogo',
-    defaultValue: true,
-    valueConverter: booleanConverter
+	name: 'showYoutubeLogo',
+	defaultValue: true,
+	valueConverter: booleanConverter,
 });
 export const loopProperty = new Property<YoutubePlayerBase, boolean>({
-    name: 'loop',
-    defaultValue: false,
-    valueConverter: booleanConverter
+	name: 'loop',
+	defaultValue: false,
+	valueConverter: booleanConverter,
 });
 export const autoPlayProperty = new Property<YoutubePlayerBase, boolean>({
-    name: 'autoPlay',
-    defaultValue: false,
-    valueConverter: booleanConverter
+	name: 'autoPlay',
+	defaultValue: false,
+	valueConverter: booleanConverter,
 });
 
 export const showFullScreenToggleProperty = new Property<YoutubePlayerBase, boolean>({
-    name: 'showFullScreenToggle',
-    defaultValue: true,
-    valueConverter: booleanConverter
+	name: 'showFullScreenToggle',
+	defaultValue: true,
+	valueConverter: booleanConverter,
 });
 
 export const controlsProperty = new Property<YoutubePlayerBase, boolean>({
-    name: 'controls',
-    defaultValue: true,
-    valueConverter: booleanConverter
+	name: 'controls',
+	defaultValue: true,
+	valueConverter: booleanConverter,
 });
 
-@CSSType("YoutubePlayer")
+export const playsInLineProperty = new Property<YoutubePlayerBase, boolean>({
+	name: 'playsInLine',
+	defaultValue: true,
+	valueConverter: booleanConverter,
+});
+
+@CSSType('YoutubePlayer')
 export abstract class YoutubePlayerBase extends View {
-    public static fullScreenEvent = 'fullScreen';
-    public static playingEvent = 'playing';
-    public static pausedEvent = 'paused';
-    public static stoppedEvent = 'stopped';
-    public static bufferingEvent = 'buffering';
-    public static loadingEvent = 'loading';
-    public static adStartedEvent = 'adStarted';
-    public static startedEvent = 'started';
-    public static endedEvent = 'ended';
-    public static videoLoadedEvent = 'videoLoaded';
-    public static errorEvent = 'error';
-    public static seekEvent = 'seek';
-    public src: string;
-    public showRelatedVideos: boolean;
-    public showYoutubeLogo: boolean;
-    public loop: boolean;
-    public autoPlay: boolean;
-    public showFullScreenToggle: boolean;
-    public controls: boolean;
+	public static onReadyEvent = 'ready';
+	public static onErrorEvent = 'error';
+	public static onCurrentTimeEvent = 'currentTime';
+	public static onApiReadyEvent = 'apiReady';
+	public static onStateChangeEvent = 'stateChange';
+	public static onFullScreenEvent = 'fullScreen';
+	public static onPlayBackQualityEvent = 'playBackQuality';
+	public static onPlaybackRateChangeEvent = 'playbackRate';
+	public videoId: string;
+	public showRelatedVideos: boolean;
+	public showYoutubeLogo: boolean;
+	public loop: boolean;
+	public autoPlay: boolean;
+	public showFullScreenToggle: boolean;
+	public controls: boolean;
+	public playsInLine: boolean;
 }
 
-srcProperty.register(YoutubePlayerBase);
+videoIdProperty.register(YoutubePlayerBase);
 showRelatedVideosProperty.register(YoutubePlayerBase);
 showYoutubeLogoProperty.register(YoutubePlayerBase);
 loopProperty.register(YoutubePlayerBase);
 autoPlayProperty.register(YoutubePlayerBase);
 showFullScreenToggleProperty.register(YoutubePlayerBase);
 controlsProperty.register(YoutubePlayerBase);
+playsInLineProperty.register(YoutubePlayerBase);
 export const getPlayerData = (playerVars, videoId) => {
-    return `<!DOCTYPE html>
+	return `<!DOCTYPE html>
     <html>
     <head>
     <style>
@@ -123,7 +129,7 @@ export const getPlayerData = (playerVars, videoId) => {
     <div id="container" class="embed-container">
     <div id="player"></div>
 </div>
-    
+
     <script>
     var tag = document.createElement('script');
 
@@ -141,8 +147,7 @@ var iframe;
 function onYouTubeIframeAPIReady() {
     player = new YT.Player('player',
         {
-            allow_embed: 1,
-            videoId: ${JSON.stringify(videoId ? videoId : '')},
+        videoId: ${JSON.stringify(videoId ? videoId : '')},
         playerVars: ${playerVars},
         events:
         {
@@ -191,9 +196,9 @@ function onPlayerReady(event) {
 
 function onFullScreenChange(event) {
     if (document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
-        window.location.href = 'ytplayer://onFullScreenChange?data=' + true;
+        window.location.href = 'ns-yt://onFullScreenChange?data=' + true;
     } else {
-        window.location.href = 'ytplayer://onFullScreenChange?data=' + false;
+        window.location.href = 'ns-yt://onFullScreenChange?data=' + false;
     }
 }
 
@@ -271,5 +276,5 @@ document.addEventListener('msfullscreenchange', onFullScreenChange);
 document.addEventListener('webkitfullscreenchange', onFullScreenChange);
     </script>
     </body>
-    </html>`
-}
+    </html>`;
+};

@@ -12,6 +12,7 @@ object Data {
   init {
     try {
       items = JSONArray("""[
+        {url: 'https://source.unsplash.com/random'},
         {url: null },
         {url: 'https://via.placeholder.com/100'},
         {url: 'https://www.httpwatch.com/httpgallery/authentication/authenticatedimage/default.aspx?0.15533668997072891'},

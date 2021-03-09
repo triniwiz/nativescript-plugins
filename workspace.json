@@ -208,6 +208,21 @@
 								"glob": "**/*",
 								"input": "packages/nativescript-stripe/platforms/",
 								"output": "./platforms/"
+							},
+							{
+								"glob": "**/*.d.ts",
+								"input": "packages/nativescript-stripe/paymentMethod/",
+								"output": "./paymentMethod/"
+							},
+							{
+								"glob": "**/*.d.ts",
+								"input": "packages/nativescript-stripe/source/",
+								"output": "./source/"
+							},
+							{
+								"glob": "**/*.d.ts",
+								"input": "packages/nativescript-stripe/standard/",
+								"output": "./standard/"
 							}
 						]
 					}
@@ -1847,6 +1862,11 @@
 								"glob": "package.json",
 								"input": "packages/nativescript-pager/react/",
 								"output": "./react/"
+							},
+							{
+								"glob": "**/*.js",
+								"input": "packages/nativescript-pager/vue/",
+								"output": "./vue/"
 							}
 						]
 					}
@@ -1855,9 +1875,7 @@
 					"builder": "@nrwl/workspace:run-commands",
 					"options": {
 						"cwd": "packages/nativescript-pager",
-						"commands": [
-							"tsc react/index.tsx --noEmitHelpers true --target es2017 --module commonjs --lib es2015,dom,es2017 --outDir \"../../dist/packages/nativescript-pager\" --jsx \"react\" --skipLibCheck true --experimentalDecorators true --declaration true"
-						],
+						"commands": ["tsc react/index.tsx --noEmitHelpers true --target es2017 --module commonjs --lib es2015,dom,es2017 --outDir \"../../dist/packages/nativescript-pager\" --jsx \"react\" --skipLibCheck true --experimentalDecorators true --declaration true"],
 						"parallel": false
 					}
 				},

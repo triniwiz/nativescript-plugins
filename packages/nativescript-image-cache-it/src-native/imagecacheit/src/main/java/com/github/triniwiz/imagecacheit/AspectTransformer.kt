@@ -2,6 +2,7 @@ package com.github.triniwiz.imagecacheit
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.request.target.Target
 import jp.wasabeef.glide.transformations.BitmapTransformation
@@ -13,6 +14,7 @@ import java.security.MessageDigest
 class AspectTransformer(private val decodeWidth: Int, private val decodeHeight: Int, private val keepAspectRatio: Boolean) : BitmapTransformation() {
   override fun transform(context: Context, pool: BitmapPool,
                          toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
+    Log.d("com.test", "??")
     var bitmap = toTransform
     val sourceWidth = toTransform.width
     val sourceHeight = toTransform.height

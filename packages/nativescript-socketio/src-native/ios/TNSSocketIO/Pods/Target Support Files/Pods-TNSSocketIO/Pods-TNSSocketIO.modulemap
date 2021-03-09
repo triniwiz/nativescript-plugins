@@ -1,0 +1,6 @@
+module Pods_TNSSocketIO {
+  umbrella header "Pods-TNSSocketIO-umbrella.h"
+
+  export *
+  module * { export * }
+}

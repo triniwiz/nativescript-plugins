@@ -15,9 +15,11 @@ import android.os.Looper
 import android.util.AttributeSet
 import android.util.Base64
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
@@ -72,7 +74,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
   private var errorHolder: RequestBuilder<Drawable>? = null
   private var fallbackImage: Any? = null
   var requestManager: RequestManager? = null
-  var overlayColor = -1
+  var overlayColor = 0
   var progressListener: ProgressListener? = null
   var eventsListener: EventsListener? = null
   override fun onProgress(key: String?, bytesRead: Long, expectedLength: Long) {
@@ -114,6 +116,12 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       try {
         val filter = a.getString(R.styleable.ImageView_filter)
         filter?.let { setFilter(it) }
+
+        val overlayColor = a.getColor(R.styleable.ImageView_overlayColor, Color.TRANSPARENT)
+        Log.d("com.test", "color $overlayColor")
+        if (overlayColor != 0){
+          this.overlayColor = overlayColor
+        }
       } finally {
         a.recycle()
       }
@@ -217,8 +225,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     } catch (e: NoSuchMethodException) {
     } catch (e: InvocationTargetException) {
     }
-    val widthSizeAndState = View.resolveSizeAndState(measureWidth, widthMeasureSpec, 0)
-    val heightSizeAndState = View.resolveSizeAndState(measureHeight, heightMeasureSpec, 0)
+    val widthSizeAndState = resolveSizeAndState(measureWidth, widthMeasureSpec, 0)
+    val heightSizeAndState = resolveSizeAndState(measureHeight, heightMeasureSpec, 0)
     setMeasuredDimension(widthSizeAndState, heightSizeAndState)
   }
 
@@ -251,6 +259,10 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
         }
       }
     }
+  }
+
+  fun setSource(source: Any?) {
+    this.setSource(source, 0, 0, false, false, true)
   }
 
   fun setSource(source: Any?, decodeWidth: Int, decodeHeight: Int, useCache: Boolean, async: Boolean) {
@@ -294,20 +306,25 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       if (key == null || key.isEmpty()) {
         key = source.toString()
       }
-      if (preferences!!.contains(key)) {
+     if (preferences == null){
+       preferences = context.getSharedPreferences(IMAGE_CACHE_STORE, Context.MODE_PRIVATE)
+     }
+      if (preferences?.contains(key) == true) {
         try {
-          val `object` = JSONObject(preferences!!.getString(key, ""))
-          if (`object`.has("path")) {
-            val path = File(`object`.getString("path"))
-            if (!path.exists()) {
-              // file missing recreate
+          preferences?.let {
+            val json = JSONObject(it.getString(key, ""))
+            if (json.has("path")) {
+              val path = File(json.getString("path"))
+              if (!path.exists()) {
+                // file missing recreate
+                thumbConfig.createThumb(resource)
+              }
+            } else {
+              // invalid object
+              // remove & create
+              preferences!!.edit().remove(key).apply()
               thumbConfig.createThumb(resource)
             }
-          } else {
-            // invalid object
-            // remove & create
-            preferences!!.edit().remove(key).apply()
-            thumbConfig.createThumb(resource)
           }
         } catch (e: JSONException) {
           // failed to create object from store path data
@@ -346,12 +363,12 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           if (key == null || key.isEmpty()) {
             key = source.toString()
           }
-          val `object` = JSONObject()
-          `object`.put("width", thumbConfig.width)
-          `object`.put("height", thumbConfig.height)
-          `object`.put("path", path.absolutePath)
+          val json = JSONObject()
+          json.put("width", thumbConfig.width)
+          json.put("height", thumbConfig.height)
+          json.put("path", path.absolutePath)
           val editor = preferences!!.edit()
-          editor.putString(key, `object`.toString())
+          editor.putString(key, json.toString())
           editor.apply()
         } catch (e: FileNotFoundException) {
           // TODO log thumb creation failure
@@ -596,10 +613,10 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     val bitmapCopy = pool[image.width, image.height, Bitmap.Config.ARGB_8888]
     val canvas = Canvas(bitmapCopy)
     val paint = Paint()
-    val porterDuffMode = PorterDuff.Mode.OVERLAY
+    val porterDuffMode = PorterDuff.Mode.MULTIPLY
     paint.colorFilter = PorterDuffColorFilter(overlayColor, porterDuffMode)
     val maskPaint = Paint()
-    maskPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_ATOP)
+    maskPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.OVERLAY)
     canvas.drawBitmap(image, 0f, 0f, paint)
     canvas.drawBitmap(image, 0f, 0f, maskPaint)
     return bitmapCopy
@@ -618,6 +635,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     }
   }
 
+  private var isLoading: Boolean = false
   @SuppressLint("CheckResult")
   private fun loadImage() {
     if (requestManager != null) {
@@ -639,11 +657,11 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     if (source is Uri && (source as Uri).scheme != null && (source as Uri).scheme!!.contains("http")) {
       hasGlideUrl = true
       localSrc = GlideUrl(source.toString(), lazyHeaders.build())
-      MyAppGlideModule.Companion.expect(source.toString(), this)
+      MyAppGlideModule.expect(source.toString(), this)
     } else if (source is String && (source as String).startsWith("http")) {
       hasGlideUrl = true
       localSrc = GlideUrl(source.toString(), lazyHeaders.build())
-      MyAppGlideModule.Companion.expect(source.toString(), this)
+      MyAppGlideModule.expect(source.toString(), this)
     } else {
       localSrc = source
     }
@@ -658,8 +676,9 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     val finalHasGlideUrl = hasGlideUrl
     requestBuilder.addListener(object : RequestListener<Drawable?> {
       override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+        isLoading = false
         if (finalHasGlideUrl && source != null) {
-          MyAppGlideModule.Companion.forget(source.toString())
+          MyAppGlideModule.forget(source.toString())
         }
         if (mListener != null) {
           executeListener(false)
@@ -676,9 +695,10 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       }
 
       override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+        isLoading = false
         if (resource is GifDrawable) {
           if (finalHasGlideUrl && source != null) {
-            MyAppGlideModule.Companion.forget(source.toString())
+            MyAppGlideModule.forget(source.toString())
           }
           if (mListener != null) {
             executeListener(true)
@@ -695,14 +715,14 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           }
           onProgress(source.toString(), length.toLong(), 0)
         }
-        if (mFilter == null || mFilter!!.isEmpty() || mFilter!!.split(" ").toTypedArray().size == 0) {
+        if (mFilter == null || mFilter!!.isEmpty() || mFilter!!.split(" ").toTypedArray().isEmpty()) {
           if (preferences == null) {
             preferences = context.getSharedPreferences(IMAGE_CACHE_STORE, Context.MODE_PRIVATE)
           }
           executor.submit {
             var res = resource
             if (resource is BitmapDrawable) {
-              if (overlayColor != -1) {
+              if (overlayColor != 0) {
                 val bitmapResource = drawOverlay(resource.bitmap)
                 res = BitmapDrawable(resources, bitmapResource)
               }
@@ -751,7 +771,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
             try {
               val filteredImage = gpuImage.getBitmapWithFilterApplied(bitmap)
               var res = BitmapDrawable(resources, filteredImage)
-              if (overlayColor != -1) {
+              if (overlayColor != 0) {
                 val bitmapResource = drawOverlay(filteredImage)
                 res = BitmapDrawable(resources, bitmapResource)
               }
@@ -833,18 +853,12 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     if (eventsListener != null) {
       eventsListener!!.onLoadStart()
     }
+    isLoading = true
     requestBuilder.into(this)
   }
 
   var didLoadPlaceHolder = false
   var didLoadFallbackImage = false
-  override fun setImageBitmap(bm: Bitmap) {
-    super.setImageBitmap(bm)
-  }
-
-  override fun setImageDrawable(drawable: Drawable?) {
-    super.setImageDrawable(drawable)
-  }
 
   var toDraw = Canvas()
   override fun onDraw(canvas: Canvas) {
@@ -1263,8 +1277,12 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
 
   companion object {
     private const val EPSILON = 1E-05
-    private val executor = Executors.newCachedThreadPool()
+    private val executor = Executors.newFixedThreadPool(4)
+
+    @JvmStatic
     var IMAGE_CACHE_DIR = "image_cache_it"
+
+    @JvmStatic
     var IMAGE_CACHE_STORE = "com.github.triniwiz.imagecacheit.image_cache_it_store"
     private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
       // Raw height and width of image
@@ -1325,6 +1343,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       application.registerComponentCallbacks(componentCallbacks2)
     }
 
+    @JvmStatic
     fun disableAutoMM(application: Application?) {
       if (application == null) {
         return
@@ -1335,6 +1354,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       }
     }
 
+    @JvmStatic
     fun clear(context: Context?, memoryOnly: Boolean) {
       val glide = Glide.get(context!!)
       glide.clearMemory()
@@ -1343,6 +1363,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       }
     }
 
+    @JvmStatic
     fun trimMemory(context: Context?, level: Int) {
       Glide.get(context!!).trimMemory(level)
     }

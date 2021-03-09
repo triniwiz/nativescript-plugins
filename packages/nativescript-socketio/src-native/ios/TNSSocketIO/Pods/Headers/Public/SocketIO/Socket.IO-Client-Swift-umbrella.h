@@ -1,0 +1,1 @@
+../../../Target Support Files/Socket.IO-Client-Swift/Socket.IO-Client-Swift-umbrella.h

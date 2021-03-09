@@ -1,4 +1,4 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page" xmlns:VideoPlayer="nativescript-videoplayer">
     <Page.actionBar>
         <ActionBar title="nativescript-videorecorder" icon="" class="action-bar">
         </ActionBar>
@@ -6,8 +6,15 @@
     <StackLayout class="p-20">
         <ScrollView class="h-full">
           <StackLayout>
-            <Button text="Test nativescript-videorecorder" tap="{{ testIt }}" class="btn btn-primary"/>
-
+             <StackLayout verticalAlignment="center">
+      <Button text="Toggle Camera" tap="{{toggleCamera}}"/>
+      <Label textAlignment="center" text="{{position}}"/>
+      <Label textAlignment="center" text="{{duration}}" />
+      <Label text="{{selectedVideo}}" textWrap="true"/>
+      <Button text="Record Video" tap="{{recordVideo}}"/>
+      <Label textAlignment="center" text="{{error}}" color="red" textWrap="true" />
+      <VideoPlayer:Video height="100%" src="{{selectedVideo}}" loaded="{{videoplayerLoaded}}" finished="{{videoFinished}}" autoplay="true" />
+    </StackLayout>
           </StackLayout>
         </ScrollView>
     </StackLayout>

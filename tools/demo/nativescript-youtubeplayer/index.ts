@@ -1,20 +1,19 @@
 import { DemoSharedBase } from '../utils';
-import { } from '@triniwiz/nativescript-youtubeplayer';
+import {} from '@triniwiz/nativescript-youtubeplayer';
 
 export class DemoSharedNativescriptYoutubeplayer extends DemoSharedBase {
-	src = 'L_jWHffIx5E';
-	options = { rel: 1 };
+	videoId = 'L_jWHffIx5E';
 
 	changeSource() {
-		this.set('src', 'dQw4w9WgXcQ');
+		this.set('videoId', 'dQw4w9WgXcQ');
 	}
 	getDanceHall() {
-		this.set('src', 'wH_0_pijbZY');
+		this.set('videoId', 'wH_0_pijbZY');
 	}
 	getHipHop() {
-		this.set('src', 'lwk5OUII9Vc');
+		this.set('videoId', 'lwk5OUII9Vc');
 	}
 	getSoca() {
-		this.set('src', 'vEG4qNW33mA');
+		this.set('videoId', 'vEG4qNW33mA');
 	}
 }

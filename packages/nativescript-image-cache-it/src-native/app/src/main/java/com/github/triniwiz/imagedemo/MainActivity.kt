@@ -3,8 +3,10 @@ package com.github.triniwiz.imagedemo
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
   internal inner class Holder(itemView: View) : ViewHolder(itemView) {
     var imageView: ImageView?
-    var forground: ImageView?
+    var foreground: ImageView? = null
     var textView: TextView?
     fun setText(text: String?) {
       textView?.setText(text)
@@ -64,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     init {
       imageView = itemView.findViewById(R.id.imageView)
       textView = itemView.findViewById(R.id.textView)
-      forground = itemView.findViewById(R.id.imageView2)
+//      foreground = itemView.findViewById(R.id.imageView2)
     }
   }
 
@@ -82,7 +84,7 @@ class MainActivity : AppCompatActivity() {
         val json = list?.getJSONObject(position)
         val url = json?.optString("url") ?: ""
         //holder.imageView.setPlaceHolder("res://law");
-        holder.imageView?.setPlaceHolder("res://placeholder_dark_grey_square")
+       // holder.imageView?.setPlaceHolder("res://placeholder_dark_grey_square")
 
         // holder.imageView.setErrorHolder("res://error");
         // holder.imageView.setAdjustViewBounds(false);
@@ -94,21 +96,13 @@ class MainActivity : AppCompatActivity() {
         } else {
           holder.imageView?.priority = ImageView.Priority.High
         }
-        handler?.postDelayed(Runnable {
-          // holder.imageView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
-          // holder.imageView.setAdjustViewBounds(true);
-          //   holder.imageView.invalidate();
-          //  holder.imageView.reload();
-        }, 3000)
-        // holder.imageView.setFilter("contrast(200%);");
-        // holder.imageView.setFallbackImage(null);
+
         if (url.isNotEmpty()) {
-          // holder.imageView.setUriSrc(Uri.parse(url));
-          holder.textView?.setText(url)
-          holder.imageView?.setDrawable(ColorDrawable(Color.RED))
+          holder.imageView?.setSource(url)
+          holder.textView?.text = url
         } else {
-          holder.imageView?.setUri(null)
-          holder.textView?.setText(url)
+          holder.imageView?.setSource(null)
+          holder.textView?.text = url
         }
       } catch (e: JSONException) {
         e.printStackTrace()

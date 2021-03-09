@@ -18,8 +18,8 @@
 
             <com.github.triniwiz.imagecacheit.ImageView
                 android:id="@+id/imageView"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:borderBottomLeftRadius="50dp"
                 app:borderBottomRightRadius="75dp"
                 app:borderBottomWidth="4dp"
@@ -29,20 +29,22 @@
                 app:borderTopLeftRadius="50dp"
                 app:borderTopRightRadius="50dp"
                 app:borderTopWidth="4dp"
+
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <com.github.triniwiz.imagecacheit.ImageView
+    <!--        <com.github.triniwiz.imagecacheit.ImageView
                 app:filter="blur(25px);"
                 android:id="@+id/imageView2"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/error" />
+                app:overlayColor="@color/blue"
+                app:errorHolder="@drawable/error" />-->
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView

@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-pager",
-	"version": "13.0.0",
+	"version": "13.0.1",
 	"description": "A Carousel/Pager plugin for NativeScript",
 	"main": "index",
 	"typings": "index.d.ts",

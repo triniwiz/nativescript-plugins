@@ -5,441 +5,440 @@ import { filterProperty, ImageCacheItBase, overlayColorProperty } from './common
 
 declare let jp, com, androidx;
 
-
 interface ImageLoadedListener {
-    new(owner: any): org.nativescript.widgets.image.Worker.OnImageLoadedListener;
+	new (owner: any): org.nativescript.widgets.image.Worker.OnImageLoadedListener;
 }
 
 let ImageLoadedListener: ImageLoadedListener;
 
 function initializeImageLoadedListener() {
-    if (ImageLoadedListener) {
-        return;
-    }
+	if (ImageLoadedListener) {
+		return;
+	}
 
-    @Interfaces([org.nativescript.widgets.image.Worker.OnImageLoadedListener])
-    class ImageLoadedListenerImpl extends java.lang.Object implements org.nativescript.widgets.image.Worker.OnImageLoadedListener {
-        constructor(public owner: any) {
-            super();
+	@Interfaces([org.nativescript.widgets.image.Worker.OnImageLoadedListener])
+	class ImageLoadedListenerImpl extends java.lang.Object implements org.nativescript.widgets.image.Worker.OnImageLoadedListener {
+		constructor(public owner: any) {
+			super();
 
-            return global.__native(this);
-        }
+			return global.__native(this);
+		}
 
-        onImageLoaded(success: boolean): void {
-            const owner = this.owner;
-            if (owner) {
-                owner.isLoading = false;
-            }
-        }
-    }
+		onImageLoaded(success: boolean): void {
+			const owner = this.owner;
+			if (owner) {
+				owner.isLoading = false;
+			}
+		}
+	}
 
-    ImageLoadedListener = ImageLoadedListenerImpl;
+	ImageLoadedListener = ImageLoadedListenerImpl;
 }
-
 
 export class ImageCacheIt extends ImageCacheItBase {
-    private emptyBackground;
+	private emptyBackground;
 
-    constructor() {
-        super();
-        this.emptyBackground = new Background();
-    }
+	constructor() {
+		super();
+		this.emptyBackground = new Background();
+	}
 
-    public createNativeView() {
-        return new com.github.triniwiz.imagecacheit.ImageView(this._context, null);
-    }
+	public createNativeView() {
+		return new com.github.triniwiz.imagecacheit.ImageView(this._context, null);
+	}
 
-    // nativeView: com.github.triniwiz.imagecacheit.ImageView;
+	// nativeView: com.github.triniwiz.imagecacheit.ImageView;
 
-    public static get maxDiskCacheSize() {
-        return com.github.triniwiz.imagecacheit.MyAppGlideModule.getMaxDiskCacheSize();
-    }
+	public static get maxDiskCacheSize() {
+		return com.github.triniwiz.imagecacheit.MyAppGlideModule.getMaxDiskCacheSize();
+	}
 
-    public static set maxDiskCacheSize(size: number) {
-        com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxDiskCacheSize(size);
-    }
+	public static set maxDiskCacheSize(size: number) {
+		com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxDiskCacheSize(size);
+	}
 
-    public static set maxMemoryCacheSize(size: number) {
-        com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxMemoryCacheSize(size);
-    }
+	public static set maxMemoryCacheSize(size: number) {
+		com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxMemoryCacheSize(size);
+	}
 
-    public static get maxMemoryCacheSize(): number {
-        return com.github.triniwiz.imagecacheit.MyAppGlideModule.getMaxMemoryCacheSize();
-    }
+	public static get maxMemoryCacheSize(): number {
+		return com.github.triniwiz.imagecacheit.MyAppGlideModule.getMaxMemoryCacheSize();
+	}
 
-    public static get maxDiskCacheAge(): number {
-        return com.github.triniwiz.imagecacheit.MyAppGlideModule.getMaxDiskCacheAge();
-    }
+	public static get maxDiskCacheAge(): number {
+		return com.github.triniwiz.imagecacheit.MyAppGlideModule.getMaxDiskCacheAge();
+	}
 
-    public static set maxDiskCacheAge(age: number) {
-        com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxDiskCacheAge(age);
-    }
+	public static set maxDiskCacheAge(age: number) {
+		com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxDiskCacheAge(age);
+	}
 
+	public initNativeView() {
+		initializeImageLoadedListener();
+		const nativeView = this.nativeViewProtected;
+		const listener = new ImageLoadedListener(this);
+		nativeView.setImageLoadedListener(listener);
+		(<any>nativeView).listener = listener;
+		const ref = new WeakRef<ImageCacheIt>(this);
+		this._setOverlayColor(this.overlayColor);
+		this.nativeView.setProgressListener(
+			new com.github.triniwiz.imagecacheit.ProgressListener({
+				onProgress(loaded, total, progress, url) {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitProgressEvent(loaded, total, progress, url);
+					}
+				},
+			})
+		);
+		this.nativeView.setEventsListener(
+			new com.github.triniwiz.imagecacheit.EventsListener({
+				onLoadStart() {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitLoadStartEvent(owner.src);
+					}
+				},
+				onLoadError(message) {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitErrorEvent(message, owner.src);
+					}
+				},
+				onLoadedEnd(image) {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitLoadEndEvent(owner.src, image);
+					}
+				},
+			})
+		);
+		this._setHeaders(this.headers);
+		if (this.placeHolder) {
+			ImageCacheIt._setPlaceHolder(this._context, this.placeHolder, this.nativeView);
+		}
+		if (this.errorHolder) {
+			ImageCacheIt._setErrorHolder(this._context, this.errorHolder, this.nativeView);
+		}
+		if (this.fallback) {
+			ImageCacheIt._setFallback(this._context, this.fallback, this.nativeView);
+		}
+		if (this.filter) {
+			ImageCacheIt._setFilter(this.filter, this.nativeView);
+		}
+		if (this.stretch) {
+			this._setStretch(this.stretch);
+		}
+		const image = ImageCacheIt.getImage(this._context, this.src);
+		let decodeWidth = 0;
+		let decodeHeight = 0;
+		let keepAspectRatio = this._calculateKeepAspectRatio();
+		if (isString(image) && this.nativeView) {
+			this.nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
+		} else if (isNumber(image) || image instanceof java.lang.Integer) {
+			this.nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+		} else if (image instanceof java.io.File) {
+			this.nativeView.setSource(android.net.Uri.parse(image.getAbsolutePath()), decodeWidth, decodeHeight, keepAspectRatio, false, true);
+		} else {
+			if (this.src instanceof ImageAsset) {
+				keepAspectRatio = !!(this.src as ImageAsset).options.keepAspectRatio;
+			}
+			this.nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+		}
+	}
 
-    public initNativeView() {
-        initializeImageLoadedListener();
-        const nativeView = this.nativeViewProtected;
-        const listener = new ImageLoadedListener(this);
-        nativeView.setImageLoadedListener(listener);
-        (<any>nativeView).listener = listener;
-        const ref = new WeakRef<ImageCacheIt>(this);
-        this._setOverlayColor(this.overlayColor);
-        this.nativeView.setProgressListener(new com.github.triniwiz.imagecacheit.ProgressListener({
-            onProgress(loaded, total, progress, url) {
-                const owner = ref.get();
-                if (owner) {
-                    owner._emitProgressEvent(loaded, total, progress, url);
-                }
-            }
-        }));
-        this.nativeView.setEventsListener(new com.github.triniwiz.imagecacheit.EventsListener({
-            onLoadStart() {
-                const owner = ref.get();
-                if (owner) {
-                    owner._emitLoadStartEvent(owner.src);
-                }
-            },
-            onLoadError(message) {
-                const owner = ref.get();
-                if (owner) {
-                    owner._emitErrorEvent(message, owner.src);
-                }
-            },
-            onLoadedEnd(image) {
-                const owner = ref.get();
-                if (owner) {
-                    owner._emitLoadEndEvent(owner.src, image);
-                }
-            }
-        }));
-        this._setHeaders(this.headers);
-        if (this.placeHolder) {
-            ImageCacheIt._setPlaceHolder(this._context, this.placeHolder, this.nativeView);
-        }
-        if (this.errorHolder) {
-            ImageCacheIt._setErrorHolder(this._context, this.errorHolder, this.nativeView);
-        }
-        if (this.fallback) {
-            ImageCacheIt._setFallback(this._context, this.fallback, this.nativeView);
-        }
-        if (this.filter) {
-            ImageCacheIt._setFilter(this.filter, this.nativeView);
-        }
-        if (this.stretch) {
-            this._setStretch(this.stretch);
-        }
-        const image = ImageCacheIt.getImage(this._context, this.src);
-        let decodeWidth = 0;
-        let decodeHeight = 0;
-        let keepAspectRatio = this._calculateKeepAspectRatio();
-        if (isString(image) && this.nativeView) {
-            this.nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-        } else if (isNumber(image) || image instanceof java.lang.Integer) {
-            this.nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-        } else if (image instanceof java.io.File) {
-            this.nativeView.setSource(android.net.Uri.parse(image.getAbsolutePath()), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-        } else {
-            if (this.src instanceof ImageAsset) {
-                keepAspectRatio = !!(this.src as ImageAsset).options.keepAspectRatio;
-            }
-            this.nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-        }
-    }
+	private _calculateKeepAspectRatio(): boolean {
+		return this.stretch !== 'fill';
+	}
 
-    private _calculateKeepAspectRatio(): boolean {
-        return this.stretch !== 'fill';
-    }
+	public disposeNativeView(): void {
+		super.disposeNativeView();
+	}
 
-    public disposeNativeView(): void {
-        super.disposeNativeView();
-    }
+	public resetNativeView(): void {
+		super.resetNativeView();
+		this.nativeViewProtected.setImageMatrix(new android.graphics.Matrix());
+	}
 
+	[filterProperty.setNative](filter: any) {
+		if (this.nativeView) {
+			this.nativeView.setFilter(filter);
+		}
+	}
 
-    public resetNativeView(): void {
-        super.resetNativeView();
-        this.nativeViewProtected.setImageMatrix(new android.graphics.Matrix());
-    }
+	private _setOverlayColor(overlay: Color | string) {
+		if (!this.nativeViewProtected) {
+			return;
+		}
+		if (overlay instanceof Color) {
+			this.nativeViewProtected.setOverlayColor(overlay.android);
+		} else if (typeof overlay === 'string') {
+			this.nativeViewProtected.setOverlayColor(new Color(overlay).android);
+		}
+	}
 
-    [filterProperty.setNative](filter: any) {
-        if (this.nativeView) {
-            this.nativeView.setFilter(filter);
-        }
-    }
+	[overlayColorProperty.setNative](overlay: Color | string) {
+		this._setOverlayColor(overlay);
+	}
 
-    private _setOverlayColor(overlay: Color | string) {
-        if (!this.nativeViewProtected) {
-            return;
-        }
-        if (overlay instanceof Color) {
-            this.nativeViewProtected.setOverlayColor(overlay.android);
-        } else if (typeof overlay === 'string') {
-            this.nativeViewProtected.setOverlayColor(new Color(overlay).android);
-        }
-    }
+	private static isNumber(value: any) {
+		return typeof value === 'number';
+	}
 
-    [overlayColorProperty.setNative](overlay: Color | string) {
-        this._setOverlayColor(overlay);
-    }
+	private static getResourceId(context: any, res: string = '') {
+		if (!context) return java.lang.Integer.valueOf(0);
+		if (isString(res) && res.startsWith('res://')) {
+			const packageName = context.getPackageName();
+			try {
+				const className = java.lang.Class.forName(`${packageName}.R$drawable`);
+				return java.lang.Integer.valueOf(parseInt(String(className.getDeclaredField(res.replace('res://', '')).get(null))));
+			} catch (e) {
+				return java.lang.Integer.valueOf(0);
+			}
+		}
+		return java.lang.Integer.valueOf(0);
+	}
 
-    private static isNumber(value: any) {
-        return typeof value === 'number';
-    }
+	private static _setFallback(context: any, fallback: any, nativeView?: any) {
+		if (nativeView) {
+			if (isString(fallback) && fallback.startsWith('res://')) {
+				nativeView.setFallbackImage(fallback);
+			} else {
+				const holder = ImageCacheIt.getImage(context, fallback);
+				nativeView.setFallbackImage(holder);
+			}
+		}
+	}
 
-    private static getResourceId(context: any, res: string = '') {
-        if (!context) return java.lang.Integer.valueOf(0);
-        if (isString(res) && res.startsWith('res://')) {
-            const packageName = context.getPackageName();
-            try {
-                const className = java.lang.Class.forName(`${packageName}.R$drawable`);
-                return java.lang.Integer.valueOf(parseInt(String(className.getDeclaredField(res.replace('res://', '')).get(null))));
-            } catch (e) {
-                return java.lang.Integer.valueOf(0);
-            }
-        }
-        return java.lang.Integer.valueOf(0);
-    }
+	[common.fallbackProperty.setNative](fallback: any) {
+		ImageCacheIt._setFallback(this._context, fallback, this.nativeView);
+	}
 
-    private static _setFallback(context: any, fallback: any, nativeView?: any) {
-        const holder = ImageCacheIt.getImage(context, fallback);
-        if (nativeView) {
-            if (isString(fallback) && fallback.startsWith('res://')) {
-                nativeView.setFallbackImage(fallback);
-            } else {
-                nativeView.setFallbackImage(holder);
-            }
-        }
-    }
+	private static _setPlaceHolder(context: any, placeHolder: any, nativeView?: any) {
+		if (nativeView) {
+			if (isString(placeHolder) && placeHolder.startsWith('res://')) {
+				nativeView.setPlaceHolder(placeHolder);
+			} else {
+				const holder = ImageCacheIt.getImage(context, placeHolder);
+				nativeView.setPlaceHolder(holder);
+			}
+		}
+	}
 
-    [common.fallbackProperty.setNative](fallback: any) {
-        ImageCacheIt._setFallback(this._context, fallback, this.nativeView);
-    }
+	[common.placeHolderProperty.setNative](placeHolder: any) {
+		ImageCacheIt._setPlaceHolder(this._context, placeHolder, this.nativeView);
+	}
 
-    private static _setPlaceHolder(context: any, placeHolder: any, nativeView?: any) {
-        const holder = ImageCacheIt.getImage(context, placeHolder);
-        if (nativeView) {
-            if (isString(placeHolder) && placeHolder.startsWith('res://')) {
-                nativeView.setPlaceHolder(placeHolder);
-            } else {
-                nativeView.setPlaceHolder(holder);
-            }
-        }
-    }
+	private static _setErrorHolder(context: any, errorHolder: any, nativeView?: any) {
+		if (nativeView) {
+			if (isString(errorHolder) && errorHolder.startsWith('res://')) {
+				nativeView.setErrorHolder(errorHolder);
+			} else {
+				const holder = ImageCacheIt.getImage(context, errorHolder);
+				nativeView.setErrorHolder(holder);
+			}
+		}
+	}
 
-    [common.placeHolderProperty.setNative](placeHolder: any) {
-        ImageCacheIt._setPlaceHolder(this._context, placeHolder, this.nativeView);
-    }
+	[common.errorHolderProperty.setNative](errorHolder: any) {
+		ImageCacheIt._setErrorHolder(this._context, errorHolder, this.nativeView);
+	}
 
-    private static _setErrorHolder(context: any, errorHolder: any, nativeView?: any) {
-        const holder = ImageCacheIt.getImage(context, errorHolder);
-        if (nativeView) {
-            if (isString(errorHolder) && errorHolder.startsWith('res://')) {
-                nativeView.setErrorHolder(errorHolder);
-            } else {
-                nativeView.setErrorHolder(holder);
-            }
-        }
-    }
+	[common.srcProperty.getDefault](): any {
+		return undefined;
+	}
 
-    [common.errorHolderProperty.setNative](errorHolder: any) {
-        ImageCacheIt._setErrorHolder(this._context, errorHolder, this.nativeView);
-    }
+	private static _setSrc(context: any, src: any, nativeView?: any, base?: ImageCacheIt) {
+		const image = ImageCacheIt.getImage(context, src);
+		if (nativeView) {
+			let decodeWidth = 0;
+			let decodeHeight = 0;
+			let keepAspectRatio = base._calculateKeepAspectRatio();
 
-    [common.srcProperty.getDefault](): any {
-        return undefined;
-    }
+			if (isString(image)) {
+				nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
+			} else if (isNumber(image) || image instanceof java.lang.Integer) {
+				nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+			} else if (image instanceof java.io.File) {
+				nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+			} else {
+				nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+			}
+		}
+	}
 
-    private static _setSrc(context: any, src: any, nativeView?: any, base?: ImageCacheIt) {
-        const image = ImageCacheIt.getImage(context, src);
-        if (nativeView) {
-            let decodeWidth = 0;
-            let decodeHeight = 0;
-            let keepAspectRatio = base._calculateKeepAspectRatio();
+	[common.srcProperty.setNative](src: any) {
+		ImageCacheIt._setSrc(this._context, src, this.nativeView, this);
+	}
 
-            if (isString(image)) {
-                nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-            } else if (isNumber(image) || image instanceof java.lang.Integer) {
-                nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-            } else if (image instanceof java.io.File) {
-                nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-            } else {
-                nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-            }
-        }
-    }
+	[common.priorityProperty.getDefault](): common.Priority {
+		return common.Priority.Normal;
+	}
 
-    [common.srcProperty.setNative](src: any) {
-        ImageCacheIt._setSrc(this._context, src, this.nativeView, this);
-    }
+	[common.priorityProperty.setNative](value: any) {
+		if (!this.nativeView) return;
+		switch (value) {
+			case common.Priority.High:
+				this.nativeView.setPriority(com.github.triniwiz.imagecacheit.ImageView.Priority.High);
+				break;
+			case common.Priority.Low:
+				this.nativeView.setPriority(com.github.triniwiz.imagecacheit.ImageView.Priority.Low);
+				break;
+			default:
+				this.nativeView.setPriority(com.github.triniwiz.imagecacheit.ImageView.Priority.Normal);
+				break;
+		}
+	}
 
-    [common.priorityProperty.getDefault](): common.Priority {
-        return common.Priority.Normal;
-    }
+	[common.tintColorProperty.getDefault](): Color | string {
+		return undefined;
+	}
 
-    [common.priorityProperty.setNative](value: any) {
-        if (!this.nativeView) return;
-        switch (value) {
-            case common.Priority.High:
-                this.nativeView.setPriority(com.github.triniwiz.imagecacheit.ImageView.Priority.High);
-                break;
-            case common.Priority.Low:
-                this.nativeView.setPriority(com.github.triniwiz.imagecacheit.ImageView.Priority.Low);
-                break;
-            default:
-                this.nativeView.setPriority(com.github.triniwiz.imagecacheit.ImageView.Priority.Normal);
-                break;
-        }
-    }
+	[common.tintColorProperty.setNative](value: any) {
+		if (!value) {
+			this.nativeView.clearColorFilter();
+		} else {
+			this.nativeView.setColorFilter(value.android);
+		}
+	}
 
-    [common.tintColorProperty.getDefault](): Color | string {
-        return undefined;
-    }
+	[common.headersProperty.getDefault](): Map<string, string> {
+		return new Map<string, string>();
+	}
 
-    [common.tintColorProperty.setNative](value: any) {
-        if (!value) {
-            this.nativeView.clearColorFilter();
-        } else {
-            this.nativeView.setColorFilter(value.android);
-        }
-    }
+	private _setHeaders(value) {
+		const headers = new java.util.HashMap<string, string>();
+		if (value) {
+			value.forEach((value, key) => {
+				headers.put(key, value);
+			});
+		}
+		if (this.nativeView) {
+			this.nativeView.setHeaders(headers);
+		}
+	}
 
-    [common.headersProperty.getDefault](): Map<string, string> {
-        return new Map<string, string>();
-    }
+	[common.headersProperty.setNative](value: Map<string, string>) {
+		this._setHeaders(value);
+	}
 
+	public static getImage(context: any, src: any): any {
+		let nativeImage: any = null;
+		if (isNullOrUndefined(src)) {
+			return null;
+		}
 
-    private _setHeaders(value) {
-        const headers = new java.util.HashMap<string, string>();
-        if (value) {
-            value.forEach((value, key) => {
-                headers.put(key, value);
-            });
-        }
-        if (this.nativeView) {
-            this.nativeView.setHeaders(headers);
-        }
-    }
+		if (isString(src)) {
+			if (src.substr(0, 1) === '/') {
+				nativeImage = new java.io.File(src);
+			} else if (src.startsWith('~/')) {
+				nativeImage = new java.io.File(nsPath.join(knownFolders.currentApp().path, src.replace('~/', '')));
+			} else if (src.startsWith('http')) {
+				nativeImage = src;
+			} else if (src.startsWith('res://')) {
+				nativeImage = this.getResourceId(context, src);
+			}
+		} else if (src instanceof ImageSource || src instanceof ImageAsset) {
+			nativeImage = src.android;
+		} else {
+			nativeImage = src;
+		}
+		return nativeImage;
+	}
 
-    [common.headersProperty.setNative](value: Map<string, string>) {
-        this._setHeaders(value);
-    }
+	private static _setFilter(filter: string, nativeView?: any) {
+		if (nativeView) {
+			nativeView.setFilter(filter);
+		}
+	}
 
-    public static getImage(context: any, src: any): any {
-        let nativeImage: any = null;
-        if (isNullOrUndefined(src)) {
-            return null;
-        }
+	[common.filterProperty.setNative](filter: string) {
+		ImageCacheIt._setFilter(filter, this.nativeView);
+	}
 
-        if (isString(src)) {
-            if (src.substr(0, 1) === '/') {
-                nativeImage = new java.io.File(src);
-            } else if (src.startsWith('~/')) {
-                nativeImage = new java.io.File(
-                    nsPath.join(knownFolders.currentApp().path, src.replace('~/', ''))
-                );
-            } else if (src.startsWith('http')) {
-                nativeImage = src;
-            } else if (src.startsWith('res://')) {
-                nativeImage = this.getResourceId(context, src);
-            }
-        } else if (src instanceof ImageSource || src instanceof ImageAsset) {
-            nativeImage = src.android;
-        } else {
-            nativeImage = src;
-        }
-        return nativeImage;
-    }
+	[common.stretchProperty.getDefault](): 'aspectFit' {
+		return 'aspectFit';
+	}
 
-    private static _setFilter(filter: string, nativeView?: any) {
-        if (nativeView) {
-            nativeView.setFilter(filter);
-        }
-    }
+	private _setStretch(value) {
+		if (this.nativeView) {
+			switch (value) {
+				case 'aspectFit':
+					this.nativeView.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
+					break;
+				case 'aspectFill':
+					this.nativeView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
+					break;
+				case 'fill':
+					this.nativeView.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
+					break;
+				case 'none':
+				default:
+					this.nativeView.setScaleType(android.widget.ImageView.ScaleType.MATRIX);
+					break;
+			}
+		}
+	}
 
-    [common.filterProperty.setNative](filter: string) {
-        ImageCacheIt._setFilter(filter, this.nativeView);
-    }
+	[common.stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
+		this._setStretch(value);
+	}
 
-    [common.stretchProperty.getDefault](): 'aspectFit' {
-        return 'aspectFit';
-    }
+	public static getItem(src: string): Promise<any> {
+		com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
+		return new Promise<any>((resolve, reject) => {
+			com.github.triniwiz.imagecacheit.ImageCache.getItem(
+				src,
+				null,
+				new com.github.triniwiz.imagecacheit.ImageCache.Callback({
+					onSuccess(value) {
+						resolve(value);
+					},
+					onError(error) {
+						reject(error.getMessage());
+					},
+				})
+			);
+		});
+	}
 
-    private _setStretch(value) {
-        if (this.nativeView) {
-            switch (value) {
-                case 'aspectFit':
-                    this.nativeView.setScaleType(android.widget.ImageView.ScaleType.FIT_CENTER);
-                    break;
-                case 'aspectFill':
-                    this.nativeView.setScaleType(android.widget.ImageView.ScaleType.CENTER_CROP);
-                    break;
-                case 'fill':
-                    this.nativeView.setScaleType(android.widget.ImageView.ScaleType.FIT_XY);
-                    break;
-                case 'none':
-                default:
-                    this.nativeView.setScaleType(android.widget.ImageView.ScaleType.MATRIX);
-                    break;
-            }
-        }
-    }
+	public static deleteItem(src: string): Promise<any> {
+		return new Promise<any>((resolve, reject) => {
+			// TODO
+			resolve(undefined);
+		});
+	}
 
-    [common.stretchProperty.setNative](
-        value: 'none' | 'aspectFill' | 'aspectFit' | 'fill'
-    ) {
-        this._setStretch(value);
-    }
+	public static hasItem(src: string): Promise<any> {
+		com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
+		return new Promise<any>((resolve, reject) => {
+			com.github.triniwiz.imagecacheit.ImageCache.hasItem(
+				src,
+				new com.github.triniwiz.imagecacheit.ImageCache.Callback({
+					onSuccess(value) {
+						resolve(undefined);
+					},
+					onError(error) {
+						reject(error.getMessage());
+					},
+				})
+			);
+		});
+	}
 
-    public static getItem(src: string): Promise<any> {
-        com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
-        return new Promise<any>((resolve, reject) => {
-            com.github.triniwiz.imagecacheit.ImageCache.getItem(src, null, new com.github.triniwiz.imagecacheit.ImageCache.Callback({
-                onSuccess(value) {
-                    resolve(value);
-                },
-                onError(error) {
-                    reject(error.getMessage());
-                }
-            }));
-        });
-    }
+	public static clear() {
+		com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
+		return new Promise<any>((resolve, reject) => {
+			com.github.triniwiz.imagecacheit.ImageCache.clear();
+			resolve(undefined);
+		});
+	}
 
-    public static deleteItem(src: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            // TODO
-            resolve(undefined);
-        });
-    }
+	public static enableAutoMM() {
+		(com as any).github.triniwiz.imagecacheit.ImageView.enableAutoMM(Application.android.nativeApp);
+	}
 
-    public static hasItem(src: string): Promise<any> {
-        com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
-        return new Promise<any>((resolve, reject) => {
-            com.github.triniwiz.imagecacheit.ImageCache.hasItem(src, new com.github.triniwiz.imagecacheit.ImageCache.Callback({
-                onSuccess(value) {
-                    resolve(undefined);
-                },
-                onError(error) {
-                    reject(error.getMessage());
-                }
-            }));
-        });
-    }
-
-    public static clear() {
-        com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
-        return new Promise<any>((resolve, reject) => {
-            com.github.triniwiz.imagecacheit.ImageCache.clear();
-            resolve(undefined);
-        });
-    }
-
-    public static enableAutoMM() {
-        (com as any).github.triniwiz.imagecacheit.ImageView.enableAutoMM(Application.android.nativeApp);
-    }
-
-    public static disableAutoMM() {
-        (com as any).github.triniwiz.imagecacheit.ImageView.disableAutoMM(Application.android.nativeApp);
-    }
+	public static disableAutoMM() {
+		(com as any).github.triniwiz.imagecacheit.ImageView.disableAutoMM(Application.android.nativeApp);
+	}
 }
-
-
-

@@ -1,12 +1,12 @@
-# Nativescript nativescript-youtubeplayer
+# Nativescript YoutubePlayer
 
 ```javascript
 ns plugin add @triniwiz/nativescript-youtubeplayer
 ```
 
-## Usage
+## API documentation
 
-// TODO
+[Documentation for the latest stable release](https://triniwiz.github.io/nativescript-plugins/api-reference/youtube-player.html)
 
 ## License
 

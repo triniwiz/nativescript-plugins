@@ -4,7 +4,7 @@
         </ActionBar>
     </Page.actionBar>
      <GridLayout rows="*,auto,auto,auto,auto,auto,auto" height="100%" class="p-20" id="container">
-      <ui:YoutubePlayer controls="true" autoPlay="true" width="100%" loaded="loaded" id="player" options="{{options}}" src="{{src}}" backgroundColor="gray" />
+      <ui:YoutubePlayer controls="true" autoPlay="true" width="100%" loaded="loaded" id="player" videoId="{{videoId}}" backgroundColor="gray" />
       <Button row="1" text="Toggle FullScreen" tap="toggleFullScreen"/>
       <Button row="2" text="Change Source" tap="{{changeSource}}"/>
       <Button row="3" text="Load Dancehall" tap="{{getDanceHall}}"/>
