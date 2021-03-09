@@ -42,17 +42,47 @@
 ### Angular
 
 ```ts
-import { registerElement } from '@nativescript/angular';
+import { YoutubePlayerModule } from "@triniwiz/youtubeplayer/angular";
 
-registerElement('YoutubePlayer', () => require('@triniwiz/youtubeplayer').YoutubePlayer);
+@NgModule({
+    imports: [
+    YoutubePlayerModule
+    ],
+    declarations: [
+        AppComponent
+    ],
+    bootstrap: [AppComponent]
+})
+```
+
+```html
+<YoutubePlayer videoId="vEG4qNW33mA"><YoutubePlayer /></YoutubePlayer>
 ```
 
 ### Vue
 
 ```ts
-import { registerElement } from 'nativescript-vue';
+import Vue from 'nativescript-vue';
+import YoutubePlayer from '@triniwiz/youtubeplayer/vue';
+Vue.use(YoutubePlayer);
+```
 
-registerElement('YoutubePlayer', () => require('@triniwiz/youtubeplayer').YoutubePlayer);
+```html
+<YoutubePlayer videoId="vEG4qNW33mA" />
+```
+
+### React
+
+```jsx
+import '@triniwiz/youtubeplayer/react';
+<youtubePlayer videoId="vEG4qNW33mA" />;
+```
+
+### Svelte
+
+```jsx
+import '@triniwiz/youtubeplayer/svelte';
+<youtubePlayer videoId="vEG4qNW33mA" />;
 ```
 
 ## API
