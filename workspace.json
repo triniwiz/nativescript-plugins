@@ -1862,6 +1862,11 @@
 								"glob": "package.json",
 								"input": "packages/nativescript-pager/react/",
 								"output": "./react/"
+							},
+							{
+								"glob": "**/*.js",
+								"input": "packages/nativescript-pager/vue/",
+								"output": "./vue/"
 							}
 						]
 					}
