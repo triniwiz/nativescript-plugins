@@ -2,6 +2,7 @@ import { YoutubePlayerBase, YoutubePlayerErrors, YoutubePlayerInternalErrors, Yo
 
 export { YoutubePlayerBase };
 
+import { Utils } from '@nativescript/core';
 @NativeClass
 @ObjCClass(WKNavigationDelegate)
 class WKNavigationDelegateImpl extends NSObject implements WKNavigationDelegate {
@@ -120,6 +121,15 @@ export class YoutubePlayer extends YoutubePlayerBase {
 		this.#enterFullScreenObserver = null;
 		this.#exitFullScreenObserver = null;
 		super.disposeNativeView();
+	}
+
+	public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
+		const nativeView = this.nativeViewProtected;
+		if (nativeView) {
+			const width = Utils.layout.getMeasureSpecSize(widthMeasureSpec);
+			const height = Utils.layout.getMeasureSpecSize(heightMeasureSpec);
+			this.setMeasuredDimension(width, height);
+		}
 	}
 
 	_handleUrl(url: NSURL) {
