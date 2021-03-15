@@ -12,9 +12,9 @@
 <img src="https://img.shields.io/twitter/follow/triniwiz?style=style=for-the-badge&logo=twitter" alt="follow on Twitter"></a>
 </p>
 
-|   Android Device   |  Android Emulator  |     iOS Device     | iOS Simulator |
-| :----------------: | :----------------: | :----------------: | :-----------: |
-| :white_check_mark: | :white_check_mark: | :white_check_mark: |      :x:      |
+|   Android Device   |  Android Emulator  |     iOS Device     |   iOS Simulator    |
+| :----------------: | :----------------: | :----------------: | :----------------: |
+| :white_check_mark: | :white_check_mark: | :white_check_mark: | :white_check_mark: |
 
 - [ToolTip(...)](tooltip.md#tooltip-2)
 - [Intefaces](tooltip.md#interfaces)
@@ -66,17 +66,17 @@ tooltip.show();
 ### ToolTip(...)
 
 ```ts
-new ToolTip({...});
+new ToolTip(...);
 ```
 
 Creates new ToolTip
 
-| Param  |                   Type                    |
-| :----: | :---------------------------------------: |
+| Param  |                   Type                    |         Note          |
+| :----: | :---------------------------------------: | :-------------------: |
 |  view  |                   View                    | The view to anchor to |
-| config | [ToolTipConfig](tooltip.md#tooltipconfig) |
+| config | [ToolTipConfig](tooltip.md#tooltipconfig) |                       |
 
-**Returns**: [ToolTipConfig](tooltip.md#tooltip-2)
+**Returns**: [ToolTip](tooltip.md#tooltip-2)
 
 ---
 
