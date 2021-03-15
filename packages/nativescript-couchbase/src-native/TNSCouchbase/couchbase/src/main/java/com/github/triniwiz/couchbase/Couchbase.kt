@@ -80,6 +80,11 @@ class Couchbase {
     }
 
     @JvmStatic
+    fun fromJSON(json: String): MutableDocument? {
+      return fromJSON(json, null)
+    }
+
+    @JvmStatic
     fun fromJSON(json: String, id: String?): MutableDocument? {
       return try {
         val doc = id?.let {
@@ -198,7 +203,11 @@ class Couchbase {
             } ?: (item as? Long)?.let {
               dictionary.setLong(key, it)
             } ?: run {
-              dictionary.setValue(key, item)
+              if (item == JSONObject.NULL){
+                dictionary.setValue(key, null)
+              }else {
+                dictionary.setValue(key, item)
+              }
             }
           }
         }
@@ -250,7 +259,11 @@ class Couchbase {
             } ?: (item as? Long)?.let {
               array.addLong(it)
             } ?: run {
-              array.addValue(item)
+              if (item == JSONObject.NULL){
+                array.addValue(null)
+              }else {
+                array.addValue(item)
+              }
             }
           } ?: run {
             array.addValue(null)
@@ -319,7 +332,11 @@ class Couchbase {
             } ?: (item as? Long)?.let {
               doc.setLong(key, it)
             } ?: run {
-              doc.setValue(key, item)
+              if (item == JSONObject.NULL){
+                doc.setValue(key, null)
+              }else {
+                doc.setValue(key, item)
+              }
             }
           } ?: run {
             doc.setValue(key, null)
@@ -329,6 +346,9 @@ class Couchbase {
     }
 
     private fun deserialize(data: Any?): Any? {
+      if(data == null){
+        return JSONObject.NULL
+      }
       return when (data) {
         is Array -> {
           val jsonArray = JSONArray()
@@ -346,14 +366,14 @@ class Couchbase {
           return json
         }
         else -> {
-          data?.let { it ->
-            (it as? String) ?: (it as? Boolean) ?: (it as? Short) ?: (it as? Int) ?: (it as? Long)
-            ?: (it as? Float) ?: (it as? Double) ?: (it as? Date)
-            ?: (it as? Date)?.let {
-              toISO8601UTC(it)
-            } ?: run {
-              null
-            }
+          data.let { it ->
+              (it as? String) ?: (it as? Boolean) ?: (it as? Short) ?: (it as? Int) ?: (it as? Long)
+              ?: (it as? Float) ?: (it as? Double) ?: (it as? Date)
+              ?: (it as? Date)?.let {
+                toISO8601UTC(it)
+              } ?: run {
+                return JSONObject.NULL
+              }
           }
         }
       }
