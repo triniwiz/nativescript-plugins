@@ -42,7 +42,7 @@
 ### Angular
 
 ```ts
-import { YoutubePlayerModule } from "@triniwiz/youtubeplayer/angular";
+import { YoutubePlayerModule } from "@triniwiz/nativescript-youtubeplayer/angular";
 
 @NgModule({
     imports: [
@@ -63,7 +63,7 @@ import { YoutubePlayerModule } from "@triniwiz/youtubeplayer/angular";
 
 ```ts
 import Vue from 'nativescript-vue';
-import YoutubePlayer from '@triniwiz/youtubeplayer/vue';
+import YoutubePlayer from '@triniwiz/nativescript-youtubeplayer/vue';
 Vue.use(YoutubePlayer);
 ```
 
@@ -74,14 +74,14 @@ Vue.use(YoutubePlayer);
 ### React
 
 ```jsx
-import '@triniwiz/youtubeplayer/react';
+import '@triniwiz/nativescript-youtubeplayer/react';
 <youtubePlayer videoId="vEG4qNW33mA" />;
 ```
 
 ### Svelte
 
 ```jsx
-import '@triniwiz/youtubeplayer/svelte';
+import '@triniwiz/nativescript-youtubeplayer/svelte';
 <youtubePlayer videoId="vEG4qNW33mA" />;
 ```
 
