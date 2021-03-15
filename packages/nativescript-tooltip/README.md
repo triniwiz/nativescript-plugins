@@ -4,9 +4,9 @@
 ns plugin add @triniwiz/nativescript-tooltip
 ```
 
-## Usage
+## API documentation
 
-// TODO
+[Documentation for the latest stable release](https://triniwiz.github.io/nativescript-plugins/api-reference/tooltip.html)
 
 ## License
 

@@ -3,12 +3,7 @@
         <ActionBar title="nativescript-tooltip" icon="" class="action-bar">
         </ActionBar>
     </Page.actionBar>
-    <StackLayout class="p-20">
-        <ScrollView class="h-full">
-          <StackLayout>
-            <Button text="Test nativescript-tooltip" tap="{{ testIt }}" class="btn btn-primary"/>
-
-          </StackLayout>
-        </ScrollView>
-    </StackLayout>
+     <GridLayout backgroundColor="red" columns="auto,*,auto">
+      <Button backgroundColor="green" fontSize="12" height="44" width="25%" col="1" text="Push It!!!" tap="{{pushIt}}"></Button>
+  </GridLayout>
 </Page>

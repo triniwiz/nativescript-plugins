@@ -1,3 +1,9 @@
-import { NativescriptTooltipCommon } from './common';
+export * from './common';
 
-export declare class NativescriptTooltip extends NativescriptTooltipCommon {}
+import { Color } from '@nativescript/core';
+import { ToolTipConfig } from './common';
+export class ToolTip {
+	constructor(view: any, config: ToolTipConfig);
+	show(): void;
+	hide();
+}
