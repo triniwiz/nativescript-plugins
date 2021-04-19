@@ -1,5 +1,5 @@
 import { DemoSharedBase } from '../utils';
-import { CouchBase, Replicator } from '@triniwiz/nativescript-couchbase';
+import { CouchBase, QueryLogicalOperator, Replicator } from '@triniwiz/nativescript-couchbase';
 import { ObservableArray } from '@nativescript/core';
 import { getFile, getJSON } from '@nativescript/core/http';
 
@@ -66,6 +66,7 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 	}
 
 	nukeIt() {
+		this.replicator.stop();
 		this.db.destroyDatabase();
 		this.db = null;
 		this.items.splice(0);

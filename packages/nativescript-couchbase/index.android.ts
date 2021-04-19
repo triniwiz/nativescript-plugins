@@ -11,6 +11,7 @@ export class CouchBase extends Common {
 	readonly ios: any;
 	readonly #config: com.couchbase.lite.DatabaseConfiguration;
 	readonly #couchbase: com.couchbase.lite.Database;
+
 	constructor(name: string) {
 		super();
 		if (!didInit) {
@@ -211,6 +212,9 @@ export class CouchBase extends Common {
 			case 'collate':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).collate(this.serializeExpression(item.value));
 				break;
+			case 'contains':
+				nativeQuery = com.couchbase.lite.ArrayFunction.contains(com.couchbase.lite.Expression.property(item.property), this.serializeExpression(item.value));
+				break;
 			case 'divide':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).divide(this.serializeExpression(item.value));
 				break;
@@ -255,16 +259,17 @@ export class CouchBase extends Common {
 			case 'multiply':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).multiply(this.serializeExpression(item.value));
 				break;
-
 			case 'notEqualTo':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).notEqualTo(this.serializeExpression(item.value));
 				break;
-
 			case 'notNullOrMissing':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).notNullOrMissing();
 				break;
 			case 'regex':
 				nativeQuery = com.couchbase.lite.Function.lower(item.property).regex(this.serializeExpression(item.value));
+				break;
+			case 'subtract':
+				nativeQuery = com.couchbase.lite.Expression.property(item.property).subtract(this.serializeExpression(item.value));
 				break;
 		}
 		return nativeQuery;

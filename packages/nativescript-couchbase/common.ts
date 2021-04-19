@@ -1,148 +1,126 @@
 export abstract class Common {
-  abstract ios: any;
-  
-  abstract android: any;
+	abstract ios: any;
 
-  abstract close();
+	abstract android: any;
 
-  abstract createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode);
+	abstract close();
 
-  abstract getDocument(documentId: string);
+	abstract createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode);
 
-  abstract updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode);
+	abstract getDocument(documentId: string);
 
-  abstract deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode);
+	abstract updateDocument(documentId: string, data: any, concurrencyMode?: ConcurrencyMode);
 
-  abstract destroyDatabase();
+	abstract deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode);
 
-  abstract query(query: Query): any[];
+	abstract destroyDatabase();
 
-  abstract createPullReplication(remoteUrl: string);
+	abstract query(query: Query): any[];
 
-  abstract createPushReplication(remoteUrl: string);
+	abstract createPullReplication(remoteUrl: string);
 
-  abstract createReplication(remoteUrl: string, direction: 'push' | 'pull' | 'both');
+	abstract createPushReplication(remoteUrl: string);
 
-  abstract addDatabaseChangeListener(callback: (ids?: string[]) => void);
+	abstract createReplication(remoteUrl: string, direction: 'push' | 'pull' | 'both');
 
-  abstract removeDatabaseChangeListener(callback: (ids?: string[]) => void): void;
+	abstract addDatabaseChangeListener(callback: (ids?: string[]) => void);
 
-  abstract addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
+	abstract removeDatabaseChangeListener(callback: (ids?: string[]) => void): void;
 
-  abstract removeDocumentChangeListener(callback: (id: string) => void): void;
+	abstract addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
 
-  abstract inBatch(batch: () => void);
+	abstract removeDocumentChangeListener(callback: (id: string) => void): void;
 
-  abstract setBlob(id: string, name: string, blob: any, mimeType: string, concurrencyMode?: ConcurrencyMode);
+	abstract inBatch(batch: () => void);
 
-  abstract getBlob(id: string, name: string);
+	abstract setBlob(id: string, name: string, blob: any, mimeType: string, concurrencyMode?: ConcurrencyMode);
+
+	abstract getBlob(id: string, name: string);
 }
 
 export abstract class ReplicatorBase {
-  replicator: any;
+	replicator: any;
 
-  constructor(replicator: any) {
-    this.replicator = replicator;
-  }
+	constructor(replicator: any) {
+		this.replicator = replicator;
+	}
 
-  abstract start();
+	abstract start();
 
-  abstract stop();
+	abstract stop();
 
-  abstract isRunning();
+	abstract isRunning();
 
-  abstract setContinuous(isContinuous: boolean);
+	abstract setContinuous(isContinuous: boolean);
 
-  abstract setUserNameAndPassword(username: string, password: string);
+	abstract setUserNameAndPassword(username: string, password: string);
 
-  abstract setChannels(channels: string[]);
+	abstract setChannels(channels: string[]);
 
-  abstract setSessionIdAndCookieName(sessionId: string, cookieName: string);
+	abstract setSessionIdAndCookieName(sessionId: string, cookieName: string);
 
-  abstract setSessionId(sessionId: string);
+	abstract setSessionId(sessionId: string);
 }
 
 export enum QueryMeta {
-  ALL = 'COUCHBASE_ALL',
-  ID = 'COUCHBASE_ID'
+	ALL = 'COUCHBASE_ALL',
+	ID = 'COUCHBASE_ID',
 }
 
-export type QueryComparisonOperator =
-  | 'modulo'
-  | 'is'
-  | 'between'
-  | 'isNot'
-  | 'collate'
-  | 'in'
-  | 'add'
-  | 'isNullOrMissing'
-  | 'greaterThan'
-  | 'divide'
-  | 'notEqualTo'
-  | 'greaterThanOrEqualTo'
-  | 'like'
-  | 'subtract'
-  | 'lessThanOrEqualTo'
-  | 'lessThan'
-  | 'notNullOrMissing'
-  | 'regex'
-  | 'equalTo'
-  | 'multiply';
+export type QueryComparisonOperator = 'modulo' | 'is' | 'between' | 'isNot' | 'collate' | 'in' | 'add' | 'isNullOrMissing' | 'greaterThan' | 'divide' | 'notEqualTo' | 'greaterThanOrEqualTo' | 'like' | 'subtract' | 'lessThanOrEqualTo' | 'lessThan' | 'notNullOrMissing' | 'regex' | 'equalTo' | 'multiply' | 'contains';
 
 export enum QueryLogicalOperator {
-  AND = 'and',
-  OR = 'or'
+	AND = 'and',
+	OR = 'or',
 }
 
 export enum QueryArrayOperator {
-  CONTAINS = 'contains'
+	CONTAINS = 'contains',
 }
 
 export interface Query {
-  select: any[];
-  // join?: any[];
-  where?: QueryWhereItem[];
-  groupBy?: any;
-  // having?: any;
-  order?: QueryOrderItem[];
-  limit?: any;
-  offset?: any;
-  from?: string;
+	select: any[];
+	// join?: any[];
+	where?: QueryWhereItem[];
+	groupBy?: any;
+	// having?: any;
+	order?: QueryOrderItem[];
+	limit?: any;
+	offset?: any;
+	from?: string;
 }
 
 export interface QueryWhereItem {
-  logical?: QueryLogicalOperator;
-  property: string;
-  comparison: QueryComparisonOperator;
-  value: any;
+	logical?: QueryLogicalOperator;
+	property: string;
+	comparison: QueryComparisonOperator;
+	value: any;
 }
 
 export interface QueryOrderItem {
-  property: string;
-  direction: 'asc' | 'desc';
+	property: string;
+	direction: 'asc' | 'desc';
 }
 
-
 export abstract class BlobBase {
-  abstract readonly ios: any;
+	abstract readonly ios: any;
 
-  abstract readonly android: any;
+	abstract readonly android: any;
 
-  abstract readonly content: any;
+	abstract readonly content: any;
 
-  abstract readonly contentStream: any;
+	abstract readonly contentStream: any;
 
-  abstract readonly contentType: string;
+	abstract readonly contentType: string;
 
-  abstract readonly length: number;
+	abstract readonly length: number;
 
-  abstract readonly digest: string;
+	abstract readonly digest: string;
 
-  abstract readonly properties: Map<string, any>;
-
+	abstract readonly properties: Map<string, any>;
 }
 
 export enum ConcurrencyMode {
-  'LastWriteWins' = 0,
-  'FailOnConflict' = 1
+	'LastWriteWins' = 0,
+	'FailOnConflict' = 1,
 }

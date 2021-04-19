@@ -311,7 +311,6 @@ export class CouchBase extends Common {
 
 		const items = [];
 		const result = queryBuilder.execute().allResults();
-		console.log(result);
 		const size = result.count;
 		for (let i = 0; i < size; i++) {
 			const item = result.objectAtIndex(i);
@@ -526,6 +525,9 @@ export class CouchBase extends Common {
 					nativeQuery = CBLQueryExpression.property(item.property).between(this.serializeExpression(item.value[0])).andExpression(this.serializeExpression(item.value[1]));
 				}
 				break;
+			case 'contains':
+				nativeQuery = CBLQueryArrayFunction.containsValue(CBLQueryExpression.property(item.property), this.serializeExpression(item.value));
+				break;
 			case 'collate':
 				nativeQuery = CBLQueryExpression.property(item.property).collate(this.serializeExpression(item.value));
 				break;
@@ -573,16 +575,17 @@ export class CouchBase extends Common {
 			case 'multiply':
 				nativeQuery = CBLQueryExpression.property(item.property).multiply(this.serializeExpression(item.value));
 				break;
-
 			case 'notEqualTo':
 				nativeQuery = CBLQueryExpression.property(item.property).notEqualTo(this.serializeExpression(item.value));
 				break;
-
 			case 'notNullOrMissing':
 				nativeQuery = CBLQueryExpression.property(item.property).notNullOrMissing();
 				break;
 			case 'regex':
 				nativeQuery = CBLQueryFunction.lower(item.property).regex(this.serializeExpression(item.value));
+				break;
+			case 'subtract':
+				nativeQuery = CBLQueryExpression.property(item.property).subtract(this.serializeExpression(item.value));
 				break;
 		}
 		return nativeQuery;
@@ -764,6 +767,7 @@ export class Replicator extends ReplicatorBase {
 export class Blob extends BlobBase {
 	#blob: any;
 	readonly android: any;
+
 	constructor(blob: any) {
 		super();
 	}
