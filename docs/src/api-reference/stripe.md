@@ -191,6 +191,40 @@ If you're using the [manual confirmation flow](https://stripe.com/docs/payments/
 
 `demo-angular` now supports `SetupIntent` and `PaymentIntent` SCA integration. Any credit card verification will be automatically prompted to the user.
 
+
+
+# ThreeDS
+
+## IOS
+
+The application delegate needs to be overriden to handle the new events 
+
+```ts
+import { handleContinueUserActivity, handleOpenURL } from '@triniwiz/nativescript-stripe';
+if (global.isIOS) {
+	@NativeClass()
+	@ObjCClass(UIApplicationDelegate)
+	class UIApplicationDelegateImpl extends UIResponder implements UIApplicationDelegate {
+		applicationContinueUserActivityRestorationHandler(application: UIApplication, userActivity: NSUserActivity, restorationHandler: (p1: NSArray<UIUserActivityRestoring>) => void): boolean {
+			return handleContinueUserActivity(userActivity);
+		}
+		applicationOpenURLOptions(app: UIApplication, url: NSURL, options: NSDictionary<string, any>): boolean {
+			return handleOpenURL(url);
+		}
+	}
+
+	Application.ios.delegate = UIApplicationDelegateImpl;
+}
+```
+
+### Initialize  
+
+```ts
+import { StripeThreeDSUICustomization } from '@triniwiz/nativescript-stripe';
+
+StripeThreeDSUICustomization.init();
+```
+
 # Known Issues
 
 ## `const enum` not found

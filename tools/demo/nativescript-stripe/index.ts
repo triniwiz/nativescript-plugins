@@ -1,5 +1,5 @@
 import {DemoSharedBase} from '../utils';
-import {CreditCardView, PaymentMethod, Source, Stripe, Token} from '@triniwiz/nativescript-stripe';
+import {CreditCardView, PaymentMethod, Source, Stripe, StripeThreeDSUICustomization, Token} from '@triniwiz/nativescript-stripe';
 import {EventData, fromObject, Button, Page, Frame} from "@nativescript/core";
 import {publishableKey} from "../../../apps/demo/src/plugin-demos/nativescript-stripe-src/std-view/stripe.service";
 
@@ -9,6 +9,11 @@ export class DemoSharedNativescriptStripe extends DemoSharedBase {
   token: any;
   source: any;
   payment: any;
+
+  constructor(){
+    super();
+    StripeThreeDSUICustomization.init();
+  }
   stdDemo(args: EventData) {
     Frame.topmost().navigate("~/plugin-demos/nativescript-stripe-src/std-view/std-view");
   }

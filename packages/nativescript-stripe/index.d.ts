@@ -51,6 +51,15 @@ import {
 export { init } from './utils';
 import { EventData } from '@nativescript/core';
 
+
+export function handleOpenURL(url: any): boolean;
+
+export function handleContinueUserActivity(userActivity: any): boolean;
+
+export declare class StripeThreeDSUICustomization {
+	public static init();
+}
+
 export declare class Address implements IAddress {
 	readonly ios: any;
 	readonly android: any;

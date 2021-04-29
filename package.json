@@ -1,55 +1,66 @@
 {
-	"name": "plugins",
-	"version": "0.0.0",
-	"license": "MIT",
-	"scripts": {
-		"setup": "npx rimraf node_modules package-lock.json dist tmp && npm i && ts-patch install",
-		"start": "nps",
-		"add": "nx g @nativescript/plugin-tools:add-package",
-		"add-angular": "nx g @nativescript/plugin-tools:add-angular",
-		"config": "nx g @nativescript/plugin-tools:config",
-		"publish-packages": "nx g @nativescript/plugin-tools:publish",
-		"docs:build": "cd docs && vuepress build src",
-		"docs:dev": "cd docs && vuepress dev src"
-	},
-	"private": true,
-	"devDependencies": {
-		"@angular/animations": "~10.1.0",
-		"@angular/common": "~10.1.0",
-		"@angular/compiler": "~10.1.0",
-		"@angular/compiler-cli": "~10.1.0",
-		"@angular/core": "~10.1.0",
-		"@angular/forms": "~10.1.0",
-		"@angular/platform-browser": "~10.1.0",
-		"@angular/platform-browser-dynamic": "~10.1.0",
-		"@angular/router": "~10.1.0",
-		"@nativescript/angular": "~10.1.0",
-		"@nativescript/core": "~7.0.0",
-		"@nativescript/plugin-tools": "1.0.5",
-		"@nativescript/types": "~7.0.0",
-		"@nativescript/webpack": "~3.0.0",
-		"@types/react-reconciler": "^0.18.0",
-		"@ngtools/webpack": "~10.1.0",
-		"nativescript-vue": "~2.8.0",
-		"nativescript-vue-template-compiler": "~2.8.0",
-		"ng-packagr": "~10.1.0",
-		"react": "^16.8.6",
-		"react-nativescript": "~1.0.6",
-		"rxjs": "~6.6.0",
-		"svelte": "3.24.1",
-		"svelte-native": "0.9.0-alpha",
-		"typescript": "~3.9.7",
-		"vuepress": "^1.5.3",
-		"zone.js": "0.11.1"
-	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
-	"lint-staged": {
-		"**/*": [
-			"nx format:write --files"
-		]
-	}
+  "name": "plugins",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "setup": "npx rimraf node_modules package-lock.json dist tmp && npm i --legacy-peer-deps && ts-patch install",
+    "start": "nps",
+    "add": "nx g @nativescript/plugin-tools:add-package",
+    "add-angular": "nx g @nativescript/plugin-tools:add-angular",
+    "config": "nx g @nativescript/plugin-tools:config",
+    "publish-packages": "nx g @nativescript/plugin-tools:publish",
+    "docs:build": "cd docs && vuepress build src",
+    "docs:dev": "cd docs && vuepress dev src"
+  },
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pusher": "^5.0.0"
+  },
+  "devDependencies": {
+    "@angular/animations": "~10.1.0",
+    "@angular/common": "~10.1.0",
+    "@angular/compiler": "~10.1.0",
+    "@angular/compiler-cli": "~10.1.0",
+    "@angular/core": "~10.1.0",
+    "@angular/forms": "~10.1.0",
+    "@angular/platform-browser": "~10.1.0",
+    "@angular/platform-browser-dynamic": "~10.1.0",
+    "@angular/router": "~10.1.0",
+    "@nativescript/angular": "~10.1.0",
+    "@nativescript/core": "~7.0.0",
+    "@nativescript/plugin-tools": "1.0.5",
+    "@nativescript/types": "~7.0.0",
+    "@nativescript/webpack": "~3.0.0",
+    "@ngtools/webpack": "~10.1.0",
+    "@nrwl/jest": "10.1.0",
+    "@nrwl/node": "10.1.0",
+    "@types/jest": "26.0.8",
+    "@types/react-reconciler": "^0.18.0",
+    "jest": "26.2.2",
+    "nativescript-vue": "~2.8.0",
+    "nativescript-vue-template-compiler": "~2.8.0",
+    "ng-packagr": "~10.1.0",
+    "react": "^16.8.6",
+    "react-nativescript": "~1.0.6",
+    "rxjs": "~6.6.0",
+    "svelte": "3.24.1",
+    "svelte-native": "0.9.0-alpha",
+    "ts-jest": "26.1.4",
+    "typescript": "~3.9.7",
+    "vuepress": "^1.5.3",
+    "zone.js": "0.11.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "**/*": [
+      "nx format:write --files"
+    ]
+  }
 }

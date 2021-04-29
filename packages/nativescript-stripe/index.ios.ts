@@ -169,6 +169,23 @@ export class Token implements IToken {
 	}
 }
 
+export function handleOpenURL(url: NSURL): boolean {
+	return StripeAPI.handleStripeURLCallbackWithURL(url);
+}
+
+export function handleContinueUserActivity(userActivity: NSUserActivity): boolean {
+	if (userActivity.activityType === NSUserActivityTypeBrowsingWeb) {
+		if (userActivity.webpageURL) {
+			return StripeAPI.handleStripeURLCallbackWithURL(userActivity.webpageURL);
+		}
+	}
+	return false;
+}
+
+export class StripeThreeDSUICustomization {
+	public static init() {}
+}
+
 export class Stripe {
 	constructor(apiKey: string) {
 		STPPaymentConfiguration.sharedConfiguration.publishableKey = apiKey;

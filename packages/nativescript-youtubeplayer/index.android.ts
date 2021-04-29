@@ -130,6 +130,9 @@ function initWebChromeClient() {
 	}
 }
 
+// https://developer.android.com/reference/android/content/pm/ApplicationInfo#FLAG_DEBUGGABLE
+const FLAG_DEBUGGABLE = 2;
+
 export class YoutubePlayer extends YoutubePlayerBase {
 	#webView: android.webkit.WebView;
 	#chromeClient: any;
@@ -139,12 +142,21 @@ export class YoutubePlayer extends YoutubePlayerBase {
 	#state: YoutubePlayerState = YoutubePlayerState.Unstarted;
 	#isReady: boolean = false;
 	#isFullScreen: boolean = false;
-
+	private static INIT: boolean = false;
+	constructor(){
+		super();
+		// check if app is debuggable
+		if (!YoutubePlayer.INIT) {
+			const context: android.content.Context = Utils.android.getApplicationContext();
+			const isDebuggable = 0 != (context.getApplicationInfo().flags & FLAG_DEBUGGABLE);
+			android.webkit.WebView.setWebContentsDebuggingEnabled(isDebuggable);
+			YoutubePlayer.INIT;
+		}
+	}
 	createNativeView() {
 		initWebViewClient();
 		initWebChromeClient();
-		const packageName: android.content.Context = Utils.android.getApplicationContext();
-		this.#origin = 'https://www.youtube.com'; //`https://${packageName.getPackageName()}`;
+		this.#origin = 'https://www.youtube.com';
 		this.#webView = new android.webkit.WebView(this._context, null);
 		const settings = this.#webView.getSettings();
 		settings.setJavaScriptEnabled(true);

@@ -508,6 +508,22 @@ export class Token implements IToken {
 	}
 }
 
+export function handleOpenURL(url: any): boolean {
+	return false;
+}
+
+export function handleContinueUserActivity(userActivity: any) {
+	return false;
+}
+
+export class StripeThreeDSUICustomization {
+	public static init() {
+		const uiCustomizationBuilder = new com.stripe.android.PaymentAuthConfig.Stripe3ds2UiCustomization.Builder();
+		const uiCustomization = uiCustomizationBuilder.build();
+		com.stripe.android.PaymentAuthConfig.init(new com.stripe.android.PaymentAuthConfig.Builder().set3ds2Config(new com.stripe.android.PaymentAuthConfig.Stripe3ds2Config.Builder().setTimeout(5).setUiCustomization(uiCustomization).build()).build());
+	}
+}
+
 export class Stripe {
 	private _stripe: com.stripe.android.Stripe;
 	private _apiKey: string;
