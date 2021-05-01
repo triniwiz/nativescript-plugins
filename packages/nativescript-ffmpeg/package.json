@@ -1,18 +1,18 @@
 {
 	"name": "@triniwiz/nativescript-ffmpeg",
 	"version": "1.0.0",
-	"description": "Add a plugin description",
+	"description": "FFmpeg for NativeScript",
 	"main": "index",
 	"typings": "index.d.ts",
 	"nativescript": {
 		"platforms": {
-			"ios": "6.0.0",
-			"android": "6.0.0"
+			"ios": "7.0.0",
+			"android": "7.0.0"
 		}
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/NativeScript/plugins.git"
+		"url": "https://github.com/triniwiz/nativescript-plugins.git"
 	},
 	"keywords": [
 		"NativeScript",
@@ -26,10 +26,10 @@
 		"email": "oss@nativescript.org"
 	},
 	"bugs": {
-		"url": "https://github.com/NativeScript/plugins/issues"
+		"url": "https://github.com/triniwiz/nativescript-plugins/issues"
 	},
 	"license": "Apache-2.0",
-	"homepage": "https://github.com/NativeScript/plugins",
+	"homepage": "https://github.com/triniwiz/nativescript-plugins",
 	"readmeFilename": "README.md",
 	"bootstrapper": "@nativescript/plugin-seed"
 }

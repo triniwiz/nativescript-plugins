@@ -1,14 +1,12 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:VideoPlayer="nativescript-videoplayer" navigatingTo="navigatingTo" class="page">
     <Page.actionBar>
         <ActionBar title="nativescript-ffmpeg" icon="" class="action-bar">
         </ActionBar>
     </Page.actionBar>
-    <StackLayout class="p-20">
-        <ScrollView class="h-full">
-          <StackLayout>
-            <Button text="Test nativescript-ffmpeg" tap="{{ testIt }}" class="btn btn-primary"/>
-
-          </StackLayout>
-        </ScrollView>
-    </StackLayout>
+     <StackLayout class="p-20">
+    <Button text="Convert to mp4" class="t-20 text-center c-black" tap="{{convertToMp4}}"/>
+    <VideoPlayer:Video id="nativeVideoPlayer"
+                       controls="true" loop="true" autoplay="true" height="280"
+                       src="{{ src }}" />
+  </StackLayout>
 </Page>

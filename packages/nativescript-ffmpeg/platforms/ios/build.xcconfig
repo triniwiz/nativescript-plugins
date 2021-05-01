@@ -1,0 +1,1 @@
+OTHER_LDFLAGS = $(inherited) -ObjC -framework "Accelerate" -framework "CoreMotion" -framework "CoreVideo" -framework "VideoToolbox" -framework "GameController" -lbz2 -lc++ -liconv -lz
