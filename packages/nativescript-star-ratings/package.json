@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-star-ratings",
-	"version": "2.0.2",
+	"version": "2.0.3",
 	"description": "NativeScript star ratings UI component plugin.",
 	"main": "index",
 	"typings": "index.d.ts",

@@ -16,20 +16,14 @@ export class StarRating extends StarRatingBase {
 		this._ratingBar = new android.widget.RatingBar(this._context);
 		this._ratingBar.setLayoutParams(new android.widget.LinearLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT));
 		this._stars = this._ratingBar.getProgressDrawable() as android.graphics.drawable.LayerDrawable;
-		this._handleFilledColor(this._emptyColor);
-		this._handleEmptyColor(this._filledColor);
 		const nativeView = new android.widget.LinearLayout(this._context);
 		nativeView.addView(this._ratingBar);
 		return nativeView;
 	}
 
 	public initNativeView() {
-		if (this.filledColor) {
-			this._handleFilledColor(this.filledColor);
-		}
-		if (!this.emptyColor) {
-			this._handleEmptyColor(this.emptyColor);
-		}
+		this._handleFilledColor(this.filledColor || this._filledColor);
+		this._handleEmptyColor(this.emptyColor || this._emptyColor);
 		this._ratingBar.setRating(Number(this.value));
 		this._ratingBar.setIsIndicator(Boolean(this.indicator));
 		this._ratingBar.setMax(Number(this.max));
@@ -58,11 +52,13 @@ export class StarRating extends StarRatingBase {
 		if (!(color instanceof Color)) {
 			return;
 		}
-		const emptyDrawable = this._stars.getDrawable(0);
-		if (android.os.Build.VERSION.SDK_INT >= 29) {
-			emptyDrawable.setColorFilter(new android.graphics.BlendModeColorFilter(color.android, android.graphics.BlendMode.CLEAR));
-		} else {
-			emptyDrawable.setColorFilter(color.android, android.graphics.PorterDuff.Mode.SRC_ATOP);
+		const emptyDrawable = this._stars?.getDrawable(0);
+		if (emptyDrawable) {
+			if (android.os.Build.VERSION.SDK_INT >= 29) {
+				emptyDrawable.setColorFilter(new android.graphics.BlendModeColorFilter(color.android, android.graphics.BlendMode.SRC_ATOP));
+			} else {
+				emptyDrawable.setColorFilter(color.android, android.graphics.PorterDuff.Mode.SRC_ATOP);
+			}
 		}
 	}
 
@@ -87,10 +83,10 @@ export class StarRating extends StarRatingBase {
 			const rightDrawable = this._stars.getDrawable(2) as android.graphics.drawable.Drawable;
 
 			if (android.os.Build.VERSION.SDK_INT >= 29) {
-				leftDrawable.setColorFilter(new android.graphics.BlendModeColorFilter(color.android, android.graphics.BlendMode.CLEAR));
-				rightDrawable.setColorFilter(new android.graphics.BlendModeColorFilter(color.android, android.graphics.BlendMode.CLEAR));
+				leftDrawable.setColorFilter(new android.graphics.BlendModeColorFilter(color.android, android.graphics.BlendMode.SRC_ATOP));
+				rightDrawable.setColorFilter(new android.graphics.BlendModeColorFilter(color.android, android.graphics.BlendMode.SRC_ATOP));
 			} else {
-				leftDrawable.setColorFilter(color.android, android.graphics.PorterDuff.Mode.CLEAR);
+				leftDrawable.setColorFilter(color.android, android.graphics.PorterDuff.Mode.SRC_ATOP);
 				rightDrawable.setColorFilter(color.android, android.graphics.PorterDuff.Mode.SRC_ATOP);
 			}
 		}
