@@ -266,7 +266,7 @@ export class CouchBase extends Common {
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).notNullOrMissing();
 				break;
 			case 'regex':
-				nativeQuery = com.couchbase.lite.Function.lower(item.property).regex(this.serializeExpression(item.value));
+				nativeQuery = com.couchbase.lite.Expression.property(item.property).regex(this.serializeExpression(item.value));
 				break;
 			case 'subtract':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).subtract(this.serializeExpression(item.value));

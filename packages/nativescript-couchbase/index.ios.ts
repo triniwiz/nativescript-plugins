@@ -582,7 +582,7 @@ export class CouchBase extends Common {
 				nativeQuery = CBLQueryExpression.property(item.property).notNullOrMissing();
 				break;
 			case 'regex':
-				nativeQuery = CBLQueryFunction.lower(item.property).regex(this.serializeExpression(item.value));
+				nativeQuery = CBLQueryExpression.property(item.property).regex(this.serializeExpression(item.value));
 				break;
 			case 'subtract':
 				nativeQuery = CBLQueryExpression.property(item.property).subtract(this.serializeExpression(item.value));
