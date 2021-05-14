@@ -281,24 +281,30 @@ export class TNSMediaInformation extends TNSMediaInformationBase {
 	get startTime(): string {
 		return this.native.getMediaInformation().getStartTime();
 	}
-	get tags(): {[key: string]:[value: any]} {
-		const allTags = this.native.getMediaInformation().getTags();
-        const allKeys = allTags.allKeys;
-        const count = allKeys.count;
-        const tags = {};
-        for (let i = 0; i < count; i++) {
-            const key = allKeys.objectAtIndex(i);
-			tags[key] = allTags.objectForKey(key);
+	get tags(): {[key: string]:any} {
+		const tags = {};
+		const info = this.native.getMediaInformation();
+		if (info) {
+			const allTags = this.native.getMediaInformation().getTags();
+			const allKeys = allTags.allKeys;
+			const count = allKeys.count;
+			for (let i = 0; i < count; i++) {
+				const key = allKeys.objectAtIndex(i);
+				tags[key] = allTags.objectForKey(key);
+			}
 		}
         return tags;
 	}
 
 	get streams(): TNSMediaStream[] {
-		const info = this.native.getMediaInformation().getStreams();
-		const count = info.count;
 		const streams = [];
-		for (let i = 0; i < count; i++) {
-			streams.push(new TNSMediaStream(info.objectAtIndex(i)));
+		const info = this.native.getMediaInformation();
+		if (info) {
+			const ns = info.getStreams();
+			const count = ns.count;
+			for (let i = 0; i < count; i++) {
+				streams.push(new TNSMediaStream(ns.objectAtIndex(i)));
+			}
 		}
 		return streams;
 	}
@@ -367,6 +373,9 @@ export class FFmpeg {
 			FFprobeKit.getMediaInformationAsyncWithExecuteCallbackWithLogCallbackWithTimeout(
 				file,
 				(session) => {
+					if(!session){
+						reject('Failed to get mediainformation');
+					}
 					resolve(new TNSMediaInformation(session));
 				},
 				(log) => {

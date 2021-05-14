@@ -50,7 +50,6 @@ export enum LogLevel {
 }
 
 export enum TNSLogRedirectionStrategy {
-
 	AlwaysPrintLogs = 0,
 
 	PrintLogsWhenNoCallbacksDefined = 1,
@@ -59,7 +58,7 @@ export enum TNSLogRedirectionStrategy {
 
 	PrintLogsWhenSessionCallbackNotDefined = 3,
 
-	NeverPrintLogs = 4
+	NeverPrintLogs = 4,
 }
 
 export enum TNSSessionState {
@@ -82,7 +81,7 @@ export abstract class TNSSessionBase {
 	}
 	abstract cancel(): void;
 
-    abstract addLog(log: TNSLogBase): void;
+	abstract addLog(log: TNSLogBase): void;
 
 	abstract allLogs: TNSLogBase[];
 
@@ -210,6 +209,6 @@ export abstract class TNSMediaInformationBase {
 	abstract format: string;
 	abstract fileName: string;
 	abstract startTime: string;
-	abstract tags: {[key: string]:[value: any]};
+	abstract tags: { [key: string]: any };
 	abstract streams: TNSMediaStreamBase[];
 }

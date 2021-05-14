@@ -62,13 +62,13 @@ export class TNSSession extends TNSSessionBase {
     get endTime(): Date {
         return this.native.getEndTime() as any;
     }
- 
+
     get failStackTrace(): string {
         return this.native.getFailStackTrace();
     }
-  
+
     get logRedirectionStrategy(): TNSLogRedirectionStrategy {
-      return this.native.getLogRedirectionStrategy().valueOf();
+      return this.native.getLogRedirectionStrategy().valueOf() as any;
     }
     get logs(): TNSLog[] {
         const logs = [];
@@ -285,7 +285,7 @@ export class TNSMediaInformation extends TNSMediaInformationBase {
 	get startTime(): string {
 		return this.native.getMediaInformation().getStartTime();
 	}
-	get tags(): {[key: string]:[value: any]} {
+	get tags(): {[key: string]: any} {
         let json = {};
         try{
             json = JSON.parse(this.native.getMediaInformation().getTags().toString())
@@ -431,7 +431,7 @@ export class FFmpeg {
 	}
 
 	public static resetStatistics() {
-		
+
 	}
 
 	public static getExternalLibraries(): string[] {
