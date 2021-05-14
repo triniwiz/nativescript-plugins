@@ -1,0 +1,7 @@
+repositories {
+        mavenCentral()
+}
+
+dependencies {
+    implementation "com.facebook.soloader:soloader:0.10.1"
+}

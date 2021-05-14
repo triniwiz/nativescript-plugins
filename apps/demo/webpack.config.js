@@ -280,6 +280,7 @@ module.exports = env => {
                 { from: 'fonts/**', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
                 { from: '**/*.jpg', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
                 { from: '**/*.png', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
+                { from: 'text.json', noErrorOnMissing: true, globOptions: { dot: false, ...copyIgnore } },
 
                 { from: '../../../tools/demo/nativescript-image-cache-it/assets', to: 'nativescript-image-cache-it/assets' },
                 { from: '../../../tools/demo/nativescript-image-zoom/assets', to: 'nativescript-image-zoom/assets' },

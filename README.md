@@ -7,59 +7,49 @@ npm start
 
 - [@triniwiz/nativescript-accelerometer](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-accelerometer)
   - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-accelerometer.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-accelerometer)
+- @triniwiz/nativescript-accelerometer
 - @triniwiz/nativescript-accordion
 - @triniwiz/nativescript-autocomplete
 - @triniwiz/nativescript-awesome-loaders
 - @triniwiz/nativescript-aws-sdk
 - @triniwiz/nativescript-aws-sdk-s3
 - @triniwiz/nativescript-card-io
-- [@triniwiz/nativescript-couchbase](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-couchbase)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-couchbase.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-couchbase)
+- @triniwiz/nativescript-couchbase
 - @triniwiz/nativescript-ddp-login
 - @triniwiz/nativescript-downloader
 - @triniwiz/nativescript-fancy-camera
 - @triniwiz/nativescript-fancy-list-view
 - @triniwiz/nativescript-ffmpeg
+- @triniwiz/nativescript-file-manager
 - @triniwiz/nativescript-here
-- [@triniwiz/nativescript-image-cache-it](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-image-cache-it)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-image-cache-it.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-image-cache-it)
-- [@triniwiz/nativescript-image-zoom](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-image-zoom)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-image-zoom.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-image-zoom)
+- @triniwiz/nativescript-image-cache-it
+- @triniwiz/nativescript-image-zoom
 - @triniwiz/nativescript-imageoptimize
 - @triniwiz/nativescript-mongo-stitch-core
 - @triniwiz/nativescript-mongo-stitch-sdk
 - @triniwiz/nativescript-mongo-stitch-services-mongodb-remote
-- [@triniwiz/nativescript-nested-scrollview](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-scrollview)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-nested-scrollview.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-nested-scrollview)
-- [@triniwiz/nativescript-pager](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-pager)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-pager.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-pager)
+- @triniwiz/nativescript-nested-scrollview
+- @triniwiz/nativescript-pager
 - @triniwiz/nativescript-popup
 - @triniwiz/nativescript-pubnub
 - @triniwiz/nativescript-pusher-beams
 - @triniwiz/nativescript-pusher-channels
 - @triniwiz/nativescript-radar-io
 - @triniwiz/nativescript-sinch
-- [@triniwiz/nativescript-socketio](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-socketio)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-socketio.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-socketio)
+- @triniwiz/nativescript-socketio
 - @triniwiz/nativescript-splashscreen
-- [@triniwiz/nativescript-sse](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-sse)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-sse.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-sse)
-- [@triniwiz/nativescript-star-ratings](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-star-ratings)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-star-ratings.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-star-ratings)
-- [@triniwiz/nativescript-stripe](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-stripe)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-stripe.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-stripe)
+- @triniwiz/nativescript-sse
+- @triniwiz/nativescript-star-ratings
+- @triniwiz/nativescript-stripe
 - @triniwiz/nativescript-textdrawable
-- [@triniwiz/nativescript-toasty](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-toasty)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-toasty.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-toasty)
-- [@triniwiz/nativescript-tooltip](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-tooltip)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-tooltip.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-tooltip)
+- @triniwiz/nativescript-toasty
+- @triniwiz/nativescript-tooltip
 - @triniwiz/nativescript-twitter
 - @triniwiz/nativescript-video-editor
-- [@triniwiz/nativescript-videorecorder](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-videorecorder)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-videorecorder.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-videorecorder)
+- @triniwiz/nativescript-videorecorder
 - @triniwiz/nativescript-webrtc
-- [@triniwiz/nativescript-youtubeplayer](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-youtubeplayer)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-youtubeplayer.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-youtubeplayer)
+- @triniwiz/nativescript-yogalayout
+- @triniwiz/nativescript-youtubeplayer
 
 # How to use?
 

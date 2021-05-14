@@ -46,6 +46,9 @@ export class HomeComponent {
 			name: 'nativescript-ffmpeg',
 		},
 		{
+			name: 'nativescript-file-manager',
+		},
+		{
 			name: 'nativescript-here',
 		},
 		{
@@ -125,6 +128,9 @@ export class HomeComponent {
 		},
 		{
 			name: 'nativescript-webrtc',
+		},
+		{
+			name: 'nativescript-yogalayout',
 		},
 		{
 			name: 'nativescript-youtubeplayer',

@@ -20,6 +20,7 @@ const routes: Routes = [
 	{ path: 'nativescript-fancy-camera', loadChildren: () => import('./plugin-demos/nativescript-fancy-camera.module').then((m) => m.NativescriptFancyCameraModule) },
 	{ path: 'nativescript-fancy-list-view', loadChildren: () => import('./plugin-demos/nativescript-fancy-list-view.module').then((m) => m.NativescriptFancyListViewModule) },
 	{ path: 'nativescript-ffmpeg', loadChildren: () => import('./plugin-demos/nativescript-ffmpeg.module').then((m) => m.NativescriptFfmpegModule) },
+	{ path: 'nativescript-file-manager', loadChildren: () => import('./plugin-demos/nativescript-file-manager.module').then((m) => m.NativescriptFileManagerModule) },
 	{ path: 'nativescript-here', loadChildren: () => import('./plugin-demos/nativescript-here.module').then((m) => m.NativescriptHereModule) },
 	{ path: 'nativescript-image-cache-it', loadChildren: () => import('./plugin-demos/nativescript-image-cache-it.module').then((m) => m.NativescriptImageCacheItModule) },
 	{ path: 'nativescript-image-zoom', loadChildren: () => import('./plugin-demos/nativescript-image-zoom.module').then((m) => m.NativescriptImageZoomModule) },
@@ -47,6 +48,7 @@ const routes: Routes = [
 	{ path: 'nativescript-video-editor', loadChildren: () => import('./plugin-demos/nativescript-video-editor.module').then((m) => m.NativescriptVideoEditorModule) },
 	{ path: 'nativescript-videorecorder', loadChildren: () => import('./plugin-demos/nativescript-videorecorder.module').then((m) => m.NativescriptVideorecorderModule) },
 	{ path: 'nativescript-webrtc', loadChildren: () => import('./plugin-demos/nativescript-webrtc.module').then((m) => m.NativescriptWebrtcModule) },
+	{ path: 'nativescript-yogalayout', loadChildren: () => import('./plugin-demos/nativescript-yogalayout.module').then((m) => m.NativescriptYogalayoutModule) },
 	{ path: 'nativescript-youtubeplayer', loadChildren: () => import('./plugin-demos/nativescript-youtubeplayer.module').then((m) => m.NativescriptYoutubeplayerModule) },
 ];
 

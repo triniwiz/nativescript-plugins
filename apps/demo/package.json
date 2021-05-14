@@ -47,7 +47,9 @@
 		"@triniwiz/nativescript-webrtc": "file:../../packages/nativescript-webrtc",
 		"@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer",
 		"nativescript-theme-core": "file:../../node_modules/nativescript-theme-core",
-		"nativescript-videoplayer": "^5.0.1"
+		"nativescript-videoplayer": "^5.0.1",
+		"@triniwiz/nativescript-file-manager": "file:../../packages/nativescript-file-manager",
+		"@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout"
 	},
 	"devDependencies": {
 		"@nativescript/android": "7.0.1",

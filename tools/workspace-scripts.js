@@ -350,6 +350,20 @@ module.exports = {
 					description: '@triniwiz/nativescript-accelerometer: Build',
 				},
 			},
+			// @triniwiz/nativescript-file-manager
+			'nativescript-file-manager': {
+				build: {
+					script: 'nx run nativescript-file-manager:build.all',
+					description: '@triniwiz/nativescript-file-manager: Build',
+				},
+			},
+			// @triniwiz/nativescript-yogalayout
+			'nativescript-yogalayout': {
+				build: {
+					script: 'nx run nativescript-yogalayout:build.all',
+					description: '@triniwiz/nativescript-yogalayout: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run all:build',
 				description: 'Build all packages',
@@ -523,6 +537,14 @@ module.exports = {
 			'nativescript-accelerometer': {
 				script: 'nx run nativescript-accelerometer:focus',
 				description: 'Focus on @triniwiz/nativescript-accelerometer',
+			},
+			'nativescript-file-manager': {
+				script: 'nx run nativescript-file-manager:focus',
+				description: 'Focus on @triniwiz/nativescript-file-manager',
+			},
+			'nativescript-yogalayout': {
+				script: 'nx run nativescript-yogalayout:focus',
+				description: 'Focus on @triniwiz/nativescript-yogalayout',
 			},
 			reset: {
 				script: 'nx run all:focus',
