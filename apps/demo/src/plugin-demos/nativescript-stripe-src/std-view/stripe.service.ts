@@ -1,10 +1,12 @@
 import { StripeStandardAddress, IStripeStandardBackendAPI, StripeStandardConfig, StripeStandardCustomerSession, StripeStandardPaymentListener, StripeStandardPaymentSession, StripeStandardShippingAddressField, StripeStandardShippingMethod, StripeStandardPaymentMethodType } from '@triniwiz/nativescript-stripe/standard';
 import { Page } from '@nativescript/core';
 import { request } from '@nativescript/core/http';
+import { Stripe, StripePaymentIntentParams, StripePaymentIntentStatus } from '@triniwiz/nativescript-stripe';
+import { StripeRedirectSession } from '@triniwiz/nativescript-stripe';
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
 // and copy your "Test Publishable Key" (it looks like pk_test_abcdef) into the line below.
-export const publishableKey = 'pk_test_OHSX2noWHfjZMZ6uj0dbeSN7';
+export const publishableKey = 'pk_test_yours';
 
 // 2) Next, optionally, to have this demo save your user's payment details, head to
 // https://github.com/stripe/example-ios-backend , click "Deploy to Heroku", and follow
@@ -18,7 +20,7 @@ const appleMerchantID = '';
 
 export class StripeService implements IStripeStandardBackendAPI {
 	private customerSession: StripeStandardCustomerSession;
-
+	private stripe: Stripe;
 	constructor() {
 		if (-1 !== publishableKey.indexOf('pk_test_yours')) {
 			throw new Error('publishableKey must be changed from placeholder');
@@ -26,12 +28,12 @@ export class StripeService implements IStripeStandardBackendAPI {
 		if (-1 !== backendBaseURL.indexOf('https://yours.herokuapp.com/')) {
 			throw new Error('backendBaseURL must be changed from placeholder');
 		}
-
+		this.stripe = new Stripe(publishableKey);
 		StripeStandardConfig.shared.backendAPI = this;
 		StripeStandardConfig.shared.publishableKey = publishableKey;
 		StripeStandardConfig.shared.appleMerchantID = appleMerchantID;
 		StripeStandardConfig.shared.companyName = 'Demo Company';
-		StripeStandardConfig.shared.requiredShippingAddressFields = [StripeStandardShippingAddressField.PostalAddress];
+		//StripeStandardConfig.shared.requiredShippingAddressFields = [StripeStandardShippingAddressField.PostalAddress];
 		StripeStandardConfig.shared.allowedPaymentMethodTypes.push(StripeStandardPaymentMethodType.Fpx);
 		this.customerSession = new StripeStandardCustomerSession();
 	}
@@ -55,9 +57,47 @@ export class StripeService implements IStripeStandardBackendAPI {
 	capturePayment(stripeID: string, amount: number, shippingMethod?: StripeStandardShippingMethod, shippingAddress?: StripeStandardAddress): Promise<any> {
 		let content = `payment_method_id=${stripeID}&amount=${amount}`;
 		if (shippingMethod && shippingAddress) content += `&${this._encodeShipping(shippingMethod, shippingAddress)}`;
-		return this._postRequest('confirm_payment_intent', content).then((response) => {
-			return response.content.toJSON();
+		return new Promise(async (resolve, reject) => {
+			/*STPAPIClient *stripeClient = [STPAPIClient sharedClient];
+			STPPaymentIntentParams *paymentIntentParams = [[STPPaymentIntentParams alloc] initWithClientSecret:clientSecret];
+			paymentIntentParams.sourceParams = [STPSourceParams cardParamsWithCard:self.paymentTextField.cardParams];
+			paymentIntentParams.returnUrl = @"payments-example://stripe-redirect"; */
+			try {
+				const intent = await this.createPaymentIntent(amount, shippingMethod?.currency);
+
+				const pi = new StripePaymentIntentParams();
+				pi.clientSecret = intent.secret;
+				pi.paymentMethodId = stripeID;
+				if (global.isIOS) {
+					pi.returnURL = 'iotriniwiznativescriptplugindemo://payment';
+				} else {
+					pi.returnURL = 'io.triniwiz.nativescript.plugindemo://payment';
+				}
+				this.stripe.confirmPaymentIntent(pi, (e, pm) => {
+					if (pm.requiresAction) {
+						this.stripe.authenticatePaymentIntent(pm.clientSecret, pi.returnURL, (err, pm) => {
+							if (err) {
+								reject(err);
+							} else {
+								resolve(pm);
+							}
+						});
+					} else {
+						if (e) {
+							reject(e);
+						} else {
+							resolve(pm);
+						}
+					}
+				});
+			} catch (e) {
+				reject(e);
+			}
 		});
+
+		/*return this._postRequest('confirm_payment_intent', content).then((response) => {
+			return response.content.toJSON();
+		}); */
 	}
 
 	confirmPaymentIntent(paymentIntentID: string): Promise<void> {

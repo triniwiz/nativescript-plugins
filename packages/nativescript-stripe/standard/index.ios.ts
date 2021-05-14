@@ -66,9 +66,8 @@ export class StripeStandardCustomerSession {
 }
 
 @NativeClass
+@ObjCClass(STPCustomerEphemeralKeyProvider)
 class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvider {
-	static ObjCProtocols = [STPCustomerEphemeralKeyProvider];
-
 	static new(): StripeKeyProvider {
 		return <StripeKeyProvider>super.new();
 	}
@@ -181,8 +180,8 @@ export class StripeStandardPaymentSession {
 }
 
 @NativeClass
+@ObjCClass(STPPaymentContextDelegate)
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
-	static ObjCProtocols = [STPPaymentContextDelegate];
 
 	static create(parent: StripeStandardPaymentSession, listener: StripeStandardPaymentListener): StripePaymentDelegate {
 		let self = <StripePaymentDelegate>super.new();
@@ -207,7 +206,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 	paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: STPPaymentStatus, p2: NSError) => void): void {
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
-			.then(() => {
+			.then((value) => {
 				completion(STPPaymentStatus.Success, null);
 			})
 			.catch((e) => {

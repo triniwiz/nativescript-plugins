@@ -5,6 +5,7 @@ import { Source } from './source';
 import { toJSON } from './utils';
 
 export { init } from './utils';
+export { StripePaymentIntentStatus } from './common';
 
 export class Address implements IAddress {
 	readonly ios: STPAddress;
@@ -298,20 +299,25 @@ export class Stripe {
 		return keyWindow != null ? keyWindow.rootViewController : undefined;
 	}
 
-	/*
-	 *. Private
-	 */
-
+	_ctxImpl: STPAuthenticationContextImp;
+	_lastRoot: any;
 	private _getAuthentificationContext(): STPAuthenticationContext {
 		const rootVC = Frame.topmost().currentPage.ios || this._rootViewController;
-		return STPAuthenticationContextImp.initWithViewController(Utils.ios.getVisibleViewController(rootVC));
+		if(!this._ctxImpl){
+			this._ctxImpl = STPAuthenticationContextImp.initWithViewController(rootVC);
+			this._lastRoot = rootVC;
+		}
+		if(this._lastRoot !== rootVC){
+			this._ctxImpl._vc = rootVC;
+		}
+		return this._ctxImpl;
 	}
 }
 
 @NativeClass
+@ObjCClass(STPAuthenticationContext)
 class STPAuthenticationContextImp extends NSObject implements STPAuthenticationContext {
-	static ObjCProtocols = [STPAuthenticationContext];
-	private _vc: UIViewController;
+	_vc: UIViewController;
 
 	public static initWithViewController(vc: UIViewController) {
 		const delegate = <STPAuthenticationContextImp>STPAuthenticationContextImp.new();
@@ -828,6 +834,14 @@ export class StripeSetupIntentParams {
 	}
 }
 
+export enum StripeRedirectState {
+	NotStarted = 0,
+	InProgress = 1,
+	Cancelled = 2,
+	Completed = 3
+}
+
+
 export class StripeRedirectSession {
 	native: STPRedirectContext;
 	readonly state: StripeRedirectState;
@@ -835,22 +849,26 @@ export class StripeRedirectSession {
 	constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void) {
 		this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(
 			paymentIntent.native,
-			callback(cb, (clientSecret) => clientSecret)
+			(clientSecret, error)=>{
+				cb(new Error(error.localizedDescription), clientSecret);
+				//callback(cb, (clientSecret) => clientSecret)
+			}
 		);
 	}
 
-	startRedirectFlow(view: View): void {
-		this.native.startRedirectFlowFromViewController(view.viewController);
+	startRedirectFlow(view: View = null): void {
+		const vc  = view?.viewController ?? (Frame.topmost().currentPage.ios || this._rootViewController);
+		this.native.startRedirectFlowFromViewController(vc);
 	}
 
 	cancel(): void {
 		this.native.cancel();
 	}
-}
 
-export const enum StripeRedirectState {
-	NotStarted = 0,
-	InProgress = 1,
-	Cancelled = 2,
-	Completed = 3,
+
+
+	private get _rootViewController(): UIViewController | undefined {
+		const keyWindow = UIApplication.sharedApplication.keyWindow;
+		return keyWindow != null ? keyWindow.rootViewController : undefined;
+	}
 }

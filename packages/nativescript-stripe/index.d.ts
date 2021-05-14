@@ -48,9 +48,10 @@ import {
 	IPaymentMethodCardWalletSamsungPay,
 } from './common';
 
+export { StripePaymentIntentStatus } from './common';
+
 export { init } from './utils';
 import { EventData } from '@nativescript/core';
-
 
 export function handleOpenURL(url: any): boolean;
 
@@ -446,4 +447,22 @@ export declare class StripeSetupIntent extends StripeIntent {
 	static fromNative(native: any): StripeSetupIntent;
 
 	get paymentMethodId(): string;
+}
+
+export enum StripeRedirectState {
+	NotStarted = 0,
+	InProgress = 1,
+	Cancelled = 2,
+	Completed = 3,
+}
+
+export declare class StripeRedirectSession {
+	native: any;
+	readonly state: StripeRedirectState;
+
+	constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void);
+
+	startRedirectFlow(view?: View): void;
+
+	cancel(): void;
 }
