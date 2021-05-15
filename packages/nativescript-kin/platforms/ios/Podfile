@@ -1,0 +1,5 @@
+platform :ios, '9.0'
+#pod 'KinUX', '~> 0.4.5'
+# pod 'KinBase', :git => 'https://github.com/triniwiz/kin-ios.git'
+# pod 'KinDesign', :git => 'https://github.com/triniwiz/kin-ios.git'
+# pod 'KinUX', :git => 'https://github.com/triniwiz/kin-ios.git'

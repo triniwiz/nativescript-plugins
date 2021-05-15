@@ -49,7 +49,8 @@
 		"nativescript-theme-core": "file:../../node_modules/nativescript-theme-core",
 		"nativescript-videoplayer": "^5.0.1",
 		"@triniwiz/nativescript-file-manager": "file:../../packages/nativescript-file-manager",
-		"@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout"
+		"@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout",
+		"@triniwiz/nativescript-kin": "file:../../packages/nativescript-kin"
 	},
 	"devDependencies": {
 		"@nativescript/android": "7.0.1",

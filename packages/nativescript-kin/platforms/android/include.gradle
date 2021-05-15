@@ -1,0 +1,8 @@
+repositories {
+  jcenter()
+  maven { url "https://jitpack.io/" }
+}
+
+dependencies {
+  //implementation "org.kin.sdk.android:design:0.4.0"
+}

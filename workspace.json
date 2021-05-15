@@ -131,7 +131,8 @@
 							"nx run nativescript-pager:build.all",
 							"nx run nativescript-accelerometer:build.all",
 							"nx run nativescript-file-manager:build.all",
-							"nx run nativescript-yogalayout:build.all"
+							"nx run nativescript-yogalayout:build.all",
+							"nx run nativescript-kin:build.all"
 						],
 						"parallel": false
 					}
@@ -2076,6 +2077,49 @@
 					"outputs": ["dist/packages"],
 					"options": {
 						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-yogalayout"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-kin": {
+			"root": "packages/nativescript-kin",
+			"sourceRoot": "packages/nativescript-kin",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-kin",
+						"tsConfig": "packages/nativescript-kin/tsconfig.json",
+						"packageJson": "packages/nativescript-kin/package.json",
+						"main": "packages/nativescript-kin/index.ts",
+						"assets": [
+							"packages/nativescript-kin/*.md",
+							"packages/nativescript-kin/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-kin/platforms/",
+								"output": "./platforms/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-kin:build", "node tools/scripts/build-finish.ts nativescript-kin"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-kin"],
 						"parallel": false
 					}
 				}

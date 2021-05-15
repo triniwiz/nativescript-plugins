@@ -1,8 +1,44 @@
-import { DemoSharedBase } from '../utils';
-import {} from '@triniwiz/nativescript-socketio';
+import {DemoSharedBase} from '../utils';
+import {SocketIO} from '@triniwiz/nativescript-socketio';
+import {Frame} from "@nativescript/core";
 
 export class DemoSharedNativescriptSocketio extends DemoSharedBase {
-	testIt() {
-		console.log('test nativescript-socketio!');
-	}
+  item: '';
+  username: 'Osei';
+  server = global.isAndroid ? 'http://10.0.2.2:3000?test=123&platform=android' : 'http://localhost:3000?test=123&platform=ios';
+  socketIO: SocketIO;
+  chatNS;
+
+  constructor() {
+    super();
+    this.socketIO = new SocketIO(this.server, {
+      cookie: `username=Osei;`,
+      transports: ['websocket'],
+      extraHeaders: {
+        access_token: 'TestToken-X'
+      }
+    });
+
+    this.socketIO.on('login', (data) => {
+      console.log('Login');
+      Frame.topmost().navigate({
+        moduleName: '~/plugin-demos/nativescript-socketio-src/main',
+        context: {username: this.username, socket: this.socketIO.instance}
+      });
+    });
+
+    this.socketIO.connect();
+
+    this.chatNS = this.socketIO.joinNamespace('/chat');
+    if (this.chatNS && !this.chatNS.connected) {
+      this.chatNS.connect();
+    }
+
+  }
+
+  join(args) {
+    this.socketIO.emit('add user', {username: this.username}, (ack) => {
+      console.log('ack', ack);
+    });
+  }
 }

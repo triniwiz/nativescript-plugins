@@ -25,6 +25,7 @@ npm start
 - @triniwiz/nativescript-image-cache-it
 - @triniwiz/nativescript-image-zoom
 - @triniwiz/nativescript-imageoptimize
+- @triniwiz/nativescript-kin
 - @triniwiz/nativescript-mongo-stitch-core
 - @triniwiz/nativescript-mongo-stitch-sdk
 - @triniwiz/nativescript-mongo-stitch-services-mongodb-remote

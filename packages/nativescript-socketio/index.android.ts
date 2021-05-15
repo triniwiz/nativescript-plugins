@@ -1,6 +1,6 @@
 import { Common } from './common';
 
-//declare const io: any, org: any, android: any, java: any, co: any;
+declare const co: any;
 
 export class SocketIO extends Common {
 	protected socket: io.socket.client.Socket;
@@ -104,7 +104,6 @@ export class SocketIO extends Common {
 	}
 
 	on(event: string, callback: (...payload) => void): () => void {
-		``;
 		const listener = new io.socket.emitter.Emitter.Listener({
 			call(args) {
 				let payload = Array.prototype.slice.call(args);
@@ -127,9 +126,11 @@ export class SocketIO extends Common {
 			},
 		});
 
+		// @ts-ignore
 		this.socket.on(event, listener);
 
 		return () => {
+      // @ts-ignore
 			this.socket.off(event, listener);
 		};
 	}
@@ -156,14 +157,18 @@ export class SocketIO extends Common {
 				callback.apply(null, payload);
 			},
 		});
+
+    // @ts-ignore
 		this.socket.once(event, listener);
 
 		return () => {
+      // @ts-ignore
 			this.socket.off(event, listener);
 		};
 	}
 
 	off(event: string) {
+    // @ts-ignore
 		this.socket.off(event);
 	}
 

@@ -1,0 +1,22 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" loaded="pageLoaded">
+
+  <ActionBar title="NS Socket.IO"/>
+
+  <GridLayout columns="2*,*" rows="auto,auto,*">
+    <Button col="0" width="100%" height="44" text="Log Out" tap="logOut" borderWidth="1"  borderRadius="8" borderColor="black" textAlignment="center" horizontalAlignment="center"/>
+    <Button col="1" width="100%" height="44" text="Mute" tap="mute" borderWidth="1"  borderRadius="8" borderColor="black" textAlignment="center" horizontalAlignment="center"/>
+
+    <TextField hint="Enter text" text="{{ textMessage }}" row="1"/>
+    <Button col="1" text="Add" tap="sendText" row="1"/>
+
+    <ListView id="lv" items="{{ list }}" colSpan="2" row="2">
+      <ListView.itemTemplate>
+        <GridLayout columns="*,*,*" class="messages">
+          <Label text="{{ username }}"/>
+          <Label text="{{ message }}" col="1"/>
+          <Label text="{{ timeStamp | timeFromNow}}" col="2"/>
+        </GridLayout>
+      </ListView.itemTemplate>
+    </ListView>
+  </GridLayout>
+</Page>

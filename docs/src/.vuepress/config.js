@@ -64,7 +64,7 @@ module.exports = {
 				{
 					title: 'API Reference',
 					collapsable: false,
-					children: ['', 'accelerometer', 'accordion', 'autocomplete', 'awesome-loaders', 'aws-sdk-core', 'aws-sdk-s3', 'couchbase', 'downloader', 'fancy-camera', 'fancy-list-view', 'ffmpeg', 'here', 'image-cache-it', 'image-zoom', 'imageoptimize', 'mongo-stitch-core', 'mongo-stitch-services-mongodb-remote', 'nested-scrollview', 'pager', 'popover', 'pubnub', 'pusher-beams', 'pusher-channels', 'radar-io', 'sinch', 'socketio', 'splashscreen', 'sse', 'star-ratings', 'stripe', 'toasty', 'tooltip', 'twitter', 'video-editor', 'video-recorder', 'webrtc', 'youtube-player'],
+					children: ['', 'accelerometer', 'accordion', 'autocomplete', 'awesome-loaders', 'aws-sdk-core', 'aws-sdk-s3', 'couchbase', 'downloader', 'fancy-camera', 'fancy-list-view', 'ffmpeg', 'here', 'image-cache-it', 'image-zoom', 'imageoptimize', 'mongo-stitch-core', 'mongo-stitch-services-mongodb-remote', 'nested-scrollview', 'pager', 'popover', 'pubnub', 'pusher-beams', 'pusher-channels', 'radar-io', 'sinch', 'socketio', 'splashscreen', 'sse', 'star-ratings', 'stripe', 'toasty', 'tooltip', 'twitter', 'video-editor', 'video-recorder', 'webrtc', 'yogalayout','youtube-player'],
 				},
 			],
 		},

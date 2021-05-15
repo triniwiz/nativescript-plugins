@@ -25,6 +25,7 @@ const routes: Routes = [
 	{ path: 'nativescript-image-cache-it', loadChildren: () => import('./plugin-demos/nativescript-image-cache-it.module').then((m) => m.NativescriptImageCacheItModule) },
 	{ path: 'nativescript-image-zoom', loadChildren: () => import('./plugin-demos/nativescript-image-zoom.module').then((m) => m.NativescriptImageZoomModule) },
 	{ path: 'nativescript-imageoptimize', loadChildren: () => import('./plugin-demos/nativescript-imageoptimize.module').then((m) => m.NativescriptImageoptimizeModule) },
+	{ path: 'nativescript-kin-base', loadChildren: () => import('./plugin-demos/nativescript-kin.module').then((m) => m.NativescriptKinModule) },
 	{ path: 'nativescript-mongo-stitch-core', loadChildren: () => import('./plugin-demos/nativescript-mongo-stitch-core.module').then((m) => m.NativescriptMongoStitchCoreModule) },
 	{ path: 'nativescript-mongo-stitch-sdk', loadChildren: () => import('./plugin-demos/nativescript-mongo-stitch-sdk.module').then((m) => m.NativescriptMongoStitchSdkModule) },
 	{ path: 'nativescript-mongo-stitch-services-mongodb-remote', loadChildren: () => import('./plugin-demos/nativescript-mongo-stitch-services-mongodb-remote.module').then((m) => m.NativescriptMongoStitchServicesMongodbRemoteModule) },

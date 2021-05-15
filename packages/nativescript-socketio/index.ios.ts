@@ -1,13 +1,13 @@
 import { Common } from './common';
 
-declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
-    NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
-    NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
-    NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
+// declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
+//     NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
+//     NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
+//     NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
 
 export class SocketIO extends Common {
-    protected socket: any;
-    manager: any;
+    protected socket: SocketIOClient;
+    manager: SocketManager;
 
     /**
      * Class Constructor
@@ -108,7 +108,7 @@ export class SocketIO extends Common {
                                 }
                             }
                         });
-                        const props = NSDictionary.dictionaryWithDictionary(properties);
+                        const props = NSDictionary.dictionaryWithDictionary<string, any>(properties as any);
                         const native_cookie = NSHTTPCookie.cookieWithProperties(props);
                         if (native_cookie) {
                             opts['cookies'] = NSArray.arrayWithObject(native_cookie);
@@ -167,7 +167,7 @@ export class SocketIO extends Common {
 
     connect() {
         if (!this.connected) {
-            this.socket.connect();
+            this.socket.connectWithPayload(null)
         }
     }
 
@@ -246,13 +246,13 @@ export class SocketIO extends Common {
             const _ack = function (args) {
                 ack.apply(null, deserialize(args));
             };
-            const e = this.socket.emitWithAckWith(event, final) as any;
+            const e = this.socket.rawEmitView.emitWithAckWith(event, final) as any;
             if (e) {
                 e.timingOutAfterCallback(0, _ack);
             }
         } else {
             // Emit without Ack Callback
-            this.socket.emitWith(event, final);
+            this.socket.rawEmitView.emitWith(event, final);
         }
     }
 

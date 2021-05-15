@@ -157,6 +157,9 @@
 		},
 		"nativescript-yogalayout": {
 			"tags": []
+		},
+		"nativescript-kin": {
+			"tags": []
 		}
 	},
 	"workspaceLayout": {

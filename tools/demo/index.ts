@@ -17,6 +17,7 @@ export * from './nativescript-here';
 export * from './nativescript-image-cache-it';
 export * from './nativescript-image-zoom';
 export * from './nativescript-imageoptimize';
+export * from './nativescript-kin';
 export * from './nativescript-mongo-stitch-core';
 export * from './nativescript-mongo-stitch-sdk';
 export * from './nativescript-mongo-stitch-services-mongodb-remote';
