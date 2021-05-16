@@ -1,6 +1,6 @@
 import {DemoSharedBase} from '../utils';
 import {ImageZoom} from '@triniwiz/nativescript-image-zoom';
-import {Frame} from "@nativescript/core";
+import {Frame, ImageSource} from "@nativescript/core";
 
 export class DemoSharedNativescriptImageZoom extends DemoSharedBase {
   image: ImageZoom;
@@ -24,6 +24,6 @@ export class DemoSharedNativescriptImageZoom extends DemoSharedBase {
     if (!this.image) {
       this.image = Frame.topmost().currentPage.getViewById('image');
     }
-    this.image.src = '~/nativescript-image-zoom/assets/image_302063'
+    this.image.src = '~/nativescript-image-zoom/assets/image_302063.jpg';
   }
 }

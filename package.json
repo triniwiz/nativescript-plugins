@@ -10,10 +10,12 @@
     "config": "nx g @nativescript/plugin-tools:config",
     "publish-packages": "nx g @nativescript/plugin-tools:publish",
     "docs:build": "cd docs && vuepress build src",
-    "docs:dev": "cd docs && vuepress dev src"
+    "docs:dev": "cd docs && vuepress dev src",
+    "start:server-demo": "node dist/apps/server-demo/main"
   },
   "private": true,
   "dependencies": {
+    "@types/node": "^15.3.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "date-fns": "^2.21.3",
@@ -66,5 +68,8 @@
     "**/*": [
       "nx format:write --files"
     ]
+  },
+  "engines" : {
+    "node" : "14.x"
   }
 }

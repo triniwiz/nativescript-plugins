@@ -16,7 +16,7 @@ android {
 }
 
 
-project.ext {
+ext {
   kotlinVersion = "1.4.20"
   useKotlin = true
 }

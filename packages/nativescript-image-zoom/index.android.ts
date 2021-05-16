@@ -7,21 +7,17 @@ import {
   stretchProperty
 } from './common';
 import {isNullOrUndefined, isNumber} from "@nativescript/core/utils/types";
-import {knownFolders, Utils, path, ImageSource} from "@nativescript/core";
-
-
-declare const com, jp;
+import {knownFolders, Utils, path, ImageSource, ImageAsset} from "@nativescript/core";
 
 export class ImageZoom extends ImageZoomBase {
-  picasso;
-  private builder;
+  private manager: com.bumptech.glide.RequestManager;
+  private builder: com.bumptech.glide.RequestBuilder<any>;
 
   constructor() {
     super();
   }
 
   public createNativeView() {
-    this.picasso = (com as any).squareup.picasso.provider.PicassoProvider.get();
     return new com.github.chrisbanes.photoview.PhotoView(this._context);
   }
 
@@ -46,6 +42,22 @@ export class ImageZoom extends ImageZoomBase {
     }
   }
 
+  private _loadImageAsync(image): Promise<any>{
+    return new Promise<any>((resolve, reject) => {
+      if(image instanceof ImageAsset){
+        image.getImageAsync((image, error) =>{
+          if(image){
+            resolve(image);
+          }else {
+            reject(error);
+          }
+        })
+      }else if(image instanceof ImageSource){
+        this.builder.load(image.android);
+      }
+    });
+  }
+
   public initNativeView() {
     this.nativeView.setScaleLevels(
       Number(this.minZoom),
@@ -54,22 +66,24 @@ export class ImageZoom extends ImageZoomBase {
     );
     if (this.src) {
       const image = ImageZoom.getImage(this.src);
-      this.builder = this.picasso.load(image);
-    }
-    if (this.stretch) {
-      this.resetImage();
-    }
-    if (this.builder) {
-      if (
-        this.resize && this.resize.split(',').length > 1 &&
-        this.stretch !== 'fill'
-      ) {
-        this.builder.resize(
-          parseInt(this.resize.split(',')[0], 10),
-          parseInt(this.resize.split(',')[1], 10)
-        );
+      this.manager = com.bumptech.glide.Glide.with(this._context);
+      if(image)
+      this.builder = this.manager.load(image);
+      if (this.stretch) {
+        this.resetImage();
       }
-      this.builder.into(this.nativeView);
+      if (this.builder) {
+        if (
+          this.resize && this.resize.split(',').length > 1 &&
+          this.stretch !== 'fill'
+        ) {
+          this.builder.override(
+            parseInt(this.resize.split(',')[0], 10),
+            parseInt(this.resize.split(',')[1], 10)
+          );
+        }
+        this.builder.into(this.nativeView);
+      }
     }
   }
 
@@ -135,16 +149,14 @@ export class ImageZoom extends ImageZoomBase {
   }
 
   [srcProperty.setNative](src: any) {
-    if (!this.builder) {
-      const image = ImageZoom.getImage(src);
-      this.builder = this.picasso.load(image);
-    }
+    this.manager?.clear(this.nativeView);
+
     if (this.stretch) {
       this.resetImage();
     }
     this.setBorderAndRadius();
-    this.builder.into(this.nativeView);
-    return src;
+    this.builder?.into(this.nativeView);
+
   }
 
   [resizeProperty.setNative](resize: string) {
@@ -155,7 +167,7 @@ export class ImageZoom extends ImageZoomBase {
       resize && resize.split(',').length > 1 &&
       this.stretch !== 'fill'
     ) {
-      this.builder.resize(
+      this.builder.override(
         parseInt(resize.split(',')[0], 10),
         parseInt(resize.split(',')[1], 10)
       );
@@ -177,15 +189,19 @@ export class ImageZoom extends ImageZoomBase {
     } else if (typeof src === 'string' && src.startsWith('http')) {
       nativeImage = src;
     } else if (typeof src === 'string' && src.startsWith('res://')) {
-      nativeImage = Utils.ad.resources.getDrawableId(src.replace('res://', ''));
+      nativeImage = java.lang.Integer.valueOf(Utils.ad.resources.getDrawableId(src.replace('res://', '')));
     } else if (typeof src === 'object') {
-      const tempFile = path.join(
-        knownFolders.currentApp().path,
-        `${Date.now()} + .png`
-      );
-      const saved = (<ImageSource>src).saveToFile(tempFile, 'png');
-      if (saved) {
-        nativeImage = new java.io.File(tempFile);
+      if (src instanceof ImageSource) {
+        const tempFile = path.join(
+          knownFolders.currentApp().path,
+          `${Date.now()} + .png`
+        );
+        const saved = (<ImageSource>src).saveToFile(tempFile, 'png');
+        if (saved) {
+          nativeImage = new java.io.File(tempFile);
+        }
+      } else if (src instanceof ImageAsset) {
+        return src.android;
       }
     }
     return nativeImage;
@@ -208,38 +224,34 @@ export class ImageZoom extends ImageZoomBase {
 
   private setBorderAndRadius() {
     if (!this.builder) return;
-
     const RoundedCornersTransformation =
-      jp.wasabeef.picasso.transformations.RoundedCornersTransformation;
-    this.builder = this.builder
-      .transform(
-        new RoundedCornersTransformation(
-          Utils.layout.toDevicePixels(<any>this.style.borderTopLeftRadius),
-          Utils.layout.toDevicePixels(<any>this.style.borderTopWidth),
-          RoundedCornersTransformation.CornerType.TOP_LEFT
-        )
-      )
-      .transform(
-        new RoundedCornersTransformation(
-          Utils.layout.toDevicePixels(<any>this.style.borderTopRightRadius),
-          Utils.layout.toDevicePixels(<any>this.style.borderTopWidth),
-          RoundedCornersTransformation.CornerType.TOP_RIGHT
-        )
-      )
-      .transform(
-        new RoundedCornersTransformation(
-          Utils.layout.toDevicePixels(<any>this.style.borderBottomLeftRadius),
-          Utils.layout.toDevicePixels(<any>this.style.borderBottomWidth),
-          RoundedCornersTransformation.CornerType.BOTTOM_LEFT
-        )
-      )
-      .transform(
-        new RoundedCornersTransformation(
-          Utils.layout.toDevicePixels(<any>this.style.borderBottomRightRadius),
-          Utils.layout.toDevicePixels(<any>this.style.borderBottomWidth),
-          RoundedCornersTransformation.CornerType.BOTTOM_RIGHT
-        )
-      );
+      jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+    const array = Array.create('com.bumptech.glide.load.Transformation', 4);
+    array[0] = new RoundedCornersTransformation(
+      Utils.layout.toDevicePixels(<any>this.style.borderTopLeftRadius),
+      Utils.layout.toDevicePixels(<any>this.style.borderTopWidth),
+      RoundedCornersTransformation.CornerType.TOP_LEFT
+    );
+
+    array[1] = new RoundedCornersTransformation(
+      Utils.layout.toDevicePixels(<any>this.style.borderTopRightRadius),
+      Utils.layout.toDevicePixels(<any>this.style.borderTopWidth),
+      RoundedCornersTransformation.CornerType.TOP_RIGHT
+    );
+
+    array[2] = new RoundedCornersTransformation(
+      Utils.layout.toDevicePixels(<any>this.style.borderBottomLeftRadius),
+      Utils.layout.toDevicePixels(<any>this.style.borderBottomWidth),
+      RoundedCornersTransformation.CornerType.BOTTOM_LEFT
+    );
+    array[3] = new RoundedCornersTransformation(
+      Utils.layout.toDevicePixels(<any>this.style.borderBottomRightRadius),
+      Utils.layout.toDevicePixels(<any>this.style.borderBottomWidth),
+      RoundedCornersTransformation.CornerType.BOTTOM_RIGHT
+    );
+
+    this.builder
+      .transform(array);
   }
 
   /**
@@ -272,14 +284,14 @@ export class ImageZoom extends ImageZoomBase {
       };
     }
 
-    this.builder.resize(newSize.width, newSize.height);
+    this.builder.override(newSize.width, newSize.height);
   }
 
   private resetImage(reload = false) {
     if (!this.builder) return;
     switch (this.stretch) {
       case 'aspectFit':
-        this.builder = this.picasso.load(ImageZoom.getImage(this.src));
+        this.builder = this.manager.load(ImageZoom.getImage(this.src));
         this.setBorderAndRadius();
         this.setAspectResize();
         this.builder.centerInside();
@@ -288,7 +300,7 @@ export class ImageZoom extends ImageZoomBase {
         }
         break;
       case 'aspectFill':
-        this.builder = this.picasso.load(ImageZoom.getImage(this.src));
+        this.builder = this.manager.load(ImageZoom.getImage(this.src));
         this.setBorderAndRadius();
         this.setAspectResize();
         this.builder.centerCrop();
@@ -297,16 +309,16 @@ export class ImageZoom extends ImageZoomBase {
         }
         break;
       case 'fill':
-        this.builder = this.picasso.load(ImageZoom.getImage(this.src));
+        this.builder = this.manager.load(ImageZoom.getImage(this.src));
         this.setBorderAndRadius();
-        this.builder.fit();
+        this.builder.fitCenter();
         if (reload) {
           this.builder.into(this.nativeView);
         }
         break;
       case 'none':
       default:
-        this.builder = this.picasso.load(ImageZoom.getImage(this.src));
+        this.builder = this.manager.load(ImageZoom.getImage(this.src));
         this.setBorderAndRadius();
         if (reload) {
           this.builder.into(this.nativeView);

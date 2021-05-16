@@ -1,4 +1,4 @@
-import {Property, View} from "@nativescript/core";
+import {ImageAsset, ImageSource, Property, View} from "@nativescript/core";
 import {Stretch} from "@nativescript/core/ui/image";
 
 export class ImageZoomBase extends View {
