@@ -47,6 +47,8 @@
     "@nativescript/ios": "8.0.0",
     "@nativescript/types": "~8.0.0",
     "@nativescript/webpack": "beta",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
+    "react-refresh": "0.9.0",
     "typescript": "~4.0.0"
   },
   "gitHead": "1350d382fb4b0ed4c6e9685df909518b2688e004",
