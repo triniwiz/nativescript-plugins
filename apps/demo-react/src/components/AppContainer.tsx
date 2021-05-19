@@ -2,6 +2,7 @@ import * as React from 'react';
 import { ItemEventData } from '@nativescript/core';
 import { ListView } from 'react-nativescript';
 import { YogaLayout } from './YogaLayout';
+import { ViewExample } from './View';
 
 interface MyItem {
     text: string;
@@ -12,6 +13,10 @@ const items: MyItem[] = [
     {
         text: 'YogaLayout',
         component: YogaLayout,
+    },
+    {
+        text: 'View',
+        component: ViewExample,
     },
 ];
 

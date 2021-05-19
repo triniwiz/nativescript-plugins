@@ -11,6 +11,8 @@ export function registerYogaLayout(): void {
   registerElement('yoga', () => require('../').View);
 }
 
+export { View, RNViewProps } from "./View";
+
 export type YogaAttributes = ViewAttributes & {
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
