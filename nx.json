@@ -23,6 +23,9 @@
 		"demo-angular": {
 			"tags": []
 		},
+		"demo-react": {
+			"tags": []
+		},
 		"all": {
 			"tags": []
 		},

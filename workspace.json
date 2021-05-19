@@ -80,6 +80,38 @@
 				}
 			}
 		},
+		"demo-react": {
+			"root": "apps/demo-react/",
+			"sourceRoot": "apps/demo-react/src",
+			"projectType": "application",
+			"prefix": "demo",
+			"architect": {
+				"ios": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["ns debug ios --emulator --no-hmr --env.testing"],
+						"cwd": "apps/demo-react",
+						"parallel": false
+					}
+				},
+				"android": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["ns debug android --no-hmr --env.testing"],
+						"cwd": "apps/demo-react",
+						"parallel": false
+					}
+				},
+				"clean": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["ns clean", "npm i"],
+						"cwd": "apps/demo-react",
+						"parallel": false
+					}
+				}
+			}
+		},
 		"all": {
 			"root": "packages/",
 			"projectType": "library",
