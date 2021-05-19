@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "setup": "npx rimraf node_modules package-lock.json dist tmp && npm i --legacy-peer-deps && ts-patch install",
+    "postinstall": "patch-package",
     "start": "nps",
     "add": "nx g @nativescript/plugin-tools:add-package",
     "add-angular": "nx g @nativescript/plugin-tools:add-angular",
@@ -44,13 +45,15 @@
     "@nrwl/jest": "10.1.0",
     "@nrwl/node": "10.1.0",
     "@types/jest": "26.0.8",
+    "@types/react": "16.9.34",
     "@types/react-reconciler": "^0.18.0",
     "jest": "26.2.2",
     "nativescript-vue": "~2.8.0",
     "nativescript-vue-template-compiler": "~2.8.0",
     "ng-packagr": "~10.1.0",
-    "react": "^16.8.6",
-    "react-nativescript": "~1.0.6",
+    "patch-package": "^6.4.7",
+    "react": "~16.13.1",
+    "react-nativescript": "^3.0.0-beta.1",
     "rxjs": "~6.6.0",
     "svelte": "3.24.1",
     "svelte-native": "0.9.0-alpha",
@@ -69,7 +72,7 @@
       "nx format:write --files"
     ]
   },
-  "engines" : {
-    "node" : "14.x"
+  "engines": {
+    "node": "14.x"
   }
 }
