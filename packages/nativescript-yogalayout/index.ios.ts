@@ -36,7 +36,13 @@ import {
   flexBasisProperty,
   flexProperty,
   flexDirectionProperty,
-  FlexAlignContent, alignContentProperty, aspectRatioProperty, Direction, _toYGFlexAlignSelf, _toYGDirection
+  FlexAlignContent,
+  alignContentProperty,
+  aspectRatioProperty,
+  Direction,
+  _toYGFlexAlignSelf,
+  _toYGDirection,
+  _toYGPosition
 } from './common';
 
 
@@ -484,6 +490,7 @@ export class View extends ViewBase {
       this._addView(child);
       const yoga = child.nativeView.yoga as YGLayout;
       yoga.isEnabled = true;
+      yoga.position = _toYGPosition(child.style.position);
       yoga.flex = child.style.flex;
       yoga.alignSelf = _toYGFlexAlignSelf(child.style.alignSelf as any);
       if (child.style.flexGrow !== 0) {

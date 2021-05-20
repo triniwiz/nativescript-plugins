@@ -484,7 +484,8 @@ export class View extends ViewBase {
         flexGrow: child.style.flexGrow,
         flexShrink: child.style.flexShrink,
         flex: child.style.flex,
-        direction: child.style.direction
+        direction: child.style.direction,
+        position: child.style.position
       };
       // @ts-ignore
       this.nativeView.addView(child.nativeView);

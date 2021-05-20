@@ -1515,17 +1515,17 @@ export function _toYGOverflow(value: Overflow): any {
 export function _toYGPosition(value: Position): any {
 	if (global.isIOS) {
 		switch (value) {
-			case Position.Relative:
-				return YGPositionType.Relative;
 			case Position.Absolute:
 				return YGPositionType.Absolute;
+			default:
+				return YGPositionType.Relative;
 		}
 	} else if (global.isAndroid) {
 		switch (value) {
-			case Position.Relative:
-				return com.facebook.yoga.YogaPositionType.RELATIVE;
 			case Position.Absolute:
 				return com.facebook.yoga.YogaPositionType.ABSOLUTE;
+			default:
+				return com.facebook.yoga.YogaPositionType.RELATIVE;
 		}
 	}
 }

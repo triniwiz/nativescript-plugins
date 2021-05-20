@@ -247,6 +247,9 @@ public class Utils {
       if (node != null) {
         JSONObject object = new JSONObject(json);
 
+        String position = object.optString("position", "relative");
+        node.setPositionType(parseStringPosition(position));
+
         double flex = object.optDouble("flex", 1d);
         node.setFlex((float) flex);
 
