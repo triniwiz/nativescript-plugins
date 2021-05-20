@@ -313,6 +313,10 @@ export class View extends ViewBase {
     this._updatePaddingLeft(value);
   }
 
+  set margin(value) {
+    this.style.margin = value;
+  }
+
   [marginTopProperty.setNative](value) {
     this._updateMarginTop(value);
   }

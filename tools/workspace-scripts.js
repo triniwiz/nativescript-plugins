@@ -55,6 +55,24 @@ module.exports = {
 					description: '⚆  Run Android  🤖',
 				},
 			},
+			'...React...': {
+				script: `npx cowsay "Nothing wrong with React, either ⚛️"`,
+				description: ` 🔻 React`,
+			},
+			'demo-react': {
+				clean: {
+					script: 'nx run demo-react:clean',
+					description: '⚆  Clean  🧹',
+				},
+				ios: {
+					script: 'nx run demo-react:ios',
+					description: '⚆  Run iOS  ',
+				},
+				android: {
+					script: 'nx run demo-react:android',
+					description: '⚆  Run Android  🤖',
+				},
+			},
 		},
 		'⚙️': {
 			script: `npx cowsay "@triniwiz/* packages will keep your ⚙️ cranking"`,
