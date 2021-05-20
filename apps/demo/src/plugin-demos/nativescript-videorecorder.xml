@@ -1,21 +1,17 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page" xmlns:VideoPlayer="nativescript-videoplayer">
-    <Page.actionBar>
-        <ActionBar title="nativescript-videorecorder" icon="" class="action-bar">
-        </ActionBar>
-    </Page.actionBar>
-    <StackLayout class="p-20">
-        <ScrollView class="h-full">
-          <StackLayout>
-             <StackLayout verticalAlignment="center">
-      <Button text="Toggle Camera" tap="{{toggleCamera}}"/>
-      <Label textAlignment="center" text="{{position}}"/>
-      <Label textAlignment="center" text="{{duration}}" />
-      <Label text="{{selectedVideo}}" textWrap="true"/>
-      <Button text="Record Video" tap="{{recordVideo}}"/>
-      <Label textAlignment="center" text="{{error}}" color="red" textWrap="true" />
-      <VideoPlayer:Video height="100%" src="{{selectedVideo}}" loaded="{{videoplayerLoaded}}" finished="{{videoFinished}}" autoplay="true" />
-    </StackLayout>
-          </StackLayout>
-        </ScrollView>
-    </StackLayout>
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page"
+      xmlns:VideoPlayer="nativescript-videoplayer">
+  <Page.actionBar>
+    <ActionBar title="nativescript-videorecorder" icon="" class="action-bar">
+    </ActionBar>
+  </Page.actionBar>
+  <GridLayout rows="auto,auto,auto,auto,auto,auto,auto" verticalAlignment="center">
+    <Button text="Toggle Camera" tap="{{toggleCamera}}"/>
+    <Label row="1" textAlignment="center" text="{{position}}"/>
+    <Label row="2" textAlignment="center" text="{{duration}}"/>
+    <Label row="3" text="{{selectedVideo}}" textWrap="true"/>
+    <Button row="4" color="black" text="Record Video" tap="{{recordVideo}}"/>
+    <Label row="5" textAlignment="center" text="{{error}}" color="red" textWrap="true"/>
+    <VideoPlayer:Video height="100" row="6" src="{{selectedVideo}}" loaded="{{videoplayerLoaded}}"
+                       finished="{{videoFinished}}" autoplay="true"/>
+  </GridLayout>
 </Page>

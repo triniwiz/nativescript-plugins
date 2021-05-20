@@ -5,7 +5,7 @@ import * as dateFns from 'date-fns';
 const resources = Application.getResources();
 resources['timeFromNow'] = (date) => dateFns.formatRelative(date, new Date());
 Application.setResources(resources);
-
+declare const io;
 if (global.isIOS) {
   @NativeClass()
   @ObjCClass(UIApplicationDelegate)
@@ -23,6 +23,7 @@ if (global.isIOS) {
 
   Application.ios.delegate = UIApplicationDelegateImpl;
 } else {
+  console.dir(io.github.triniwiz);
   /*Folder.fromPath(knownFolders.currentApp().path  + `/assets`).getEntities().then(items =>{
     console.log(items);
   });

@@ -112,6 +112,38 @@
 				}
 			}
 		},
+    "demo-vue": {
+      "root": "apps/demo-vue/",
+      "sourceRoot": "apps/demo-vue/app",
+      "projectType": "application",
+      "prefix": "demo",
+      "architect": {
+        "ios": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["ns debug ios --emulator --no-hmr --env.testing"],
+            "cwd": "apps/demo-vue",
+            "parallel": false
+          }
+        },
+        "android": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["ns debug android --no-hmr --env.testing"],
+            "cwd": "apps/demo-vue",
+            "parallel": false
+          }
+        },
+        "clean": {
+          "builder": "@nrwl/workspace:run-commands",
+          "options": {
+            "commands": ["ns clean", "npm i"],
+            "cwd": "apps/demo-vue",
+            "parallel": false
+          }
+        }
+      }
+    },
 		"all": {
 			"root": "packages/",
 			"projectType": "library",
@@ -2153,6 +2185,59 @@
 					"options": {
 						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-kin"],
 						"parallel": false
+					}
+				}
+			}
+		},
+		"demo-server": {
+			"root": "apps/demo-server",
+			"sourceRoot": "apps/demo-server/src",
+			"projectType": "application",
+			"prefix": "demo-server",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:build",
+					"options": {
+						"outputPath": "dist/apps/demo-server",
+						"main": "apps/demo-server/src/main.ts",
+						"tsConfig": "apps/demo-server/tsconfig.app.json",
+						"assets": ["apps/demo-server/src/assets"]
+					},
+					"configurations": {
+						"production": {
+							"optimization": true,
+							"extractLicenses": true,
+							"inspect": false,
+							"fileReplacements": [
+								{
+									"replace": "apps/demo-server/src/environments/environment.ts",
+									"with": "apps/demo-server/src/environments/environment.prod.ts"
+								}
+							]
+						}
+					}
+				},
+				"serve": {
+					"builder": "@nrwl/node:execute",
+					"options": {
+						"buildTarget": "demo-server:build"
+					}
+				},
+				"lint": {
+					"builder": "@nrwl/linter:lint",
+					"options": {
+						"linter": "eslint",
+						"tsConfig": ["apps/demo-server/tsconfig.app.json", "apps/demo-server/tsconfig.spec.json"],
+						"exclude": ["**/node_modules/**", "!apps/demo-server/**/*"]
+					}
+				},
+				"test": {
+					"builder": "@nrwl/jest:jest",
+					"options": {
+						"jestConfig": "apps/demo-server/jest.config.js",
+						"tsConfig": "apps/demo-server/tsconfig.spec.json",
+						"passWithNoTests": true
 					}
 				}
 			}

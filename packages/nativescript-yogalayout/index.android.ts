@@ -402,7 +402,12 @@ export class View extends ViewBase {
     this._updateFlexBasis(value);
   }
 
-  [flexDirectionProperty.setNative](value) {
+  get flexDirection() {
+    return this.style.flexDirection as any;
+  }
+
+  set flexDirection(value) {
+    this.style.flexDirection = value;
     this._updateFlexDirection(value);
   }
 

@@ -4,29 +4,12 @@
     <ActionBar title="nativescript-yogalayout" class="action-bar">
     </ActionBar>
   </Page.actionBar>
- <yg:View>
-   <yg:View backgroundColor="aqua" margin="50" padding="30" borderRadius="10" borderWidth="5" borderColor="purple">
-     <yg:View backgroundColor="red" padding="2">
-       <yg:View flex=".3" backgroundColor="green">
-         <Label alignSelf="center" color="black" text="First"/>
-       </yg:View>
-       <yg:View flex=".5" backgroundColor="white">
-         <Label alignSelf="center" color="black" text="Second"/>
-       </yg:View>
-       <yg:View backgroundColor="pink">
-         <Label alignSelf="center" color="black" text="Third"/>
-       </yg:View>
-       <Label alignSelf="center" color="blue" text="Something"/>
-     </yg:View>
-
-     <yg:View position="absolute" bottom="10" right="10" width="100" height="100" backgroundColor="yellow" padding="10">
-       <Label color="black" text="Absolute"/>
-     </yg:View>
-   </yg:View>
-
-  <!-- <yg:View position="absolute" top="0" left="0" width="200" height="200" backgroundColor="yellow" padding="10">
-     <TextField text="{{ flex }}"/>
-     <Slider loaded="{{ sliderLoaded }}"/>
-   </yg:View>-->
- </yg:View>
+  <yg:View style="width:200; height:200;margin: 24;">
+    <Image stretch="aspectFill" style="width: 200; height: 200; position: absolute;"
+           src="https://source.unsplash.com/random"/>
+    <yg:View style="align-self:flex-end;flex: 1; background-color: rgba(0, 0, 0, 0.5);">
+      <Label style="color:white; font-size: 20; margin: 6;" text="Title"/>
+      <Label style="color:white; margin: 6;" text="Subtitle"/>
+    </yg:View>
+  </yg:View>
 </Page>
