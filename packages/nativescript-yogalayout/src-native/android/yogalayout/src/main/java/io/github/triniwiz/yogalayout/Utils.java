@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.facebook.soloader.SoLoader;
 import com.facebook.yoga.YogaAlign;
+import com.facebook.yoga.YogaDirection;
 import com.facebook.yoga.YogaEdge;
 import com.facebook.yoga.YogaFlexDirection;
 import com.facebook.yoga.YogaJustify;
@@ -225,6 +226,16 @@ public class Utils {
         node.setAlignContent(parseStringAlignContent(alignContent));
       }
 
+      if (object.has("aspectRatio")) {
+        double aspectRatio = object.getDouble("aspectRatio");
+        node.setAspectRatio((float) aspectRatio);
+      }
+
+      if (object.has("direction")) {
+        YogaDirection direction = parseStringDirection(object.optString("direction", "inherit"));
+        node.setDirection(direction);
+      }
+
     } catch (Exception ignored) {
 
     }
@@ -251,12 +262,50 @@ public class Utils {
         if (node.getFlexShrink() != (float) flexShrink) {
           node.setFlexShrink((float) flexShrink);
         }
+
+        if (object.has("direction")) {
+          YogaDirection direction = parseStringDirection(object.optString("direction", "inherit"));
+          node.setDirection(direction);
+        }
       }
 
     } catch (Exception ignored) {
 
     }
   }
+
+  public static String getLayoutDirection(YogaNode node) {
+    if (node.getLayoutDirection() == YogaDirection.LTR) {
+      return "ltr";
+    } else if (node.getLayoutDirection() == YogaDirection.RTL) {
+      return "rtl";
+    } else {
+      return "inherit";
+    }
+  }
+
+  public static String getStyleDirection(YogaNode node) {
+    if (node.getStyleDirection() == YogaDirection.LTR) {
+      return "ltr";
+    } else if (node.getStyleDirection() == YogaDirection.RTL) {
+      return "rtl";
+    } else {
+      return "inherit";
+    }
+  }
+
+
+  static YogaDirection parseStringDirection(String direction) {
+    switch (direction) {
+      case "ltr":
+        return YogaDirection.LTR;
+      case "rtl":
+        return YogaDirection.RTL;
+      default:
+        return YogaDirection.INHERIT;
+    }
+  }
+
 
   static YogaAlign parseStringAlignSelf(String alignSelf) {
     switch (alignSelf) {

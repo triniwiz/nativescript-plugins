@@ -36,7 +36,19 @@ import {
   flexBasisProperty,
   flexProperty,
   flexDirectionProperty,
-  FlexAlignContent, alignContentProperty
+  FlexAlignContent, alignContentProperty, aspectRatioProperty, Direction, _toYGFlexAlignSelf, _toYGDirection
+} from './common';
+
+
+export {
+  FlexDirection,
+  FlexAlignItems,
+  FlexAlignSelf,
+  FlexWrap,
+  FlexJustify,
+  Overflow,
+  Position,
+  Direction
 } from './common';
 
 declare class NSYogaView extends UIView {
@@ -64,6 +76,10 @@ export class View extends ViewBase {
 
   initNativeView() {
     super.initNativeView();
+    this._init();
+  }
+
+  _init() {
     this.nativeView.configureLayoutWithBlock((layout) => {
       this._updateWidth(this.width);
       this._updateHeight(this.height);
@@ -93,6 +109,10 @@ export class View extends ViewBase {
       this._updateFlexShrink(this.style.flexShrink);
       this._updateFlexBasis(this.style.flexBasis);
       this._updateAlignContent(this.style.alignContent);
+      this._updateAspectRatio(this.aspectRatio);
+      this._updateDirection(this.style.direction);
+      this._updateStart(this.style.start);
+      this._updateEnd(this.style.end);
     });
   }
 
@@ -100,13 +120,10 @@ export class View extends ViewBase {
   onLoaded() {
     super.onLoaded();
     this._children.forEach((child) => {
-      if (child.parent !== this) {
-        this._addView(child);
-        child.nativeView.yoga.isEnabled = true;
-        this.nativeView.addSubview(child.nativeView);
-      }
+      this._addChild(child);
     });
   }
+
 
   public eachChildView(callback: (child: View) => boolean): void {
     this._children.forEach((view, key) => {
@@ -123,435 +140,34 @@ export class View extends ViewBase {
 
   onLayout(left: number, top: number, right: number, bottom: number) {
     super.onLayout(left, top, right, bottom);
-
     const size = this.nativeView.frame.size;
     this._children.forEach((childView, i) => {
       const width = layout.toDevicePixels(size.width);
       const height = layout.toDevicePixels(size.height);
       View.layoutChild(this, childView, 0, 0, width, height);
     });
-
     this.nativeView.yoga.applyLayoutPreservingOrigin(true);
+  }
+
+  requestLayout() {
+    super.requestLayout();
+  }
+
+  get ios() {
+    return this.nativeView;
+  }
+
+  get yoga() {
+    return this.nativeView.yoga;
+  }
+
+  get yogaNode() {
+    return this.nativeView.yoga as any;
   }
 
   _addChildFromBuilder(name: string, value: any): void {
     if (value.parent !== this) {
       this._children.push(value);
-    }
-  }
-
-  _updateWidth(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.width = _toNativeYG(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateHeight(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.height = _toNativeYG(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateMaxWidth(value, force = false) {
-    if (value !== 'auto') {
-      if (this.nativeView) {
-        this.nativeView.yoga.maxWidth = _toNativeYG(value);
-        if (force) {
-          this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-        }
-      }
-    }
-  }
-
-  _updateMaxHeight(value, force = false) {
-    if (value !== 'auto') {
-      if (this.nativeView) {
-        this.nativeView.yoga.maxHeight = _toNativeYG(value);
-        if (force) {
-          this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-        }
-      }
-    }
-  }
-
-  _updateAlignItems(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.alignItems = _toYGFlexAlignItems(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateOverflow(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.overflow = _toYGOverflow(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updatePosition(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.position = _toYGPosition(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateFlex(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.flex = value;
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateFlexDirection(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.flexDirection = _toYGFlexDirection(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _setPositionValue(value, position: "left" | "top" | "right" | "bottom" | "start" | "end" | "all" | "vertical" | "horizontal") {
-    if (value === undefined || value === 'auto' || value?.type === 'auto') {
-      return
-    }
-    switch (position) {
-      case "left":
-        this.nativeView.yoga.left = _toNativeYG(value);
-        break;
-      case "top":
-        this.nativeView.yoga.top = _toNativeYG(value);
-        break;
-      case "right":
-        this.nativeView.yoga.right = _toNativeYG(value);
-        break;
-      case "bottom":
-        this.nativeView.yoga.bottom = _toNativeYG(value);
-        break;
-      case "start":
-        this.nativeView.yoga.start = _toNativeYG(value);
-        break;
-      case "end":
-        this.nativeView.yoga.end = _toNativeYG(value);
-        break;
-      case "vertical":
-        break;
-      case "horizontal":
-        break;
-      case "all":
-        break;
-    }
-  }
-
-  _getPositionValue(position) {
-    const value = YGNodeStyleGetPosition(this.nativeView.yoga as any, _toYGEdge(position))
-    switch (value.unit) {
-      case YGUnit.Point:
-        return {value: value.value, unit: "px"};
-      case YGUnit.Percent:
-        return {value: value.value / 100, unit: "%"}
-      case YGUnit.Auto:
-        return "auto";
-      case YGUnit.Undefined:
-        return undefined;
-    }
-  }
-
-  _updateLeft(value, force = false) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "left");
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateTop(value, force = false) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "top");
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateRight(value, force = false) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "right");
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateBottom(value, force = false) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "bottom");
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _setPaddingValue(value, position: "left" | "top" | "right" | "bottom" | "start" | "end" | "all" | "vertical" | "horizontal") {
-    if (value === undefined || value === 'auto' || value?.type === 'auto') {
-      return
-    }
-    switch (position) {
-      case "left":
-        this.nativeView.yoga.paddingLeft = _toNativeYG(value);
-        break;
-      case "top":
-        this.nativeView.yoga.paddingTop = _toNativeYG(value);
-        break;
-      case "right":
-        this.nativeView.yoga.paddingRight = _toNativeYG(value);
-        break;
-      case "bottom":
-        this.nativeView.yoga.paddingBottom = _toNativeYG(value);
-        break;
-      case "start":
-        this.nativeView.yoga.paddingStart = _toNativeYG(value);
-        break;
-      case "end":
-        this.nativeView.yoga.paddingEnd = _toNativeYG(value);
-        break;
-      case "vertical":
-        this.nativeView.yoga.paddingVertical = _toNativeYG(value);
-        break;
-      case "horizontal":
-        this.nativeView.yoga.paddingHorizontal = _toNativeYG(value);
-        break;
-      case "all":
-        this.nativeView.yoga.padding = _toNativeYG(value);
-        break;
-    }
-  }
-
-  _getPaddingValue(position) {
-    const value = YGNodeStyleGetPosition(this.nativeView.yoga as any, _toYGEdge(position))
-    switch (value.unit) {
-      case YGUnit.Point:
-        return {value: value.value, unit: "px"};
-      case YGUnit.Percent:
-        return {value: value.value / 100, unit: "%"}
-      case YGUnit.Auto:
-        return "auto";
-      case YGUnit.Undefined:
-        return undefined;
-    }
-  }
-
-  _updatePaddingLeft(value, force = false) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "left");
-    }
-  }
-
-  _updatePaddingTop(value, force = false) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "top");
-    }
-  }
-
-  _updatePaddingRight(value, force = false) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "right");
-    }
-  }
-
-  _updatePaddingBottom(value, force = false) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "bottom");
-    }
-  }
-
-  _setMarginValue(value, position: "left" | "top" | "right" | "bottom" | "start" | "end" | "all" | "vertical" | "horizontal") {
-    if (value === undefined || value === 'auto' || value?.type === 'auto') {
-      return
-    }
-    switch (position) {
-      case "left":
-        this.nativeView.yoga.marginLeft = _toNativeYG(value);
-        break;
-      case "top":
-        this.nativeView.yoga.marginTop = _toNativeYG(value);
-        break;
-      case "right":
-        this.nativeView.yoga.marginRight = _toNativeYG(value);
-        break;
-      case "bottom":
-        this.nativeView.yoga.marginBottom = _toNativeYG(value);
-        break;
-      case "start":
-        this.nativeView.yoga.marginStart = _toNativeYG(value);
-        break;
-      case "end":
-        this.nativeView.yoga.marginEnd = _toNativeYG(value);
-        break;
-      case "vertical":
-        this.nativeView.yoga.marginVertical = _toNativeYG(value);
-        break;
-      case "horizontal":
-        this.nativeView.yoga.marginHorizontal = _toNativeYG(value);
-        break;
-      case "all":
-        this.nativeView.yoga.margin = _toNativeYG(value);
-        break;
-    }
-  }
-
-  _getMarginValue(position) {
-    const value = YGNodeStyleGetPosition(this.nativeView.yoga as any, _toYGEdge(position))
-    switch (value.unit) {
-      case YGUnit.Point:
-        return {value: value.value, unit: "px"};
-      case YGUnit.Percent:
-        return {value: value.value / 100, unit: "%"}
-      case YGUnit.Auto:
-        return "auto";
-      case YGUnit.Undefined:
-        return undefined;
-    }
-  }
-
-  _updateMarginLeft(value, force = false) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "left");
-    }
-  }
-
-  _updateMarginTop(value, force = false) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "top");
-    }
-  }
-
-  _updateMarginRight(value, force = false) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "right");
-    }
-  }
-
-  _updateMarginBottom(value, force = false) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "bottom");
-    }
-  }
-
-  _updateJustifyContent(value: any, force = false) {
-    if (this.nativeView) {
-      switch (value) {
-        case FlexJustify.FlexStart:
-          this.nativeView.yoga.justifyContent = YGJustify.FlexStart;
-          break;
-        case FlexJustify.FlexEnd:
-          this.nativeView.yoga.justifyContent = YGJustify.FlexEnd;
-          break;
-        case FlexJustify.Center:
-          this.nativeView.yoga.justifyContent = YGJustify.Center;
-          break;
-        case FlexJustify.SpaceAround:
-          this.nativeView.yoga.justifyContent = YGJustify.SpaceAround;
-          break;
-        case FlexJustify.SpaceBetween:
-          this.nativeView.yoga.justifyContent = YGJustify.SpaceBetween;
-          break;
-        case FlexJustify.SpaceEvenly:
-          this.nativeView.yoga.justifyContent = YGJustify.SpaceEvenly;
-          break;
-      }
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateFlexWrap(value: any, force = false) {
-    if (this.nativeView) {
-      switch (value) {
-        case FlexWrap.NoWrap:
-          this.nativeView.yoga.flexWrap = YGWrap.NoWrap;
-          break;
-        case FlexWrap.Wrap:
-          this.nativeView.yoga.flexWrap = YGWrap.Wrap;
-          break
-        case FlexWrap.WrapReverse:
-          this.nativeView.yoga.flexWrap = YGWrap.WrapReverse;
-          break
-      }
-
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateAlignSelf(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.alignSelf = _toYGFlexAlignSelf(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateFlexGrow(value, force = false) {
-    if (this.nativeView) {
-      if (this.nativeView.yoga.flexGrow === value) {
-        return
-      }
-      this.nativeView.yoga.flexGrow = value;
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateFlexShrink(value, force = false) {
-    if (this.nativeView) {
-      if (this.nativeView.yoga.flexShrink === value) {
-        return
-      }
-      this.nativeView.yoga.flexShrink = value;
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateFlexBasis(value, force = false) {
-    if (this.nativeView) {
-      if (this.nativeView.yoga.flexBasis === value) {
-        return
-      }
-      this.nativeView.yoga.flexBasis = _toNativeYG(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
-    }
-  }
-
-  _updateAlignContent(value, force = false) {
-    if (this.nativeView) {
-      this.nativeView.yoga.alignContent = _toYGFlexAlignContent(value);
-      if (force) {
-        this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-      }
     }
   }
 
@@ -751,15 +367,13 @@ export class View extends ViewBase {
     this._updateFlexBasis(value);
   }
 
-  // @ts-ignore
   set flexDirection(value) {
     this.style.flexDirection = value;
     this._updateFlexDirection(value);
   }
 
-  // @ts-ignore
   get flexDirection() {
-    return this.style.flexDirection;
+    return this.style.flexDirection as FlexDirection;
   }
 
 
@@ -775,125 +389,146 @@ export class View extends ViewBase {
   [alignContentProperty.setNative](value) {
     this._updateAlignContent(value);
   }
-}
 
-function _toYGFlexDirection(value: FlexDirection) {
-  switch (value) {
-    case FlexDirection.Row:
-      return YGFlexDirection.Row;
-    case FlexDirection.Column:
-      return YGFlexDirection.Column;
-    case FlexDirection.ColumnReverse:
-      return YGFlexDirection.ColumnReverse;
-    case FlexDirection.RowReverse:
-      return YGFlexDirection.RowReverse;
+  [aspectRatioProperty.setNative](value) {
+    this._updateAspectRatio(value);
   }
-}
 
-function _toYGFlexAlignSelf(value: FlexAlignSelf) {
-  switch (value) {
-    case FlexAlignSelf.Stretch:
-      return YGAlign.Stretch;
-    case FlexAlignSelf.Center:
-      return YGAlign.Center;
-    case FlexAlignSelf.FlexEnd:
-      return YGAlign.FlexEnd;
-    case FlexAlignSelf.FlexStart:
-      return YGAlign.FlexStart;
-    case FlexAlignSelf.BaseLine:
-      return YGAlign.Baseline;
-    case FlexAlignSelf.Auto:
-      return YGAlign.Auto;
+  get start() {
+    return this.style.start;
   }
-}
 
-function _toYGFlexAlignItems(value: FlexAlignItems) {
-  switch (value) {
-    case FlexAlignItems.Stretch:
-      return YGAlign.Stretch;
-    case FlexAlignItems.Center:
-      return YGAlign.Center;
-    case FlexAlignItems.FlexEnd:
-      return YGAlign.FlexEnd;
-    case FlexAlignItems.FlexStart:
-      return YGAlign.FlexStart;
-    case FlexAlignItems.BaseLine:
-      return YGAlign.Baseline;
+  set start(value) {
+    this._updateStart(value);
   }
-}
 
-function _toYGOverflow(value: Overflow) {
-  switch (value) {
-    case Overflow.Visible:
-      return YGOverflow.Visible;
-    case Overflow.Hidden:
-      return YGOverflow.Hidden;
-    case Overflow.Scroll:
-      return YGOverflow.Scroll;
+  get end() {
+    return this.style.end;
   }
-}
 
-function _toYGPosition(value: Position) {
-  switch (value) {
-    case Position.Relative:
-      return YGPositionType.Relative;
-    case Position.Absolute:
-      return YGPositionType.Absolute;
+  set end(value) {
+    this._updateEnd(value);
   }
-}
 
-function _toNativeYG(value) {
-  const yg = toYGValue(value);
-  switch (yg.type) {
-    case ParsedValueType.Auto:
-      return YGValueAuto;
-    case ParsedValueType.Px:
-      return {value: yg.value, unit: YGUnit.Point};
-    case ParsedValueType.Percent:
-      return YGPercentValue(yg.value);
-    case ParsedValueType.Dip:
-      return YGPointValue(yg.value);
+  get direction() {
+    if (this.nativeView) {
+      switch (this.nativeView.yoga.direction) {
+        case YGDirection.LTR:
+          return Direction.Ltr;
+        case YGDirection.RTL:
+          return Direction.Rtl;
+        case YGDirection.Inherit:
+          return Direction.Inherit;
+      }
+    }
+    return Direction.Inherit
   }
-  return YGValueZero;
-}
 
-function _toYGEdge(value: "left" | "top" | "right" | "bottom" | "start" | "end" | "all" | "vertical" | "horizontal") {
-  switch (value) {
-    case "left":
-      return YGEdge.Left;
-    case "top":
-      return YGEdge.Top;
-    case "right":
-      return YGEdge.Right;
-    case "bottom":
-      return YGEdge.Bottom;
-    case "start":
-      return YGEdge.Start;
-    case "end":
-      return YGEdge.End;
-    case "vertical":
-      return YGEdge.Vertical;
-    case "horizontal":
-      return YGEdge.Horizontal;
-    case "all":
-      return YGEdge.All;
+  set direction(value) {
+    this._updateDirection(value);
   }
-}
 
+  get marginVertical(): any {
+    return this.style.marginVertical;
+  }
 
-function _toYGFlexAlignContent(value: FlexAlignContent) {
-  switch (value) {
-    case FlexAlignContent.Stretch:
-      return YGAlign.Stretch;
-    case FlexAlignContent.Center:
-      return YGAlign.Center;
-    case FlexAlignContent.FlexEnd:
-      return YGAlign.FlexEnd;
-    case FlexAlignContent.FlexStart:
-      return YGAlign.FlexStart;
-    case FlexAlignContent.SpaceAround:
-      return YGAlign.SpaceAround;
-    case FlexAlignContent.SpaceBetween:
-      return YGAlign.SpaceBetween;
+  set marginVertical(value) {
+    this.style.marginVertical = value;
+    this._updateMarginVertical(value);
+  }
+
+  get marginHorizontal(): any {
+    return this.style.marginHorizontal;
+  }
+
+  set marginHorizontal(value) {
+    this.style.marginHorizontal = value;
+    this._updateMarginHorizontal(value);
+  }
+
+  get paddingHorizontal() {
+    return this.style.paddingHorizontal;
+  }
+
+  set paddingHorizontal(value) {
+    this.style.paddingHorizontal = value;
+    this._updatePaddingHorizontal(value);
+  }
+
+  get paddingVertical() {
+    return this.style.paddingVertical;
+  }
+
+  set paddingVertical(value) {
+    this.style.paddingVertical = value;
+    this._updatePaddingVertical(value);
+  }
+
+  private _addChild(child: NSView, addToChildren: boolean = false) {
+    if (!child) {
+      return;
+    }
+    if (child.parent && child.parent !== this) {
+      child.parent._removeView(child);
+    }
+
+    if (child.parent !== this) {
+      if (!this.nativeView) {
+        this._children.push(child);
+        return;
+      }
+      if (addToChildren) {
+        this._children.push(child);
+      }
+      this._addPropertyChangeHandler(child);
+      this._addView(child);
+      const yoga = child.nativeView.yoga as YGLayout;
+      yoga.isEnabled = true;
+      yoga.flex = child.style.flex;
+      yoga.alignSelf = _toYGFlexAlignSelf(child.style.alignSelf as any);
+      if (child.style.flexGrow !== 0) {
+        yoga.flexGrow = child.style.flexGrow;
+      }
+      yoga.flexShrink = child.style.flexShrink;
+      const direction = _toYGDirection(child.style.direction);
+      if (direction > 0) {
+        yoga.direction = direction;
+      }
+      this.nativeView.addSubview(child.nativeView);
+    }
+  }
+
+  addChild(view: NSView) {
+    this._addChild(view, true);
+  }
+
+  getChildAt(index: number): NSView {
+    return this._children[index];
+  }
+
+  getChildIndex(view: NSView): number {
+    return this._children.indexOf(view);
+  }
+
+  getChildrenCount(): number {
+    return this._children.length;
+  }
+
+  removeAllChildren() {
+    this._children.forEach(child => {
+      this._removeView(child);
+    })
+    this._children.splice(0);
+  }
+
+  removeChild(view: NSView) {
+    if (view?.nativeView) {
+      const index = this._children.indexOf(view);
+      if (index !== -1) {
+        view?.nativeView?.removeFromSuperview?.();
+        view.parent._removeView(view);
+        this._children.splice(index, 1);
+      }
+    }
   }
 }

@@ -11,28 +11,36 @@ import {
   profile,
   View as NSView
 } from '@nativescript/core';
-import {layout} from '@nativescript/core/utils';
 import {
-  alignSelfProperty, FlexAlignContent,
+  alignSelfProperty,
   FlexAlignItems, FlexAlignSelf, flexBasisProperty,
   FlexDirection, flexDirectionProperty, flexGrowProperty,
   FlexJustify, flexProperty, flexShrinkProperty,
   FlexWrap,
   Overflow,
-  ParsedValueType,
   Position,
-  toYGValue,
   ViewBase,
-  alignContentProperty
+  alignContentProperty, aspectRatioProperty,
+  Direction
 } from './common';
 
+export {
+  FlexDirection,
+  FlexAlignItems,
+  FlexAlignSelf,
+  FlexWrap,
+  FlexJustify,
+  Overflow,
+  Position,
+  Direction
+} from './common';
 
-declare const io;
 
 @CSSType('View')
 export class View extends ViewBase {
   nativeView: com.facebook.yoga.android.YogaLayout;
   _yogaNode: com.facebook.yoga.YogaNode;
+
   get yogaNode(): com.facebook.yoga.YogaNode {
     if (!this._yogaNode) {
       if (this.nativeView) {
@@ -65,6 +73,17 @@ export class View extends ViewBase {
   @profile
   initNativeView() {
     super.initNativeView();
+    this._init();
+  }
+
+  _isSingle(value: string) {
+    if (typeof value === 'string') {
+      return value.split(' ').length > 1;
+    }
+    return true;
+  }
+
+  _init() {
     const json = {};
 
     this._updateWidth(this.width, null, json);
@@ -107,61 +126,20 @@ export class View extends ViewBase {
     this._updateFlexBasis(this.style.flexBasis, null, json);
     this._updateAlignContent(this.style.alignContent, null, json);
 
+    this._updateAspectRatio(this.aspectRatio, null, json);
+    this._updateDirection(this.style.direction, null, json);
+    this._updateStart(this.style.start, null, json);
+    this._updateEnd(this.style.end, null, json);
+
     const data = JSON.stringify(json);
     io.github.triniwiz.yogalayout.Utils.batch(data, this.nativeView);
-  }
-
-  _isSingle(value: string) {
-    if (typeof value === 'string') {
-      return value.split(' ').length > 1;
-    }
-    return true;
   }
 
   @profile
   onLoaded() {
     super.onLoaded();
     this._children.forEach((child) => {
-      if (child.parent !== this) {
-        this._addPropertyChangeHandler(child);
-        this._addView(child);
-      }
-      const json = {
-        alignSelf: child.style.alignSelf,
-        flexGrow: child.style.flexGrow,
-        flexShrink: child.style.flexShrink,
-        flex: child.style.flex
-      };
-      // @ts-ignore
-      this.nativeView.addView(child.nativeView);
-    /*  const node = this.nativeView.getYogaNodeForView(child.nativeView);
-      //  node.setFlexGrow(child.flexGrow);
-      //  node.setFlexShrink(child.flexShrink);
-      switch (child.alignSelf) {
-        case "auto":
-          node.setAlignSelf(com.facebook.yoga.YogaAlign.AUTO);
-          break;
-        case "center":
-          node.setAlignSelf(com.facebook.yoga.YogaAlign.CENTER);
-          break;
-        case "baseline":
-          node.setAlignSelf(com.facebook.yoga.YogaAlign.BASELINE);
-          break;
-        case "flex-end":
-          node.setAlignSelf(com.facebook.yoga.YogaAlign.FLEX_END);
-          break;
-        case "flex-start":
-          node.setAlignSelf(com.facebook.yoga.YogaAlign.FLEX_START);
-          break;
-        case "stretch":
-          node.setAlignSelf(com.facebook.yoga.YogaAlign.STRETCH);
-          break;
-      }
-      */
-
-      const data = JSON.stringify(json);
-      console.log('data', data);
-      io.github.triniwiz.yogalayout.Utils.batchChild(data, this.nativeView, child.nativeView);
+      this.addChild(child);
     });
   }
 
@@ -169,7 +147,9 @@ export class View extends ViewBase {
     super.disposeNativeView();
     this._children.forEach(view => {
       this._removePropertyChangeHandler(view);
-    })
+      this._removeView(view);
+    });
+    this._children.splice(0);
   }
 
   _addChildFromBuilder(name: string, value: any): void {
@@ -184,578 +164,12 @@ export class View extends ViewBase {
     });
   }
 
-  _updateWidth(value, force = false, json = null) {
-    if (this.nativeView) {
-      const yg = toYGValue(value);
-      switch (yg.type) {
-        case ParsedValueType.Auto:
-          if (json) {
-            json['width'] = 'auto';
-          } else {
-            this.yogaNode.setWidthAuto();
-          }
-
-          break;
-        case ParsedValueType.Px:
-          if (json) {
-            json['width'] = `${yg.value}`;
-          } else {
-            this.yogaNode.setWidth(yg.value);
-          }
-
-          break;
-        case ParsedValueType.Percent:
-          if (json) {
-            json['width'] = `${yg.value * 100}%`
-          } else {
-            this.yogaNode.setWidthPercent(yg.value * 100);
-          }
-
-          break;
-        case ParsedValueType.Dip:
-          if (json) {
-            json['width'] = `${layout.toDevicePixels(yg.value)}`;
-          } else {
-            this.yogaNode.setWidth(layout.toDevicePixels(yg.value));
-          }
-          break;
-      }
-    }
+  get android() {
+    return this.nativeView;
   }
 
-  _updateHeight(value, force = false, json = null) {
-    if (this.nativeView) {
-      const yg = toYGValue(value);
-      switch (yg.type) {
-        case ParsedValueType.Auto:
-          if (json) {
-            json['height'] = 'auto';
-          } else {
-            this.yogaNode.setHeightAuto();
-          }
-          break;
-        case ParsedValueType.Px:
-          if (json) {
-            json['height'] = `${yg.value}`;
-          } else {
-            this.yogaNode.setHeight(yg.value);
-          }
-          break;
-        case ParsedValueType.Percent:
-          if (json) {
-            json['height'] = `${yg.value * 100}%`
-          } else {
-            this.yogaNode.setHeightPercent(yg.value * 100);
-          }
-          break;
-        case ParsedValueType.Dip:
-          if (json) {
-            json['height'] = `${layout.toDevicePixels(yg.value)}`;
-          } else {
-            this.yogaNode.setHeight(layout.toDevicePixels(yg.value));
-          }
-          break;
-      }
-    }
-  }
-
-  _updateMaxWidth(value, force = false, json = null) {
-    if (value !== 'auto') {
-      if (this.nativeView) {
-        const yg = toYGValue(value);
-        switch (yg.type) {
-          case ParsedValueType.Auto:
-            break;
-          case ParsedValueType.Px:
-            if (json) {
-              json['maxWidth'] = `${yg.value}`;
-            } else {
-              this.yogaNode.setMaxWidth(yg.value);
-            }
-            break;
-          case ParsedValueType.Percent:
-            if (json) {
-              json['maxWidth'] = `${yg.value * 100}%`
-            } else {
-              this.yogaNode.setMaxWidthPercent(yg.value * 100);
-            }
-            break;
-          case ParsedValueType.Dip:
-            if (json) {
-              json['maxWidth'] = `${layout.toDevicePixels(yg.value)}`;
-            } else {
-              this.yogaNode.setMaxWidth(layout.toDevicePixels(yg.value));
-            }
-            break;
-        }
-      }
-    }
-  }
-
-  _updateMaxHeight(value, force = false, json = null) {
-    if (value !== 'auto') {
-      const yg = toYGValue(value);
-      switch (yg.type) {
-        case ParsedValueType.Auto:
-          break;
-        case ParsedValueType.Px:
-          if (json) {
-            json['maxHeight'] = `${yg.value}`;
-          } else {
-            this.yogaNode.setMaxHeight(yg.value);
-          }
-          break;
-        case ParsedValueType.Percent:
-          if (json) {
-            json['maxHeight'] = `${yg.value * 100}%`
-          } else {
-            this.yogaNode.setMaxHeightPercent(yg.value * 100);
-          }
-
-
-          break;
-        case ParsedValueType.Dip:
-          if (json) {
-            json['maxHeight'] = `${layout.toDevicePixels(yg.value)}`;
-          } else {
-            this.yogaNode.setMaxHeight(layout.toDevicePixels(yg.value));
-          }
-
-
-          break;
-      }
-    }
-  }
-
-  _updateAlignItems(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['alignItems'] = value;
-      } else {
-        this.yogaNode.setAlignItems(_toYGFlexAlignItems(value));
-      }
-    }
-  }
-
-  _updateOverflow(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['overflow'] = value;
-      } else {
-        this.yogaNode.setOverflow(_toYGOverflow(value));
-      }
-    }
-  }
-
-  _updatePosition(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['position'] = value;
-      } else {
-        this.yogaNode.setPositionType(_toYGPosition(value));
-      }
-    }
-  }
-
-  _updateFlex(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['flex'] = value;
-      } else {
-        this.yogaNode.setFlex(value);
-      }
-    }
-  }
-
-  _updateFlexDirection(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['flexDirection'] = value;
-      } else {
-        this.yogaNode.setFlexDirection(_toYGFlexDirection(value));
-      }
-    }
-  }
-
-  _setPositionValue(value, position, json) {
-    if (!this.nativeView || value === 'auto' || value?.type === 'auto') {
-      return
-    }
-    const yg = toYGValue(value);
-    switch (yg.type) {
-      case ParsedValueType.Auto:
-        break;
-      case ParsedValueType.Px:
-        if (json) {
-          json[position] = `${yg.value}`;
-        } else {
-          this.nativeView.getYogaNode().setPosition(_toYGEdge(position), yg.value);
-        }
-
-        break;
-      case ParsedValueType.Percent:
-        if (json) {
-          json[position] = `${yg.value * 100}%`;
-        } else {
-          this.nativeView.getYogaNode().setPositionPercent(_toYGEdge(position), yg.value * 100);
-        }
-        break;
-      case ParsedValueType.Dip:
-        if (json) {
-          json[position] = `${layout.toDevicePixels(yg.value)}`;
-        } else {
-          this.nativeView.getYogaNode().setPosition(_toYGEdge(position), layout.toDevicePixels(yg.value));
-        }
-        break;
-    }
-  }
-
-  _getPositionValue(position) {
-    const value = this.nativeView.getYogaNode().getPosition(_toYGEdge(position));
-    switch (value.unit) {
-      case com.facebook.yoga.YogaUnit.POINT:
-        return {value: value.value, unit: "px"};
-      case com.facebook.yoga.YogaUnit.PERCENT:
-        return {value: value.value / 100, unit: "%"}
-      case com.facebook.yoga.YogaUnit.AUTO:
-        return "auto";
-      case com.facebook.yoga.YogaUnit.UNDEFINED:
-        return undefined;
-    }
-  }
-
-  _updateLeft(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "left", json);
-    }
-  }
-
-  _updateTop(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "top", json);
-    }
-  }
-
-  _updateRight(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "right", json);
-    }
-  }
-
-  _updateBottom(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPositionValue(value, "bottom", json);
-    }
-  }
-
-  _setPaddingValue(value, position, json) {
-    if (!this.yogaNode || value === 'auto' || value?.type === 'auto') {
-      return
-    }
-    const yg = toYGValue(value);
-    const unit = yg.type === ParsedValueType.Percent ? '%' : '';
-    let padding = 0;
-    switch (yg.type) {
-      case ParsedValueType.Auto:
-        break;
-      case ParsedValueType.Px:
-        if (json) {
-          padding = yg.value;
-        } else {
-          this.yogaNode.setPadding(_toYGEdge(position), yg.value);
-        }
-
-        break;
-      case ParsedValueType.Percent:
-        if (json) {
-          padding = yg.value * 100;
-        } else {
-          this.yogaNode.setPaddingPercent(_toYGEdge(position), yg.value * 100);
-        }
-
-        break;
-      case ParsedValueType.Dip:
-        if (json) {
-          padding = layout.toDevicePixels(yg.value);
-        } else {
-          this.yogaNode.setPadding(_toYGEdge(position), layout.toDevicePixels(yg.value));
-        }
-
-        break;
-    }
-
-    if (json) {
-      if (position === 'all') {
-        json['paddingLeft'] = `${padding}${unit}`;
-        json['paddingTop'] = `${padding}${unit}`;
-        json['paddingRight'] = `${padding}${unit}`;
-        json['paddingBottom'] = `${padding}${unit}`;
-      } else {
-        json[`padding${firstCharToUpperCase(position)}`] = `${padding}${unit}`;
-      }
-    }
-  }
-
-  _getPaddingValue(position) {
-    const value = this.yogaNode.getPadding(_toYGEdge(position));
-    switch (value.unit) {
-      case com.facebook.yoga.YogaUnit.POINT:
-        return {value: value.value, unit: "px"};
-      case com.facebook.yoga.YogaUnit.PERCENT:
-        return {value: value.value / 100, unit: "%"}
-      case com.facebook.yoga.YogaUnit.AUTO:
-        return "auto";
-      case com.facebook.yoga.YogaUnit.UNDEFINED:
-        return undefined;
-    }
-  }
-
-  _updatePadding(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "all", json);
-    }
-  }
-
-  _updatePaddingLeft(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "left", json);
-    }
-  }
-
-  _updatePaddingTop(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "top", json);
-    }
-  }
-
-  _updatePaddingRight(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "right", json);
-    }
-  }
-
-  _updatePaddingBottom(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setPaddingValue(value, "bottom", json);
-    }
-  }
-
-  _setMarginValue(value, position, json) {
-    if (!this.yogaNode || value === undefined || value === 'auto' || value?.type === 'auto') {
-      return
-    }
-    const yg = toYGValue(value);
-    const unit = yg.type === ParsedValueType.Percent ? '%' : '';
-    let margin = 0;
-    switch (yg.type) {
-      case ParsedValueType.Auto:
-        break;
-      case ParsedValueType.Px:
-        if (json) {
-          margin = yg.value;
-        } else {
-          this.yogaNode.setMargin(_toYGEdge(position), yg.value);
-        }
-
-        break;
-      case ParsedValueType.Percent:
-        if (json) {
-          margin = yg.value * 100;
-        } else {
-          this.yogaNode.setMarginPercent(_toYGEdge(position), yg.value * 100);
-        }
-
-        break;
-      case ParsedValueType.Dip:
-        if (json) {
-          margin = layout.toDevicePixels(yg.value);
-        } else {
-          this.yogaNode.setMargin(_toYGEdge(position), layout.toDevicePixels(yg.value));
-        }
-
-        break;
-    }
-
-    if (json) {
-      if (position === 'all') {
-        json['marginLeft'] = `${margin}${unit}`;
-        json['marginTop'] = `${margin}${unit}`;
-        json['marginRight'] = `${margin}${unit}`;
-        json['marginBottom'] = `${margin}${unit}`;
-      } else {
-        json[`margin${firstCharToUpperCase(position)}`] = `${margin}${unit}`;
-      }
-    }
-  }
-
-  _getMarginValue(position) {
-    const value = this.nativeView.getYogaNode().getMargin(_toYGEdge(position));
-    switch (value.unit) {
-      case com.facebook.yoga.YogaUnit.POINT:
-        return {value: value.value, unit: "px"};
-      case com.facebook.yoga.YogaUnit.PERCENT:
-        return {value: value.value / 100, unit: "%"}
-      case com.facebook.yoga.YogaUnit.AUTO:
-        return "auto";
-      case com.facebook.yoga.YogaUnit.UNDEFINED:
-        return undefined;
-    }
-  }
-
-  _updateMargin(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "all", json);
-    }
-  }
-
-  _updateMarginLeft(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "left", json);
-    }
-  }
-
-  _updateMarginTop(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "top", json);
-    }
-  }
-
-  _updateMarginRight(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "right", json);
-    }
-  }
-
-  _updateMarginBottom(value, force = false, json = null) {
-    if (this.nativeView) {
-      this._setMarginValue(value, "bottom", json);
-    }
-  }
-
-  _updateJustifyContent(value: any, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['justifyContent'] = value;
-      } else {
-        switch (value) {
-          case FlexJustify.FlexStart:
-            this.nativeView.getYogaNode().setJustifyContent(com.facebook.yoga.YogaJustify.FLEX_START);
-            break;
-          case FlexJustify.FlexEnd:
-            this.nativeView.getYogaNode().setJustifyContent(com.facebook.yoga.YogaJustify.FLEX_END);
-            break;
-          case FlexJustify.Center:
-            this.nativeView.getYogaNode().setJustifyContent(com.facebook.yoga.YogaJustify.CENTER);
-            break;
-          case FlexJustify.SpaceAround:
-            this.nativeView.getYogaNode().setJustifyContent(com.facebook.yoga.YogaJustify.SPACE_AROUND);
-            break;
-          case FlexJustify.SpaceBetween:
-            this.nativeView.getYogaNode().setJustifyContent(com.facebook.yoga.YogaJustify.SPACE_BETWEEN);
-            break;
-          case FlexJustify.SpaceEvenly:
-            this.nativeView.getYogaNode().setJustifyContent(com.facebook.yoga.YogaJustify.SPACE_EVENLY);
-            break;
-        }
-      }
-    }
-  }
-
-  _updateFlexWrap(value: any, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['flexWrap'] = value;
-      } else {
-        switch (value) {
-          case FlexWrap.NoWrap:
-            this.nativeView.getYogaNode().setWrap(com.facebook.yoga.YogaWrap.NO_WRAP);
-            break;
-          case FlexWrap.Wrap:
-            this.nativeView.getYogaNode().setWrap(com.facebook.yoga.YogaWrap.WRAP);
-            break
-          case FlexWrap.WrapReverse:
-            this.nativeView.getYogaNode().setWrap(com.facebook.yoga.YogaWrap.WRAP_REVERSE);
-            break
-        }
-      }
-    }
-  }
-
-  _updateAlignSelf(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['alignItems'] = value;
-      } else {
-        this.yogaNode.setAlignSelf(_toYGFlexAlignSelf(value));
-      }
-    }
-  }
-
-  _updateFlexGrow(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['flexGrow'] = value;
-      } else {
-        this.yogaNode.setFlexGrow(value);
-      }
-    }
-  }
-
-  _updateFlexShrink(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['flexShrink'] = value
-      } else {
-        this.yogaNode.setFlexShrink(value);
-      }
-    }
-  }
-
-  _updateFlexBasis(value, force = false, json = null) {
-    if (this.nativeView) {
-      const yg = toYGValue(value);
-      switch (yg.type) {
-        case ParsedValueType.Auto:
-          if (json) {
-            json['flexBasis'] = 'auto';
-          } else {
-            this.yogaNode.setFlexBasisAuto();
-          }
-          break;
-        case ParsedValueType.Px:
-          if (json) {
-            json['flexBasis'] = `${yg.value}`;
-          } else {
-            this.yogaNode.setFlexBasis(yg.value);
-          }
-          break;
-        case ParsedValueType.Percent:
-          if (json) {
-            json['flexBasis'] = `${yg.value * 100}%`
-          } else {
-            this.yogaNode.setFlexBasisPercent(yg.value * 100);
-          }
-
-          break;
-        case ParsedValueType.Dip:
-          if (json) {
-            json['flexBasis'] = `${layout.toDevicePixels(yg.value)}`;
-          } else {
-            this.yogaNode.setFlexBasis(layout.toDevicePixels(yg.value));
-          }
-          break;
-      }
-    }
-  }
-
-  _updateAlignContent(value, force = false, json = null) {
-    if (this.nativeView) {
-      if (json) {
-        json['alignContent'] = value;
-      } else {
-        this.yogaNode.setAlignContent(_toYGFlexAlignContent(value));
-      }
-    }
+  get yoga() {
+    return this.nativeView;
   }
 
   // @ts-ignore
@@ -864,17 +278,14 @@ export class View extends ViewBase {
   }
 
 
-  // @ts-ignore
   set alignItems(value) {
     this.style.alignItems = value;
     this._updateAlignItems(value);
   }
 
-  // @ts-ignore
   get alignItems() {
-    return this.style.alignItems;
+    return this.style.alignItems as FlexAlignItems;
   }
-
 
   set overflow(value) {
     this.style.overflow = value;
@@ -980,113 +391,141 @@ export class View extends ViewBase {
     this._updateAlignContent(value);
   }
 
-}
-
-function _toYGFlexDirection(value: FlexDirection) {
-  switch (value) {
-    case FlexDirection.Row:
-      return com.facebook.yoga.YogaFlexDirection.ROW;
-    case FlexDirection.Column:
-      return com.facebook.yoga.YogaFlexDirection.COLUMN;
-    case FlexDirection.ColumnReverse:
-      return com.facebook.yoga.YogaFlexDirection.COLUMN_REVERSE;
-    case FlexDirection.RowReverse:
-      return com.facebook.yoga.YogaFlexDirection.ROW_REVERSE;
+  [aspectRatioProperty.setNative](value) {
+    this._updateAspectRatio(value);
   }
-}
 
-function _toYGFlexAlignItems(value: FlexAlignItems) {
-  switch (value) {
-    case FlexAlignItems.Stretch:
-      return com.facebook.yoga.YogaAlign.STRETCH;
-    case FlexAlignItems.Center:
-      return com.facebook.yoga.YogaAlign.CENTER;
-    case FlexAlignItems.FlexEnd:
-      return com.facebook.yoga.YogaAlign.FLEX_END;
-    case FlexAlignItems.FlexStart:
-      return com.facebook.yoga.YogaAlign.FLEX_START;
-    case FlexAlignItems.BaseLine:
-      return com.facebook.yoga.YogaAlign.BASELINE;
+  get start() {
+    return this.style.start;
   }
-}
 
-function _toYGOverflow(value: Overflow) {
-  switch (value) {
-    case Overflow.Visible:
-      return com.facebook.yoga.YogaOverflow.VISIBLE;
-    case Overflow.Hidden:
-      return com.facebook.yoga.YogaOverflow.HIDDEN;
-    case Overflow.Scroll:
-      return com.facebook.yoga.YogaOverflow.SCROLL;
+  set start(value) {
+    this.style.start = value;
+    this._updateStart(value);
   }
-}
 
-function _toYGPosition(value: Position) {
-  switch (value) {
-    case Position.Relative:
-      return com.facebook.yoga.YogaPositionType.RELATIVE;
-    case Position.Absolute:
-      return com.facebook.yoga.YogaPositionType.ABSOLUTE;
+  get end() {
+    return this.style.end;
   }
-}
 
-function _toYGEdge(value: "left" | "top" | "right" | "bottom" | "start" | "end" | "all" | "vertical" | "horizontal") {
-  switch (value) {
-    case "left":
-      return com.facebook.yoga.YogaEdge.LEFT;
-    case "top":
-      return com.facebook.yoga.YogaEdge.TOP;
-    case "right":
-      return com.facebook.yoga.YogaEdge.RIGHT;
-    case "bottom":
-      return com.facebook.yoga.YogaEdge.BOTTOM;
-    case "start":
-      return com.facebook.yoga.YogaEdge.START;
-    case "end":
-      return com.facebook.yoga.YogaEdge.END;
-    case "vertical":
-      return com.facebook.yoga.YogaEdge.VERTICAL;
-    case "horizontal":
-      return com.facebook.yoga.YogaEdge.HORIZONTAL;
-    case "all":
-      return com.facebook.yoga.YogaEdge.ALL;
+  set end(value) {
+    this.style.end = value;
+    this._updateEnd(value);
   }
-}
 
-function firstCharToUpperCase(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function _toYGFlexAlignSelf(value: FlexAlignSelf) {
-  switch (value) {
-    case FlexAlignSelf.Stretch:
-      return com.facebook.yoga.YogaAlign.STRETCH;
-    case FlexAlignSelf.Center:
-      return com.facebook.yoga.YogaAlign.CENTER;
-    case FlexAlignSelf.FlexEnd:
-      return com.facebook.yoga.YogaAlign.FLEX_END;
-    case FlexAlignSelf.FlexStart:
-      return com.facebook.yoga.YogaAlign.FLEX_START;
-    case FlexAlignSelf.BaseLine:
-      return com.facebook.yoga.YogaAlign.BASELINE;
-    case FlexAlignSelf.Auto:
-      return com.facebook.yoga.YogaAlign.BASELINE;
+  get direction() {
+    if (!this.nativeView) {
+      return Direction.Inherit;
+    }
+    return io.github.triniwiz.yogalayout.Utils.getLayoutDirection(this.yogaNode) as any
   }
-}
 
-function _toYGFlexAlignContent(value: FlexAlignContent) {
-  switch (value) {
-    case FlexAlignContent.Stretch:
-      return com.facebook.yoga.YogaAlign.STRETCH;
-    case FlexAlignContent.Center:
-      return com.facebook.yoga.YogaAlign.CENTER;
-    case FlexAlignContent.FlexEnd:
-      return com.facebook.yoga.YogaAlign.FLEX_END;
-    case FlexAlignContent.FlexStart:
-      return com.facebook.yoga.YogaAlign.FLEX_START;
-    case FlexAlignContent.SpaceBetween:
-      return com.facebook.yoga.YogaAlign.SPACE_BETWEEN;
-    case FlexAlignContent.SpaceAround:
-      return com.facebook.yoga.YogaAlign.SPACE_AROUND;
+  set direction(value) {
+    this.style.direction = value;
+    this._updateDirection(value);
   }
+
+  get marginVertical(): any {
+    return this.style.marginVertical;
+  }
+
+  set marginVertical(value) {
+    this.style.marginVertical = value;
+    this._updateMarginVertical(value);
+  }
+
+  get marginHorizontal(): any {
+    return this.style.marginHorizontal;
+  }
+
+  set marginHorizontal(value) {
+    this.style.marginHorizontal = value;
+    this._updateMarginHorizontal(value);
+  }
+
+  get paddingHorizontal() {
+    return this.style.paddingHorizontal;
+  }
+
+  set paddingHorizontal(value) {
+    this.style.paddingHorizontal = value;
+    this._updatePaddingHorizontal(value);
+  }
+
+  get paddingVertical() {
+    return this.style.paddingVertical;
+  }
+
+  set paddingVertical(value) {
+    this.style.paddingVertical = value;
+    this._updatePaddingVertical(value);
+  }
+
+  private _addChild(child: NSView, addToChildren: boolean = false) {
+    if (!child) {
+      return;
+    }
+    if (child.parent && child.parent !== this) {
+      child.parent._removeView(child);
+    }
+
+    if (child.parent !== this) {
+      if (!this.nativeView) {
+        this._children.push(child);
+        return;
+      }
+      if (addToChildren) {
+        this._children.push(child);
+      }
+      this._addPropertyChangeHandler(child);
+      this._addView(child);
+      const json = {
+        alignSelf: child.style.alignSelf,
+        flexGrow: child.style.flexGrow,
+        flexShrink: child.style.flexShrink,
+        flex: child.style.flex,
+        direction: child.style.direction
+      };
+      // @ts-ignore
+      this.nativeView.addView(child.nativeView);
+      const data = JSON.stringify(json);
+      io.github.triniwiz.yogalayout.Utils.batchChild(data, this.nativeView, child.nativeView);
+    }
+  }
+
+  addChild(view: NSView) {
+    this._addChild(view, true);
+  }
+
+  getChildAt(index: number): NSView {
+    return this._children[index];
+  }
+
+  getChildIndex(view: NSView): number {
+    return this._children.indexOf(view);
+  }
+
+  getChildrenCount(): number {
+    return this._children.length;
+  }
+
+  removeAllChildren() {
+    this.nativeView?.removeAllViews();
+    this._children.forEach(child => {
+      this._removeView(child);
+    })
+    this._children.splice(0);
+  }
+
+  removeChild(view: NSView) {
+    if (view?.nativeView) {
+      const index = this._children.indexOf(view);
+      if (index !== -1) {
+        this.nativeView.removeView(view.nativeView);
+        view.parent._removeView(view);
+        this._children.splice(index, 1);
+      }
+    }
+  }
+
 }
