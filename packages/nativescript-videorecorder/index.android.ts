@@ -3,6 +3,7 @@ import { isNullOrUndefined } from '@nativescript/core/utils/types';
 import * as permissions from 'nativescript-permissions';
 
 import { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType, VideoRecorderBase } from './common';
+
 export { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType };
 const RESULT_CANCELED = 0;
 const RESULT_OK = -1;
@@ -50,7 +51,7 @@ export class VideoRecorder extends VideoRecorderBase {
 				if (options.position !== CameraPosition.NONE) {
 					if (sdkVersionInt >= 21) {
 						intent.putExtra('android.intent.extras.CAMERA_FACING', options.position === CameraPosition.BACK ? android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK : android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
-						intent.putExtra('android.intent.extra.USE_FRONT_CAMERA', options.position === CameraPosition.BACK ? false : true);
+						intent.putExtra('android.intent.extra.USE_FRONT_CAMERA', options.position !== CameraPosition.BACK);
 						intent.putExtra('android.intent.extras.LENS_FACING_FRONT', options.position === CameraPosition.BACK ? 0 : 1);
 					} else {
 						intent.putExtra('android.intent.extras.CAMERA_FACING', options.position === CameraPosition.BACK ? android.hardware.Camera.CameraInfo.CAMERA_FACING_BACK : android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
@@ -61,7 +62,7 @@ export class VideoRecorder extends VideoRecorderBase {
 					intent.putExtra(android.provider.MediaStore.EXTRA_SIZE_LIMIT, options.size * 1024 * 1024);
 				}
 
-				let saveToGallery = options.saveToGallery || false;
+				let saveToGallery = options?.saveToGallery ?? false;
 
 				const fileName = `NSVID_${Date.now()}.mp4`;
 				let videoPath: string;
@@ -144,6 +145,8 @@ export class VideoRecorder extends VideoRecorderBase {
 							} catch (e) {
 								reject(e);
 							}
+						} else {
+							resolve({ file: videoPath });
 						}
 					} else if (args.resultCode === RESULT_CANCELED) {
 						reject({ event: 'cancelled' });
