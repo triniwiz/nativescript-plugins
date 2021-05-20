@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-yogalayout",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "NativeScript Layout powered by YogaLayout",
 	"main": "index",
 	"typings": "index.d.ts",
@@ -20,9 +20,9 @@
 		"TypeScript",
 		"iOS",
 		"Android",
-    "yoga",
-    "yogalayout",
-    "flexbox"
+		"yoga",
+		"yogalayout",
+		"flexbox"
 	],
 	"author": {
 		"name": "Osei Fortune",
