@@ -11,6 +11,8 @@ declare module io {
 
           public static batchChild(data: string, layout: com.facebook.yoga.android.YogaLayout, view: android.view.View): void;
 
+          public static batchChildren(data: string, layout: com.facebook.yoga.android.YogaLayout, view: native.Array<android.view.View>): void;
+
           public static getLayoutDirection(layout: com.facebook.yoga.YogaNode): string;
 
           public static getStyleDirection(layout: com.facebook.yoga.YogaNode): string;

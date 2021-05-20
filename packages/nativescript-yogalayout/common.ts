@@ -141,7 +141,9 @@ export abstract class ViewBase extends NSView implements AddChildFromBuilder {
 
 	abstract _addChildFromBuilder(name: string, value: any): void;
 
-	abstract addChild(view: NSView);
+	abstract addChild(views: NSView);
+
+	abstract addChildren(view: NSView[]);
 
 	abstract removeChild(view: NSView);
 

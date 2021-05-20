@@ -509,6 +509,14 @@ export class View extends ViewBase {
     this._addChild(view, true);
   }
 
+  addChildren(views: NSView[]) {
+    if (Array.isArray(views)) {
+      views.forEach(child => {
+        this._addChild(child, true);
+      });
+    }
+  }
+
   getChildAt(index: number): NSView {
     return this._children[index];
   }

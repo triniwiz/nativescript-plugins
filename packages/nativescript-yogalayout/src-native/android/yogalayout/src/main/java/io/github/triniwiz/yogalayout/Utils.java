@@ -3,6 +3,7 @@ package io.github.triniwiz.yogalayout;
 import android.content.Context;
 import android.util.Pair;
 import android.view.View;
+import android.view.ViewParent;
 
 import com.facebook.soloader.SoLoader;
 import com.facebook.yoga.YogaAlign;
@@ -17,6 +18,7 @@ import com.facebook.yoga.YogaValue;
 import com.facebook.yoga.YogaWrap;
 import com.facebook.yoga.android.YogaLayout;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Utils {
@@ -241,39 +243,72 @@ public class Utils {
     }
   }
 
+  private static void handleBatchChildJson(JSONObject object, YogaNode node) {
+    try {
+      String position = object.optString("position", "relative");
+      node.setPositionType(parseStringPosition(position));
+
+      double flex = object.optDouble("flex", 1d);
+      node.setFlex((float) flex);
+
+      String alignSelf = object.optString("alignSelf", "auto");
+      node.setAlignSelf(parseStringAlignSelf(alignSelf));
+
+      double flexGrow = object.optDouble("flexGrow", 0);
+      if (node.getFlexGrow() != (float) flexGrow) {
+        node.setFlexGrow((float) flexGrow);
+      }
+
+      double flexShrink = object.optDouble("flexShrink", 1);
+      if (node.getFlexShrink() != (float) flexShrink) {
+        node.setFlexShrink((float) flexShrink);
+      }
+
+      if (object.has("direction")) {
+        YogaDirection direction = parseStringDirection(object.optString("direction", "inherit"));
+        node.setDirection(direction);
+      }
+
+    } catch (Exception ignore) {
+    }
+  }
+
   public static void batchChild(String json, YogaLayout layout, View view) {
+    if (json == null) {
+      return;
+    }
+    if (json.isEmpty()) {
+      return;
+    }
     try {
       YogaNode node = layout.getYogaNodeForView(view);
       if (node != null) {
         JSONObject object = new JSONObject(json);
-
-        String position = object.optString("position", "relative");
-        node.setPositionType(parseStringPosition(position));
-
-        double flex = object.optDouble("flex", 1d);
-        node.setFlex((float) flex);
-
-        String alignSelf = object.optString("alignSelf", "auto");
-        node.setAlignSelf(parseStringAlignSelf(alignSelf));
-
-        double flexGrow = object.optDouble("flexGrow", 0);
-        if (node.getFlexGrow() != (float) flexGrow) {
-          node.setFlexGrow((float) flexGrow);
-        }
-
-        double flexShrink = object.optDouble("flexShrink", 1);
-        if (node.getFlexShrink() != (float) flexShrink) {
-          node.setFlexShrink((float) flexShrink);
-        }
-
-        if (object.has("direction")) {
-          YogaDirection direction = parseStringDirection(object.optString("direction", "inherit"));
-          node.setDirection(direction);
-        }
+        handleBatchChildJson(object, node);
       }
 
-    } catch (Exception ignored) {
+    } catch (Exception ignore) {
+    }
+  }
 
+  public static void batchChildren(String jsonArray, YogaLayout layout, View[] view) {
+    try {
+      JSONArray objectArray = new JSONArray(jsonArray);
+      int size = objectArray.length();
+      for (int i = 0; i < size; i++) {
+        View currentView = view[i];
+        if (currentView != null) {
+          ViewParent parent = currentView.getParent();
+          if (parent == null) {
+            layout.addView(currentView, i);
+          }
+          YogaNode node = layout.getYogaNodeForView(currentView);
+          if (node != null) {
+            handleBatchChildJson(objectArray.optJSONObject(i), node);
+          }
+        }
+      }
+    } catch (Exception ignore) {
     }
   }
 

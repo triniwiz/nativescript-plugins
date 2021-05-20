@@ -51,6 +51,7 @@ export class View extends ViewBase {
   }
 
   _children: NSView[] = [];
+  _childrenQueue: NSView[] = [];
   private static _didInit = false;
 
   constructor() {
@@ -85,9 +86,8 @@ export class View extends ViewBase {
 
   _init() {
     const json = {};
-
-    this._updateWidth(this.width, null, json);
-    this._updateHeight(this.height, null, json);
+    this._updateWidth(this.style.width, null, json);
+    this._updateHeight(this.style.height, null, json);
     this._updateMaxWidth(this.style.maxWidth, null, json);
     this._updateMaxHeight(this.style.maxHeight, null, json);
     this._updateAlignItems(this.style.alignItems as any, null, json);
@@ -135,12 +135,31 @@ export class View extends ViewBase {
     io.github.triniwiz.yogalayout.Utils.batch(data, this.nativeView);
   }
 
+  private _childrenBatchProperties = [];
+  private _childrenBatchViews = [];
+
+  private _processBatch() {
+    if (this._children.length && this._childrenBatchProperties.length && this._childrenBatchViews.length) {
+      io.github.triniwiz.yogalayout.Utils.batchChildren(JSON.stringify(this._childrenBatchProperties), this.nativeView, this._childrenBatchViews);
+      this._childrenBatchViews.splice(0);
+      this._childrenBatchProperties.splice(0);
+    }
+  }
+
+
   @profile
   onLoaded() {
     super.onLoaded();
     this._children.forEach((child) => {
-      this.addChild(child);
+      this._addChild(child, false, true);
     });
+    this._childrenQueue.forEach((child) => {
+      this._addChild(child, true, true);
+    });
+    if (this._childrenQueue.length) {
+      this._childrenQueue.splice(0);
+    }
+    this._processBatch();
   }
 
   disposeNativeView() {
@@ -461,7 +480,7 @@ export class View extends ViewBase {
     this._updatePaddingVertical(value);
   }
 
-  private _addChild(child: NSView, addToChildren: boolean = false) {
+  private _addChild(child: NSView, addToChildren: boolean = false, batchingChildren: boolean = false) {
     if (!child) {
       return;
     }
@@ -470,15 +489,17 @@ export class View extends ViewBase {
     }
 
     if (child.parent !== this) {
+      const wasAdded = this._children.indexOf(child) !== -1;
       if (!this.nativeView) {
-        this._children.push(child);
+        this._childrenQueue.push(child);
         return;
       }
-      if (addToChildren) {
+      if (addToChildren && !wasAdded) {
         this._children.push(child);
       }
       this._addPropertyChangeHandler(child);
       this._addView(child);
+
       const json = {
         alignSelf: child.style.alignSelf,
         flexGrow: child.style.flexGrow,
@@ -487,10 +508,25 @@ export class View extends ViewBase {
         direction: child.style.direction,
         position: child.style.position
       };
-      // @ts-ignore
-      this.nativeView.addView(child.nativeView);
-      const data = JSON.stringify(json);
-      io.github.triniwiz.yogalayout.Utils.batchChild(data, this.nativeView, child.nativeView);
+      if (batchingChildren) {
+        this._childrenBatchProperties.push(json);
+        this._childrenBatchViews.push(child.nativeView);
+      } else {
+        // @ts-ignore
+        this.nativeView.addView(child.nativeView);
+
+        const data = JSON.stringify(json);
+        io.github.triniwiz.yogalayout.Utils.batchChild(data, this.nativeView, child.nativeView);
+      }
+    }
+  }
+
+  addChildren(views: View[]) {
+    if (Array.isArray(views)) {
+      views.forEach(child => {
+        this._addChild(child, true, true);
+      });
+      this._processBatch();
     }
   }
 
