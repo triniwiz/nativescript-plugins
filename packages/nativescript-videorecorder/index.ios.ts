@@ -1,4 +1,5 @@
 import { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType, VideoRecorderBase } from './common';
+
 export { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType };
 import { Frame } from '@nativescript/core/ui/frame';
 import { isNumber } from '@nativescript/core/utils/types';
@@ -109,9 +110,9 @@ export class VideoRecorder extends VideoRecorderBase {
 			}
 
 			if (options) {
-				listener = UIImagePickerControllerDelegateImpl.initWithOwnerCallbackOptions(new WeakRef(this), resolve, options);
+				listener = UIImagePickerControllerDelegateImpl.initWithOwnerCallbackOptions(new WeakRef(this), resolve, reject, options);
 			} else {
-				listener = UIImagePickerControllerDelegateImpl.initWithCallback(resolve);
+				listener = UIImagePickerControllerDelegateImpl.initWithCallback(resolve, reject);
 			}
 
 			picker.delegate = listener;
@@ -175,27 +176,31 @@ export class VideoRecorder extends VideoRecorderBase {
 	}
 }
 
+@NativeClass
+@ObjCClass(UIImagePickerControllerDelegate)
 class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePickerControllerDelegate {
-	public static ObjCProtocols = [UIImagePickerControllerDelegate];
 	private _saveToGallery: boolean;
-	private _callback: (result?: RecordResult) => void;
+	private _resolve: (result?: RecordResult) => void;
+	private _reject: (error?: any) => void;
 	private _format: VideoFormatType = VideoFormat.DEFAULT;
 	private _hd: boolean;
 
-	public static initWithCallback(callback: (result?) => void): UIImagePickerControllerDelegateImpl {
-		let delegate = new UIImagePickerControllerDelegateImpl();
-		delegate._callback = callback;
+	public static initWithCallback(resolve: (result?) => void, reject: () => void): UIImagePickerControllerDelegateImpl {
+		const delegate = new UIImagePickerControllerDelegateImpl();
+		delegate._resolve = resolve;
+		delegate._reject = reject;
 		return delegate;
 	}
 
-	public static initWithOwnerCallbackOptions(owner: any /*WeakRef<VideoRecorder>*/, callback: (result?: RecordResult) => void, options?: Options): UIImagePickerControllerDelegateImpl {
-		let delegate = new UIImagePickerControllerDelegateImpl();
+	public static initWithOwnerCallbackOptions(owner: any /*WeakRef<VideoRecorder>*/, resolve: (result?: RecordResult) => void, reject: (result?: RecordResult) => void, options?: Options): UIImagePickerControllerDelegateImpl {
+		const delegate = new UIImagePickerControllerDelegateImpl();
 		if (options) {
 			delegate._saveToGallery = options.saveToGallery;
 			delegate._format = options.format;
 			delegate._hd = options.hd;
 		}
-		delegate._callback = callback;
+		delegate._resolve = resolve;
+		delegate._reject = reject;
 		return delegate;
 	}
 
@@ -222,18 +227,20 @@ class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePic
 						let assetLibrary = ALAssetsLibrary.alloc().init();
 						assetLibrary.writeVideoAtPathToSavedPhotosAlbumCompletionBlock(nativePath, (file, error) => {
 							if (!error) {
-								this._callback({ file: file.path });
+								this._resolve({ file: file.path });
+							} else {
+								File.fromPath(path).remove();
+								this._reject(error.localizedDescription);
 							}
-							File.fromPath(path).remove();
 						});
 					});
 				} else {
 					let assetLibrary = ALAssetsLibrary.alloc().init();
 					assetLibrary.writeVideoAtPathToSavedPhotosAlbumCompletionBlock(source, (file, error) => {
 						if (!error) {
-							this._callback({ file: file.path });
+							this._resolve({ file: file.path });
 						} else {
-							console.log(error.localizedDescription);
+							this._reject(error.localizedDescription);
 						}
 					});
 				}
@@ -245,14 +252,18 @@ class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePic
 					let session = AVAssetExportSession.exportSessionWithAssetPresetName(asset, preset);
 					session.outputFileType = AVFileTypeMPEG4;
 					let fileName = `VID_${+new Date()}.mp4`;
-					let path = nsPath.join(knownFolders.documents().path, fileName);
+					const path = nsPath.join(knownFolders.documents().path, fileName);
 					session.outputURL = NSURL.fileURLWithPath(path);
 					session.exportAsynchronouslyWithCompletionHandler(() => {
-						File.fromPath(source.path).remove();
-						this._callback({ file: path });
+						if (session.error) {
+							this._reject(session.error.localizedDescription);
+						} else {
+							File.fromPath(source.path).remove();
+							this._resolve({ file: path });
+						}
 					});
 				} else {
-					this._callback({ file: source.path });
+					this._resolve({ file: source.path });
 				}
 			}
 			picker.presentingViewController.dismissViewControllerAnimatedCompletion(true, null);
