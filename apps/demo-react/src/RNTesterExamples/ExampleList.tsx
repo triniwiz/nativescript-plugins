@@ -12,12 +12,12 @@ export interface ExampleListProps {
     examples: Example[];
 }
 
-const cellFactory = ({ title, description, render }: Example) => {
+const cellFactory = ({ title, description, render }: Example, key?: string) => {
     // return (<View style={styles.titleContainer}></View>);
     const descriptionComponent = description ? (<Text style={styles.descriptionText}>{description}</Text>) : null;
 
     return (
-        <View style={styles.container}>
+        <View {...(key ? { key } : {})} style={styles.container}>
             <View style={styles.titleContainer}>
                 <Text style={styles.titleText}>{title}</Text>
                 {descriptionComponent}
@@ -39,11 +39,13 @@ export function ExampleList({ examples }: ExampleListProps) {
     }
 
     return (
-        <yoga flexDirection="column">
-            {examples.map(example => {
-                return cellFactory(example);
-            })}
-        </yoga>
+        <scrollView orientation="vertical">
+            <yoga flexDirection="column">
+                {examples.slice(0, 6).map((example, i) => {
+                    return cellFactory(example, `example-item-${i}`);
+                })}
+            </yoga>
+        </scrollView>
     );
 }
 
