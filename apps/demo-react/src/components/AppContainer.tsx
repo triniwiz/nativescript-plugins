@@ -23,7 +23,7 @@ const items: MyItem[] = [
     },
     {
         text: 'RNTester: Text',
-        component: () => (<ExampleList examples={textExamples}/>),
+        component: () => (<ExampleList examples={textExamples.slice(0, 6)}/>),
     },
     {
         text: 'RNTester: Button',

@@ -41,7 +41,7 @@ export function ExampleList({ examples }: ExampleListProps) {
     return (
         <scrollView orientation="vertical">
             <yoga flexDirection="column">
-                {examples.slice(0, 6).map((example, i) => {
+                {examples.map((example, i) => {
                     return cellFactory(example, `example-item-${i}`);
                 })}
             </yoga>
