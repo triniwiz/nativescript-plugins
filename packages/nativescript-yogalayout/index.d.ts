@@ -15,4 +15,6 @@ export declare class View extends ViewBase {
   removeAllChildren();
 
   removeChild(view: NSView);
+
+  addChildren(view: View[]);
 }

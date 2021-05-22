@@ -23,6 +23,7 @@ import {
   alignContentProperty, aspectRatioProperty,
   Direction
 } from './common';
+import {layout} from "@nativescript/core/utils";
 
 export {
   FlexDirection,
@@ -73,8 +74,8 @@ export class View extends ViewBase {
 
   @profile
   initNativeView() {
-    super.initNativeView();
     this._init();
+    super.initNativeView();
   }
 
   _isSingle(value: string) {
@@ -86,51 +87,53 @@ export class View extends ViewBase {
 
   _init() {
     const json = {};
-    this._updateWidth(this.style.width, null, json);
-    this._updateHeight(this.style.height, null, json);
-    this._updateMaxWidth(this.style.maxWidth, null, json);
-    this._updateMaxHeight(this.style.maxHeight, null, json);
-    this._updateAlignItems(this.style.alignItems as any, null, json);
-    this._updateOverflow(this.style.overflow as any, null, json);
-    this._updatePosition(this.style.position, null, json);
-    this._updateLeft(this.style.left, null, json);
-    this._updateTop(this.style.top, null, json);
-    this._updateRight(this.style.right, null, json);
-    this._updateBottom(this.style.bottom, null, json);
+    this._updateWidth(this.style.width, false, json);
+    this._updateHeight(this.style.height, false, json);
+    this._updateMinWidth(this.style.minWidth, false, json);
+    this._updateMinHeight(this.style.minHeight, false, json);
+    this._updateMaxWidth(this.style.maxWidth, false, json);
+    this._updateMaxHeight(this.style.maxHeight, false, json);
+    this._updateAlignItems(this.style.alignItems as any, false, json);
+    this._updateOverflow(this.style.overflow as any, false, json);
+    this._updatePosition(this.style.position, false, json);
+    this._updateLeft(this.style.left, false, json);
+    this._updateTop(this.style.top, false, json);
+    this._updateRight(this.style.right, false, json);
+    this._updateBottom(this.style.bottom, false, json);
     if (this._isSingle(this.style.padding as any)) {
-      this._updatePadding(this.style.padding, null, json);
+      this._updatePadding(this.style.padding, false, json);
     } else {
-      this._updatePaddingLeft(this.style.paddingLeft, null, json);
-      this._updatePaddingTop(this.style.paddingTop, null, json);
-      this._updatePaddingRight(this.style.paddingRight, null, json);
-      this._updatePaddingBottom(this.style.paddingBottom, null, json);
+      this._updatePaddingLeft(this.style.paddingLeft, false, json);
+      this._updatePaddingTop(this.style.paddingTop, false, json);
+      this._updatePaddingRight(this.style.paddingRight, false, json);
+      this._updatePaddingBottom(this.style.paddingBottom, false, json);
     }
 
     if (this._isSingle(this.style.margin as any)) {
-      this._updateMargin(this.style.margin, null, json);
+      this._updateMargin(this.style.margin, false, json);
     } else {
-      this._updateMarginLeft(this.style.marginLeft, null, json);
-      this._updateMarginTop(this.style.marginTop, null, json);
-      this._updateMarginRight(this.style.marginRight, null, json);
-      this._updateMarginBottom(this.style.marginBottom, null, json);
+      this._updateMarginLeft(this.style.marginLeft, false, json);
+      this._updateMarginTop(this.style.marginTop, false, json);
+      this._updateMarginRight(this.style.marginRight, false, json);
+      this._updateMarginBottom(this.style.marginBottom, false, json);
     }
 
-    this._updateJustifyContent(this.style.justifyContent, null, json);
-    this._updateFlexWrap(this.style.flexWrap, null, json);
-    this._updateFlex(this.style.flex, null, json);
-    this._updateFlexDirection(this.style.flexDirection, null, json);
-    this._updateAlignSelf(this.style.alignSelf, null, json);
 
-    this._updateFlexGrow(this.style.flexGrow, null, json);
-    this._updateFlexShrink(this.style.flexShrink, null, json);
-    this._updateFlexBasis(this.style.flexBasis, null, json);
-    this._updateAlignContent(this.style.alignContent, null, json);
+    this._updateJustifyContent(this.style.justifyContent, false, json);
+    this._updateFlexWrap(this.style.flexWrap, false, json);
+    this._updateFlex(this.style.flex, false, json);
+    this._updateFlexDirection(this.style.flexDirection, false, json);
+    this._updateAlignSelf(this.style.alignSelf, false, json);
 
-    this._updateAspectRatio(this.aspectRatio, null, json);
-    this._updateDirection(this.style.direction, null, json);
-    this._updateStart(this.style.start, null, json);
-    this._updateEnd(this.style.end, null, json);
+    this._updateFlexGrow(this.style.flexGrow, false, json);
+    this._updateFlexShrink(this.style.flexShrink, false, json);
+    this._updateFlexBasis(this.style.flexBasis, false, json);
+    this._updateAlignContent(this.style.alignContent, false, json);
 
+    this._updateAspectRatio(this.aspectRatio, false, json);
+    this._updateDirection(this.style.direction, false, json);
+    this._updateStart(this.style.start, false, json);
+    this._updateEnd(this.style.end, false, json);
     const data = JSON.stringify(json);
     io.github.triniwiz.yogalayout.Utils.batch(data, this.nativeView);
   }
@@ -162,19 +165,27 @@ export class View extends ViewBase {
     this._processBatch();
   }
 
+
   disposeNativeView() {
-    super.disposeNativeView();
     this._children.forEach(view => {
       this._removePropertyChangeHandler(view);
       this._removeView(view);
     });
     this._children.splice(0);
+    super.disposeNativeView();
   }
 
   _addChildFromBuilder(name: string, value: any): void {
     if (value.parent !== this) {
       this._children.push(value);
     }
+  }
+
+
+  public eachChild(callback: (child: View) => boolean): void {
+    this._children.forEach((view, key) => {
+      callback(view as any);
+    });
   }
 
   public eachChildView(callback: (child: View) => boolean): void {
@@ -218,13 +229,11 @@ export class View extends ViewBase {
     if (!this.nativeView) {
       return this.style.height;
     }
-
     if (this.style.height === 'auto') {
       return 'auto';
     }
     return this.yogaNode.getHeight().value;
   }
-
 
   set left(value) {
     this.style.left = value;
@@ -247,7 +256,7 @@ export class View extends ViewBase {
     if (!this.nativeView) {
       return this.style.top;
     }
-    this._getPositionValue("top");
+    return this._getPositionValue("top");
   }
 
   set right(value) {
@@ -259,7 +268,7 @@ export class View extends ViewBase {
     if (!this.nativeView) {
       return this.style.right;
     }
-    this._getPositionValue("right");
+    return this._getPositionValue("right");
   }
 
   set bottom(value) {
@@ -271,7 +280,18 @@ export class View extends ViewBase {
     if (!this.nativeView) {
       return this.style.bottom;
     }
-    this._getPositionValue("bottom");
+    return this._getPositionValue("bottom");
+  }
+
+
+  set minWidth(value) {
+    this.style.minWidth = value;
+    this._updateMinWidth(value);
+  }
+
+
+  get minWidth() {
+    return this.style.minWidth;
   }
 
 
@@ -513,6 +533,20 @@ export class View extends ViewBase {
         direction: child.style.direction,
         position: child.style.position
       };
+
+      if (child.style.minWidth !== 'none') {
+        json['minWidth'] = child.style.minWidth;
+      }
+      if (child.style.minHeight !== 'none') {
+        json['minHeight'] = child.style.minHeight;
+      }
+      if (child.style.maxWidth !== 'none') {
+        json['maxWidth'] = child.style.maxWidth;
+      }
+      if (child.style.maxHeight !== 'none') {
+        json['maxHeight'] = child.style.maxHeight;
+      }
+
       if (batchingChildren) {
         this._childrenBatchProperties.push(json);
         this._childrenBatchViews.push(child.nativeView);

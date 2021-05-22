@@ -49,7 +49,7 @@ public class Utils {
 
       String height = object.optString("height", "auto");
 
-      if (width.equals("auto")) {
+      if (height.equals("auto")) {
         node.setHeightAuto();
       } else if (height.contains("%")) {
         node.setHeightPercent(YogaValue.parse(height).value);
@@ -57,26 +57,50 @@ public class Utils {
         node.setHeight(YogaValue.parse(height).value);
       }
 
+
+      String minWidth = object.optString("minWidth");
+
+      if (!minWidth.contains("none")) {
+        if (minWidth.contains("%")) {
+          node.setMinWidthPercent(YogaValue.parse(minWidth).value);
+        } else if (!minWidth.isEmpty()) {
+          node.setMinWidth(YogaValue.parse(minWidth).value);
+        }
+      }
+
+
+      String minHeight = object.optString("minHeight");
+
+      if (!minHeight.contains("none")) {
+        if (minHeight.contains("%")) {
+          node.setMinHeightPercent(YogaValue.parse(minHeight).value);
+        } else if (!minHeight.isEmpty()) {
+          node.setMinHeight(YogaValue.parse(minHeight).value);
+        }
+      }
+
+
       String maxWidth = object.optString("maxWidth");
 
-      if (maxWidth.contains("%")) {
-        node.setMaxWidthPercent(YogaValue.parse(maxWidth).value);
-      } else if (!maxWidth.isEmpty()) {
-        node.setMaxWidth(YogaValue.parse(maxWidth).value);
+      if (!maxWidth.contains("none")) {
+        if (maxWidth.contains("%")) {
+          node.setMaxWidthPercent(YogaValue.parse(maxWidth).value);
+        } else if (!maxWidth.isEmpty()) {
+          node.setMaxWidth(YogaValue.parse(maxWidth).value);
+        }
       }
-
 
       String maxHeight = object.optString("maxHeight");
-      if (maxHeight.contains("%")) {
-        node.setMaxHeightPercent(YogaValue.parse(maxHeight).value);
-      } else if (!maxHeight.isEmpty()) {
-        node.setMaxHeight(YogaValue.parse(maxHeight).value);
+      if (!maxHeight.contains("none")) {
+        if (maxHeight.contains("%")) {
+          node.setMaxHeightPercent(YogaValue.parse(maxHeight).value);
+        } else if (!maxHeight.isEmpty()) {
+          node.setMaxHeight(YogaValue.parse(maxHeight).value);
+        }
       }
-
 
       String alignItems = object.optString("alignItems", "stretch");
       node.setAlignItems(parseStringAlignItems(alignItems));
-
 
       String overflow = object.optString("overflow", "visible");
       node.setOverflow(parseStringOverflow(overflow));
@@ -245,6 +269,39 @@ public class Utils {
 
   private static void handleBatchChildJson(JSONObject object, YogaNode node) {
     try {
+
+      String minWidth = object.optString("minWidth");
+
+      if (minWidth.contains("%")) {
+        node.setMinWidthPercent(YogaValue.parse(minWidth).value);
+      } else if (!minWidth.isEmpty()) {
+        node.setMinWidth(YogaValue.parse(minWidth).value);
+      }
+
+
+      String minHeight = object.optString("minHeight");
+      if (minHeight.contains("%")) {
+        node.setMinHeightPercent(YogaValue.parse(minHeight).value);
+      } else if (!minHeight.isEmpty()) {
+        node.setMinHeight(YogaValue.parse(minHeight).value);
+      }
+
+
+      String maxWidth = object.optString("maxWidth");
+
+      if (maxWidth.contains("%")) {
+        node.setMaxWidthPercent(YogaValue.parse(maxWidth).value);
+      } else if (!maxWidth.isEmpty()) {
+        node.setMaxWidth(YogaValue.parse(maxWidth).value);
+      }
+
+      String maxHeight = object.optString("maxHeight");
+      if (maxHeight.contains("%")) {
+        node.setMaxHeightPercent(YogaValue.parse(maxHeight).value);
+      } else if (!maxHeight.isEmpty()) {
+        node.setMaxHeight(YogaValue.parse(maxHeight).value);
+      }
+
       String position = object.optString("position", "relative");
       node.setPositionType(parseStringPosition(position));
 
@@ -269,8 +326,7 @@ public class Utils {
         node.setDirection(direction);
       }
 
-    } catch (Exception ignore) {
-    }
+    } catch (Exception ignore) { }
   }
 
   public static void batchChild(String json, YogaLayout layout, View view) {
@@ -300,12 +356,13 @@ public class Utils {
         if (currentView != null) {
           ViewParent parent = currentView.getParent();
           if (parent == null) {
-            layout.addView(currentView, i);
+            layout.addView(currentView);
           }
+
           YogaNode node = layout.getYogaNodeForView(currentView);
-          if (node != null) {
-            handleBatchChildJson(objectArray.optJSONObject(i), node);
-          }
+
+          handleBatchChildJson(objectArray.optJSONObject(i), node);
+
         }
       }
     } catch (Exception ignore) {

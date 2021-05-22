@@ -1,18 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  xmlns:yoga="http://schemas.android.com/apk/res-auto"
+  >
+  <com.facebook.yoga.android.YogaLayout
+    android:layout_height="500dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    yoga:yg_width="auto"
+    yoga:yg_height="500dp"
+    yoga:yg_flexDirection="row"
+    yoga:yg_justifyContent="space_between"
+    yoga:yg_alignItems="flex_start"
+    yoga:yg_alignSelf="center"
+    yoga:yg_paddingAll="20"
+    android:background="@color/black"
+    yoga:yg_flex="1.0"
+    >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <com.facebook.yoga.android.YogaLayout
+      android:layout_height="10dp"
+      android:layout_width="100dp"
+      yoga:yg_width="10dp"
+      yoga:yg_height="100dp"
+      android:background="@android:color/holo_red_dark"
+      yoga:yg_flex="1.0"
+      >
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </com.facebook.yoga.android.YogaLayout>
+
+
+    <com.facebook.yoga.android.YogaLayout
+      android:background="@android:color/holo_blue_dark"
+      yoga:yg_flex="1.0"
+      android:layout_height="10dp"
+      android:layout_width="100dp"
+      yoga:yg_width="10dp"
+      yoga:yg_height="100dp"
+      >
+
+    </com.facebook.yoga.android.YogaLayout>
+
+  </com.facebook.yoga.android.YogaLayout>
+</FrameLayout>
+
+
+<!--
+ <yg:View
+    id="root"
+    style="
+        flex: 1;
+        width: auto;
+        height: 500;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: 20;
+        background: black;"
+  >
+    <yg:View id="first" style="flex: 1; width: 10; height: 100; background: red;"></yg:View>
+    <yg:View id="second" style="flex: 1; width: 10; height: 100; background: blue;"></yg:View>
+  </yg:View>
+-->

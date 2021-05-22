@@ -42,7 +42,7 @@ import {
   Direction,
   _toYGFlexAlignSelf,
   _toYGDirection,
-  _toYGPosition
+  _toYGPosition, _toNativeYG
 } from './common';
 
 
@@ -85,40 +85,43 @@ export class View extends ViewBase {
     this._init();
   }
 
+
   _init() {
     this.nativeView.configureLayoutWithBlock((layout) => {
-      this._updateWidth(this.width);
-      this._updateHeight(this.height);
-      this._updateMaxWidth(this.style.maxWidth);
-      this._updateMaxHeight(this.style.maxHeight);
-      this._updateAlignItems(this.style.alignItems);
-      this._updateOverflow(this.style.overflow);
-      this._updatePosition(this.style.position);
-      this._updateLeft(this.style.left);
-      this._updateTop(this.style.top);
-      this._updateRight(this.style.right);
-      this._updateBottom(this.style.bottom);
-      this._updatePaddingLeft(this.style.paddingLeft);
-      this._updatePaddingTop(this.style.paddingTop);
-      this._updatePaddingRight(this.style.paddingRight);
-      this._updatePaddingBottom(this.style.paddingBottom);
-      this._updateMarginLeft(this.style.marginLeft);
-      this._updateMarginTop(this.style.marginTop);
-      this._updateMarginRight(this.style.marginRight);
-      this._updateMarginBottom(this.style.marginBottom);
-      this._updateJustifyContent(this.style.justifyContent);
-      this._updateFlexWrap(this.style.flexWrap);
-      this._updateFlex(this.style.flex);
-      this._updateFlexDirection(this.style.flexDirection);
-      this._updateAlignSelf(this.style.alignSelf);
-      this._updateFlexGrow(this.style.flexGrow);
-      this._updateFlexShrink(this.style.flexShrink);
-      this._updateFlexBasis(this.style.flexBasis);
-      this._updateAlignContent(this.style.alignContent);
-      this._updateAspectRatio(this.aspectRatio);
-      this._updateDirection(this.style.direction);
-      this._updateStart(this.style.start);
-      this._updateEnd(this.style.end);
+      this._updateWidth(this.style.width, false, null, layout);
+      this._updateHeight(this.style.height, false, null, layout);
+      this._updateMinWidth(this.style.minWidth, false, null, layout);
+      this._updateMinHeight(this.style.minHeight, false, null, layout);
+      this._updateMaxWidth(this.style.maxWidth, false, null, layout);
+      this._updateMaxHeight(this.style.maxHeight, false, null, layout);
+      this._updateAlignItems(this.style.alignItems, false, null, layout);
+      this._updateOverflow(this.style.overflow, false, null, layout);
+      this._updatePosition(this.style.position, false, null, layout);
+      this._updateLeft(this.style.left, false, null, layout);
+      this._updateTop(this.style.top, false, null, layout);
+      this._updateRight(this.style.right, false, null, layout);
+      this._updateBottom(this.style.bottom, false, null, layout);
+      this._updatePaddingLeft(this.style.paddingLeft, false, null, layout);
+      this._updatePaddingTop(this.style.paddingTop, false, null, layout);
+      this._updatePaddingRight(this.style.paddingRight, false, null, layout);
+      this._updatePaddingBottom(this.style.paddingBottom, false, null, layout);
+      this._updateMarginLeft(this.style.marginLeft, false, null, layout);
+      this._updateMarginTop(this.style.marginTop, false, null, layout);
+      this._updateMarginRight(this.style.marginRight, false, null, layout);
+      this._updateMarginBottom(this.style.marginBottom, false, null, layout);
+      this._updateJustifyContent(this.style.justifyContent, false, null, layout);
+      this._updateFlexWrap(this.style.flexWrap, false, null, layout);
+      this._updateFlex(this.style.flex, false, null, layout);
+      this._updateFlexDirection(this.style.flexDirection, false, null, layout);
+      this._updateAlignSelf(this.style.alignSelf, false, null, layout);
+      this._updateFlexGrow(this.style.flexGrow, false, null, layout);
+      this._updateFlexShrink(this.style.flexShrink, false, null, layout);
+      this._updateFlexBasis(this.style.flexBasis, false, null, layout);
+      this._updateAlignContent(this.style.alignContent, false, null, layout);
+      this._updateAspectRatio(this.aspectRatio, false, null, layout);
+      this._updateDirection(this.style.direction, false, null, layout);
+      this._updateStart(this.style.start, false, null, layout);
+      this._updateEnd(this.style.end, false, null, layout);
     });
   }
 
@@ -130,6 +133,11 @@ export class View extends ViewBase {
     });
   }
 
+  public eachChild(callback: (child: View) => boolean): void {
+    this._children.forEach((view, key) => {
+      callback(view as any);
+    });
+  }
 
   public eachChildView(callback: (child: View) => boolean): void {
     this._children.forEach((view, key) => {
@@ -146,17 +154,10 @@ export class View extends ViewBase {
 
   onLayout(left: number, top: number, right: number, bottom: number) {
     super.onLayout(left, top, right, bottom);
-    const size = this.nativeView.frame.size;
     this._children.forEach((childView, i) => {
-      const width = layout.toDevicePixels(size.width);
-      const height = layout.toDevicePixels(size.height);
-      View.layoutChild(this, childView, 0, 0, width, height);
+      View.layoutChild(this, childView, left, top, right, bottom);
     });
     this.nativeView.yoga.applyLayoutPreservingOrigin(true);
-  }
-
-  requestLayout() {
-    super.requestLayout();
   }
 
   get ios() {
@@ -208,6 +209,16 @@ export class View extends ViewBase {
       return 'auto';
     }
     return this.nativeView.yoga.height.value;
+  }
+
+  set minWidth(value) {
+    this.style.minWidth = value;
+    this._updateMinWidth(value);
+  }
+
+
+  get minWidth() {
+    return this.style.minWidth;
   }
 
 
@@ -492,19 +503,33 @@ export class View extends ViewBase {
       }
       this._addPropertyChangeHandler(child);
       this._addView(child);
-      const yoga = child.nativeView.yoga as YGLayout;
-      yoga.isEnabled = true;
-      yoga.position = _toYGPosition(child.style.position);
-      yoga.flex = child.style.flex;
-      yoga.alignSelf = _toYGFlexAlignSelf(child.style.alignSelf as any);
-      if (child.style.flexGrow !== 0) {
-        yoga.flexGrow = child.style.flexGrow;
-      }
-      yoga.flexShrink = child.style.flexShrink;
-      const direction = _toYGDirection(child.style.direction);
-      if (direction > 0) {
-        yoga.direction = direction;
-      }
+      child.nativeView.configureLayoutWithBlock((yoga) => {
+        yoga.isEnabled = true;
+        yoga.position = _toYGPosition(child.style.position);
+        yoga.flex = child.style.flex;
+        yoga.alignSelf = _toYGFlexAlignSelf(child.style.alignSelf as any);
+        if (child.style.flexGrow !== 0) {
+          yoga.flexGrow = child.style.flexGrow;
+        }
+        yoga.flexShrink = child.style.flexShrink;
+        const direction = _toYGDirection(child.style.direction);
+        if (direction > 0) {
+          yoga.direction = direction;
+        }
+        if (child.style.minWidth !== 'none') {
+          yoga.minWidth = _toNativeYG(child.style.minWidth);
+        }
+        if (child.style.minHeight !== 'none') {
+          yoga.minHeight = _toNativeYG(child.style.minHeight);
+        }
+        if (child.style.maxWidth !== 'none') {
+          yoga.maxWidth = _toNativeYG(child.style.maxWidth);
+        }
+        if (child.style.maxHeight !== 'none') {
+          yoga.maxHeight = _toNativeYG(child.style.maxHeight);
+        }
+
+      });
       this.nativeView.addSubview(child.nativeView);
     }
   }
