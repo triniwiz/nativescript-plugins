@@ -1,5 +1,6 @@
 import { Color } from "@nativescript/core";
-import { FontWeight } from "@nativescript/core/ui/enums";
+// Conflicts with NativeScript 7 (which this monorepo uses), so we'll use the underlying values of the enum directly instead.
+// import { FontWeight } from "@nativescript/core/ui/enums";
 
 export function mapEventHandlersRNToRNS<T extends {}>(handlers: T): T {
     return Object.keys(handlers).reduce((acc: T, name: string) => {
@@ -38,14 +39,15 @@ export function convertStyleRNToRNS<T extends {}>(styles: T | T[]): T {
 
     return Object.keys(flattenedStyle).reduce((acc: T, name: string) => {
         const mapping = mapStyleRNToRNS(name, flattenedStyle[name]);
-        delete flattenedStyle[name];
-        if(mapping === null) return acc; // Explicitly not supported.
+        if(mapping === null){
+            return acc; // Explicitly not supported.
+        }
 
         Object.keys(mapping).forEach((key: string) => {
-            flattenedStyle[key] = mapping[key];
+            acc[key] = mapping[key];
         });
         return acc;
-    }, flattenedStyle);
+    }, {} as T);
 }
 
 export function flattenStyle<T extends {}>(styles: T | T[]): T {
@@ -65,33 +67,34 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
             switch(value){
                 case "100":
                 case "thin":
-                    fontWeight = FontWeight.thin; // 100
+                    fontWeight = "100"; // FontWeight.thin; // 100
                 case "200":
                 case "extraLight":
-                    fontWeight = FontWeight.extraLight; // 200
+                    fontWeight = "200"; // FontWeight.extraLight; // 200
                 case "300":
                 case "light":
-                    fontWeight = FontWeight.light; // 300
+                    fontWeight = "300"; // FontWeight.light; // 300
                 case "400":
                 case "normal":
-                    fontWeight = FontWeight.normal; // 400
+                    fontWeight = "400"; // FontWeight.normal; // 400
                 case "500":
                 case "medium":
-                    fontWeight = FontWeight.medium; // 500
+                    fontWeight = "500"; // FontWeight.medium; // 500
                 case "600":
                 case "semiBold":
-                    fontWeight = FontWeight.semiBold; // 600
+                    fontWeight = "600"; // FontWeight.semiBold; // 600
                 case "700":
                 case "bold":
-                    fontWeight = FontWeight.bold; // 700
+                    fontWeight = "700"; // FontWeight.bold; // 700
                 case "800":
                 case "extraBold":
-                    fontWeight = FontWeight.extraBold; // 800
+                    fontWeight = "800"; // FontWeight.extraBold; // 800
                 case "900":
                 case "black":
-                    fontWeight = FontWeight.black; // 900
+                    fontWeight = "900"; // FontWeight.black; // 900
                 default:
-                    fontWeight = FontWeight.normal; // I don't have the motivation to support in-between values.
+                    // Here we don't support in-between values, but I think they're disallowed in RN and CSS anyway.
+                    fontWeight = "400"; // FontWeight.normal;
             }
             return { [name]: fontWeight };
         case "textAlign": {

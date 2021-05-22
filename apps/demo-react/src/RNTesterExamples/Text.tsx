@@ -12,6 +12,7 @@
 
 import * as React from "react";
 import { View, Text, TextInput, Button, TextProps } from "@triniwiz/nativescript-yogalayout/react";
+import type { Example } from "./ExampleList";
 
 const Platform = {
   isTV: false
@@ -469,7 +470,6 @@ class TextWithCapBaseBox extends React.Component<
 export const title: string = '<Text>';
 export const description: string = 'Base component for rendering styled text.';
 export const displayName: string = 'TextExample';
-type Example = { title: string, description?: string, render: () => any };
 export const examples: Example[] = [
   {
     title: 'Wrap',

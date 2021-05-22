@@ -23,15 +23,11 @@ const items: MyItem[] = [
     },
     {
         text: 'RNTester: Text',
-        component: function(){
-            return (<ExampleList examples={textExamples}/>);
-        },
+        component: () => (<ExampleList examples={textExamples}/>),
     },
     {
         text: 'RNTester: Button',
-        component: function(){
-            return (<ExampleList examples={buttonExamples}/>);
-        },
+        component: () => (<ExampleList examples={buttonExamples}/>),
     },
 ];
 

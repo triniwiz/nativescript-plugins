@@ -5,7 +5,7 @@ import { View, Text } from "@triniwiz/nativescript-yogalayout/react";
 export interface Example {
     title: string,
     description?: string,
-    render: () => React.ReactNode,
+    render: () => JSX.Element,
 };
 
 export interface ExampleListProps {
@@ -13,6 +13,7 @@ export interface ExampleListProps {
 }
 
 const cellFactory = ({ title, description, render }: Example) => {
+    // return (<View style={styles.titleContainer}></View>);
     const descriptionComponent = description ? (<Text style={styles.descriptionText}>{description}</Text>) : null;
 
     return (
@@ -36,24 +37,28 @@ export function ExampleList({ examples }: ExampleListProps) {
 
 const styles = {
   container: {
-    // flexDirection: 'column' as const,
     borderRadius: 3,
     borderWidth: 0.5,
     borderColor: "#d6d7da",
     backgroundColor: "#ffffff",
-    margin: 10,
-    marginVertical: 5,
     overflow: 'hidden' as const,
+    margin: 10,
+
+    // FIXME: Cannot read property 'yoga' of undefined
+    // marginVertical: 5,
   },
   titleContainer: {
-    // flexDirection: 'column' as const,
     borderBottomWidth: 0.5,
     borderTopLeftRadius: 3,
     borderTopRightRadius: 2.5,
     borderBottomColor: "#d6d7da",
     backgroundColor: "#f6f7f8",
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+
+    // FIXME: Cannot read property 'yoga' of undefined
+    // paddingHorizontal: 10,
+
+    // FIXME: Cannot read property 'yoga' of undefined
+    // paddingVertical: 5,
   },
   titleText: {
     fontSize: 14,
@@ -63,7 +68,6 @@ const styles = {
     fontSize: 14,
   },
   children: {
-    // flexDirection: 'column' as const,
     margin: 10,
   },
 };

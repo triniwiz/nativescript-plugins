@@ -7,6 +7,7 @@
 
 import * as React from "react";
 import { View, Button } from "@triniwiz/nativescript-yogalayout/react";
+import type { Example } from "./ExampleList";
 
 function onButtonTap(buttonName: string): void {
   alert(`${buttonName} has been tapped!`);
@@ -16,8 +17,6 @@ export const displayName: string = 'ButtonExample';
 export const framework: string = 'React';
 export const title: string = '<Button>';
 export const description: string = 'Simple React Native button component.';
-
-type Example = { title: string, description?: string, render: () => any };
 
 export const examples: Example[] = [
   {
