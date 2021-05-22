@@ -11,8 +11,6 @@ export function registerYogaLayout(): void {
   registerElement('yoga', () => require('../').View);
 }
 
-export { View, RNViewProps } from "./View";
-
 export interface YogaDistinctAttributes {
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
@@ -180,3 +178,8 @@ declare module "react-nativescript" {
     direction?: YogaDistinctAttributes["direction"];
   }
 }
+
+export { View, RNViewProps as ViewProps } from "./View";
+export { Text, RNTextProps as TextProps } from "./Text";
+export { TextInput, RNTextInputProps as TextInputProps } from "./TextInput";
+export { Button, RNButtonProps as ButtonProps } from "./Button";
