@@ -1,24 +1,47 @@
 /// <reference path="./index.ts" />
 
 import * as React from "react";
-import { YogaAttributes } from "./index";
-import type {View as YogaLayout} from '../';
-import { Color, Length, PercentLength } from "@nativescript/core";
-import { NativeScriptProps, RNSStyle } from "react-nativescript";
+import type { YogaProps } from "./index";
+import { Color } from "@nativescript/core";
 import { FontWeight } from "@nativescript/core/ui/enums";
 
 export function View(props: RNViewProps = {}){
-    const { style = {}, ...rest } = props;
+    const { style, ...otherProps } = props;
+
+    const styleResolved = style ? convertStyleRNToRNS(style) : void 0;
+
     return (
-        //@ts-ignore Everything will be fine
-        <yoga flexDirection={"column"} {...mapEventHandlersRNToRNS(rest)} {...convertStyleRNToRNS(style)} />
+        <yoga flexDirection="column" {...mapEventHandlersRNToRNS(otherProps)} style={styleResolved} />
     );
 }
 
-export function mapEventHandlersRNToRNS(handlers: Record<string, (...args: any[]) => void>): Record<string, (...args: any[]) => void> {
-    return Object.keys(handlers).reduce((acc: Record<string, (...args: any[]) => void>, name: string) => {
+/**
+ * We accept these at the typings level just to enable API compatibility, but any unsupported keys or values will be treated as a no-op.
+ */
+ export interface RNOnlyStyles {
+    tintColor?: string;
+    placeholderColor?: string;
+    
+    textShadowOffset?: { width: number, height: number };
+    textShadowRadius?: number;
+    textShadowColor?: string;
+    fontVariant?: string[];
+    
+    direction?: "inherit" | "ltr" | "rtl"; // Technically ios-only, according to @types/react-native
+    textAlign?: "auto" | "initial" | "left" | "center" | "right" | "justify";
+    textDecorationLine?: "none" | "underline" | "line-through" | "underline line-through";
+    textDecorationStyle?: "solid" | "double" | "dashed" | "dotted";
+    textDecorationColor?: string;
+}
+
+export interface RNViewProps extends YogaProps {
+    style?: YogaProps["style"] & RNOnlyStyles;
+}
+
+export function mapEventHandlersRNToRNS(handlers: Record<string, any>): RNViewProps {
+    return Object.keys(handlers).reduce((acc: Record<string, any>, name: string) => {
         const handler = handlers[name];
-        const mappedName = mapEventHandlerNameRNToRNS(name, handler);
+        const mappedName = mapEventHandlerNameRNToRNS(name);
         if(mappedName === null){
             delete handlers[name];
             return acc;
@@ -32,7 +55,7 @@ export function mapEventHandlersRNToRNS(handlers: Record<string, (...args: any[]
     }, handlers);
 }
 
-export function mapEventHandlerNameRNToRNS(name: string, value: (...args: any[]) => void): string | null {
+export function mapEventHandlerNameRNToRNS(name: string): string | null {
     switch(name){
         case "onPress":
             return "onTap";
@@ -74,14 +97,6 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
         case "textShadowOffset":
         case "fontVariant":
             return null;
-        case "position":
-            return { [name]: value };
-        // Not sure what this would map to in NS.
-        /**
-         * @see https://facebook.github.io/react-native/docs/layout-props#direction
-         */
-        case "direction":
-            return null;
         case "fontWeight":
             let fontWeight;
             switch(value){
@@ -116,17 +131,23 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
                     fontWeight = FontWeight.normal; // I don't have the motivation to support in-between values.
             }
             return { [name]: fontWeight };
-        case "textAlign":
-            return (value === "justify" || value === "auto") ? null : { "textAlignment": value }; // "auto" and "justify" not supported.
+        case "textAlign": {
+            if(value === "justify" || value === "auto"){
+                // Not supported.
+                return null;
+            }
+            return { "textAlignment": value };
+        }
         case "textDecorationLine":
             return { "textDecoration": value };
         // NativeScript text decorations can't be coloured nor styled, as far as I understand.
         case "textDecorationStyle":
         case "textDecorationColor":
             return null;
+        case "tintColor": // Supported only on Image component
+        case "placeholderColor": // Not supported at all
+            return null;
         case "color":
-        case "tintColor":
-        case "placeholderColor":
         case "backgroundColor":
         case "borderTopColor":
         case "borderRightColor":
@@ -147,24 +168,14 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
             }
             return null;
         }
+        case "position":
+        case "direction": // Beware: We don't have a cross-platform API for this yet; it relies upon Obj-C and iOS enums for now. React Native expects "inherit" | "ltr" | "rtl".
         case "width":
         case "height":
         case "marginLeft":
         case "marginTop":
         case "marginRight":
         case "marginBottom":
-            return { [name]: value };
-        case "marginVertical":
-        case "marginHorizontal":
-            return name === "marginVertical" ? 
-            {
-                "marginTop": value,
-                "marginBottom": value,
-            } : 
-            {
-                "marginLeft": value,
-                "marginRight": value,
-            };
         case "borderWidth":
         case "borderTopWidth":
         case "borderRightWidth":
@@ -181,13 +192,12 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
         case "paddingTop":
         case "paddingRight":
         case "paddingBottom":
-
+        case "paddingVertical":
+        case "paddingHorizontal":
         case "top":
         case "left":
         case "right":
         case "bottom":
-            return { [name]: value };
-        /* strings allowed */
         case "padding":
         case "margin":
         case "borderColor":
@@ -197,51 +207,4 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
             /* We'll see how this goes... */
             return { [name]: value };
     }
-}
-
-/**
- * see https://facebook.github.io/react-native/docs/height-and-width.html
- */
-export function mapLengthRNToRNS(name: string, length: number|string, expectsPercent: boolean|null): Length|PercentLength {
-    if(typeof length === "string"){
-        if(length.slice(-1) === "%"){
-            if(!expectsPercent){
-                throw new Error(`Percent length not allowed for property '${name}'`);
-            }
-            return { value: parseFloat(length), unit: "%" };
-        } else {
-            if(expectsPercent){
-                throw new Error(`Percent length expected for property '${name}'`);
-            }
-            return { value: parseFloat(length), unit: "dip" };
-        }
-    } else {
-        return { value: length, unit: "dip" };
-    }
-    // return typeof length === "string" ? 
-    //     { value: parseFloat(length), unit: length.slice(-1) === "%" ? "%" : "dip" } :
-    //     { value: length, unit: "dip" };
-}
-
-export interface RNOnlyStyles {
-    tintColor?: string;
-    placeholderColor?: string;
-    
-    textShadowOffset?: { width: number, height: number };
-    textShadowRadius?: number;
-    textShadowColor?: string;
-    fontVariant?: string[];
-    
-    position?: "absolute"|"relative";
-    direction?: "inherit" | "ltr" | "rtl"; // Technically ios-only, according to @types/react-native
-    marginVertical?: number;
-    marginHorizontal?: number;
-    textAlign?: "auto"|"initial" | "left" | "center" | "right" | "justify";
-    textDecorationLine?: "none" | "underline" | "line-through" | "underline line-through";
-    textDecorationStyle?: "solid" | "double" | "dashed" | "dotted";
-    textDecorationColor?: string;
-}
-
-export interface RNViewProps extends NativeScriptProps<YogaAttributes, YogaLayout> {
-    style?: RNSStyle & RNOnlyStyles;
 }

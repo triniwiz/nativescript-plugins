@@ -1,4 +1,4 @@
-import {registerElement} from 'react-nativescript';
+import {registerElement, RNSStyle} from 'react-nativescript';
 import type {View as YogaLayout} from '../';
 import {ViewAttributes, NativeScriptProps} from 'react-nativescript';
 import {
@@ -13,7 +13,7 @@ export function registerYogaLayout(): void {
 
 export { View, RNViewProps } from "./View";
 
-interface YogaDistinctAttributes {
+export interface YogaDistinctAttributes {
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
@@ -133,10 +133,24 @@ interface YogaDistinctAttributes {
 
 export type YogaAttributes = ViewAttributes & YogaDistinctAttributes;
 
+/**
+ * NativeScript Core imposes its own values for various styles, across FlexboxLayout and other components.
+ * In the case of a name clash, we'll take the YogaLayout ones as definitive.
+ * This allows for stricter typings; for RNSStyle, we accept arbitrary strings (as it's easier than fixing the
+ * Core typings). But for YogaLayout-specific properties, we can tighten things up and enforce enumerated strings.
+ */
+type OptionalStyleAllowingStringWithFlexExceptions = Omit<RNSStyle, keyof YogaDistinctAttributes> & {
+  [P in keyof YogaDistinctAttributes]?: YogaDistinctAttributes[P];
+};
+
+export interface YogaProps extends Omit<NativeScriptProps<YogaAttributes, YogaLayout>, "style"> {
+  style?: OptionalStyleAllowingStringWithFlexExceptions;
+}
+
 declare global {
   module JSX {
     interface IntrinsicElements {
-      yoga: NativeScriptProps<YogaAttributes, YogaLayout>;
+      yoga: YogaProps;
     }
   }
 }
