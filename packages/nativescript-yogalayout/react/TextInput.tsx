@@ -68,7 +68,7 @@ export function TextInput(props: RNTextInputProps){
     const styleResolved = style ? convertStyleRNToRNS(style) as RNSStyle & RNOnlyTextStyles : void 0;
 
     return (
-        <textField {...mapEventHandlersRNToRNS(otherProps)} style={styleResolved}>
+        <textField {...mapEventHandlersRNToRNS(otherProps)}  {...(styleResolved ? { style: styleResolved } : {})}>
             {children}
         </textField>
     );

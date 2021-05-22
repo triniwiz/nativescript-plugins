@@ -115,7 +115,7 @@ export function Text(props: RNTextProps){
     const styleResolved = style ? convertStyleRNToRNS(style) as RNSStyle & RNOnlyTextStyles : void 0;
 
     return (
-        <textView {...mapEventHandlersRNToRNS(otherProps)} style={styleResolved}>
+        <textView {...mapEventHandlersRNToRNS(otherProps)} {...(styleResolved ? { style: styleResolved } : {})}>
             {children}
         </textView>
     );
