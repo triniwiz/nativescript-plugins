@@ -3,6 +3,9 @@ import { ItemEventData } from '@nativescript/core';
 import { ListView } from 'react-nativescript';
 import { YogaLayout } from './YogaLayout';
 import { ViewExample } from './View';
+import { ExampleList } from '../RNTesterExamples/ExampleList';
+import { examples as textExamples } from '../RNTesterExamples/Text';
+import { examples as buttonExamples } from '../RNTesterExamples/Button';
 
 interface MyItem {
     text: string;
@@ -17,6 +20,18 @@ const items: MyItem[] = [
     {
         text: 'View',
         component: ViewExample,
+    },
+    {
+        text: 'RNTester: Text',
+        component: function(){
+            return (<ExampleList examples={textExamples}/>);
+        },
+    },
+    {
+        text: 'RNTester: Button',
+        component: function(){
+            return (<ExampleList examples={buttonExamples}/>);
+        },
     },
 ];
 
