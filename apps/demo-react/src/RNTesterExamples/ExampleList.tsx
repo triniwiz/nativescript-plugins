@@ -29,9 +29,21 @@ const cellFactory = ({ title, description, render }: Example) => {
     );
 };
 
+const asListView = false;
+
 export function ExampleList({ examples }: ExampleListProps) {
+    if(asListView){
+        return (
+            <ListView items={examples} cellFactory={cellFactory} />
+        );
+    }
+
     return (
-        <ListView items={examples} cellFactory={cellFactory} />
+        <yoga flexDirection="column">
+            {examples.map(example => {
+                return cellFactory(example);
+            })}
+        </yoga>
     );
 }
 
