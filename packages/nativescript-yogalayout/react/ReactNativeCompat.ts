@@ -63,6 +63,9 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
         case "fontVariant":
             return null;
         case "fontWeight":
+            /**
+             * FIXME: Migrate to FontWeight enum once monorepo is using NativeScript 8 for this package.
+             */
             let fontWeight;
             switch(value){
                 case "100":
