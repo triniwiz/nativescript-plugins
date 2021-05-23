@@ -4,6 +4,7 @@ import { ListView } from 'react-nativescript';
 import { YogaLayout } from './YogaLayout';
 import { ViewExample } from './View';
 import { ExampleList } from '../RNTesterExamples/ExampleList';
+import { examples as viewExamples } from '../RNTesterExamples/View';
 import { examples as textExamples } from '../RNTesterExamples/Text';
 import { examples as buttonExamples } from '../RNTesterExamples/Button';
 
@@ -22,7 +23,19 @@ const items: MyItem[] = [
         component: ViewExample,
     },
     {
+        text: 'RNTester: View',
+        /**
+         * We slice down to 12 examples because – as to my understanding – YogaLayout doesn't support "auto" height,
+         * the examples just shrink and don't reserve any height for themselves. Thus, we don't get a scrolling list
+         * of tests and they just get smaller and smaller until NativeScript can't solve the layout and stalls.
+         */
+        component: () => (<ExampleList examples={viewExamples.slice(0, 12)}/>),
+    },
+    {
         text: 'RNTester: Text',
+        /**
+         * Again, we slice down to 6 examples for the same reason as above.
+         */
         component: () => (<ExampleList examples={textExamples.slice(0, 6)}/>),
     },
     {
