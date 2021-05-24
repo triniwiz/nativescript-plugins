@@ -1,0 +1,56 @@
+{
+  "name": "nativescript-websockets",
+  "version": "1.5.6",
+  "description": "A WebSocket NativeScript module for Android and iOS",
+  "main": "websockets",
+  "nativescript": {
+    "platforms": {
+      "android": "1.5.0",
+      "ios": "1.5.0"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanaela/nativescript-websockets.git"
+  },
+  "keywords": [
+    "NativeScript",
+    "WebSockets",
+    "Development",
+    "JavaScript",
+    "Android",
+    "iOS",
+    "Sockets",
+    "Websocket"
+  ],
+  "author": {
+    "name": "Nathanael Anderson",
+    "email": "nathan@master-technology.com"
+  },
+  "contributors": [
+    {
+      "name": "Aleksey Gureiev",
+      "email": "spyromus@noizeramp.com",
+      "url": "https://github.com/alg"
+    },
+    {
+      "name": "Choi Won",
+      "email": "help@myso.kr",
+      "url": "https://github.com/myso-kr"
+    },
+    {
+      "name": "Linus Gasser",
+      "email": "linus.gasser@epfl.ch",
+      "url": "https://github.com/ineiti"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/nathanaela/nativescript-websockets/issues"
+  },
+  "license": {
+    "type": "MIT & Apache 2.0",
+    "url": "https://github.com/nathanaela/nativescript-sqlite/blob/master/LICENSE"
+  },
+  "homepage": "https://github.com/nathanaela/nativescript-websockets",
+  "readmeFilename": "README.md"
+}

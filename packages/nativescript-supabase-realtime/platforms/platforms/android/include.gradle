@@ -1,0 +1,7 @@
+repositories {
+  mavenCentral()
+}
+
+dependencies {
+  implementation "org.java-websocket:Java-WebSocket:1.5.2"
+}

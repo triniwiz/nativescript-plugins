@@ -1,0 +1,5 @@
+platform :ios, '10.0'
+
+pod 'OMGHTTPURLRQ', '~> 3.2.4'
+pod 'TrustKit', '~> 1.6.0'
+pod 'SocketRocket', '~> 0.5.1'
