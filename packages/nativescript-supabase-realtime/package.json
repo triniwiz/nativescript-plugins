@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-supabase-realtime",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "A NativeScript client for Supabase Realtime server.",
 	"main": "index",
 	"typings": "index.d.ts",
