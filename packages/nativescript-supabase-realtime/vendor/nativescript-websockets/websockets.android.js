@@ -231,6 +231,12 @@ var _WebSocket = org.java_websocket.client.WebSocketClient.extend('technology.ma
         if (this.wrapper) {
             this.wrapper._notify("handshake", [this.wrapper, handshake]);
         }
+    },
+    onSetSSLParameters: function (sslParameters) {
+        // https://github.com/TooTallNate/Java-WebSocket/wiki/No-such-method-error-setEndpointIdentificationAlgorithm
+        if (global.android.os.Build.VERSION.SDK_INT >= 24) {
+            this.super.onSetSSLParameters(sslParameters);
+        }
     }
 });
 
@@ -593,15 +599,13 @@ NativeWebSockets.prototype._send = function(message) {
 
 /**
  * Returns the state of the Connection
- * @returns {Number} - returns this.NOT_YET_CONNECTED, .CONNECTING, .OPEN, .CLOSING or .CLOSED
+ * @returns {Number} - returns this.NOT_YET_CONNECTED, .OPEN, .CLOSING or .CLOSED
  */
 NativeWebSockets.prototype.state = function() {
     //noinspection JSUnresolvedFunction
   switch (this._socket.getReadyState()) {
     case org.java_websocket.enums.ReadyState.NOT_YET_CONNECTED:
           return this.NOT_YET_CONNECTED;
-      case org.java_websocket.enums.ReadyState.CONNECTING:
-          return this.CONNECTING;
       case org.java_websocket.enums.ReadyState.OPEN:
           return this.OPEN;
       case org.java_websocket.enums.ReadyState.CLOSING:
@@ -635,14 +639,6 @@ NativeWebSockets.prototype.isClosed = function() {
  */
 NativeWebSockets.prototype.isClosing = function() {
     return this._socket.isClosing();
-};
-
-/**
- * Is the connection currently connecting
- * @returns {boolean} - true if connecting
- */
-NativeWebSockets.prototype.isConnecting = function() {
-    return this._socket.isConnecting();
 };
 
 /**
@@ -729,13 +725,7 @@ NativeWebSockets.CLOSE_CODE = {NORMAL: 1000, GOING_AWAY: 1001, PROTOCOL_ERROR: 1
  * This is the NOT_YET_CONNECTED value
  * @type {number}
  */
-NativeWebSockets.prototype.NOT_YET_CONNECTED = -1;
-
-/**
- * This is the CONNECTING value
- * @type {number}
- */
-NativeWebSockets.prototype.CONNECTING =  0;
+NativeWebSockets.prototype.NOT_YET_CONNECTED = 0;
 
 /**
  * This is the OPEN value
