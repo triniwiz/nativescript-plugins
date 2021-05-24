@@ -1,4 +1,4 @@
-# Nativescript nativescript-supabase-gotrue
+# Nativescript Supabase GoTrue Client
 
 ```javascript
 ns plugin add @triniwiz/nativescript-supabase-gotrue
@@ -7,14 +7,15 @@ ns plugin add @triniwiz/nativescript-supabase-gotrue
 ## Usage
 
 ```ts
-import { GoTrueClient } from '@triniwiz/nativescript-supabase-gotrue'
+import { GoTrueClient } from '@triniwiz/nativescript-supabase-gotrue';
 
-const GOTRUE_URL = 'http://localhost:9999'
+const GOTRUE_URL = 'http://localhost:9999';
 
-const auth = new GoTrueClient({ url: GOTRUE_URL })
+const auth = new GoTrueClient({ url: GOTRUE_URL });
 ```
 
 ## Credits
+
 Based on [gotrue-js](https://github.com/supabase/gotrue-js)
 
 ## License

@@ -1,4 +1,4 @@
-# Nativescript nativescript-supabase-storage
+# Nativescript Supabase Storage Client
 
 ```javascript
 ns plugin add @triniwiz/nativescript-supabase-storage

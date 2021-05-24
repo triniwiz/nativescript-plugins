@@ -1,4 +1,4 @@
-# Nativescript nativescript-supabase
+# Nativescript Supabase
 
 ```javascript
 ns plugin add @triniwiz/nativescript-supabase
