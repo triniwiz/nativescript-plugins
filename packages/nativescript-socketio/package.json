@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-socketio",
-	"version": "5.0.0",
+	"version": "5.0.1",
 	"description": "Socket.IO for nativescript",
 	"main": "index",
 	"typings": "index.d.ts",

@@ -1,1 +1,2 @@
+platform :ios, '10.0'
 pod 'Socket.IO-Client-Swift', :git => 'https://github.com/triniwiz/socket.io-client-swift.git'
