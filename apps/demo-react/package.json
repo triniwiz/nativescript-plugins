@@ -44,6 +44,7 @@
     "react-nativescript": "^3.0.0-beta.3"
   },
   "devDependencies": {
+    "@nativescript/android": "8.0.0",
     "@nativescript/ios": "8.0.0",
     "@nativescript/types": "~8.0.0",
     "@nativescript/webpack": "beta",

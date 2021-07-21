@@ -6,8 +6,8 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "noEmitHelpers": true,
-    "target": "es2017",
+    "noEmitHelpers": false,
+    "target": "es2019",
     "module": "esnext",
     "lib": [
       "es2017",

@@ -16,10 +16,8 @@ import android.util.AttributeSet
 import android.util.Base64
 import android.util.DisplayMetrics
 import android.util.Log
-import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
@@ -45,6 +43,7 @@ import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Proxy
 import java.util.*
 import java.util.concurrent.Executors
+import kotlin.collections.HashMap
 
 /**
  * Created by triniwiz on 4/6/20
@@ -77,12 +76,211 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
   var overlayColor = 0
   var progressListener: ProgressListener? = null
   var eventsListener: EventsListener? = null
+
+
+  private fun handleImageSource(
+    image: ImageView,
+    source: Any?,
+    decodeWidth: Int,
+    decodeHeight: Int,
+    keepAspectRatio: Boolean,
+    useCache: Boolean,
+    async: Boolean
+  ) {
+    if (source == null) {
+      setNullSource()
+    } else {
+      if (source is Int) {
+        image.setSource(source, decodeWidth, decodeHeight, keepAspectRatio, useCache, async)
+      } else if (source is File) {
+        var src: Uri? = null
+        try {
+          src = Uri.parse(source.absolutePath)
+        } catch (e: Exception) {
+        }
+        image.setSource(src, decodeWidth, decodeHeight, keepAspectRatio, useCache, async)
+      } else {
+        if (source is String) {
+          if (source.startsWith("res://")) {
+            image.setSource(
+              getIdentifier(source.replace("res://", ""), "drawable"),
+              decodeWidth,
+              decodeHeight,
+              keepAspectRatio,
+              useCache,
+              async
+            )
+          } else {
+            image.setSource(
+              File(source),
+              decodeWidth,
+              decodeHeight,
+              keepAspectRatio,
+              useCache,
+              async
+            )
+          }
+        } else {
+          image.setSource(source, decodeWidth, decodeHeight, keepAspectRatio, useCache, async)
+        }
+
+      }
+    }
+  }
+
+  private fun handleImage(image: ImageView, source: Any?, sourceType: String) {
+    when (sourceType) {
+      "placeholder" -> {
+        source?.let {
+          when (source) {
+            is Int -> {
+              image.setPlaceHolder(it as Int)
+            }
+            is Drawable -> {
+              image.setPlaceHolder(getRawBitmapDrawable(it))
+            }
+            is Bitmap -> {
+              image.setPlaceHolder(BitmapDrawable(resources, source as Bitmap?))
+            }
+            is Uri -> {
+              image.setPlaceHolder(BitmapDrawable(resources, (source as Uri).toString()))
+            }
+            is String -> {
+              if (source.startsWith("res://")) {
+                image.setPlaceHolder(getIdentifier(source.replace("res://", ""), "drawable"))
+              } else {
+                image.setPlaceHolder(getBitmapDrawable(it))
+              }
+            }
+            is File -> {
+              image.setPlaceHolder(getBitmapDrawable(it))
+            }
+          }
+        }
+      }
+      "errorHolder" -> {
+        source?.let {
+          when (source) {
+            is Int -> {
+              image.setErrorHolder(it as Int)
+            }
+            is Drawable -> {
+              image.setErrorHolder(getRawBitmapDrawable(it))
+            }
+            is Bitmap -> {
+              image.setErrorHolder(BitmapDrawable(resources, source as Bitmap?))
+            }
+            is Uri -> {
+              image.setErrorHolder(BitmapDrawable(resources, (source as Uri).toString()))
+            }
+            is String -> {
+              if (source.startsWith("res://")) {
+                image.setErrorHolder(getIdentifier(source.replace("res://", ""), "drawable"))
+              } else {
+                image.setErrorHolder(getBitmapDrawable(it))
+              }
+            }
+            is File -> {
+              image.setErrorHolder(getBitmapDrawable(it))
+            }
+          }
+        }
+      }
+      "fallback" -> {
+        source?.let {
+          if (source is Int) {
+            image.setFallbackImage(it as Int)
+          }
+          if (source is Drawable) {
+            image.setFallbackImage(getRawBitmapDrawable(it))
+          }
+          if (source is Bitmap) {
+            image.setFallbackImage(BitmapDrawable(resources, source as Bitmap?))
+          }
+          if (source is Uri) {
+            image.setFallbackImage(BitmapDrawable(resources, (source as Uri).toString()))
+          }
+          if (source is String) {
+            if (source.startsWith("res://")) {
+              image.setFallbackImage(getIdentifier(source.replace("res://", ""), "drawable"))
+            } else {
+              image.setFallbackImage(getBitmapDrawable(it))
+            }
+          }
+          if (source is File) {
+            image.setFallbackImage(getBitmapDrawable(it))
+          }
+        }
+      }
+    }
+  }
+
+  fun batch(
+    data: String,
+    src: Any?,
+    decodeWidth: Int,
+    decodeHeight: Int,
+    keepAspectRatio: Boolean,
+    useCache: Boolean,
+    async: Boolean, errorHolder: Any?, placeholder: Any?, fallback: Any?
+  ) {
+    apply {
+      try {
+        val json = JSONObject(data)
+        when (json.optString("stretch")) {
+          "aspectFit" -> {
+            scaleType = ScaleType.FIT_CENTER
+          }
+          "aspectFill" -> {
+            scaleType = ScaleType.CENTER_CROP
+          }
+          "fill" -> {
+            scaleType = ScaleType.FIT_XY
+          }
+          "none" -> {
+            scaleType = ScaleType.MATRIX
+          }
+        }
+        val headers = json.optJSONObject("headers")
+        headers?.let {
+          val headersMap = HashMap<String, String>()
+          it.keys().forEach { key ->
+            headersMap[key] = headers.optString(key)
+          }
+          this.headers = headersMap
+        }
+        this.setFilter(json.optString("filter"))
+        if (json.has("overlayColor")) {
+          overlayColor = json.getInt("overlayColor")
+        }
+        when (json.optInt("priority", 1)) {
+          0 -> this.priority = Priority.Low
+          2 -> this.priority = Priority.High
+          else -> {
+            this.priority = Priority.Normal
+          }
+        }
+      } catch (e: Exception) {
+      }
+
+      handleImageSource(this, src, decodeWidth, decodeHeight, keepAspectRatio, useCache, async)
+      handleImage(this, placeholder, "placeholder")
+      handleImage(this, errorHolder, "errorHolder")
+      handleImage(this, fallback, "fallback")
+    }
+  }
+
   override fun onProgress(key: String?, bytesRead: Long, expectedLength: Long) {
     if (progressListener != null) {
       if (expectedLength <= 0) {
         progressListener!!.onProgress(bytesRead, expectedLength, 100, key)
       } else {
-        progressListener!!.onProgress(bytesRead, expectedLength, (bytesRead / expectedLength * 100).toInt(), key)
+        progressListener!!.onProgress(
+          bytesRead,
+          expectedLength,
+          (bytesRead / expectedLength * 100).toInt(),
+          key
+        )
       }
     }
   }
@@ -94,7 +292,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     Low, Normal, High
   }
 
-  class BasicAuthorization(private val username: String, private val password: String) : LazyHeaderFactory {
+  class BasicAuthorization(private val username: String, private val password: String) :
+    LazyHeaderFactory {
     override fun buildHeader(): String {
       return "Basic " + Base64.encodeToString("$username:$password".toByteArray(), Base64.NO_WRAP)
     }
@@ -112,14 +311,14 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     if (attrs != null) {
       val a = context.obtainStyledAttributes(
         attrs,
-        R.styleable.ImageView)
+        R.styleable.ImageView
+      )
       try {
         val filter = a.getString(R.styleable.ImageView_filter)
         filter?.let { setFilter(it) }
 
         val overlayColor = a.getColor(R.styleable.ImageView_overlayColor, Color.TRANSPARENT)
-        Log.d("com.test", "color $overlayColor")
-        if (overlayColor != 0){
+        if (overlayColor != 0) {
           this.overlayColor = overlayColor
         }
       } finally {
@@ -134,17 +333,20 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     this.scaleType = ScaleType.FIT_CENTER
     try {
       val BitmapOwner = Class.forName("org.nativescript.widgets.image.BitmapOwner")
-      Proxy.newProxyInstance(BitmapOwner.classLoader, arrayOf(), InvocationHandler { proxy, method, args ->
-        val name = method.name
-        if (name == "setBitmap") {
-          setBitmap(args[0] as Bitmap)
-          return@InvocationHandler null
-        } else if (name == "setDrawable") {
-          drawable = args[0] as Drawable
-          return@InvocationHandler null
-        }
-        throw RuntimeException("no method found")
-      })
+      Proxy.newProxyInstance(
+        BitmapOwner.classLoader,
+        arrayOf(),
+        InvocationHandler { proxy, method, args ->
+          val name = method.name
+          if (name == "setBitmap") {
+            setBitmap(args[0] as Bitmap)
+            return@InvocationHandler null
+          } else if (name == "setDrawable") {
+            drawable = args[0] as Drawable
+            return@InvocationHandler null
+          }
+          throw RuntimeException("no method found")
+        })
     } catch (e: ClassNotFoundException) {
     }
   }
@@ -185,7 +387,14 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     val finiteWidth = widthMode != MeasureSpec.UNSPECIFIED
     val finiteHeight = heightMode != MeasureSpec.UNSPECIFIED
     if (measureWidth != 0 && measureHeight != 0 && (finiteWidth || finiteHeight)) {
-      computeScaleFactor(width, height, finiteWidth, finiteHeight, measureWidth.toDouble(), measureHeight.toDouble())
+      computeScaleFactor(
+        width,
+        height,
+        finiteWidth,
+        finiteHeight,
+        measureWidth.toDouble(),
+        measureHeight.toDouble()
+      )
       val resultW = Math.round(measureWidth * scaleW).toInt()
       val resultH = Math.round(measureHeight * scaleH).toInt()
       measureWidth = if (finiteWidth) Math.min(resultW, width) else resultW
@@ -201,7 +410,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       debuggableF.isAccessible = true
       val debuggable = debuggableF[null] as Int
       if (debuggable > 0) {
-        val sb = CommonLayoutParams.getDeclaredMethod("getStringBuilder").invoke(null) as StringBuilder
+        val sb =
+          CommonLayoutParams.getDeclaredMethod("getStringBuilder").invoke(null) as StringBuilder
         sb.append("ImageView onMeasure: ")
         sb.append(MeasureSpec.toString(widthMeasureSpec))
         sb.append(", ")
@@ -231,12 +441,20 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
   }
 
   private val logParams = arrayOf<Class<*>>(String::class.java, String::class.java)
-  private fun computeScaleFactor(measureWidth: Int, measureHeight: Int, widthIsFinite: Boolean, heightIsFinite: Boolean, nativeWidth: Double, nativeHeight: Double) {
+  private fun computeScaleFactor(
+    measureWidth: Int,
+    measureHeight: Int,
+    widthIsFinite: Boolean,
+    heightIsFinite: Boolean,
+    nativeWidth: Double,
+    nativeHeight: Double
+  ) {
     scaleW = 1.0
     scaleH = 1.0
     val scale = this.scaleType
     if ((scale == ScaleType.CENTER_CROP || scale == ScaleType.FIT_CENTER || scale == ScaleType.FIT_XY) &&
-      (widthIsFinite || heightIsFinite)) {
+      (widthIsFinite || heightIsFinite)
+    ) {
       scaleW = if (nativeWidth > 0) measureWidth / nativeWidth else 0.0
       scaleH = if (nativeHeight > 0) measureHeight / nativeHeight else 0.0
       if (!widthIsFinite) {
@@ -261,19 +479,42 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     }
   }
 
+  fun setNullSource() {
+    this.setSource(null, 0, 0, false, false, true)
+  }
+
   fun setSource(source: Any?) {
     this.setSource(source, 0, 0, false, false, true)
   }
 
-  fun setSource(source: Any?, decodeWidth: Int, decodeHeight: Int, useCache: Boolean, async: Boolean) {
+  fun setSource(
+    source: Any?,
+    decodeWidth: Int,
+    decodeHeight: Int,
+    useCache: Boolean,
+    async: Boolean
+  ) {
     this.setSource(source, decodeWidth, decodeHeight, false, useCache, async)
   }
 
-  fun setSource(source: Int, decodeWidth: Int, decodeHeight: Int, useCache: Boolean, async: Boolean) {
+  fun setSource(
+    source: Int,
+    decodeWidth: Int,
+    decodeHeight: Int,
+    useCache: Boolean,
+    async: Boolean
+  ) {
     this.setSource(source, decodeWidth, decodeHeight, false, useCache, async)
   }
 
-  fun setSource(source: Any?, decodeWidth: Int, decodeHeight: Int, keepAspectRatio: Boolean, useCache: Boolean, async: Boolean) {
+  fun setSource(
+    source: Any?,
+    decodeWidth: Int,
+    decodeHeight: Int,
+    keepAspectRatio: Boolean,
+    useCache: Boolean,
+    async: Boolean
+  ) {
     this.source = source
     mDecodeWidth = decodeWidth
     mDecodeHeight = decodeHeight
@@ -306,9 +547,9 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       if (key == null || key.isEmpty()) {
         key = source.toString()
       }
-     if (preferences == null){
-       preferences = context.getSharedPreferences(IMAGE_CACHE_STORE, Context.MODE_PRIVATE)
-     }
+      if (preferences == null) {
+        preferences = context.getSharedPreferences(IMAGE_CACHE_STORE, Context.MODE_PRIVATE)
+      }
       if (preferences?.contains(key) == true) {
         try {
           preferences?.let {
@@ -386,7 +627,18 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
 
   var thumbConfig = ThumbConfig()
   var preferences: SharedPreferences? = null
-  fun setGenerateThumb(enable: Boolean, x: Int, y: Int, width: Int, height: Int, format: String, quality: Int, key: String?, filter: String?, directory: String?) {
+  fun setGenerateThumb(
+    enable: Boolean,
+    x: Int,
+    y: Int,
+    width: Int,
+    height: Int,
+    format: String,
+    quality: Int,
+    key: String?,
+    filter: String?,
+    directory: String?
+  ) {
     thumbConfig.enable = enable
     thumbConfig.x = x
     thumbConfig.y = y
@@ -432,9 +684,11 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       return
     }
     try {
-      val loaderClass = Class.forName("org.nativescript.widgets.image.Worker\$OnImageLoadedListener")
+      val loaderClass =
+        Class.forName("org.nativescript.widgets.image.Worker\$OnImageLoadedListener")
       if (loaderClass.isInstance(mListener)) {
-        val onImageLoadedMethod = loaderClass.getDeclaredMethod("onImageLoaded", Boolean::class.javaPrimitiveType)
+        val onImageLoadedMethod =
+          loaderClass.getDeclaredMethod("onImageLoaded", Boolean::class.javaPrimitiveType)
         onImageLoadedMethod.invoke(mListener, success)
       }
     } catch (e: NoSuchMethodException) {
@@ -457,7 +711,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           } else if (value.contains("px")) {
             width = value.replace("px", "").toFloat()
           } else if (value.contains("dip")) {
-            width = value.replace("dip", "").toFloat() * context.resources.displayMetrics.density.toInt()
+            width =
+              value.replace("dip", "").toFloat() * context.resources.displayMetrics.density.toInt()
           }
           if (width > 0f && realWidth > 0f) {
             //  width = width / realWidth;
@@ -515,7 +770,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           } else if (value.contains("px")) {
             width = value.replace("px", "").toFloat()
           } else if (value.contains("dip")) {
-            width = value.replace("dip", "").toFloat() * context.resources.displayMetrics.density.toInt()
+            width =
+              value.replace("dip", "").toFloat() * context.resources.displayMetrics.density.toInt()
           }
           if (width > 0f && realWidth > 0f) {
             //  width = width / realWidth;
@@ -538,7 +794,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           } else if (value.contains("px")) {
             width = value.replace("px", "").toFloat()
           } else if (value.contains("dip")) {
-            width = value.replace("dip", "").toFloat() * context.resources.displayMetrics.density.toInt()
+            width =
+              value.replace("dip", "").toFloat() * context.resources.displayMetrics.density.toInt()
           }
           if (width > 0f && realWidth > 0f) {
             //  width = width / realWidth;
@@ -636,6 +893,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
   }
 
   private var isLoading: Boolean = false
+
   @SuppressLint("CheckResult")
   private fun loadImage() {
     if (requestManager != null) {
@@ -675,7 +933,12 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     }
     val finalHasGlideUrl = hasGlideUrl
     requestBuilder.addListener(object : RequestListener<Drawable?> {
-      override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable?>?, isFirstResource: Boolean): Boolean {
+      override fun onLoadFailed(
+        e: GlideException?,
+        model: Any?,
+        target: Target<Drawable?>?,
+        isFirstResource: Boolean
+      ): Boolean {
         isLoading = false
         if (finalHasGlideUrl && source != null) {
           MyAppGlideModule.forget(source.toString())
@@ -694,7 +957,13 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
         return false
       }
 
-      override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable?>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
+      override fun onResourceReady(
+        resource: Drawable?,
+        model: Any?,
+        target: Target<Drawable?>?,
+        dataSource: DataSource?,
+        isFirstResource: Boolean
+      ): Boolean {
         isLoading = false
         if (resource is GifDrawable) {
           if (finalHasGlideUrl && source != null) {
@@ -715,7 +984,9 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           }
           onProgress(source.toString(), length.toLong(), 0)
         }
-        if (mFilter == null || mFilter!!.isEmpty() || mFilter!!.split(" ").toTypedArray().isEmpty()) {
+        if (mFilter == null || mFilter!!.isEmpty() || mFilter!!.split(" ").toTypedArray()
+            .isEmpty()
+        ) {
           if (preferences == null) {
             preferences = context.getSharedPreferences(IMAGE_CACHE_STORE, Context.MODE_PRIVATE)
           }
@@ -889,10 +1160,16 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
         try {
           val drawMethod = background.javaClass.getDeclaredMethod("draw", Canvas::class.java)
           drawMethod.invoke(background, canvas)
-          borderTopLeftRadius = background.javaClass.getDeclaredMethod("getBorderTopLeftRadius").invoke(background) as Float
-          borderTopRightRadius = background.javaClass.getDeclaredMethod("getBorderTopRightRadius").invoke(background) as Float
-          borderBottomRightRadius = background.javaClass.getDeclaredMethod("getBorderBottomRightRadius").invoke(background) as Float
-          borderBottomLeftRadius = background.javaClass.getDeclaredMethod("getBorderBottomLeftRadius").invoke(background) as Float
+          borderTopLeftRadius = background.javaClass.getDeclaredMethod("getBorderTopLeftRadius")
+            .invoke(background) as Float
+          borderTopRightRadius = background.javaClass.getDeclaredMethod("getBorderTopRightRadius")
+            .invoke(background) as Float
+          borderBottomRightRadius =
+            background.javaClass.getDeclaredMethod("getBorderBottomRightRadius")
+              .invoke(background) as Float
+          borderBottomLeftRadius =
+            background.javaClass.getDeclaredMethod("getBorderBottomLeftRadius")
+              .invoke(background) as Float
         } catch (e: NoSuchMethodException) {
         } catch (e: IllegalAccessException) {
         } catch (e: InvocationTargetException) {
@@ -915,13 +1192,18 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       path.reset()
       paint.reset()
       val radii = floatArrayOf(
-        Math.max(0f, borderTopLeftRadius - borderLeftWidth), Math.max(0f, borderTopLeftRadius - borderTopWidth),
-        Math.max(0f, borderTopRightRadius - borderRightWidth), Math.max(0f, borderTopRightRadius - borderTopWidth),
-        Math.max(0f, borderBottomRightRadius - borderRightWidth), Math.max(0f, borderBottomRightRadius - borderBottomWidth),
-        Math.max(0f, borderBottomLeftRadius - borderLeftWidth), Math.max(0f, borderBottomLeftRadius - borderBottomWidth)
+        Math.max(0f, borderTopLeftRadius - borderLeftWidth),
+        Math.max(0f, borderTopLeftRadius - borderTopWidth),
+        Math.max(0f, borderTopRightRadius - borderRightWidth),
+        Math.max(0f, borderTopRightRadius - borderTopWidth),
+        Math.max(0f, borderBottomRightRadius - borderRightWidth),
+        Math.max(0f, borderBottomRightRadius - borderBottomWidth),
+        Math.max(0f, borderBottomLeftRadius - borderLeftWidth),
+        Math.max(0f, borderBottomLeftRadius - borderBottomWidth)
       )
       rect.setEmpty()
-      rect[borderLeftWidth, borderTopWidth, borderLeftWidth + innerWidth] = borderTopWidth + innerHeight
+      rect[borderLeftWidth, borderTopWidth, borderLeftWidth + innerWidth] =
+        borderTopWidth + innerHeight
       path.addRoundRect(rect, radii, Path.Direction.CW)
       bitmapShader = BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
       var bitmapWidth = mBitmap.width.toFloat()
@@ -1135,14 +1417,22 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
     }
   }
 
-  private fun getAspectSafeDimensions(sourceWidth: Int, sourceHeight: Int, reqWidth: Int, reqHeight: Int): ISize {
+  private fun getAspectSafeDimensions(
+    sourceWidth: Int,
+    sourceHeight: Int,
+    reqWidth: Int,
+    reqHeight: Int
+  ): ISize {
     if (sourceHeight == 0 || sourceWidth == 0 || reqWidth == 0 || reqHeight == 0) {
       return ISize(0, 0)
     }
     val widthCoef = sourceWidth / reqWidth
     val heightCoef = sourceHeight / reqHeight
     val aspectCoef = Math.min(widthCoef, heightCoef)
-    return ISize(Math.floor((sourceWidth / aspectCoef).toDouble()), Math.floor((sourceHeight / aspectCoef).toDouble()))
+    return ISize(
+      Math.floor((sourceWidth / aspectCoef).toDouble()),
+      Math.floor((sourceHeight / aspectCoef).toDouble())
+    )
   }
 
   private fun getRequestedImageSize(src: ISize, options: ISize): ISize {
@@ -1284,7 +1574,11 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
 
     @JvmStatic
     var IMAGE_CACHE_STORE = "com.github.triniwiz.imagecacheit.image_cache_it_store"
-    private fun calculateInSampleSize(options: BitmapFactory.Options, reqWidth: Int, reqHeight: Int): Int {
+    private fun calculateInSampleSize(
+      options: BitmapFactory.Options,
+      reqWidth: Int,
+      reqHeight: Int
+    ): Int {
       // Raw height and width of image
       val height = options.outHeight
       val width = options.outWidth
@@ -1296,7 +1590,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
         val halfHeight = height / 2
         val halfWidth = width / 2
         while (halfHeight / inSampleSize >= reqHeight
-          && halfWidth / inSampleSize >= reqWidth) {
+          && halfWidth / inSampleSize >= reqWidth
+        ) {
           inSampleSize *= 2
         }
       }

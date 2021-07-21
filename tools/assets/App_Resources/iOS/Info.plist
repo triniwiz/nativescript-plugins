@@ -54,5 +54,11 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
+		<key>NSPhotoLibraryUsageDescription</key>
+    <string>Requires access to photo library.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>Requires access to camera.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Requires access to microphone.</string>
 </dict>
 </plist>

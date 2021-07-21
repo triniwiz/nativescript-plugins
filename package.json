@@ -25,6 +25,7 @@
 		"cors": "^2.8.5",
 		"date-fns": "^2.21.3",
 		"express": "^4.17.1",
+		"nativescript-permissions": "^1.3.11",
 		"nativescript-videoplayer": "^5.0.1",
 		"pusher": "^5.0.0",
 		"reflect-metadata": "^0.1.13",

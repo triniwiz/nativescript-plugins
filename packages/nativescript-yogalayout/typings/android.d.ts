@@ -7,6 +7,8 @@ declare module io {
 
           public static createLayout(context: android.content.Context, init: boolean): com.facebook.yoga.android.YogaLayout;
 
+          public static createLayout(context: android.content.Context, init: boolean, disableClipping: boolean): com.facebook.yoga.android.YogaLayout;
+
           public static batch(data: string, layout: com.facebook.yoga.android.YogaLayout): void;
 
           public static batchChild(data: string, layout: com.facebook.yoga.android.YogaLayout, view: android.view.View): void;

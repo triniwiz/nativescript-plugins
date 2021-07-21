@@ -1,0 +1,11 @@
+{
+  "name": "parsedemoserver",
+  "description": "parse-server for ParseDemoServer",
+  "scripts": {
+    "start": "parse-server config.json",
+    "open": "parse-dashboard --dev --appId cNTU9YkuElWLCnNk7jDXmJhF3TUj7XiByEKiil9e --masterKey qUR4dOaR1Pj8RL7sWfLcRR9XYl4Ag33VXPVinPI1 --serverURL 'http://localhost:1337/parse' --appName ParseDemoServer"
+  },
+  "dependencies": {
+    "parse-server": "^3.9.0"
+  }
+}

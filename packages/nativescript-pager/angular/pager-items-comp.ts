@@ -22,18 +22,15 @@ import {
   ViewContainerRef,
   ɵisListLikeIterable as isListLikeIterable,
 } from "@angular/core";
-import { ItemEventData, ItemsSource } from "@nativescript/core/ui/list-view";
 import { isIOS, KeyedTemplate, View } from "@nativescript/core";
-import { EventData, LayoutBase, Template } from "@nativescript/core";
-import { ObservableArray } from "@nativescript/core/data/observable-array";
-import { profile } from "@nativescript/core/profiling";
+import { EventData, LayoutBase, Template, Trace, profile, ObservableArray, ItemEventData,ItemsSource } from "@nativescript/core";
 
 import {
   getSingleViewRecursive,
   isInvisibleNode,
   registerElement,
 } from "@nativescript/angular";
-import { Trace } from "@nativescript/core";
+
 import {
   Pager,
   PagerError,

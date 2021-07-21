@@ -29,14 +29,14 @@ const items: MyItem[] = [
          * the examples just shrink and don't reserve any height for themselves. Thus, we don't get a scrolling list
          * of tests and they just get smaller and smaller until NativeScript can't solve the layout and stalls.
          */
-        component: () => (<ExampleList examples={viewExamples.slice(0, 12)}/>),
+        component: () => (<ExampleList examples={viewExamples}/>),
     },
     {
         text: 'RNTester: Text',
         /**
          * Again, we slice down to 6 examples for the same reason as above.
          */
-        component: () => (<ExampleList examples={textExamples.slice(0, 6)}/>),
+        component: () => (<ExampleList examples={textExamples}/>),
     },
     {
         text: 'RNTester: Button',

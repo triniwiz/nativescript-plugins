@@ -6,9 +6,11 @@ import {
   LengthDipUnit,
   LengthPxUnit,
 } from '@nativescript/core';
+import { RNTextProps } from './Text';
 
 export function registerYogaLayout(): void {
   registerElement('yoga', () => require('../').View);
+  registerElement('yogaText', () => require('../text').Text);
 }
 
 export interface YogaDistinctAttributes {
@@ -149,6 +151,7 @@ declare global {
   module JSX {
     interface IntrinsicElements {
       yoga: YogaProps;
+      yogaText: RNTextProps;
     }
   }
 }

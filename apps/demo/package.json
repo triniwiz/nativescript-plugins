@@ -50,7 +50,14 @@
 		"nativescript-videoplayer": "^5.0.1",
 		"@triniwiz/nativescript-file-manager": "file:../../packages/nativescript-file-manager",
 		"@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout",
-		"@triniwiz/nativescript-kin": "file:../../packages/nativescript-kin"
+		"@triniwiz/nativescript-kin": "file:../../packages/nativescript-kin",
+		"@triniwiz/nativescript-parsesdk": "file:../../packages/nativescript-parsesdk",
+		"@triniwiz/nativescript-supabase": "file:../../packages/nativescript-supabase",
+		"@triniwiz/nativescript-supabase-gotrue": "file:../../packages/nativescript-supabase-gotrue",
+		"@triniwiz/nativescript-supabase-postgrest": "file:../../packages/nativescript-supabase-postgrest",
+		"@triniwiz/nativescript-supabase-realtime": "file:../../packages/nativescript-supabase-realtime",
+		"@triniwiz/nativescript-supabase-storage": "file:../../packages/nativescript-supabase-storage",
+		"@triniwiz/nativescript-opentok": "file:../../packages/nativescript-opentok"
 	},
 	"devDependencies": {
 		"@nativescript/android": "7.0.1",

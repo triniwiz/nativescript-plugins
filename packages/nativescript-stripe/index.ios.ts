@@ -235,15 +235,21 @@ export class Stripe {
 			}
 			return;
 		}
-		const apiClient = STPAPIClient.sharedClient;
-		const cardParams = STPPaymentMethodCardParams.alloc().initWithCardSourceParams(card.native);
-		const billing = STPPaymentMethodBillingDetails.alloc().init();
-		billing.address = STPPaymentMethodAddress.alloc().initWithAddress(card.address.ios);
-		const params = STPPaymentMethodParams.paramsWithCardBillingDetailsMetadata(cardParams, billing, null);
-		apiClient.createPaymentMethodWithParamsCompletion(
-			params,
-			callback(cb, (pm) => PaymentMethod.fromNative(pm))
-		);
+		try {
+			const apiClient = STPAPIClient.sharedClient;
+			const cardParams = STPPaymentMethodCardParams.alloc().initWithCardSourceParams(card.native);
+			const billing = STPPaymentMethodBillingDetails.alloc().init();
+			billing.address = STPPaymentMethodAddress.alloc().initWithAddress(card.address.ios);
+			const params = STPPaymentMethodParams.paramsWithCardBillingDetailsMetadata(cardParams, billing, null);
+			apiClient.createPaymentMethodWithParamsCompletion(
+				params,
+				callback(cb, (pm) => PaymentMethod.fromNative(pm))
+			);
+		} catch(e) {
+			if (typeof cb === 'function') {
+				cb(new Error(e.localizedDescription), null);
+			}
+		}
 	}
 
 	retrievePaymentIntent(clientSecret: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
@@ -257,7 +263,7 @@ export class Stripe {
 	confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
 		STPPaymentHandler.sharedHandler.confirmSetupIntentWithAuthenticationContextCompletion(new StripeSetupIntentParams(paymentMethodId, clientSecret).native, this._getAuthentificationContext(), (status: STPPaymentHandlerActionStatus, si: STPSetupIntent, error: NSError) => {
 			if (error) {
-				cb(new Error(error.toLocaleString()), null);
+				cb(new Error(error.localizedDescription), null);
 			} else {
 				cb(null, StripeSetupIntent.fromNative(si));
 			}
@@ -267,7 +273,7 @@ export class Stripe {
 	authenticateSetupIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
 		STPPaymentHandler.sharedHandler.handleNextActionForSetupIntentWithAuthenticationContextReturnURLCompletion(clientSecret, this._getAuthentificationContext(), returnUrl, (status: STPPaymentHandlerActionStatus, pi: STPSetupIntent, error: NSError) => {
 			if (error) {
-				cb(new Error(error.toLocaleString()), null);
+				cb(new Error(error.localizedDescription), null);
 			} else {
 				cb(null, StripeSetupIntent.fromNative(pi));
 			}
@@ -277,7 +283,7 @@ export class Stripe {
 	confirmPaymentIntent(params: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
 		STPPaymentHandler.sharedHandler.confirmPaymentWithAuthenticationContextCompletion(params.native, this._getAuthentificationContext(), (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
 			if (error) {
-				cb(new Error(error.toLocaleString()), null);
+				cb(new Error(error.localizedDescription), null);
 			} else {
 				cb(null, StripePaymentIntent.fromNative(pi));
 			}
@@ -287,7 +293,7 @@ export class Stripe {
 	authenticatePaymentIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
 		STPPaymentHandler.sharedHandler.handleNextActionForPaymentWithAuthenticationContextReturnURLCompletion(clientSecret, this._getAuthentificationContext(), returnUrl, (status: STPPaymentHandlerActionStatus, pi: STPPaymentIntent, error: NSError) => {
 			if (error) {
-				cb(new Error(error.toLocaleString()), null);
+				cb(new Error(error.localizedDescription), null);
 			} else {
 				cb(null, StripePaymentIntent.fromNative(pi));
 			}
@@ -338,7 +344,7 @@ function callback(cb: (error: Error, value: any) => void, cvt: (value: any) => a
 			}
 		} else {
 			if (typeof cb === 'function') {
-				cb(new Error(error.toLocaleString()), null);
+				cb(new Error(error.localizedDescription), null);
 			}
 		}
 	};
@@ -700,7 +706,18 @@ export class PaymentMethod implements IPaymentMethod {
 }
 
 class StripeIntent {
-	native: STPSetupIntent | STPPaymentIntent;
+	_isSetupIntent: boolean;
+	private _native: STPSetupIntent | STPPaymentIntent;
+	get native(){
+		return this._native;
+	}
+	
+	set native(value){
+		if (this.native instanceof STPSetupIntent) {
+			this._isSetupIntent = true;
+		}
+		this._native = value;
+	}
 
 	get created(): Date {
 		return new Date(this.native.created);
@@ -711,23 +728,43 @@ class StripeIntent {
 	}
 
 	get status(): StripePaymentIntentStatus {
-		switch (this.native.status) {
-			case STPPaymentIntentStatus.Canceled:
-				return StripePaymentIntentStatus.Canceled;
-			case STPPaymentIntentStatus.Processing:
-				return StripePaymentIntentStatus.Processing;
-			case STPPaymentIntentStatus.RequiresAction:
-				return StripePaymentIntentStatus.RequiresAction;
-			case STPPaymentIntentStatus.RequiresCapture:
-				return StripePaymentIntentStatus.RequiresCapture;
-			case STPPaymentIntentStatus.RequiresConfirmation:
-				return StripePaymentIntentStatus.RequiresConfirmation;
-			case STPPaymentIntentStatus.RequiresPaymentMethod:
-				return StripePaymentIntentStatus.RequiresPaymentMethod;
-			case STPPaymentIntentStatus.Succeeded:
-				return StripePaymentIntentStatus.Succeeded;
+		if (this._isSetupIntent) {
+			switch (this.native.status) {
+				case STPSetupIntentStatus.Canceled:
+					return StripePaymentIntentStatus.Canceled;
+				case STPSetupIntentStatus.Processing:
+					return StripePaymentIntentStatus.Processing;
+				case STPSetupIntentStatus.RequiresAction:
+					return StripePaymentIntentStatus.RequiresAction;
+				case STPSetupIntentStatus.RequiresConfirmation:
+					return StripePaymentIntentStatus.RequiresConfirmation;
+				case STPSetupIntentStatus.RequiresPaymentMethod:
+					return StripePaymentIntentStatus.RequiresPaymentMethod;
+				case STPSetupIntentStatus.Succeeded:
+					return StripePaymentIntentStatus.Succeeded;
+				default:
+					return null;
+			}
+		} else {
+			switch (this.native.status) {
+				case STPPaymentIntentStatus.Canceled:
+					return StripePaymentIntentStatus.Canceled;
+				case STPPaymentIntentStatus.Processing:
+					return StripePaymentIntentStatus.Processing;
+				case STPPaymentIntentStatus.RequiresAction:
+					return StripePaymentIntentStatus.RequiresAction;
+				case STPPaymentIntentStatus.RequiresCapture:
+					return StripePaymentIntentStatus.RequiresCapture;
+				case STPPaymentIntentStatus.RequiresConfirmation:
+					return StripePaymentIntentStatus.RequiresConfirmation;
+				case STPPaymentIntentStatus.RequiresPaymentMethod:
+					return StripePaymentIntentStatus.RequiresPaymentMethod;
+				case STPPaymentIntentStatus.Succeeded:
+					return StripePaymentIntentStatus.Succeeded;
+				default:
+					return null;
+			}
 		}
-		return null;
 	}
 
 	get requiresAction(): boolean {
@@ -743,6 +780,9 @@ class StripeIntent {
 	}
 
 	get requiresCapture(): boolean {
+		if (this._isSetupIntent) {
+			return false;
+		}
 		return this.status === StripePaymentIntentStatus.RequiresCapture;
 	}
 
@@ -752,6 +792,7 @@ class StripeIntent {
 }
 
 export class StripePaymentIntent extends StripeIntent implements IStripePaymentIntent {
+	// @ts-ignore
 	native: STPPaymentIntent;
 
 	static fromNative(native: STPPaymentIntent): StripePaymentIntent {
@@ -808,11 +849,13 @@ export class StripePaymentIntentParams {
 }
 
 export class StripeSetupIntent extends StripeIntent {
+	// @ts-ignore
 	native: STPSetupIntent;
 
 	static fromNative(native: STPSetupIntent): StripeSetupIntent {
 		const si = new StripeSetupIntent();
 		si.native = native;
+		si._isSetupIntent = true;
 		return si;
 	}
 

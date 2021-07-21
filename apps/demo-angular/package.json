@@ -58,7 +58,14 @@
 		"@triniwiz/nativescript-accelerometer": "file:../../dist/packages/nativescript-accelerometer",
 		"@triniwiz/nativescript-file-manager": "file:../../dist/packages/nativescript-file-manager",
 		"@triniwiz/nativescript-yogalayout": "file:../../dist/packages/nativescript-yogalayout",
-		"@triniwiz/nativescript-kin": "file:../../dist/packages/nativescript-kin"
+		"@triniwiz/nativescript-kin": "file:../../dist/packages/nativescript-kin",
+		"@triniwiz/nativescript-parsesdk": "file:../../dist/packages/nativescript-parsesdk",
+		"@triniwiz/nativescript-supabase": "file:../../dist/packages/nativescript-supabase",
+		"@triniwiz/nativescript-supabase-gotrue": "file:../../dist/packages/nativescript-supabase-gotrue",
+		"@triniwiz/nativescript-supabase-postgrest": "file:../../dist/packages/nativescript-supabase-postgrest",
+		"@triniwiz/nativescript-supabase-realtime": "file:../../dist/packages/nativescript-supabase-realtime",
+		"@triniwiz/nativescript-supabase-storage": "file:../../dist/packages/nativescript-supabase-storage",
+		"@triniwiz/nativescript-opentok": "file:../../dist/packages/nativescript-opentok"
 	},
 	"devDependencies": {
 		"@angular/compiler-cli": "file:../../node_modules/@angular/compiler-cli",

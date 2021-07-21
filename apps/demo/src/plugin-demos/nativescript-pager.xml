@@ -52,6 +52,7 @@
         <Button text="Remove Items" tap="{{removeNextItems}}"/>
         <Button text="Reset Items" tap="{{resetItems}}"/>
         <Button text="Nav" row="7" tap="{{navigate}}"/>
+        <Button text="Random" row="7" tap="{{getRandom}}"/>
       </StackLayout>
     </ScrollView>
   </GridLayout>

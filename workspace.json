@@ -112,38 +112,38 @@
 				}
 			}
 		},
-    "demo-vue": {
-      "root": "apps/demo-vue/",
-      "sourceRoot": "apps/demo-vue/app",
-      "projectType": "application",
-      "prefix": "demo",
-      "architect": {
-        "ios": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": ["ns debug ios --emulator --no-hmr --env.testing"],
-            "cwd": "apps/demo-vue",
-            "parallel": false
-          }
-        },
-        "android": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": ["ns debug android --no-hmr --env.testing"],
-            "cwd": "apps/demo-vue",
-            "parallel": false
-          }
-        },
-        "clean": {
-          "builder": "@nrwl/workspace:run-commands",
-          "options": {
-            "commands": ["ns clean", "npm i"],
-            "cwd": "apps/demo-vue",
-            "parallel": false
-          }
-        }
-      }
-    },
+		"demo-vue": {
+			"root": "apps/demo-vue/",
+			"sourceRoot": "apps/demo-vue/app",
+			"projectType": "application",
+			"prefix": "demo",
+			"architect": {
+				"ios": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["ns debug ios --emulator --no-hmr --env.testing"],
+						"cwd": "apps/demo-vue",
+						"parallel": false
+					}
+				},
+				"android": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["ns debug android --no-hmr --env.testing"],
+						"cwd": "apps/demo-vue",
+						"parallel": false
+					}
+				},
+				"clean": {
+					"builder": "@nrwl/workspace:run-commands",
+					"options": {
+						"commands": ["ns clean", "npm i"],
+						"cwd": "apps/demo-vue",
+						"parallel": false
+					}
+				}
+			}
+		},
 		"all": {
 			"root": "packages/",
 			"projectType": "library",
@@ -196,7 +196,14 @@
 							"nx run nativescript-accelerometer:build.all",
 							"nx run nativescript-file-manager:build.all",
 							"nx run nativescript-yogalayout:build.all",
-							"nx run nativescript-kin:build.all"
+							"nx run nativescript-kin:build.all",
+							"nx run nativescript-parsesdk:build.all",
+							"nx run nativescript-supabase:build.all",
+							"nx run nativescript-supabase-gotrue:build.all",
+							"nx run nativescript-supabase-postgrest:build.all",
+							"nx run nativescript-supabase-realtime:build.all",
+							"nx run nativescript-supabase-storage:build.all",
+							"nx run nativescript-opentok:build.all"
 						],
 						"parallel": false
 					}
@@ -2238,6 +2245,332 @@
 						"jestConfig": "apps/demo-server/jest.config.js",
 						"tsConfig": "apps/demo-server/tsconfig.spec.json",
 						"passWithNoTests": true
+					}
+				}
+			}
+		},
+		"nativescript-parsesdk": {
+			"root": "packages/nativescript-parsesdk",
+			"sourceRoot": "packages/nativescript-parsesdk",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-parsesdk",
+						"tsConfig": "packages/nativescript-parsesdk/tsconfig.json",
+						"packageJson": "packages/nativescript-parsesdk/package.json",
+						"main": "packages/nativescript-parsesdk/index.ts",
+						"assets": [
+							"packages/nativescript-parsesdk/*.md",
+							"packages/nativescript-parsesdk/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-parsesdk/platforms/",
+								"output": "./platforms/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-parsesdk:build", "node tools/scripts/build-finish.ts nativescript-parsesdk"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-parsesdk"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-supabase": {
+			"root": "packages/nativescript-supabase",
+			"sourceRoot": "packages/nativescript-supabase",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-supabase",
+						"tsConfig": "packages/nativescript-supabase/tsconfig.json",
+						"packageJson": "packages/nativescript-supabase/package.json",
+						"main": "packages/nativescript-supabase/index.ts",
+						"assets": [
+							"packages/nativescript-supabase/*.md",
+							"packages/nativescript-supabase/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase/platforms/",
+								"output": "./platforms/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-supabase:build", "node tools/scripts/build-finish.ts nativescript-supabase"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-supabase-gotrue": {
+			"root": "packages/nativescript-supabase-gotrue",
+			"sourceRoot": "packages/nativescript-supabase-gotrue",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-supabase-gotrue",
+						"tsConfig": "packages/nativescript-supabase-gotrue/tsconfig.json",
+						"packageJson": "packages/nativescript-supabase-gotrue/package.json",
+						"main": "packages/nativescript-supabase-gotrue/index.ts",
+						"assets": [
+							"packages/nativescript-supabase-gotrue/*.md",
+							"packages/nativescript-supabase-gotrue/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase-gotrue/platforms/",
+								"output": "./platforms/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-supabase-gotrue:build", "node tools/scripts/build-finish.ts nativescript-supabase-gotrue"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-gotrue"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-supabase-postgrest": {
+			"root": "packages/nativescript-supabase-postgrest",
+			"sourceRoot": "packages/nativescript-supabase-postgrest",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-supabase-postgrest",
+						"tsConfig": "packages/nativescript-supabase-postgrest/tsconfig.json",
+						"packageJson": "packages/nativescript-supabase-postgrest/package.json",
+						"main": "packages/nativescript-supabase-postgrest/index.ts",
+						"assets": [
+							"packages/nativescript-supabase-postgrest/*.md",
+							"packages/nativescript-supabase-postgrest/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase-postgrest/platforms/",
+								"output": "./platforms/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-supabase-postgrest:build", "node tools/scripts/build-finish.ts nativescript-supabase-postgrest"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-postgrest"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-supabase-realtime": {
+			"root": "packages/nativescript-supabase-realtime",
+			"sourceRoot": "packages/nativescript-supabase-realtime",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-supabase-realtime",
+						"tsConfig": "packages/nativescript-supabase-realtime/tsconfig.json",
+						"packageJson": "packages/nativescript-supabase-realtime/package.json",
+						"main": "packages/nativescript-supabase-realtime/index.ts",
+						"assets": [
+							"packages/nativescript-supabase-realtime/*.md",
+							"packages/nativescript-supabase-realtime/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase-realtime/platforms/",
+								"output": "./platforms/"
+							},
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase-realtime/vendor/",
+								"output": "./vendor/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-supabase-realtime:build", "node tools/scripts/build-finish.ts nativescript-supabase-realtime"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-realtime"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-supabase-storage": {
+			"root": "packages/nativescript-supabase-storage",
+			"sourceRoot": "packages/nativescript-supabase-storage",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-supabase-storage",
+						"tsConfig": "packages/nativescript-supabase-storage/tsconfig.json",
+						"packageJson": "packages/nativescript-supabase-storage/package.json",
+						"main": "packages/nativescript-supabase-storage/index.ts",
+						"assets": [
+							"packages/nativescript-supabase-storage/*.md",
+							"packages/nativescript-supabase-storage/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase-storage/platforms/",
+								"output": "./platforms/"
+							},
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-supabase-storage/vendor/",
+								"output": "./vendor/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-supabase-storage:build", "node tools/scripts/build-finish.ts nativescript-supabase-storage"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-storage"],
+						"parallel": false
+					}
+				}
+			}
+		},
+		"nativescript-opentok": {
+			"root": "packages/nativescript-opentok",
+			"sourceRoot": "packages/nativescript-opentok",
+			"projectType": "library",
+			"schematics": {},
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:package",
+					"options": {
+						"outputPath": "dist/packages/nativescript-opentok",
+						"tsConfig": "packages/nativescript-opentok/tsconfig.json",
+						"packageJson": "packages/nativescript-opentok/package.json",
+						"main": "packages/nativescript-opentok/index.ts",
+						"assets": [
+							"packages/nativescript-opentok/*.md",
+							"packages/nativescript-opentok/index.d.ts",
+							"LICENSE",
+							{
+								"glob": "**/*",
+								"input": "packages/nativescript-opentok/platforms/",
+								"output": "./platforms/"
+							},
+							{
+								"glob": "**/*.d.ts",
+								"input": "packages/nativescript-opentok/publisher/",
+								"output": "./publisher/"
+							},
+							{
+								"glob": "**/*.d.ts",
+								"input": "packages/nativescript-opentok/session/",
+								"output": "./session/"
+							},
+							{
+								"glob": "**/*.d.ts",
+								"input": "packages/nativescript-opentok/subscriber/",
+								"output": "./subscriber/"
+							}
+						]
+					}
+				},
+				"build.all": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx run nativescript-opentok:build", "node tools/scripts/build-finish.ts nativescript-opentok"],
+						"parallel": false
+					}
+				},
+				"focus": {
+					"builder": "@nrwl/workspace:run-commands",
+					"outputs": ["dist/packages"],
+					"options": {
+						"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-opentok"],
+						"parallel": false
 					}
 				}
 			}

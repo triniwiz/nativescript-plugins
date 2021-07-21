@@ -63,10 +63,10 @@ export class View extends ViewBase {
   createNativeView() {
     let nativeView;
     if (!View._didInit) {
-      nativeView = io.github.triniwiz.yogalayout.Utils.createLayout(this._context, true);
+      nativeView = io.github.triniwiz.yogalayout.Utils.createLayout(this._context, true, true);
       View._didInit = true;
     } else {
-      nativeView = io.github.triniwiz.yogalayout.Utils.createLayout(this._context, false);
+      nativeView = io.github.triniwiz.yogalayout.Utils.createLayout(this._context, false, true);
     }
 
     return nativeView;

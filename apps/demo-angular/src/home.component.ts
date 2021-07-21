@@ -76,7 +76,13 @@ export class HomeComponent {
 			name: 'nativescript-nested-scrollview',
 		},
 		{
+			name: 'nativescript-opentok',
+		},
+		{
 			name: 'nativescript-pager',
+		},
+		{
+			name: 'nativescript-parsesdk',
 		},
 		{
 			name: 'nativescript-popup',
@@ -110,6 +116,21 @@ export class HomeComponent {
 		},
 		{
 			name: 'nativescript-stripe',
+		},
+		{
+			name: 'nativescript-supabase',
+		},
+		{
+			name: 'nativescript-supabase-gotrue',
+		},
+		{
+			name: 'nativescript-supabase-postgrest',
+		},
+		{
+			name: 'nativescript-supabase-realtime',
+		},
+		{
+			name: 'nativescript-supabase-storage',
 		},
 		{
 			name: 'nativescript-textdrawable',

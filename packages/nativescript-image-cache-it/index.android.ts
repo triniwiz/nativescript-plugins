@@ -44,7 +44,48 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	public createNativeView() {
-		return new com.github.triniwiz.imagecacheit.ImageView(this._context, null);
+		const nativeView = new com.github.triniwiz.imagecacheit.ImageView(this._context, null);
+
+		initializeImageLoadedListener();
+
+		const listener = new ImageLoadedListener(this);
+		nativeView.setImageLoadedListener(listener);
+		(<any>nativeView).listener = listener;
+
+		const ref = new WeakRef<ImageCacheIt>(this);
+		nativeView.setProgressListener(
+			new com.github.triniwiz.imagecacheit.ProgressListener({
+				onProgress(loaded, total, progress, url) {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitProgressEvent(loaded, total, progress, url);
+					}
+				},
+			})
+		);
+		nativeView.setEventsListener(
+			new com.github.triniwiz.imagecacheit.EventsListener({
+				onLoadStart() {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitLoadStartEvent(owner.src);
+					}
+				},
+				onLoadError(message) {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitErrorEvent(message, owner.src);
+					}
+				},
+				onLoadedEnd(image) {
+					const owner = ref.get();
+					if (owner) {
+						owner._emitLoadEndEvent(owner.src, image);
+					}
+				},
+			})
+		);
+		return nativeView;
 	}
 
 	// nativeView: com.github.triniwiz.imagecacheit.ImageView;
@@ -73,78 +114,44 @@ export class ImageCacheIt extends ImageCacheItBase {
 		com.github.triniwiz.imagecacheit.MyAppGlideModule.setMaxDiskCacheAge(age);
 	}
 
+	private _handleSource(source) {
+		if (isNullOrUndefined(source)) {
+			return null;
+		}
+
+		if (isString(source) && source.startsWith('~/')) {
+			source = nsPath.join(knownFolders.currentApp().path, source.replace('~/', ''));
+		} else if (source instanceof ImageSource || source instanceof ImageAsset) {
+			source = source.android;
+		}
+
+		return source;
+	}
+
 	public initNativeView() {
-		initializeImageLoadedListener();
-		const nativeView = this.nativeViewProtected;
-		const listener = new ImageLoadedListener(this);
-		nativeView.setImageLoadedListener(listener);
-		(<any>nativeView).listener = listener;
-		const ref = new WeakRef<ImageCacheIt>(this);
-		this._setOverlayColor(this.overlayColor);
-		this.nativeView.setProgressListener(
-			new com.github.triniwiz.imagecacheit.ProgressListener({
-				onProgress(loaded, total, progress, url) {
-					const owner = ref.get();
-					if (owner) {
-						owner._emitProgressEvent(loaded, total, progress, url);
-					}
-				},
-			})
-		);
-		this.nativeView.setEventsListener(
-			new com.github.triniwiz.imagecacheit.EventsListener({
-				onLoadStart() {
-					const owner = ref.get();
-					if (owner) {
-						owner._emitLoadStartEvent(owner.src);
-					}
-				},
-				onLoadError(message) {
-					const owner = ref.get();
-					if (owner) {
-						owner._emitErrorEvent(message, owner.src);
-					}
-				},
-				onLoadedEnd(image) {
-					const owner = ref.get();
-					if (owner) {
-						owner._emitLoadEndEvent(owner.src, image);
-					}
-				},
-			})
-		);
-		this._setHeaders(this.headers);
-		if (this.placeHolder) {
-			ImageCacheIt._setPlaceHolder(this._context, this.placeHolder, this.nativeView);
+		const jsonProps = {
+			priority: this.priority,
+		};
+		const color = this._getOverlayColor(this.overlayColor);
+		if (color !== null) {
+			jsonProps['overlayColor'] = color;
 		}
-		if (this.errorHolder) {
-			ImageCacheIt._setErrorHolder(this._context, this.errorHolder, this.nativeView);
-		}
-		if (this.fallback) {
-			ImageCacheIt._setFallback(this._context, this.fallback, this.nativeView);
+		if (this.headers) {
+			jsonProps['headers'] = Object.fromEntries(this.headers);
 		}
 		if (this.filter) {
-			ImageCacheIt._setFilter(this.filter, this.nativeView);
+			jsonProps['filter'] = this.filter;
 		}
 		if (this.stretch) {
-			this._setStretch(this.stretch);
+			jsonProps['stretch'] = this.stretch;
 		}
-		const image = ImageCacheIt.getImage(this._context, this.src);
-		let decodeWidth = 0;
-		let decodeHeight = 0;
 		let keepAspectRatio = this._calculateKeepAspectRatio();
-		if (isString(image) && this.nativeView) {
-			this.nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-		} else if (isNumber(image) || image instanceof java.lang.Integer) {
-			this.nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-		} else if (image instanceof java.io.File) {
-			this.nativeView.setSource(android.net.Uri.parse(image.getAbsolutePath()), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-		} else {
-			if (this.src instanceof ImageAsset) {
-				keepAspectRatio = !!(this.src as ImageAsset).options.keepAspectRatio;
-			}
-			this.nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+		let src = this.src;
+		if (src instanceof ImageAsset) {
+			keepAspectRatio = !!this.src.options.keepAspectRatio;
+			src = src.nativeImage;
 		}
+		this.nativeView.batch(JSON.stringify(jsonProps), src, 0, 0, keepAspectRatio, false, true, this._handleSource(this.errorHolder), this._handleSource(this.placeHolder), this._handleSource(this.fallback));
 	}
 
 	private _calculateKeepAspectRatio(): boolean {
@@ -166,14 +173,22 @@ export class ImageCacheIt extends ImageCacheItBase {
 		}
 	}
 
+	private _getOverlayColor(overlay) {
+		if (overlay instanceof Color) {
+			overlay.android;
+		} else if (typeof overlay === 'string') {
+			return new Color(overlay).android;
+		}
+		return null;
+	}
+
 	private _setOverlayColor(overlay: Color | string) {
 		if (!this.nativeViewProtected) {
 			return;
 		}
-		if (overlay instanceof Color) {
-			this.nativeViewProtected.setOverlayColor(overlay.android);
-		} else if (typeof overlay === 'string') {
-			this.nativeViewProtected.setOverlayColor(new Color(overlay).android);
+		const color = this._getOverlayColor(overlay);
+		if (color !== null) {
+			this.nativeViewProtected.setOverlayColor(color);
 		}
 	}
 
@@ -249,20 +264,23 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	private static _setSrc(context: any, src: any, nativeView?: any, base?: ImageCacheIt) {
-		const image = ImageCacheIt.getImage(context, src);
 		if (nativeView) {
 			let decodeWidth = 0;
 			let decodeHeight = 0;
 			let keepAspectRatio = base._calculateKeepAspectRatio();
-
-			if (isString(image)) {
-				nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-			} else if (isNumber(image) || image instanceof java.lang.Integer) {
-				nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-			} else if (image instanceof java.io.File) {
-				nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+			if (isNullOrUndefined(src)) {
+				nativeView.setSource(null, decodeWidth, decodeHeight, keepAspectRatio, false, true);
 			} else {
-				nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+				const image = ImageCacheIt.getImage(context, src);
+				if (isString(image)) {
+					nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
+				} else if (isNumber(image) || image instanceof java.lang.Integer) {
+					nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+				} else if (image instanceof java.io.File) {
+					nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+				} else {
+					nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
+				}
 			}
 		}
 	}
@@ -307,13 +325,13 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	private _setHeaders(value) {
-		const headers = new java.util.HashMap<string, string>();
-		if (value) {
-			value.forEach((value, key) => {
-				headers.put(key, value);
-			});
-		}
 		if (this.nativeView) {
+			const headers = new java.util.HashMap<string, string>();
+			if (value) {
+				value.forEach((value, key) => {
+					headers.put(key, value);
+				});
+			}
 			this.nativeView.setHeaders(headers);
 		}
 	}
@@ -383,9 +401,18 @@ export class ImageCacheIt extends ImageCacheItBase {
 	[common.stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
 		this._setStretch(value);
 	}
-
+	private static _init() {
+		if (!this._didInit) {
+			const activity = Application.android.foregroundActivity || Application.android.startActivity;
+			if (activity) {
+				com.github.triniwiz.imagecacheit.ImageCache.init(activity);
+				this._didInit = true;
+			}
+		}
+	}
+	private static _didInit = false;
 	public static getItem(src: string): Promise<any> {
-		com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
+		this._init();
 		return new Promise<any>((resolve, reject) => {
 			com.github.triniwiz.imagecacheit.ImageCache.getItem(
 				src,
@@ -410,7 +437,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	public static hasItem(src: string): Promise<any> {
-		com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
+		this._init();
 		return new Promise<any>((resolve, reject) => {
 			com.github.triniwiz.imagecacheit.ImageCache.hasItem(
 				src,
@@ -427,7 +454,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	public static clear() {
-		com.github.triniwiz.imagecacheit.ImageCache.init(Application.android.context);
+		this._init();
 		return new Promise<any>((resolve, reject) => {
 			com.github.triniwiz.imagecacheit.ImageCache.clear();
 			resolve(undefined);

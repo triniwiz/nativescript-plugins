@@ -24,12 +24,16 @@ import org.json.JSONObject;
 public class Utils {
 
   public static YogaLayout createLayout(Context context, boolean init) {
+    return createLayout(context, init, true);
+  }
+
+  public static YogaLayout createLayout(Context context, boolean init, boolean disableClipping) {
     if (init) {
       SoLoader.init(context, false);
     }
     YogaLayout layout = new com.facebook.yoga.android.YogaLayout(context);
-    layout.setClipToPadding(false);
-    layout.setClipChildren(false);
+    layout.setClipToPadding(!disableClipping);
+    layout.setClipChildren(!disableClipping);
     return layout;
   }
 
@@ -326,7 +330,8 @@ public class Utils {
         node.setDirection(direction);
       }
 
-    } catch (Exception ignore) { }
+    } catch (Exception ignore) {
+    }
   }
 
   public static void batchChild(String json, YogaLayout layout, View view) {

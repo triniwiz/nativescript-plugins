@@ -30,7 +30,9 @@ npm start
 - @triniwiz/nativescript-mongo-stitch-sdk
 - @triniwiz/nativescript-mongo-stitch-services-mongodb-remote
 - @triniwiz/nativescript-nested-scrollview
+- @triniwiz/nativescript-opentok
 - @triniwiz/nativescript-pager
+- @triniwiz/nativescript-parsesdk
 - @triniwiz/nativescript-popup
 - @triniwiz/nativescript-pubnub
 - @triniwiz/nativescript-pusher-beams
@@ -42,6 +44,11 @@ npm start
 - @triniwiz/nativescript-sse
 - @triniwiz/nativescript-star-ratings
 - @triniwiz/nativescript-stripe
+- @triniwiz/nativescript-supabase
+- @triniwiz/nativescript-supabase-gotrue
+- @triniwiz/nativescript-supabase-postgrest
+- @triniwiz/nativescript-supabase-realtime
+- @triniwiz/nativescript-supabase-storage
 - @triniwiz/nativescript-textdrawable
 - @triniwiz/nativescript-toasty
 - @triniwiz/nativescript-tooltip

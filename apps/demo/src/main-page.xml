@@ -49,6 +49,13 @@
 <Button text="nativescript-file-manager" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
 <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
 <Button text="nativescript-kin" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-parsesdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-supabase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-supabase-gotrue" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-supabase-postgrest" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-supabase-realtime" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-supabase-storage" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-opentok" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
       </StackLayout>
     </ScrollView>
   </StackLayout>

@@ -1,9 +1,12 @@
-<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:yg="@triniwiz/nativescript-yogalayout"
+<Page xmlns="http://schemas.nativescript.org/tns.xsd"
+      xmlns:yg="@triniwiz/nativescript-yogalayout"
+      xmlns:yg_text="@triniwiz/nativescript-yogalayout/text"
       navigatingTo="navigatingTo" class="page">
   <Page.actionBar>
     <ActionBar title="nativescript-yogalayout" class="action-bar">
     </ActionBar>
   </Page.actionBar>
+  <!--
   <yg:View style="width:200; height:200;margin: 24;">
     <Image stretch="aspectFill" style="width: 200; height: 200; position: absolute;"
            src="https://source.unsplash.com/random"/>
@@ -11,5 +14,43 @@
       <Label style="color:white; font-size: 20; margin: 6;" text="Title"/>
       <Label style="color:white; margin: 6;" text="Subtitle"/>
     </yg:View>
+  </yg:View> -->
+
+  <!-- <yg:View
+     id="root"
+     style="
+         padding: 0;
+         margin: 0;
+         flex: 1;
+         width: auto;
+         height: 500;
+         justify-content: space-between;
+         align-items: flex-start;
+         background: black;"
+   >
+     <yg:View id="first" style="flex: 1; width: 10; height: 100; background: red; max-width: 10;"></yg:View>
+     <yg:View id="second" style="flex: 1; width: 10; height: 100; background: blue;max-width: 10;"></yg:View>
+   </yg:View> -->
+  <ScrollView>
+  <yg:View style="flex-direction: column">
+
+  <yg:View style="width:200; height:200;margin: 24;">
+    <Image stretch="aspectFill" style="width: 200; height: 200;"
+           src="https://source.unsplash.com/random"/>
+    <yg:View style="align-self:flex-end;flex: 1; background-color: rgba(0, 0, 0, 0.5);">
+      <Label style="color:white; font-size: 20; margin: 6;" text="Title"/>
+      <Label style="color:white; margin: 6;" text="Subtitle"/>
+    </yg:View>
   </yg:View>
+
+  <yg_text:Text text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla orci orci, posuere sit amet luctus id, ultricies sit amet diam. Aliquam ac tortor imperdiet, rutrum ipsum sit amet, hendrerit neque. Donec nunc sem, semper non malesuada eu, mollis in sapien. Mauris efficitur blandit iaculis. Quisque ullamcorper facilisis velit, non blandit sapien efficitur quis. Cras eu lorem sed metus congue facilisis. Maecenas luctus elementum erat, eu sagittis dui pharetra eu. Quisque elementum pretium lorem, nec semper ante porta quis. Donec vel diam sem. Donec sit amet nisl tempus, pretium mi eget, tincidunt libero. Praesent posuere nisl at tincidunt porta.">
+    <yg_text:Text text=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla orci orci, posuere sit amet luctus id, ultricies sit amet diam. Aliquam ac tortor imperdiet, rutrum ipsum sit amet, hendrerit neque. Donec nunc sem, semper non malesuada eu, mollis in sapien. Mauris efficitur blandit iaculis. Quisque ullamcorper facilisis velit, non blandit sapien efficitur quis. Cras eu lorem sed metus congue facilisis. Maecenas luctus elementum erat, eu sagittis dui pharetra eu. Quisque elementum pretium lorem, nec semper ante porta quis. Donec vel diam sem. Donec sit amet nisl tempus, pretium mi eget, tincidunt libero. Praesent posuere nisl at tincidunt porta.">
+      <yg_text:Text text=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla orci orci, posuere sit amet luctus id, ultricies sit amet diam. Aliquam ac tortor imperdiet, rutrum ipsum sit amet, hendrerit neque. Donec nunc sem, semper non malesuada eu, mollis in sapien. Mauris efficitur blandit iaculis. Quisque ullamcorper facilisis velit, non blandit sapien efficitur quis. Cras eu lorem sed metus congue facilisis. Maecenas luctus elementum erat, eu sagittis dui pharetra eu. Quisque elementum pretium lorem, nec semper ante porta quis. Donec vel diam sem. Donec sit amet nisl tempus, pretium mi eget, tincidunt libero. Praesent posuere nisl at tincidunt porta.">
+      <yg_text:Text text=" Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla orci orci, posuere sit amet luctus id, ultricies sit amet diam. Aliquam ac tortor imperdiet, rutrum ipsum sit amet, hendrerit neque. Donec nunc sem, semper non malesuada eu, mollis in sapien. Mauris efficitur blandit iaculis. Quisque ullamcorper facilisis velit, non blandit sapien efficitur quis. Cras eu lorem sed metus congue facilisis. Maecenas luctus elementum erat, eu sagittis dui pharetra eu. Quisque elementum pretium lorem, nec semper ante porta quis. Donec vel diam sem. Donec sit amet nisl tempus, pretium mi eget, tincidunt libero. Praesent posuere nisl at tincidunt porta.">
+      </yg_text:Text>
+      </yg_text:Text>
+    </yg_text:Text>
+  </yg_text:Text>
+  </yg:View>
+  </ScrollView>
 </Page>

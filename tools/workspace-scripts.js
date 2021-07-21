@@ -73,24 +73,24 @@ module.exports = {
 					description: '⚆  Run Android  🤖',
 				},
 			},
-      '...Vue...': {
-        script: `npx cowsay "What a nice Vue"`,
-        description: ` 🔻 Vue`,
-      },
-      'demo-vue': {
-        clean: {
-          script: 'nx run demo-vue:clean',
-          description: '⚆  Clean  🧹',
-        },
-        ios: {
-          script: 'nx run demo-vue:ios',
-          description: '⚆  Run iOS  ',
-        },
-        android: {
-          script: 'nx run demo-vue:android',
-          description: '⚆  Run Android  🤖',
-        },
-      },
+			'...Vue...': {
+				script: `npx cowsay "What a nice Vue"`,
+				description: ` 🔻 Vue`,
+			},
+			'demo-vue': {
+				clean: {
+					script: 'nx run demo-vue:clean',
+					description: '⚆  Clean  🧹',
+				},
+				ios: {
+					script: 'nx run demo-vue:ios',
+					description: '⚆  Run iOS  ',
+				},
+				android: {
+					script: 'nx run demo-vue:android',
+					description: '⚆  Run Android  🤖',
+				},
+			},
 		},
 		'⚙️': {
 			script: `npx cowsay "@triniwiz/* packages will keep your ⚙️ cranking"`,
@@ -407,6 +407,55 @@ module.exports = {
 					description: '@triniwiz/nativescript-kin: Build',
 				},
 			},
+			// @triniwiz/nativescript-parsesdk
+			'nativescript-parsesdk': {
+				build: {
+					script: 'nx run nativescript-parsesdk:build.all',
+					description: '@triniwiz/nativescript-parsesdk: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase
+			'nativescript-supabase': {
+				build: {
+					script: 'nx run nativescript-supabase:build.all',
+					description: '@triniwiz/nativescript-supabase: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase-gotrue
+			'nativescript-supabase-gotrue': {
+				build: {
+					script: 'nx run nativescript-supabase-gotrue:build.all',
+					description: '@triniwiz/nativescript-supabase-gotrue: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase-postgrest
+			'nativescript-supabase-postgrest': {
+				build: {
+					script: 'nx run nativescript-supabase-postgrest:build.all',
+					description: '@triniwiz/nativescript-supabase-postgrest: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase-realtime
+			'nativescript-supabase-realtime': {
+				build: {
+					script: 'nx run nativescript-supabase-realtime:build.all',
+					description: '@triniwiz/nativescript-supabase-realtime: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase-storage
+			'nativescript-supabase-storage': {
+				build: {
+					script: 'nx run nativescript-supabase-storage:build.all',
+					description: '@triniwiz/nativescript-supabase-storage: Build',
+				},
+			},
+			// @triniwiz/nativescript-opentok
+			'nativescript-opentok': {
+				build: {
+					script: 'nx run nativescript-opentok:build.all',
+					description: '@triniwiz/nativescript-opentok: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run all:build',
 				description: 'Build all packages',
@@ -592,6 +641,34 @@ module.exports = {
 			'nativescript-kin': {
 				script: 'nx run nativescript-kin:focus',
 				description: 'Focus on @triniwiz/nativescript-kin',
+			},
+			'nativescript-parsesdk': {
+				script: 'nx run nativescript-parsesdk:focus',
+				description: 'Focus on @triniwiz/nativescript-parsesdk',
+			},
+			'nativescript-supabase': {
+				script: 'nx run nativescript-supabase:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase',
+			},
+			'nativescript-supabase-gotrue': {
+				script: 'nx run nativescript-supabase-gotrue:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-gotrue',
+			},
+			'nativescript-supabase-postgrest': {
+				script: 'nx run nativescript-supabase-postgrest:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-postgrest',
+			},
+			'nativescript-supabase-realtime': {
+				script: 'nx run nativescript-supabase-realtime:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-realtime',
+			},
+			'nativescript-supabase-storage': {
+				script: 'nx run nativescript-supabase-storage:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-storage',
+			},
+			'nativescript-opentok': {
+				script: 'nx run nativescript-opentok:focus',
+				description: 'Focus on @triniwiz/nativescript-opentok',
 			},
 			reset: {
 				script: 'nx run all:focus',

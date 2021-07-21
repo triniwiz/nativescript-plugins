@@ -253,7 +253,7 @@ export class _Pager extends React.Component<Props, State> {
     }
 }
 
-export type PagerItemAttributes = GridLayoutAttributes & {forwardedRef?: React.RefObject<any> };
+export type PagerItemAttributes = GridLayoutAttributes & {forwardedRef?: React.RefObject<NSVElement<NativeScriptPagerItem>> };
 
 export class _PagerItem extends React.Component<PagerItemAttributes, {}> {
     private readonly myRef = React.createRef<NSVElement<NativeScriptPagerItem>>();
@@ -277,8 +277,6 @@ export class _PagerItem extends React.Component<PagerItemAttributes, {}> {
         const {
             forwardedRef,
 
-            onPropertyChange,
-
             children,
             // view, /* We disallow this at the typings level. */
             ...rest
@@ -297,6 +295,7 @@ export class _PagerItem extends React.Component<PagerItemAttributes, {}> {
 }
 
 export const Pager = React.forwardRef<NSVElement<NativeScriptPager>, OwnProps>(
+    //@ts-ignore
     (props: OwnProps, ref: React.RefObject<NSVElement<NativeScriptPager>>) => {
         return <_Pager {...props} forwardedRef={ref} />;
     }
@@ -304,6 +303,7 @@ export const Pager = React.forwardRef<NSVElement<NativeScriptPager>, OwnProps>(
 
 
 export const PagerItem = React.forwardRef<NSVElement<NativeScriptPagerItem>, PagerItemAttributes>(
+    //@ts-ignore
     (props: PagerItemAttributes, ref: React.RefObject<NSVElement<NativeScriptPagerItem>>) => {
         return <_PagerItem {...props} forwardedRef={ref} />;
     }

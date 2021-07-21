@@ -176,6 +176,8 @@ declare class STDSChallengeParameters extends NSObject {
 
 interface STDSChallengeStatusReceiver extends NSObjectProtocol {
 
+	dismissChallengeViewControllerForTransaction?(challengeViewController: UIViewController, transaction: STDSTransaction): void;
+
 	transactionDidCancel(transaction: STDSTransaction): void;
 
 	transactionDidCompleteChallengeWithCompletionEvent(transaction: STDSTransaction, completionEvent: STDSCompletionEvent): void;
@@ -274,6 +276,20 @@ declare class STDSErrorMessage extends NSObject implements STDSJSONDecodable, ST
 	static alloc(): STDSErrorMessage; // inherited from NSObject
 
 	static decodedObjectFromJSONError(json: NSDictionary<any, any>): STDSErrorMessage;
+
+	static errorForDecryptionErrorWithACSTransactionIDMessageVersion(acsTransactionID: string, messageVersion: string): STDSErrorMessage;
+
+	static errorForInvalidMessageWithACSTransactionIDMessageVersion(acsTransactionID: string, messageVersion: string): STDSErrorMessage;
+
+	static errorForJSONFieldInvalidWithACSTransactionIDMessageVersionError(acsTransactionID: string, messageVersion: string, error: NSError): STDSErrorMessage;
+
+	static errorForJSONFieldMissingWithACSTransactionIDMessageVersionError(acsTransactionID: string, messageVersion: string, error: NSError): STDSErrorMessage;
+
+	static errorForTimeoutWithACSTransactionIDMessageVersion(acsTransactionID: string, messageVersion: string): STDSErrorMessage;
+
+	static errorForUnrecognizedCriticalMessageExtensionsWithACSTransactionIDMessageVersionError(acsTransactionID: string, messageVersion: string, error: NSError): STDSErrorMessage;
+
+	static errorForUnrecognizedIDWithACSTransactionIDMessageVersion(transactionID: string, messageVersion: string): STDSErrorMessage;
 
 	static new(): STDSErrorMessage; // inherited from NSObject
 
@@ -569,7 +585,19 @@ declare class STDSTransaction extends NSObject {
 
 	static new(): STDSTransaction; // inherited from NSObject
 
+	bypassTestModeVerification: boolean;
+
 	readonly presentedChallengeUIType: string;
+
+	timeoutTimer: NSTimer;
+
+	useULTestLOA: boolean;
+
+	constructor(o: { deviceInformation: STDSDeviceInformation; directoryServerID: string; serverKeyID: string; directoryServerCertificate: STDSDirectoryServerCertificate; rootCertificateStrings: NSArray<string> | string[]; protocolVersion: STDSThreeDSProtocolVersion; uiCustomization: STDSUICustomization; });
+
+	constructor(o: { deviceInformation: STDSDeviceInformation; directoryServer: STDSDirectoryServer; protocolVersion: STDSThreeDSProtocolVersion; uiCustomization: STDSUICustomization; });
+
+	cancelChallengeFlow(): void;
 
 	close(): void;
 
@@ -577,7 +605,13 @@ declare class STDSTransaction extends NSObject {
 
 	createProgressViewControllerWithDidCancel(didCancel: () => void): UIViewController;
 
+	doChallengeWithChallengeParametersChallengeStatusReceiverTimeoutPresentationBlock(challengeParameters: STDSChallengeParameters, challengeStatusReceiver: any, timeout: number, presentationBlock: (p1: UIViewController, p2: () => void) => void): void;
+
 	doChallengeWithViewControllerChallengeParametersChallengeStatusReceiverTimeout(presentingViewController: UIViewController, challengeParameters: STDSChallengeParameters, challengeStatusReceiver: any, timeout: number): void;
+
+	initWithDeviceInformationDirectoryServerIDServerKeyIDDirectoryServerCertificateRootCertificateStringsProtocolVersionUiCustomization(deviceInformation: STDSDeviceInformation, directoryServerID: string, serverKeyID: string, directoryServerCertificate: STDSDirectoryServerCertificate, rootCertificateStrings: NSArray<string> | string[], protocolVersion: STDSThreeDSProtocolVersion, uiCustomization: STDSUICustomization): this;
+
+	initWithDeviceInformationDirectoryServerProtocolVersionUiCustomization(deviceInformation: STDSDeviceInformation, directoryServer: STDSDirectoryServer, protocolVersion: STDSThreeDSProtocolVersion, uiCustomization: STDSUICustomization): this;
 
 	sdkVersion(): string;
 }
