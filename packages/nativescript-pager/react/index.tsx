@@ -5,9 +5,7 @@ import { Orientation } from '../';
 registerElement('pager', () => require('../').Pager);
 registerElement('pagerItem', () => require('../').PagerItem);
 
-import { Template, Color } from '@nativescript/core';
-import { PercentLength } from '@nativescript/core';
-import { View, KeyedTemplate } from "@nativescript/core";
+import { Template, Color, CoreTypes, View, KeyedTemplate} from '@nativescript/core';
 import { render as RNSRender, unmountComponentAtNode, NSVRoot, NSVElement, ViewAttributes, NativeScriptProps, GridLayoutAttributes } from "react-nativescript";
 
 
@@ -21,8 +19,8 @@ export declare type PagerAttributes = ViewAttributes & {
     itemTemplates?: string | KeyedTemplate[];
     canGoRight: boolean;
     canGoLeft: boolean;
-    spacing: PercentLength | string;
-    peaking: PercentLength | string;
+    spacing: CoreTypes.PercentLengthType | string;
+    peaking: CoreTypes.PercentLengthType | string;
     perPage: number;
     orientation: Orientation;
     transformers: string;
@@ -297,6 +295,7 @@ export class _PagerItem extends React.Component<PagerItemAttributes, {}> {
 export const Pager = React.forwardRef<NSVElement<NativeScriptPager>, OwnProps>(
     //@ts-ignore
     (props: OwnProps, ref: React.RefObject<NSVElement<NativeScriptPager>>) => {
+         //@ts-ignore
         return <_Pager {...props} forwardedRef={ref} />;
     }
 );
@@ -305,6 +304,7 @@ export const Pager = React.forwardRef<NSVElement<NativeScriptPager>, OwnProps>(
 export const PagerItem = React.forwardRef<NSVElement<NativeScriptPagerItem>, PagerItemAttributes>(
     //@ts-ignore
     (props: PagerItemAttributes, ref: React.RefObject<NSVElement<NativeScriptPagerItem>>) => {
+         //@ts-ignore
         return <_PagerItem {...props} forwardedRef={ref} />;
     }
 );

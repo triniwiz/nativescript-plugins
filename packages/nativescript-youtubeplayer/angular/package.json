@@ -1,16 +1,16 @@
 {
-	"name": "nativescript-nativescript-youtubeplayer-angular",
-	"ngPackage": {
-		"lib": {
-			"entryFile": "index.ts",
-			"umdModuleIds": {
-				"@nativescript/core": "ns-core",
-				"@nativescript/angular": "ns-angular",
-				"@triniwiz/nativescript-youtubeplayer": "ns-nativescript-youtubeplayer"
-			}
-		},
-		"whitelistedNonPeerDependencies": [
-			"."
-		]
-	}
+  "name": "nativescript-nativescript-youtubeplayer-angular",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@nativescript/core": "ns-core",
+        "@nativescript/angular": "ns-angular",
+        "@triniwiz/nativescript-youtubeplayer": "ns-nativescript-youtubeplayer"
+      }
+    },
+    "allowedNonPeerDependencies": [
+      "."
+    ]
+  }
 }

@@ -1,16 +1,16 @@
 {
-	"name": "nativescript-nativescript-accordion-angular",
-	"ngPackage": {
-		"lib": {
-			"entryFile": "index.ts",
-			"umdModuleIds": {
-				"@nativescript/core": "ns-core",
-				"@nativescript/angular": "ns-angular",
-				"@nativescript/nativescript-accordion": "ns-nativescript-accordion"
-			}
-		},
-		"whitelistedNonPeerDependencies": [
-			"."
-		]
-	}
+  "name": "nativescript-nativescript-accordion-angular",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@nativescript/core": "ns-core",
+        "@nativescript/angular": "ns-angular",
+        "@nativescript/nativescript-accordion": "ns-nativescript-accordion"
+      }
+    },
+    "allowedNonPeerDependencies": [
+      "."
+    ]
+  }
 }

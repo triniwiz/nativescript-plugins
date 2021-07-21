@@ -1,16 +1,16 @@
 {
-	"name": "nativescript-nativescript-yogalayout-angular",
-	"ngPackage": {
-		"lib": {
-			"entryFile": "index.ts",
-			"umdModuleIds": {
-				"@nativescript/core": "ns-core",
-				"@nativescript/angular": "ns-angular",
-				"@nativescript/nativescript-yogalayout": "ns-nativescript-yogalayout"
-			}
-		},
-		"whitelistedNonPeerDependencies": [
-			"."
-		]
-	}
+  "name": "nativescript-nativescript-yogalayout-angular",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@nativescript/core": "ns-core",
+        "@nativescript/angular": "ns-angular",
+        "@nativescript/nativescript-yogalayout": "ns-nativescript-yogalayout"
+      }
+    },
+    "allowedNonPeerDependencies": [
+      "."
+    ]
+  }
 }

@@ -21,6 +21,7 @@ import {
   View,
   ObservableArray,
   Observable,
+  CoreTypes
 } from "@nativescript/core";
 import {layout} from "@nativescript/core/utils/utils";
 
@@ -93,8 +94,8 @@ export abstract class PagerBase
   public itemTemplates: string | Array<KeyedTemplate>;
   public canGoRight = true;
   public canGoLeft = true;
-  public spacing: PercentLength;
-  public peaking: PercentLength;
+  public spacing: CoreTypes.PercentLengthType;
+  public peaking: CoreTypes.PercentLengthType;
   public perPage: number;
   public indicator: Indicator;
   public circularMode: boolean;
@@ -441,7 +442,7 @@ export const selectedIndexProperty = new CoercibleProperty<PagerBase, number>({
 });
 selectedIndexProperty.register(PagerBase);
 
-export const spacingProperty = new Property<PagerBase, Length>({
+export const spacingProperty = new Property<PagerBase, CoreTypes.LengthType>({
   name: "spacing",
   defaultValue: {value: 0, unit: "dip"},
   affectsLayout: true,
@@ -449,7 +450,7 @@ export const spacingProperty = new Property<PagerBase, Length>({
 
 spacingProperty.register(PagerBase);
 
-export const peakingProperty = new Property<PagerBase, Length>({
+export const peakingProperty = new Property<PagerBase, CoreTypes.LengthType>({
   name: "peaking",
   defaultValue: {value: 0, unit: "dip"},
   affectsLayout: true,

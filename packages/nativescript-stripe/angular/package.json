@@ -1,16 +1,16 @@
 {
-	"name": "nativescript-nativescript-stripe-angular",
-	"ngPackage": {
-		"lib": {
-			"entryFile": "index.ts",
-			"umdModuleIds": {
-				"@nativescript/core": "ns-core",
-				"@nativescript/angular": "ns-angular",
-				"@nativescript/nativescript-stripe": "ns-nativescript-stripe"
-			}
-		},
-		"whitelistedNonPeerDependencies": [
-			"."
-		]
-	}
+  "name": "nativescript-nativescript-stripe-angular",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@nativescript/core": "ns-core",
+        "@nativescript/angular": "ns-angular",
+        "@nativescript/nativescript-stripe": "ns-nativescript-stripe"
+      }
+    },
+    "allowedNonPeerDependencies": [
+      "."
+    ]
+  }
 }
