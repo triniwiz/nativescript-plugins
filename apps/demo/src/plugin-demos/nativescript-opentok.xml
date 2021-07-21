@@ -1,0 +1,14 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+    <Page.actionBar>
+        <ActionBar title="nativescript-opentok" icon="" class="action-bar">
+        </ActionBar>
+    </Page.actionBar>
+    <GridLayout class="p-20" rows="auto,*,20,*">
+      <GridLayout rows="auto,auto">
+        <Button color="black" text="Init" tap="{{ init }}"/>
+        <Button color="black" row="1" isEnabled="{{ isEnabled }}" text="Init Publisher" tap="{{ initPublisher }}"/>
+      </GridLayout>
+      <GridLayout row="1" id="pub"></GridLayout>
+      <GridLayout row="3" id="sub"></GridLayout>
+    </GridLayout>
+</Page>
