@@ -13,7 +13,9 @@
     "docs:build": "cd docs && vuepress build src",
     "docs:dev": "cd docs && vuepress dev src",
     "start:server-demo": "node dist/apps/server-demo/main",
-    "sync-packages-with-demos": "nx g @nativescript/plugin-tools:sync-packages-with-demos"
+    "sync-packages-with-demos": "nx g @nativescript/plugin-tools:sync-packages-with-demos",
+    "remove-package": "nx g @nativescript/plugin-tools:remove-package",
+    "add-demo": "nx g @nativescript/plugin-tools:add-demo"
   },
   "private": true,
   "dependencies": {
@@ -47,7 +49,7 @@
     "@nativescript/angular": "^12.0.0",
     "@nativescript/core": "^8.0.0",
     "@nativescript/ios": "8.0.0",
-    "@nativescript/plugin-tools": "2.0.0-alpha.3",
+    "@nativescript/plugin-tools": "2.0.6",
     "@nativescript/types": "^8.0.0",
     "@nativescript/webpack": "beta",
     "@nestjs/schematics": "^7.0.0",

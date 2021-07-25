@@ -4,14 +4,14 @@ const { resolve } = require('path');
 module.exports = (env) => {
 
   webpack.init(env);
-  webpack.useConfig('typescript');
+  webpack.useConfig('react');
 
   webpack.chainWebpack((config) => {
     // shared demo code
     config.resolve.alias.set('@demo/shared', resolve(__dirname, '..', '..', 'tools', 'demo'));
   });
 
-  // Example if you need to share images across demo apps:
+  // Example of how to share images with various demo apps:
   // webpack.Utils.addCopyRule({
   //   from: '../../../tools/images', 
 	// 	to: 'images',
