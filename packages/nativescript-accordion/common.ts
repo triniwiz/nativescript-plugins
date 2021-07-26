@@ -12,7 +12,7 @@ import {
   Observable,
   ChangedData, ObservableArray,
   addWeakEventListener, removeWeakEventListener,
-  Label, Builder
+  Label, Builder, CoreTypes
 } from '@nativescript/core';
 
 const autoEffectiveRowHeight = -1;
@@ -605,9 +605,9 @@ export const selectedIndexesProperty = new Property<AccordionBase, any>({
 selectedIndexesProperty.register(AccordionBase);
 
 
-const defaultRowHeight: Length = 'auto';
+const defaultRowHeight: CoreTypes.LengthType = 'auto';
 
-export const headerRowHeightProperty = new CoercibleProperty<AccordionBase, Length>({
+export const headerRowHeightProperty = new CoercibleProperty<AccordionBase, CoreTypes.LengthType>({
   name: 'headerRowHeight', defaultValue: defaultRowHeight, equalityComparer: Length.equals,
   coerceValue: (target, value) => {
     // We coerce to default value if we don't have display density.
@@ -620,7 +620,7 @@ export const headerRowHeightProperty = new CoercibleProperty<AccordionBase, Leng
 });
 headerRowHeightProperty.register(AccordionBase);
 
-export const itemHeaderRowHeightProperty = new CoercibleProperty<AccordionBase, Length>({
+export const itemHeaderRowHeightProperty = new CoercibleProperty<AccordionBase, CoreTypes.LengthType>({
   name: 'itemHeaderRowHeight', defaultValue: defaultRowHeight, equalityComparer: Length.equals,
   coerceValue: (target, value) => {
     // We coerce to default value if we don't have display density.
@@ -633,7 +633,7 @@ export const itemHeaderRowHeightProperty = new CoercibleProperty<AccordionBase, 
 });
 itemHeaderRowHeightProperty.register(AccordionBase);
 
-export const itemContentRowHeightProperty = new CoercibleProperty<AccordionBase, Length>({
+export const itemContentRowHeightProperty = new CoercibleProperty<AccordionBase, CoreTypes.LengthType>({
   name: 'itemContentRowHeight', defaultValue: defaultRowHeight, equalityComparer: Length.equals,
   coerceValue: (target, value) => {
     // We coerce to default value if we don't have display density.
@@ -646,7 +646,7 @@ export const itemContentRowHeightProperty = new CoercibleProperty<AccordionBase,
 });
 itemContentRowHeightProperty.register(AccordionBase);
 
-export const footerRowHeightProperty = new CoercibleProperty<AccordionBase, Length>({
+export const footerRowHeightProperty = new CoercibleProperty<AccordionBase, CoreTypes.LengthType>({
   name: 'footerRowHeight', defaultValue: defaultRowHeight, equalityComparer: Length.equals,
   coerceValue: (target, value) => {
     // We coerce to default value if we don't have display density.
@@ -659,22 +659,22 @@ export const footerRowHeightProperty = new CoercibleProperty<AccordionBase, Leng
 });
 footerRowHeightProperty.register(AccordionBase);
 
-export const iosEstimatedHeaderRowHeightProperty = new Property<AccordionBase, Length>({
+export const iosEstimatedHeaderRowHeightProperty = new Property<AccordionBase, CoreTypes.LengthType>({
   name: 'iosEstimatedHeaderRowHeight', valueConverter: (v) => Length.parse(v)
 });
 iosEstimatedHeaderRowHeightProperty.register(AccordionBase);
 
-export const iosEstimatedItemHeaderRowHeightProperty = new Property<AccordionBase, Length>({
+export const iosEstimatedItemHeaderRowHeightProperty = new Property<AccordionBase, CoreTypes.LengthType>({
   name: 'iosEstimatedItemHeaderRowHeight', valueConverter: (v) => Length.parse(v)
 });
 iosEstimatedItemHeaderRowHeightProperty.register(AccordionBase);
 
-export const iosEstimatedItemContentRowHeightProperty = new Property<AccordionBase, Length>({
+export const iosEstimatedItemContentRowHeightProperty = new Property<AccordionBase, CoreTypes.LengthType>({
   name: 'iosEstimatedItemContentRowHeight', valueConverter: (v) => Length.parse(v)
 });
 iosEstimatedItemContentRowHeightProperty.register(AccordionBase);
 
-export const iosEstimatedFooterRowHeightProperty = new Property<AccordionBase, Length>({
+export const iosEstimatedFooterRowHeightProperty = new Property<AccordionBase, CoreTypes.LengthType>({
   name: 'iosEstimatedFooterRowHeight', valueConverter: (v) => Length.parse(v)
 });
 iosEstimatedFooterRowHeightProperty.register(AccordionBase);

@@ -1,16 +1,16 @@
 {
-	"name": "nativescript-nativescript-image-cache-it-angular",
-	"ngPackage": {
-		"lib": {
-			"entryFile": "index.ts",
-			"umdModuleIds": {
-				"@nativescript/core": "ns-core",
-				"@nativescript/angular": "ns-angular",
-				"@nativescript/nativescript-image-cache-it": "ns-nativescript-image-cache-it"
-			}
-		},
-		"whitelistedNonPeerDependencies": [
-			"."
-		]
-	}
+  "name": "nativescript-nativescript-image-cache-it-angular",
+  "ngPackage": {
+    "lib": {
+      "entryFile": "index.ts",
+      "umdModuleIds": {
+        "@nativescript/core": "ns-core",
+        "@nativescript/angular": "ns-angular",
+        "@nativescript/nativescript-image-cache-it": "ns-nativescript-image-cache-it"
+      }
+    },
+    "allowedNonPeerDependencies": [
+      "."
+    ]
+  }
 }
