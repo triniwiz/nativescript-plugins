@@ -14,6 +14,7 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 	allowedPaymentMethodTypes: StripeStandardPaymentMethodType[] = [StripeStandardPaymentMethodType.Card];
 	createCardSources: any;
 	enableCardScanning: boolean = false;
+	stripeAccountId: string;
 	private static _instance: any;
 	private _paymentConfigurationInitiated: boolean = false;
 
@@ -45,7 +46,7 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 	initPaymentConfiguration(): void {
 		if (!this.publishableKey) throw new Error('publishableKey must be set');
 		if (this._paymentConfigurationInitiated) return;
-		com.stripe.android.PaymentConfiguration.init(Utils.ad.getApplicationContext(), this.publishableKey);
+		com.stripe.android.PaymentConfiguration.init(Utils.ad.getApplicationContext(), this.publishableKey, this.stripeAccountId || null);
 		this._paymentConfigurationInitiated = true;
 	}
 

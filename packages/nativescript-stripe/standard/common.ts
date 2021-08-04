@@ -25,6 +25,8 @@ export interface IStripeStandardConfig {
 
 	/** Enable card entry by scanning only support on iOS atm */
 	enableCardScanning: boolean;
+
+	stripeAccountId: string;
 }
 
 export interface IStripeStandardBackendAPI {

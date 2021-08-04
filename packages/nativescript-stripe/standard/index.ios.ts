@@ -14,15 +14,19 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 	requiredBillingAddressFields: StripeStandardBillingAddressFields;
 	requiredShippingAddressFields: StripeStandardShippingAddressField[];
 	allowedPaymentMethodTypes: StripeStandardPaymentMethodType[] = [StripeStandardPaymentMethodType.Card, StripeStandardPaymentMethodType.ApplePay];
+	stripeAccountId: string;
 	private static _instance: StripeStandardConfig;
 	get native(): STPPaymentConfiguration {
 		// getter gives client a chance to set properties before using.
 		if (!this.publishableKey) throw new Error('publishableKey must be set');
 		let config = STPPaymentConfiguration.sharedConfiguration;
-		config.publishableKey = this.publishableKey;
+		STPAPIClient.sharedClient.publishableKey = this.publishableKey;
 		config.appleMerchantIdentifier = this.appleMerchantID;
 		config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
 		config.cardScanningEnabled = this.enableCardScanning;
+		if (this.stripeAccountId){
+			STPAPIClient.sharedClient.stripeAccount = this.stripeAccountId;
+		}
 		if (this.requiredShippingAddressFields && this.requiredShippingAddressFields.length > 0) {
 			let fields = new NSMutableSet<STPContactField>({ capacity: 4 });
 			this.requiredShippingAddressFields.forEach((f) => {
