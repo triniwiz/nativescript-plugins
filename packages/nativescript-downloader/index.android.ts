@@ -1,249 +1,255 @@
-import {
-  DownloaderBase,
-  DownloadOptions,
-  StatusCode,
-  ProgressEventData,
-  DownloadEventData,
-  generateId,
-  DownloadEventError,
-  DownloadsData
-} from './common';
-import {Utils, path as nsPath} from "@nativescript/core";
+import { DownloaderBase, DownloadOptions, StatusCode, ProgressEventData, DownloadEventData, generateId, DownloadEventError, DownloadsData } from './common';
+import { Utils, path as nsPath, knownFolders } from '@nativescript/core';
 
-export {DownloadsData, DownloadOptions, ProgressEventData, DownloadEventData, DownloadEventError};
-
-declare const com, co;
+export { DownloadsData, DownloadOptions, ProgressEventData, DownloadEventData, DownloadEventError };
 
 export class Downloader extends DownloaderBase {
-  private fetch;
-  downloadsData: Map<String, DownloadsData>;
-  private manager;
-  private worker: Worker;
-  downloadRequests: Map<any, any>;
-  taskIds: Map<string, string>;
+	static _downloads: Map<string, number>;
+	static _downloadsData: Map<string, DownloadsData>;
+	static _downloadRequests: Map<number, string>;
+	static _fetch: com.tonyodev.fetch2.Fetch;
+	static _okHttpClient: okhttp3.OkHttpClient;
+	static _timeout = 60;
+	constructor() {
+		super();
+		this.downloads = new Map();
+		if (!Downloader._fetch) {
+			Downloader._setFetcher();
+		}
+	}
 
-  constructor() {
-    super();
-    this.downloads = new Map();
-    this.downloadsData = new Map();
-    this.downloadRequests = new Map();
-    this.taskIds = new Map();
-  }
+	private static _setFetcher() {
+		Downloader._downloadsData = new Map();
+		Downloader._downloads = new Map();
+		Downloader._downloadRequests = new Map();
+		Downloader._okHttpClient = new okhttp3.OkHttpClient.Builder().readTimeout(Downloader._timeout, java.util.concurrent.TimeUnit.SECONDS).writeTimeout(Downloader._timeout, java.util.concurrent.TimeUnit.SECONDS).build();
+		const config = new com.tonyodev.fetch2.FetchConfiguration.Builder(Utils.android.getApplicationContext());
+		config.setHttpDownloader(new com.tonyodev.fetch2okhttp.OkHttpDownloader(Downloader._okHttpClient));
+		config.setDownloadConcurrentLimit(10);
+		config.enableAutoStart(false);
+		Downloader._fetch = com.tonyodev.fetch2.Fetch.Impl.getInstance(config.build());
 
-  public static init() {
-    co.fitcom.fancydownloader.Manager.init(Utils.ad.getApplicationContext());
-  }
+		Downloader._fetch.addListener(
+			new com.tonyodev.fetch2.FetchListener({
+				onAdded(param0: com.tonyodev.fetch2.Download) {
+				},
+				onQueued(param0: com.tonyodev.fetch2.Download, param1: boolean) {
+				},
+				onWaitingNetwork(param0: com.tonyodev.fetch2.Download) {
+				},
+				onCompleted(param0: com.tonyodev.fetch2.Download) {
+					const request = param0.getRequest();
+					const id = Downloader._downloadRequests.get(request.getId());
+					if (Downloader._downloads.has(id)) {
+						const data = Downloader._downloadsData.get(id);
+						const resolve = data.resolve;
 
-  public static setTimeout(timeout: number) {
-    const manager = co.fitcom.fancydownloader.Manager.getInstance() as any;
-    manager.setTimeout(timeout);
-  }
+						Downloader._downloadsData.set(
+							id,
+							Object.assign({}, data, {
+								status: StatusCode.COMPLETED,
+							})
+						);
+						if (resolve) {
+							resolve(<DownloadEventData>{
+								status: StatusCode.COMPLETED,
+								path: request.getFileUri()?.toString(),
+							});
+						}
+					}
+				},
+				onError(param0: com.tonyodev.fetch2.Download, error: com.tonyodev.fetch2.Error, param2: java.lang.Throwable) {
+					const id = Downloader._downloadRequests.get(param0.getRequest().getId());
+					if (Downloader._downloads.has(id)) {
+						const data = Downloader._downloadsData.get(id);
 
-  public createDownload(options: DownloadOptions): string {
-    if (options && !options.url) throw new Error('Url missing');
-    const taskId = generateId();
+						Downloader._downloadsData.set(
+							id,
+							Object.assign({}, data, {
+								status: StatusCode.ERROR,
+							})
+						);
 
-    if (!this.manager) {
-      this.manager = co.fitcom.fancydownloader.Manager.getInstance();
-    }
-    let url;
-    let query;
-    if (options.query) {
-      if (typeof options.query === 'object') {
-        const keysArray = Object.keys(options.query);
-        query = '';
-        for (let key of keysArray) {
-          query += key + '=' + options.query[key] + '&';
-        }
-      } else if (typeof options.query === 'string') {
-        query = options.query;
-      }
-      url = encodeURI(options.url + query);
-    } else {
-      url = options.url;
-    }
+						const reject = data.reject;
+						if (reject) {
+							reject(<DownloadEventError>{
+								status: StatusCode.ERROR,
+								message: error.getHttpResponse?.().getErrorResponse?.(),
+								native: error,
+							});
+						}
+					}
+				},
+				onDownloadBlockUpdated(param0: com.tonyodev.fetch2.Download, param1: com.tonyodev.fetch2core.DownloadBlock, param2: number) {},
+				onStarted(param0: com.tonyodev.fetch2.Download, param1: java.util.List<any>, param2: number) {},
+				onProgress(param0: com.tonyodev.fetch2.Download, param1: number, param2: number) {
+					const id = Downloader._downloadRequests.get(param0.getRequest().getId());
+					if (Downloader._downloads.has(id)) {
+						const data = Downloader._downloadsData.get(id);
+						const callback = data.callback;
+						if (data.status !== StatusCode.DOWNLOADING) {
+							Downloader._downloadsData.set(
+								id,
+								Object.assign({}, data, {
+									status: StatusCode.DOWNLOADING,
+								})
+							);
+						}
+						if (callback && typeof callback === 'function') {
+							const progress = param0.getProgress();
+							callback(<ProgressEventData>{
+								value: progress,
+								speed: param2,
+								currentSize: param0.getDownloaded(),
+								totalSize: param0.getTotal(),
+							});
+						}
+					}
+				},
+				onPaused(param0: com.tonyodev.fetch2.Download) {
+					const requestId = Downloader._downloadRequests.get(param0.getRequest().getId());
+					if (Downloader._downloads.has(requestId)) {
+						const data = Downloader._downloadsData.get(requestId);
+						Downloader._downloadsData.set(
+							requestId,
+							Object.assign({}, data, {
+								status: StatusCode.PAUSED,
+							})
+						);
+					}
+				},
+				onResumed(param0: com.tonyodev.fetch2.Download) {},
+				onCancelled(param0: com.tonyodev.fetch2.Download) {},
+				onRemoved(param0: com.tonyodev.fetch2.Download) {},
+				onDeleted(param0: com.tonyodev.fetch2.Download) {},
+			})
+		);
+	}
 
-    const request = new co.fitcom.fancydownloader.Request(url);
-    let path = '';
-    if (options.path) {
-      request.setFilePath(options.path);
-    }
-    if (options.fileName) {
-      request.setFileName(options.fileName);
-    }
-    if (options.headers) {
-      const keysArray = Object.keys(options.headers);
-      const headers = new java.util.HashMap();
-      for (let key of keysArray) {
-        headers.put(key, options.headers[key]);
-      }
-      request.setHeaders(headers);
-    }
+	public static setTimeout(timeout: number) {
+		Downloader._timeout = timeout;
+		Downloader._setFetcher();
+	}
 
-    const task = this.manager.create(request);
-    path = nsPath.join(request.getFilePath(), request.getFileName());
-    this.taskIds.set(task, taskId);
-    this.downloads.set(taskId, task);
-    this.downloadRequests.set(taskId, request);
-    this.downloadsData.set(taskId, {
-      status: StatusCode.PENDING
-    });
-    return taskId;
-  }
+	public createDownload(options: DownloadOptions): string {
+		if (options && !options.url) throw new Error('Url missing');
+		const taskId = generateId();
 
-  public getStatus(id: string): StatusCode {
-    if (id && this.downloads.has(id)) {
-      const data = this.downloadsData.get(id);
-      return data.status;
-    }
-    return StatusCode.PENDING;
-  }
+		let url;
+		let query;
+		if (options.query) {
+			if (typeof options.query === 'object') {
+				const keysArray = Object.keys(options.query);
+				query = '';
+				for (let key of keysArray) {
+					query += key + '=' + options.query[key] + '&';
+				}
+			} else if (typeof options.query === 'string') {
+				query = options.query;
+			}
+			url = encodeURI(options.url + query);
+		} else {
+			url = options.url;
+		}
 
-  public start(id: string, progress?: Function): Promise<DownloadEventData> {
-    const ref = new WeakRef(this) as WeakRef<Downloader>;
-    return new Promise((resolve, reject) => {
-      if (id) {
-        const data = this.downloadsData.get(id);
-        this.downloadsData.set(
-          id,
-          Object.assign({}, data, {
-            reject: reject,
-            resolve: resolve,
-            callback: progress
-          })
-        );
+		let path = '';
+		if (options.path && options.fileName) {
+			path = nsPath.join(options.path, options.fileName);
+		} else if (!options.path && options.fileName) {
+			path = nsPath.join(knownFolders.temp().path, options.fileName);
+		} else if (options.path && !options.fileName) {
+			path = nsPath.join(options.path, `${generateId()}`);
+		} else {
+			path = nsPath.join(knownFolders.temp().path, `${generateId()}`);
+		}
 
-        if (this.downloads.has(id)) {
-          const request = this.downloadRequests.get(id);
-          const downloadId = this.downloads.get(id);
-          if (request) {
-            const listener = (co as any).fitcom.fancydownloader.DownloadListenerUI.extend(
-              {
-                onUIProgress(
-                  task: string,
-                  currentBytes: number,
-                  totalBytes: number,
-                  speed: number
-                ) {
-                  const current = Math.floor(
-                    Math.round(currentBytes / totalBytes * 100)
-                  );
+		const request = new com.tonyodev.fetch2.Request(url, path);
+		request.setNetworkType(com.tonyodev.fetch2.NetworkType.ALL);
+		request.setDownloadOnEnqueue(false);
 
-                  const owner = ref.get();
-                  const _id = owner.taskIds.get(task);
-                  if (owner.downloads.has(_id)) {
-                    const data = owner.downloadsData.get(_id);
-                    const callback = data.callback;
-                    if (data.status !== StatusCode.DOWNLOADING) {
-                      owner.downloadsData.set(
-                        _id,
-                        Object.assign({}, data, {
-                          status: StatusCode.DOWNLOADING
-                        })
-                      );
-                    }
-                    if (callback && typeof callback === 'function') {
-                      callback(<ProgressEventData>{
-                        value: current,
-                        speed: speed,
-                        currentSize: currentBytes,
-                        totalSize: totalBytes
-                      });
-                    }
-                  }
-                },
+		if (options.headers) {
+			const keysArray = Object.keys(options.headers);
+			for (let key of keysArray) {
+				request.addHeader(key, options.headers[key]);
+			}
+		}
 
-                onUIComplete(task: string) {
-                  const owner = ref.get();
-                  const _id = owner.taskIds.get(task);
-                  if (owner.downloads.has(_id)) {
-                    const data = owner.downloadsData.get(_id);
-                    const resolve = data.resolve;
-                    const _request = owner.downloadRequests.get(_id);
-                    if (resolve) {
-                      resolve(<DownloadEventData>{
-                        status: StatusCode.COMPLETED,
-                        path: nsPath.join(
-                          _request.getFilePath(),
-                          _request.getFileName()
-                        )
-                      });
-                    }
-                  }
-                },
+		Downloader._fetch.enqueue(request, null, null);
+		const requestId = request.getId();
+		Downloader._downloads.set(taskId, requestId);
+		Downloader._downloadRequests.set(requestId, taskId);
+		Downloader._downloadsData.set(taskId, {
+			status: StatusCode.PENDING,
+		});
+		return taskId;
+	}
 
-                onUIError(task: string, error: java.lang.Exception) {
-                  const owner = ref.get();
-                  const _id = owner.taskIds.get(task);
-                  if (owner.downloads.has(_id)) {
-                    const data = owner.downloadsData.get(_id);
-                    const reject = data.reject;
-                    const message = error.getLocalizedMessage();
-                    if (reject) {
-                      if (
-                        message.toLowerCase().indexOf('socket closed') === -1
-                      ) {
-                        reject(<DownloadEventError>{
-                          status: StatusCode.ERROR,
-                          message: error.getLocalizedMessage()
-                        });
-                      }
-                    }
-                  }
-                }
-              }
-            );
-            request.setListener(new listener());
-          }
-          this.manager.start(downloadId);
-        }
-      }
-    });
-  }
+	public getStatus(id: string): StatusCode {
+		if (id && Downloader._downloads.has(id)) {
+			const data = Downloader._downloadsData.get(id);
+			return data.status;
+		}
+		return StatusCode.PENDING;
+	}
 
-  public resume(id: string) {
-    if (id) {
-      if (this.downloads.has(id)) {
-        const downloadId = this.downloads.get(id);
-        this.manager.resume(downloadId);
-      }
-    }
-  }
+	public start(id: string, progress?: Function): Promise<DownloadEventData> {
+		return new Promise((resolve, reject) => {
+			if (id) {
+				const data = Downloader._downloadsData.get(id);
+				Downloader._downloadsData.set(
+					id,
+					Object.assign({}, data, {
+						reject: reject,
+						resolve: resolve,
+						callback: progress,
+					})
+				);
 
-  public cancel(id: string) {
-    if (id) {
-      if (this.downloads.has(id)) {
-        const downloadId = this.downloads.get(id);
-        this.manager.cancel(downloadId);
-        this.downloads.delete(id);
-        this.downloadsData.delete(id);
-      }
-    }
-  }
+				if (Downloader._downloads.has(id)) {
+					const requestId = Downloader._downloads.get(id);
+					if (requestId) {
+						Downloader._fetch.resume(requestId);
+					}
+				}
+			}
+		});
+	}
 
-  public pause(id: string) {
-    if (id) {
-      if (this.downloads.has(id)) {
-        const downloadId = this.downloads.get(id);
-        const data = this.downloadsData.get(id);
-        this.manager.pause(downloadId);
-        setTimeout(() => {
-          this.downloadsData.set(
-            id,
-            Object.assign({}, data, {
-              status: StatusCode.PAUSED
-            })
-          );
-        }, 100);
-      }
-    }
-  }
+	public resume(id: string) {
+		if (id) {
+			if (Downloader._downloads.has(id)) {
+				const requestId = Downloader._downloads.get(id);
+				Downloader._fetch.resume(requestId);
+			}
+		}
+	}
 
-  public getPath(id: string): string {
-    if (id && this.downloadsData.has(id)) {
-      const download = this.downloadsData.get(id);
-      return download.path;
-    }
-    return null;
-  }
+	public cancel(id: string) {
+		if (id) {
+			if (Downloader._downloads.has(id)) {
+				const requestId = Downloader._downloads.get(id);
+				Downloader._fetch.cancel(requestId);
+				Downloader._downloads.delete(id);
+				Downloader._downloadsData.delete(id);
+				Downloader._downloadRequests.delete(requestId);
+			}
+		}
+	}
+
+	public pause(id: string) {
+		if (id) {
+			if (Downloader._downloads.has(id)) {
+				const requestId = Downloader._downloads.get(id);
+				Downloader._fetch.pause(requestId);
+			}
+		}
+	}
+
+	public getPath(id: string): string {
+		if (id && Downloader._downloadsData.has(id)) {
+			const download = Downloader._downloadsData.get(id);
+			return download.path;
+		}
+		return null;
+	}
 }

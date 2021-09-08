@@ -52,6 +52,7 @@ export function generateId(): string {
 export interface DownloadEventError {
   status: string;
   message: string;
+  native: any;
 }
 
 export interface DownloadEventData {

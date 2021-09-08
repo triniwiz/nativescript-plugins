@@ -26,8 +26,9 @@ export class DemoSharedNativescriptDownloader extends DemoSharedBase {
     console.log(`Image Id :${this.imageDownloaderId} `);
 
     this.fileDownloaderId = this.downloadManager.createDownload({
-      url: 'http://ipv4.download.thinkbroadband.com/50MB.zip'
+      url: 'http://212.183.159.230/50MB.zip'
     });
+
     console.log(`File Id :${this.fileDownloaderId} `);
   }
 

@@ -10,7 +10,6 @@
 
 ```typescript
 import { Downloader } from '@triniwiz/nativescript-downloader';
-Downloader.init(); // <= Try calling this after the app launches to start the downloader service
 Downloader.setTimeout(120); //Increase timeout default 60s
 ```
 
@@ -41,7 +40,6 @@ downloader
 
 ```js
 var Downloader = require('@triniwiz/nativescript-downloader').Downloader;
-Downloader.Downloader.init(); // <= Try calling this after the app launches to start the downloader service
 Downloader.setTimeout(120); //Increase timeout default 60s
 ```
 
@@ -84,18 +82,9 @@ downloader
 | ![IOS](https://i.imgur.com/WQqhhXF.gif) | ![Android](https://i.imgur.com/fE9rBvl.gif) |
 
 
-##Angular 
+## Angular 
 
-### Injection Root Component
-```typescript 
-import { Downloader } from '@triniwiz/nativescript-downloader';
-....
-ngOnInit() {
- Downloader.init(); // <= Try calling this after the app launches to start the downloader service
-}
-...
-```
-### Custome Downloader option
+### Custom Downloader option
 ```typescript 
   // Request format for Downlaoder
              DownloadOptions {

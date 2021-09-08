@@ -1,9 +1,5 @@
-repositories {
-  maven {
-    url 'https://maven.google.com'
-  }
-}
-
 dependencies {
-  implementation 'co.fitcom:fancydownloader:0.+'
+  implementation 'androidx.tonyodev.fetch2:xfetch2:3.1.6'
+  implementation 'com.squareup.okhttp3:okhttp:3.14.9'
+  implementation 'androidx.tonyodev.fetch2okhttp:xfetch2okhttp:3.1.6'
 }
