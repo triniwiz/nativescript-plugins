@@ -401,16 +401,20 @@ export class ImageCacheIt extends ImageCacheItBase {
 	[common.stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
 		this._setStretch(value);
 	}
+	private static lastActivity: WeakRef<any>;
 	private static _init() {
-		if (!this._didInit) {
-			const activity = Application.android.foregroundActivity || Application.android.startActivity;
-			if (activity) {
-				com.github.triniwiz.imagecacheit.ImageCache.init(activity);
-				this._didInit = true;
-			}
+		// use start activity for manager
+		const activity = Application.android.startActivity;
+		if (!activity) {
+			return;
 		}
+		const lastActivity = this.lastActivity?.get();
+		if (lastActivity === activity) {
+			return;
+		}
+		this.lastActivity = new WeakRef(activity);
+		com.github.triniwiz.imagecacheit.ImageCache.init(activity);
 	}
-	private static _didInit = false;
 	public static getItem(src: string): Promise<any> {
 		this._init();
 		return new Promise<any>((resolve, reject) => {

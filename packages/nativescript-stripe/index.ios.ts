@@ -1,8 +1,7 @@
 import { Frame, Utils, View } from '@nativescript/core';
-import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, IAddress, IBankAccount, ICard, ICardParams, IToken, IPaymentMethod, PaymentMethodType, IStripePaymentIntent, StripePaymentIntentStatus, GetBrand, showPostalCodeProperty, isUSZipRequiredProperty } from './common';
+import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, GetBrand, IAddress, IBankAccount, ICard, ICardParams, IPaymentMethod, IStripePaymentIntent, isUSZipRequiredProperty, IToken, PaymentMethodType, showPostalCodeProperty, StripePaymentIntentStatus } from './common';
 import { PaymentMethodCard } from './paymentMethod';
 import { Source } from './source';
-import { toJSON } from './utils';
 
 export { init } from './utils';
 export { StripePaymentIntentStatus } from './common';
@@ -245,7 +244,7 @@ export class Stripe {
 				params,
 				callback(cb, (pm) => PaymentMethod.fromNative(pm))
 			);
-		} catch(e) {
+		} catch (e) {
 			if (typeof cb === 'function') {
 				cb(new Error(e.localizedDescription), null);
 			}
@@ -305,15 +304,44 @@ export class Stripe {
 		return keyWindow != null ? keyWindow.rootViewController : undefined;
 	}
 
+	private findTopViewController(root: UIViewController): UIViewController | undefined {
+		const presented = root.presentedViewController;
+		if (presented != null) {
+			return this.findTopViewController(presented);
+		}
+		if (root instanceof UISplitViewController) {
+			const last = root.viewControllers.lastObject;
+			if (last == null) {
+				return root;
+			}
+			return this.findTopViewController(last);
+		} else if (root instanceof UINavigationController) {
+			const top = root.topViewController;
+			if (top == null) {
+				return root;
+			}
+			return this.findTopViewController(top);
+		} else if (root instanceof UITabBarController) {
+			const selected = root.selectedViewController;
+			if (selected == null) {
+				return root;
+			}
+			return this.findTopViewController(selected);
+		} else {
+			return root;
+		}
+	}
+
 	_ctxImpl: STPAuthenticationContextImp;
 	_lastRoot: any;
+
 	private _getAuthentificationContext(): STPAuthenticationContext {
-		const rootVC = Frame.topmost().currentPage.ios || this._rootViewController;
-		if(!this._ctxImpl){
+		const rootVC = this.findTopViewController(Frame.topmost().currentPage.ios) || this._rootViewController;
+		if (!this._ctxImpl) {
 			this._ctxImpl = STPAuthenticationContextImp.initWithViewController(rootVC);
 			this._lastRoot = rootVC;
 		}
-		if(this._lastRoot !== rootVC){
+		if (this._lastRoot !== rootVC) {
 			this._ctxImpl._vc = rootVC;
 		}
 		return this._ctxImpl;
@@ -512,11 +540,13 @@ class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPayment
 	lastExpYear: number;
 	lastCVC: string;
 	lastPostal: string;
+
 	public static initWithOwner(owner: WeakRef<CreditCardView>): STPPaymentCardTextFieldDelegateImpl {
 		const delegate = <STPPaymentCardTextFieldDelegateImpl>STPPaymentCardTextFieldDelegateImpl.new();
 		delegate._owner = owner;
 		return delegate;
 	}
+
 	paymentCardTextFieldDidChange(textField: STPPaymentCardTextField) {
 		if (textField.cardParams?.number !== this.lastNumber) {
 			this?._owner?.get()?.notify({
@@ -568,6 +598,7 @@ class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPayment
 export class CreditCardView extends CreditCardViewBase {
 	nativeView: STPPaymentCardTextField;
 	private delegate: STPPaymentCardTextFieldDelegateImpl;
+
 	public createNativeView(): STPPaymentCardTextField {
 		this.delegate = STPPaymentCardTextFieldDelegateImpl.initWithOwner(new WeakRef<CreditCardView>(this));
 		return STPPaymentCardTextField.alloc().initWithFrame(CGRectMake(10, 10, 150, 44));
@@ -708,11 +739,11 @@ export class PaymentMethod implements IPaymentMethod {
 class StripeIntent {
 	_isSetupIntent: boolean;
 	private _native: STPSetupIntent | STPPaymentIntent;
-	get native(){
+	get native() {
 		return this._native;
 	}
-	
-	set native(value){
+
+	set native(value) {
 		if (this.native instanceof STPSetupIntent) {
 			this._isSetupIntent = true;
 		}
@@ -881,34 +912,28 @@ export enum StripeRedirectState {
 	NotStarted = 0,
 	InProgress = 1,
 	Cancelled = 2,
-	Completed = 3
+	Completed = 3,
 }
-
 
 export class StripeRedirectSession {
 	native: STPRedirectContext;
 	readonly state: StripeRedirectState;
 
 	constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void) {
-		this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(
-			paymentIntent.native,
-			(clientSecret, error)=>{
-				cb(new Error(error.localizedDescription), clientSecret);
-				//callback(cb, (clientSecret) => clientSecret)
-			}
-		);
+		this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(paymentIntent.native, (clientSecret, error) => {
+			cb(new Error(error.localizedDescription), clientSecret);
+			//callback(cb, (clientSecret) => clientSecret)
+		});
 	}
 
 	startRedirectFlow(view: View = null): void {
-		const vc  = view?.viewController ?? (Frame.topmost().currentPage.ios || this._rootViewController);
+		const vc = view?.viewController ?? (Frame.topmost().currentPage.ios || this._rootViewController);
 		this.native.startRedirectFlowFromViewController(vc);
 	}
 
 	cancel(): void {
 		this.native.cancel();
 	}
-
-
 
 	private get _rootViewController(): UIViewController | undefined {
 		const keyWindow = UIApplication.sharedApplication.keyWindow;

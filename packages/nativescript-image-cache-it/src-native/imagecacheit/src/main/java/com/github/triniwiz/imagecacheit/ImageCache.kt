@@ -25,9 +25,16 @@ class ImageCache {
     private var executorService: ExecutorService? = null
 
     @JvmStatic
+    private var mContext: Context? = null
+
+    @JvmStatic
     fun init(context: Context?) {
+      if (context != mContext) {
+        manager = null
+      }
       if (manager == null) {
         manager = Glide.with(context!!)
+        glide = null
       }
       if (glide == null) {
         glide = Glide.get(context!!)
@@ -35,6 +42,7 @@ class ImageCache {
       if (executorService == null) {
         executorService = Executors.newCachedThreadPool()
       }
+      mContext = context
     }
 
     @SuppressLint("CheckResult")
