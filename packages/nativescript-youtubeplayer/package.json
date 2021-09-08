@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-youtubeplayer",
-	"version": "4.1.3",
+	"version": "4.1.4",
 	"description": "YoutubePlayer for Nativescript",
 	"main": "index",
 	"typings": "index.d.ts",

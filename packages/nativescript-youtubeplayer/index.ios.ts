@@ -76,20 +76,24 @@ export class YoutubePlayer extends YoutubePlayerBase {
 
 	initNativeView() {
 		this.#enterFullScreenObserver = NSNotificationCenter.defaultCenter.addObserverForNameObjectQueueUsingBlock(UIWindowDidBecomeVisibleNotification, null, null, (notfi) => {
-			this.#isFullScreen = true;
-			this.notify({
-				eventName: YoutubePlayer.onFullScreenEvent,
-				object: this,
-				fullscreen: true,
-			});
+			if (!this.#isFullScreen) {
+				this.#isFullScreen = true;
+				this.notify({
+					eventName: YoutubePlayer.onFullScreenEvent,
+					object: this,
+					fullscreen: true,
+				});
+			}
 		});
 		this.#exitFullScreenObserver = NSNotificationCenter.defaultCenter.addObserverForNameObjectQueueUsingBlock(UIWindowDidBecomeHiddenNotification, null, null, (notfi) => {
-			this.#isFullScreen = false;
-			this.notify({
-				eventName: YoutubePlayer.onFullScreenEvent,
-				object: this,
-				fullscreen: false,
-			});
+			if (this.#isFullScreen) {
+				this.#isFullScreen = false;
+				this.notify({
+					eventName: YoutubePlayer.onFullScreenEvent,
+					object: this,
+					fullscreen: false,
+				});
+			}
 		});
 		this.#webView.navigationDelegate = this.#delegate;
 		const input = `{
@@ -102,7 +106,8 @@ export class YoutubePlayer extends YoutubePlayerBase {
             'widget_referrer': "${this.#origin}",
             'autoplay': ${this.autoPlay ? 1 : 0},
             'controls': ${this.controls ? 1 : 0},
-            'modestbranding' : ${this.showYoutubeLogo ? 1 : 0}
+            'modestbranding' : ${this.showYoutubeLogo ? 1 : 0},
+			'rel': ${this.showRelatedVideos ? 1: 0}
         }`;
 
 		this.#webView.loadHTMLStringBaseURL(getPlayerData(input, this.videoId), NSURL.URLWithString(this.#origin));

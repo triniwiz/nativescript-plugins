@@ -189,7 +189,8 @@ export class YoutubePlayer extends YoutubePlayerBase {
             'widget_referrer': "${this.#origin}",
             'autoplay': ${this.autoPlay ? 1 : 0},
             'controls': ${this.controls ? 1 : 0},
-            'modestbranding' : ${this.showYoutubeLogo ? 1 : 0}
+            'modestbranding' : ${this.showYoutubeLogo ? 1 : 0},
+			'rel': ${this.showRelatedVideos ? 1: 0}
         }`;
 		const playerData = getPlayerData(input, this.videoId);
 		this.#webView.loadDataWithBaseURL(this.#origin, playerData, 'text/html', 'utf-8', null);

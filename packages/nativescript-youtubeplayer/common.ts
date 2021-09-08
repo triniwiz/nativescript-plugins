@@ -40,7 +40,7 @@ export const videoIdProperty = new Property<YoutubePlayerBase, string>({
 
 export const showRelatedVideosProperty = new Property<YoutubePlayerBase, boolean>({
 	name: 'showRelatedVideos',
-	defaultValue: false,
+	defaultValue: true,
 	valueConverter: booleanConverter,
 });
 export const showYoutubeLogoProperty = new Property<YoutubePlayerBase, boolean>({
