@@ -845,13 +845,13 @@ export class CardParams implements ICardParams {
 		this._cardParams = newParams;
 	}
 
-	private _expYear;
+	private _expYear: number;
 	get expYear() {
 		return this._expYear;
 	}
 
 	set expYear(year: number) {
-		this._expMonth = year;
+		this._expYear = year;
 		const newParams = new com.stripe.android.model.CardParams(this.number, this.expMonth, year, this.cvc);
 		this._copyAddress(this._cardParams, newParams);
 		this._cardParams = newParams;
