@@ -234,6 +234,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 
 	private async _loadImage(src: any) {
 		this._loadStarted = true;
+		this._emitLoadStartEvent(src);
 		this.progress = 0;
 		const ref = new WeakRef(this);
 		if (this.nativeView && (<any>this.nativeView).sd_cancelCurrentImageLoad) {
@@ -244,12 +245,13 @@ export class ImageCacheIt extends ImageCacheItBase {
 		this.isLoading = true;
 		const context = {};
 		const placeHolder = this._handlePlaceholder(this.placeHolder);
-		let url = NSURL.URLWithString(src) as any;
+		const url = NSURL.URLWithString(src);
 		if (!url) {
 			this._handleFallbackImage();
 			return;
 		}
-		url.uuid = this.uuid;
+		// store arbitrary value to track on NSURL
+		(<any>url).uuid = this.uuid;
 		(<any>this.nativeView).sd_setImageWithURLPlaceholderImageOptionsContextProgressCompleted(
 			url,
 			placeHolder,
@@ -267,7 +269,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 					progress = Math.max(Math.min(progress, 1), 0) * 100;
 					dispatch_async(main_queue, () => {
 						if (!owner._loadStarted) {
-							owner._emitLoadStartEvent(p3.absoluteString);
+							owner._emitLoadStartEvent(p3?.absoluteString ? p3.absoluteString : (url?.absoluteString ? url.absoluteString : src));
 							owner._loadStarted = true;
 						}
 						owner.progress = progress;
@@ -280,8 +282,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 				if (owner) {
 					owner.isLoading = false;
 					if (p2) {
-						owner._emitErrorEvent(p2.localizedDescription, p4.absoluteString);
-						owner._emitLoadEndEvent(p4.absoluteString);
+						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : (url?.absoluteString ? url.absoluteString : src));
+						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : (url?.absoluteString ? url.absoluteString : src));
 						if (owner.errorHolder) {
 							const errorHolder = this._handlePlaceholder(this.errorHolder);
 							owner.imageSource = new ImageSource(errorHolder);
@@ -299,6 +301,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 								owner.nativeView.alpha = 0;
 								UIView.animateWithDurationAnimations(1, () => {
 									owner.nativeView.alpha = 1;
+									owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : (url && url.absoluteString ? url.absoluteString : src));
 								});
 								break;
 							default:
