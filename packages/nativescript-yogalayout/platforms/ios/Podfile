@@ -1,4 +1,4 @@
-#pod 'YogaKit', '~> 1.18'
+pod 'YogaKit', '~> 1.18'
 
 
-pod 'YogaKit', :path => "/Users/triniwiz/Desktop/OSS/yoga"
+#pod 'YogaKit', :path => "/Users/triniwiz/Desktop/OSS/yoga"
