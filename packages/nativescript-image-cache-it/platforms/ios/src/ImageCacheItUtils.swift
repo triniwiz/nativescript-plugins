@@ -13,36 +13,43 @@ import SDWebImage
 public class ImageCacheItUtils: NSObject {
     private static var queueCount: Int64 = 0
     public static func createConcurrentQueue(_ name: String) -> DispatchQueue {
+        ImageCacheItUtils.queueCount += 1
         return DispatchQueue(label: name, attributes: .concurrent)
     }
 
+    public static func createSerialQueue(_ name: String) -> DispatchQueue {
+        ImageCacheItUtils.queueCount += 1
+        return DispatchQueue(label: name)
+    }
 
-    public static func resizeImage(_ image: UIImage? , _ width: CGFloat,_ height: CGFloat, _ scale: SDImageScaleMode, _ callback: @escaping (UIImage?)-> Void){
+
+    public static func resizeImage(_ image: UIImage? , _ width: CGFloat,_ height: CGFloat, _ scale: SDImageScaleMode, _ callback: @escaping (UIImage?)-> Void, _ queue: DispatchQueue?) -> DispatchQueue? {
         guard image != nil else {
             DispatchQueue.main.async {
                 callback(nil)
             }
-            return
+            return nil
         }
-        let queue = createConcurrentQueue("ImageCacheUtils-Queue-" + String(queueCount))
-        queue.async {
+        let q = queue ?? createConcurrentQueue("ImageCacheUtils-Queue-" + String(queueCount))
+        q.async {
         let resizedImage = image?.sd_resizedImage(with: CGSize(width: width, height: height), scaleMode: scale)
             DispatchQueue.main.async {
                 callback(resizedImage)
             }
         }
+        return q
     }
 
 
-      public static func applyProcessing(_ ctx: CIContext,_ image: UIImage?, _ filters: [String: Any], _ callback: @escaping (UIImage?)-> Void) {
+      public static func applyProcessing(_ ctx: CIContext,_ image: UIImage?, _ filters: [String: Any], _ callback: @escaping (UIImage?)-> Void, _ queue: DispatchQueue?) -> DispatchQueue? {
             guard image != nil else {
                 DispatchQueue.main.async {
                     callback(nil)
                 }
-                return
+                return nil
             }
-            let queue = createConcurrentQueue("ImageCacheUtils-Queue-" + String(queueCount))
-            queue.async {
+            let q = queue ?? createConcurrentQueue("ImageCacheUtils-Queue-" + String(queueCount))
+            q.async {
                 let filter = filters["filter"] as? String
                 let filteredImage = applyFilters(image, ctx,filter)
                 if let overLayer = filters["overlayColor"] as? String {
@@ -56,6 +63,8 @@ public class ImageCacheItUtils: NSObject {
                     }
                 }
             }
+
+        return q
         }
 
 

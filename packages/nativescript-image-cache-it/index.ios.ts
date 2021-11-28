@@ -307,38 +307,9 @@ export class ImageCacheIt extends ImageCacheItBase {
 					}
 
 					if (p1) {
-						if (p1 instanceof SDAnimatedImage) {
-							const source = new ImageSource();
-							source.ios = p1;
-							this._createImageSourceFromSrc(source);
-						} else {
-							dispatch_async(this.filterQueue, () => {
-								/* SDImageScaleModeFill = 0,
-                 SDImageScaleModeAspectFit = 1,
-                 SDImageScaleModeAspectFill = 2
-             */
-								if (this.getMeasuredWidth() === 0 || this.getMeasuredHeight() === 0) {
-									this._createImageSourceFromSrc(new ImageSource(p1));
-								} else {
-									let resize = 1;
-									switch (this.stretch) {
-										case 'none':
-										case 'aspectFit':
-											resize = 1;
-											break;
-										case 'aspectFill':
-											resize = 2;
-											break;
-										case 'fill':
-											resize = 0;
-											break;
-									}
-									ImageCacheItUtils.resizeImage(p1, this.getMeasuredWidth(), this.getMeasuredHeight(), resize, (resizedImage) => {
-										this._createImageSourceFromSrc(new ImageSource(resizedImage));
-									});
-								}
-							});
-						}
+						const source = new ImageSource();
+						source.ios = p1;
+						this._createImageSourceFromSrc(source);
 					}
 				}
 			}
@@ -429,7 +400,6 @@ export class ImageCacheIt extends ImageCacheItBase {
 						} else {
 							dispatch_async(this.filterQueue, () => {
 								const image = loadResImage();
-								console.log(image);
 								dispatch_async(main_queue, () => {
 									setResImage(image);
 								});
@@ -632,7 +602,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 			}
 			ImageCacheItUtils.applyProcessing(this.ctx, nativeImage, options, (image) => {
 				setImage(image);
-			});
+			}, null);
 			/*dispatch_async(this.filterQueue, () => {
           nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
           nativeImage = this._setupFilter(nativeImage);
@@ -651,7 +621,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						},
 						(image) => {
 							setImage(image);
-						}
+						}, null
 					);
 					/* dispatch_async(this.filterQueue, () => {
                nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
@@ -672,7 +642,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						},
 						(image) => {
 							setImage(image);
-						}
+						}, null
 					);
 				} else {
 					dispatch_async(main_queue, () => {
