@@ -130,7 +130,8 @@ export class ImageCacheItBase extends View {
   _emitLoadStartEvent(url?: string) {
     this.notify({
       eventName: ImageCacheItBase.onLoadStartEvent,
-      object: this
+      object: this,
+      url
     });
   }
 
@@ -149,7 +150,8 @@ export class ImageCacheItBase extends View {
     this.notify({
       eventName: ImageCacheItBase.onLoadStartEvent,
       object: this,
-      message
+      message,
+      url
     });
   }
 
@@ -157,7 +159,8 @@ export class ImageCacheItBase extends View {
     this.notify({
       eventName: ImageCacheItBase.onLoadEndEvent,
       object: this,
-      image
+      image,
+      url
     });
   }
 
@@ -176,12 +179,10 @@ export class ImageCacheItBase extends View {
       this.isLoading = true;
 
       const imageLoaded = (source: ImageSource) => {
-        let currentValue = this.src;
-        if (currentValue !== originalValue) {
+        if (this.src !== originalValue) {
           return;
         }
-        this.imageSource = source;
-        this.isLoading = false;
+        this._setImageSource(source);
       };
 
       if (isFontIconURI(value)) {
@@ -223,8 +224,7 @@ export class ImageCacheItBase extends View {
         ImageSource.fromUrl(value).then(
           (r) => {
             if (this['_url'] === value) {
-              this.imageSource = r;
-              this.isLoading = false;
+              this._setImageSource(r, <string>value);
             }
           },
           (err) => {
@@ -241,17 +241,20 @@ export class ImageCacheItBase extends View {
       }
     } else if (value instanceof ImageSource) {
       // Support binding the imageSource trough the src property
-      this.imageSource = value;
-      this.isLoading = false;
+      this._setImageSource(value);
     } else if (value instanceof ImageAsset) {
       ImageSource.fromAsset(value).then((result) => {
-        this.imageSource = result;
-        this.isLoading = false;
+        this._setImageSource(result);
       });
     } else {
-      this.imageSource = new ImageSource(value);
-      this.isLoading = false;
+      this._setImageSource(new ImageSource(value));
     }
+  }
+
+  private _setImageSource(source: ImageSource, url?: string) {
+    this.imageSource = source;
+    this.isLoading = false;
+    this._emitLoadEndEvent(url || this.src);
   }
 }
 

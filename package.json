@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "setup": "npx rimraf node_modules package-lock.json dist tmp yarn.lock && yarn config set ignore-engines true && ns package-manager set npm && yarn",
+    "setup": "npx rimraf node_modules package-lock.json dist tmp yarn.lock && yarn",
     "postinstall": "husky install && npx ts-patch install && patch-package",
     "start": "nps",
     "add": "nx g @nativescript/plugin-tools:add-package",
@@ -47,8 +47,7 @@
     "@angular/router": "^12.0.0",
     "@nativescript/angular": "^12.0.0",
     "@nativescript/core": "^8.0.0",
-    "@nativescript/ios": "8.0.0",
-    "@nativescript/plugin-tools": "2.0.6",
+    "@nativescript/plugin-tools": "2.3.0",
     "@nativescript/types": "^8.0.0",
     "@nativescript/webpack": "~5.0.1",
     "@nestjs/schematics": "^7.0.0",
@@ -73,7 +72,7 @@
     "svelte": "3.24.1",
     "svelte-native": "0.9.0-alpha",
     "ts-jest": "26.1.4",
-    "typescript": "~4.2.0",
+    "typescript": "~4.3.5",
     "vuepress": "^1.5.3",
     "whatwg-url-without-unicode": "^8.0.0-3",
     "zone.js": "~0.11.1"

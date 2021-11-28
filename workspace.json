@@ -182,8 +182,8 @@
       }
     },
     "all": {
-      "root": "packages/",
-      "projectType": "library",
+      "root": "",
+      "projectType": "application",
       "targets": {
         "build": {
           "outputs": [
@@ -259,7 +259,8 @@
           },
           "executor": "@nrwl/workspace:run-commands"
         }
-      }
+      },
+      "sourceRoot": ""
     },
     "nativescript-couchbase": {
       "root": "packages/nativescript-couchbase",
