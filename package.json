@@ -81,8 +81,5 @@
     "**/*.{js,ts,scss,json,html}": [
       "npx prettier --write"
     ]
-  },
-  "engines": {
-    "node": "14.x"
   }
 }

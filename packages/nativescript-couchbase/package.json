@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-couchbase",
-	"version": "1.2.5",
+	"version": "1.3.0",
 	"description": "NativeScript Couchbase Sdk",
 	"main": "index",
 	"typings": "index.d.ts",

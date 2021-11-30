@@ -188,11 +188,11 @@ export class CouchBase extends Common {
 		}
 	}
 
+	private static dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	private static tz = java.util.TimeZone.getTimeZone('UTC');
 	private static fromISO8601UTC(date: string) {
-		const dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-		const tz = java.util.TimeZone.getTimeZone('UTC');
-		dateFormat.setTimeZone(tz);
-		return dateFormat.parse(date);
+		this.dateFormat.setTimeZone(this.tz);
+		return this.dateFormat.parse(date);
 	}
 
 	private setComparison(item) {
