@@ -148,7 +148,7 @@ export class ImageCacheItBase extends View {
 
   _emitErrorEvent(message: string, url: string) {
     this.notify({
-      eventName: ImageCacheItBase.onLoadStartEvent,
+      eventName: ImageCacheItBase.onErrorEvent,
       object: this,
       message,
       url
