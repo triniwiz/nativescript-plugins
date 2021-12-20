@@ -150,6 +150,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 		if (src instanceof ImageAsset) {
 			keepAspectRatio = !!this.src.options.keepAspectRatio;
 			src = src.nativeImage;
+		} else if (src instanceof ImageSource) {
+			src = src.android;
 		}
 		this.nativeView.batch(JSON.stringify(jsonProps), src, 0, 0, keepAspectRatio, false, true, this._handleSource(this.errorHolder), this._handleSource(this.placeHolder), this._handleSource(this.fallback));
 	}
