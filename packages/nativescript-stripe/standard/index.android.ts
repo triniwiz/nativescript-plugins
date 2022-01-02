@@ -29,14 +29,14 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 		let optionalFields = [];
 		if (shippingRequired) {
 			if (this.requiredShippingAddressFields.indexOf(StripeStandardShippingAddressField.PostalAddress) < 0) {
-				optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Line1);
-				optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Line2);
-				optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.City);
-				optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.State);
-				optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.PostalCode);
+				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Line1);
+				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Line2);
+				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.City);
+				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.State);
+				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.PostalCode);
 			}
 			if (this.requiredShippingAddressFields.indexOf(StripeStandardShippingAddressField.Phone) < 0) {
-				optionalFields.unshift(com.stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Phone);
+				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Phone);
 			}
 		}
 
@@ -150,11 +150,11 @@ export class StripeStandardPaymentSession {
 	}
 
 	requestPayment() {
+		console.log('requestPayment')
 		this.paymentInProgress = true;
 		const data = this._data;
 		const shippingMethod = data.getShippingMethod();
 		const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(
 				data.getPaymentMethod().component1(), // id
@@ -306,14 +306,15 @@ function createPaymentSessionListener(parent: StripeStandardPaymentSession, list
 	});
 }
 function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMethod): StripeStandardPaymentMethod {
+	console.log('createPaymentMethod', paymentMethod);
 	if (!paymentMethod) return undefined;
 	const type = paymentMethod.component4();
 	if (type === com.stripe.android.model.PaymentMethod.Type.Fpx) {
-		const fpx = paymentMethod.component10(); // fpx
+		const fpx = paymentMethod.component9(); // fpx
 		const pmId = paymentMethod.component1(); // id
 		if (fpx) return createPaymentMethodFromFpx(fpx, pmId);
 	} else if (type === com.stripe.android.model.PaymentMethod.Type.Card) {
-		const pmCard = paymentMethod.component8(); // card
+		const pmCard = paymentMethod.component7(); // card
 		const pmId = paymentMethod.component1(); // id
 		if (pmCard) return createPaymentMethodFromCard(pmCard, pmId);
 	}
@@ -321,7 +322,7 @@ function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMeth
 }
 
 function createPaymentMethodFromFpx(fpx: com.stripe.android.model.PaymentMethod.Fpx, stripeID: string): StripeStandardPaymentMethod {
-	const bank = com.stripe.android.view.FpxBank.get(fpx.component1());
+	const bank = (com as any).stripe.android.view.FpxBank.get(fpx.component1());
 	return {
 		label: bank.getDisplayName(),
 		image: getBitmapFromResource(bank.getBrandIconResId()),

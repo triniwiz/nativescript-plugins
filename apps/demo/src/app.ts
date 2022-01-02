@@ -1,11 +1,16 @@
-import {Application, Folder, knownFolders} from '@nativescript/core';
-import {handleContinueUserActivity, handleOpenURL} from '@triniwiz/nativescript-stripe';
-import {File} from '@triniwiz/nativescript-file-manager';
+import { Application, Folder, knownFolders } from '@nativescript/core';
+import { handleContinueUserActivity, handleOpenURL, init } from '@triniwiz/nativescript-stripe';
+import { File } from '@triniwiz/nativescript-file-manager';
 import * as dateFns from 'date-fns';
+import { publishableKey } from './plugin-demos/nativescript-stripe-src/std-view/stripe.service';
 const resources = Application.getResources();
 resources['timeFromNow'] = (date) => dateFns.formatRelative(date, new Date());
 Application.setResources(resources);
 declare const io;
+
+init(publishableKey);
+
+
 if (global.isIOS) {
   @NativeClass()
   @ObjCClass(UIApplicationDelegate)
@@ -23,7 +28,6 @@ if (global.isIOS) {
 
   Application.ios.delegate = UIApplicationDelegateImpl;
 } else {
-  console.dir(io.github.triniwiz);
   /*Folder.fromPath(knownFolders.currentApp().path  + `/assets`).getEntities().then(items =>{
     console.log(items);
   });
@@ -32,4 +36,4 @@ if (global.isIOS) {
   console.log(File.fromPath(legacyDownloads.getAbsolutePath()), File.fromPath(legacyAudio.getAbsolutePath()))
   */
 }
-Application.run({moduleName: 'app-root'});
+Application.run({ moduleName: 'app-root' });

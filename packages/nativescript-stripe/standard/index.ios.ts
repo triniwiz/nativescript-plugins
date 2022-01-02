@@ -22,11 +22,12 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 		let config = STPPaymentConfiguration.sharedConfiguration;
 		STPAPIClient.sharedClient.publishableKey = this.publishableKey;
 		config.appleMerchantIdentifier = this.appleMerchantID;
-		config.requiredBillingAddressFields = this.requiredBillingAddressFields as any;
+		config.requiredBillingAddressFields = this.requiredBillingAddressFields as any || STPBillingAddressFields.None;
 		config.cardScanningEnabled = this.enableCardScanning;
 		if (this.stripeAccountId){
 			STPAPIClient.sharedClient.stripeAccount = this.stripeAccountId;
 		}
+
 		if (this.requiredShippingAddressFields && this.requiredShippingAddressFields.length > 0) {
 			let fields = new NSMutableSet<STPContactField>({ capacity: 4 });
 			this.requiredShippingAddressFields.forEach((f) => {
@@ -47,7 +48,7 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 			});
 			config.requiredShippingAddressFields = fields;
 		} else {
-			config.requiredShippingAddressFields = undefined;
+			config.requiredShippingAddressFields = null;
 		}
 		config.companyName = this.companyName;
 		return config;

@@ -229,7 +229,7 @@ export class Source implements ISource {
 		this.created = new Date(source.getCreated().longValue());
 		this.currency = source.getCurrency();
 		this.flow = toSourceFlow(source.getFlow());
-		this.ios = source.getId();
+		this.id = source.getId();
 		this.type = toSourceType(source.getType());
 		if (this.type === SourceType.Klarna) {
 			this.klarnaDetails = SourceKlarnaDetails.fromNative(source.getKlarna());

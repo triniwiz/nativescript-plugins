@@ -9,5 +9,7 @@
     <StackLayout class="hr-light m-10"/>
     <Label text="Custom Integration" class="h2"/>
     <Button text="CreditCardView" tap="{{ccViewDemo}}" class="btn btn-primary btn-active"/>
+    <Label text="PaymentSheet Integration" class="h2"/>
+    <Button text="PaymentSheet" tap="{{paymentSheetDemo}}" class="btn btn-primary btn-active"/>
   </StackLayout>
 </Page>

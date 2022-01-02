@@ -1,11 +1,30 @@
-import {Utils} from "@nativescript/core";
-declare const com, Stripe, NSDictionary;
+import { AndroidApplication, Application, Utils } from "@nativescript/core";
+import { PaymentSheet } from './paymentSheet';
+//declare const com, Stripe, NSDictionary;
+let launchActivityDestroyed = false;
+let didInit = false;
 export const init = (apiKey: string) => {
   if (global.isIOS) {
-    Stripe.setDefaultPublishableKey(apiKey);
+    StripeAPI.setDefaultPublishableKey(apiKey);
   }
   if (global.isAndroid) {
     com.stripe.android.PaymentConfiguration.init(Utils.ad.getApplicationContext(), apiKey);
+    Application.android.on(AndroidApplication.activityCreatedEvent, (event: any) => {
+      const activity = event.activity;
+      if (launchActivityDestroyed || !didInit) {
+        PaymentSheet._init(activity);
+        didInit = true;
+        launchActivityDestroyed = false;
+      }
+
+    });
+
+    Application.android.on(AndroidApplication.activityDestroyedEvent, (event: any) => {
+      const activity = event.activity;
+      if (activity === Application.android.startActivity) {
+        launchActivityDestroyed = true;
+      }
+    })
   }
 }
 

@@ -1,8 +1,7 @@
 import { StripeStandardAddress, IStripeStandardBackendAPI, StripeStandardConfig, StripeStandardCustomerSession, StripeStandardPaymentListener, StripeStandardPaymentSession, StripeStandardShippingAddressField, StripeStandardShippingMethod, StripeStandardPaymentMethodType } from '@triniwiz/nativescript-stripe/standard';
 import { Page } from '@nativescript/core';
 import { request } from '@nativescript/core/http';
-import { Stripe, StripePaymentIntentParams, StripePaymentIntentStatus } from '@triniwiz/nativescript-stripe';
-import { StripeRedirectSession } from '@triniwiz/nativescript-stripe';
+import { Stripe, StripePaymentIntentParams } from '@triniwiz/nativescript-stripe';
 
 // 1) To get started with this demo, first head to https://dashboard.stripe.com/account/apikeys
 // and copy your "Test Publishable Key" (it looks like pk_test_abcdef) into the line below.
@@ -33,8 +32,8 @@ export class StripeService implements IStripeStandardBackendAPI {
 		StripeStandardConfig.shared.publishableKey = publishableKey;
 		StripeStandardConfig.shared.appleMerchantID = appleMerchantID;
 		StripeStandardConfig.shared.companyName = 'Demo Company';
-		//StripeStandardConfig.shared.requiredShippingAddressFields = [StripeStandardShippingAddressField.PostalAddress];
-		StripeStandardConfig.shared.allowedPaymentMethodTypes.push(StripeStandardPaymentMethodType.Fpx);
+		StripeStandardConfig.shared.requiredShippingAddressFields = [StripeStandardShippingAddressField.PostalAddress];
+		StripeStandardConfig.shared.allowedPaymentMethodTypes.push(StripeStandardPaymentMethodType.Card);
 		this.customerSession = new StripeStandardCustomerSession();
 	}
 
@@ -58,10 +57,6 @@ export class StripeService implements IStripeStandardBackendAPI {
 		let content = `payment_method_id=${stripeID}&amount=${amount}`;
 		if (shippingMethod && shippingAddress) content += `&${this._encodeShipping(shippingMethod, shippingAddress)}`;
 		return new Promise(async (resolve, reject) => {
-			/*STPAPIClient *stripeClient = [STPAPIClient sharedClient];
-			STPPaymentIntentParams *paymentIntentParams = [[STPPaymentIntentParams alloc] initWithClientSecret:clientSecret];
-			paymentIntentParams.sourceParams = [STPSourceParams cardParamsWithCard:self.paymentTextField.cardParams];
-			paymentIntentParams.returnUrl = @"payments-example://stripe-redirect"; */
 			try {
 				const intent = await this.createPaymentIntent(amount, shippingMethod?.currency);
 
@@ -74,7 +69,7 @@ export class StripeService implements IStripeStandardBackendAPI {
 					pi.returnURL = 'io.triniwiz.nativescript.plugindemo://payment';
 				}
 				this.stripe.confirmPaymentIntent(pi, (e, pm) => {
-					if (pm.requiresAction) {
+					if (pm?.requiresAction) {
 						this.stripe.authenticatePaymentIntent(pm.clientSecret, pi.returnURL, (err, pm) => {
 							if (err) {
 								reject(err);

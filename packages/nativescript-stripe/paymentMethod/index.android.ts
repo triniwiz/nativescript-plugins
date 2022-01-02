@@ -223,10 +223,11 @@ export class PaymentMethodCard implements IPaymentMethodCard {
 		this.country = paymentCard.component3();
 		this.expMonth = paymentCard.component4().intValue();
 		this.expYear = paymentCard.component5().intValue();
-		this.funding = paymentCard.component6();
+		this.fingerprint = paymentCard.component6();
+		this.funding = paymentCard.component7();
 		this.last4 = paymentCard.component7();
-		this.threeDSecureUsage = PaymentMethodThreeDSecureUsage.fromNative(paymentCard.component8());
-		this.wallet = PaymentMethodCardWallet.fromNative(paymentCard.component9());
+		this.threeDSecureUsage = PaymentMethodThreeDSecureUsage.fromNative(paymentCard.component9());
+		this.wallet = PaymentMethodCardWallet.fromNative(paymentCard.component10());
 	}
 
 	public static fromNative(paymentCard: com.stripe.android.model.PaymentMethod.Card): PaymentMethodCard {

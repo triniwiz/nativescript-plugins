@@ -1,0 +1,8 @@
+<Page xmlns:stripe="@triniwiz/nativescript-stripe" loaded="pageLoaded" class="page">
+  <Page.actionBar>
+    <ActionBar title="CreditCardView Demo" class="action-bar"/>
+  </Page.actionBar>
+  <StackLayout>
+  <Button tap="openSheet" text="Open Sheet"/>
+  </StackLayout>
+</Page>

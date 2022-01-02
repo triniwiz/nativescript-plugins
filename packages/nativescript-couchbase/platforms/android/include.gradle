@@ -10,9 +10,9 @@ android {
 
 repositories {
   google()
-  jcenter()
+  mavenCentral()
   maven {
-    url "http://mobile.maven.couchbase.com/maven2/dev/"
+    url "https://mobile.maven.couchbase.com/maven2/dev/"
   }
 }
 dependencies {

@@ -22,6 +22,10 @@ export class DemoSharedNativescriptStripe extends DemoSharedBase {
     Frame.topmost().navigate("~/plugin-demos/nativescript-stripe-src/cc-view/cc-view");
   }
 
+  paymentSheetDemo(args){
+    Frame.topmost().navigate("~/plugin-demos/nativescript-stripe-src/payment-sheet-view/payment-sheet-view");
+  }
+
   ccViewPageLoaded(args: EventData) {
     if (-1 !== publishableKey.indexOf("pk_test_yours")) {
       throw new Error("publishableKey must be changed from placeholder");

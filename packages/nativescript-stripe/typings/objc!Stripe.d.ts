@@ -4378,6 +4378,8 @@ declare const enum STPErrorCode {
 
 	InvalidRequestError = 50,
 
+	AuthenticationError = 51,
+
 	APIError = 60,
 
 	CardError = 70,
@@ -6429,6 +6431,8 @@ declare class STPPaymentMethod extends NSObject implements STPAPIResponseDecodab
 
 	readonly iDEAL: STPPaymentMethodiDEAL;
 
+	readonly klarna: STPPaymentMethodKlarna;
+
 	readonly liveMode: boolean;
 
 	readonly metadata: NSDictionary<string, string>;
@@ -8128,6 +8132,64 @@ declare class STPPaymentMethodGrabPayParams extends NSObject implements STPFormE
 	self(): this;
 }
 
+declare class STPPaymentMethodKlarna extends NSObject {
+
+	static alloc(): STPPaymentMethodKlarna; // inherited from NSObject
+
+	static decodedObjectFromAPIResponse(response: NSDictionary<any, any>): STPPaymentMethodKlarna;
+
+	static new(): STPPaymentMethodKlarna; // inherited from NSObject
+
+	readonly allResponseFields: NSDictionary<any, any>;
+}
+
+declare class STPPaymentMethodKlarnaParams extends NSObject implements STPFormEncodable {
+
+	static alloc(): STPPaymentMethodKlarnaParams; // inherited from NSObject
+
+	static new(): STPPaymentMethodKlarnaParams; // inherited from NSObject
+
+	static propertyNamesToFormFieldNamesMapping(): NSDictionary<string, string>;
+
+	static rootObjectName(): string;
+
+	additionalAPIParameters: NSDictionary<any, any>; // inherited from STPFormEncodable
+
+	readonly debugDescription: string; // inherited from NSObjectProtocol
+
+	readonly description: string; // inherited from NSObjectProtocol
+
+	readonly hash: number; // inherited from NSObjectProtocol
+
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+	readonly  // inherited from NSObjectProtocol
+
+	class(): typeof NSObject;
+
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	self(): this;
+}
+
 declare class STPPaymentMethodNetBanking extends NSObject implements STPAPIResponseDecodable {
 
 	static alloc(): STPPaymentMethodNetBanking; // inherited from NSObject
@@ -8344,6 +8406,8 @@ declare class STPPaymentMethodParams extends NSObject implements STPFormEncodabl
 
 	static paramsWithGrabPayBillingDetailsMetadata(grabPay: STPPaymentMethodGrabPayParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): STPPaymentMethodParams;
 
+	static paramsWithKlarnaBillingDetailsMetadata(klarna: STPPaymentMethodKlarnaParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): STPPaymentMethodParams;
+
 	static paramsWithNetBankingBillingDetailsMetadata(netBanking: STPPaymentMethodNetBankingParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): STPPaymentMethodParams;
 
 	static paramsWithOXXOBillingDetailsMetadata(oxxo: STPPaymentMethodOXXOParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): STPPaymentMethodParams;
@@ -8391,6 +8455,8 @@ declare class STPPaymentMethodParams extends NSObject implements STPFormEncodabl
 	grabPay: STPPaymentMethodGrabPayParams;
 
 	iDEAL: STPPaymentMethodiDEALParams;
+
+	klarna: STPPaymentMethodKlarnaParams;
 
 	metadata: NSDictionary<string, string>;
 
@@ -8460,6 +8526,8 @@ declare class STPPaymentMethodParams extends NSObject implements STPFormEncodabl
 
 	constructor(o: { IDEAL: STPPaymentMethodiDEALParams; billingDetails: STPPaymentMethodBillingDetails; metadata: NSDictionary<string, string>; });
 
+	constructor(o: { klarna: STPPaymentMethodKlarnaParams; billingDetails: STPPaymentMethodBillingDetails; metadata: NSDictionary<string, string>; });
+
 	constructor(o: { netBanking: STPPaymentMethodNetBankingParams; billingDetails: STPPaymentMethodBillingDetails; metadata: NSDictionary<string, string>; });
 
 	constructor(o: { oxxo: STPPaymentMethodOXXOParams; billingDetails: STPPaymentMethodBillingDetails; metadata: NSDictionary<string, string>; });
@@ -8505,6 +8573,8 @@ declare class STPPaymentMethodParams extends NSObject implements STPFormEncodabl
 	initWithGrabPayBillingDetailsMetadata(grabPay: STPPaymentMethodGrabPayParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): this;
 
 	initWithIDEALBillingDetailsMetadata(iDEAL: STPPaymentMethodiDEALParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): this;
+
+	initWithKlarnaBillingDetailsMetadata(klarna: STPPaymentMethodKlarnaParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): this;
 
 	initWithNetBankingBillingDetailsMetadata(netBanking: STPPaymentMethodNetBankingParams, billingDetails: STPPaymentMethodBillingDetails, metadata: NSDictionary<string, string>): this;
 
@@ -9020,7 +9090,9 @@ declare const enum STPPaymentMethodType {
 
 	Boleto = 21,
 
-	Unknown = 22
+	Klarna = 22,
+
+	Unknown = 23
 }
 
 declare class STPPaymentMethodUPI extends NSObject implements STPAPIResponseDecodable {

@@ -1,4 +1,23 @@
 
+declare class Button extends UIControl {
+
+	static alloc(): Button; // inherited from NSObject
+
+	static appearance(): Button; // inherited from UIAppearance
+
+	static appearanceForTraitCollection(trait: UITraitCollection): Button; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): Button; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): Button; // inherited from UIAppearance
+
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): Button; // inherited from UIAppearance
+
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): Button; // inherited from UIAppearance
+
+	static new(): Button; // inherited from NSObject
+}
+
 declare class DoneButtonToolbar extends UIToolbar {
 
 	static alloc(): DoneButtonToolbar; // inherited from NSObject

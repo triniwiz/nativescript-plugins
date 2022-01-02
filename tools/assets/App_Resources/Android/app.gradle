@@ -1,8 +1,8 @@
 android {
-  compileSdkVersion 30
+  compileSdkVersion 31
   defaultConfig {
     minSdkVersion 22
-    targetSdkVersion 30
+    targetSdkVersion 31
     generatedDensities = []
   }
   aaptOptions {
@@ -17,6 +17,6 @@ android {
 
 
 project.ext {
-  kotlinVersion = "1.5.0"
+  kotlinVersion = "1.6.0"
   useKotlin = true
 }

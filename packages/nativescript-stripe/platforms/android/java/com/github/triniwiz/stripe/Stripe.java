@@ -39,23 +39,6 @@ public class Stripe{
        );
     }
 
-    public static void createCardParams(com.stripe.android.model.Card card, com.stripe.android.Stripe stripe, final Callback callback){
-        stripe.createSource(
-         com.stripe.android.model.SourceParams.createCardParams(card),
-         new com.stripe.android.ApiResultCallback<com.stripe.android.model.Source>(){
-             @Override
-             public void onSuccess(com.stripe.android.model.Source source) {
-                   callback.onSuccess(source);
-             }
-             @Override
-             public void onError(Exception error) {
-                 callback.onError(error);
-             }
-         }
-        );
-     }
-
-
         static List<com.stripe.android.model.ShippingMethod> list = new java.util.ArrayList();
         static boolean isShippingInfoValid = true;
         static String shippingInfoValidErrorMessage = "Please check your info an try again.";
