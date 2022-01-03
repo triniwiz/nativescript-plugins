@@ -1,8 +1,8 @@
 import { Color } from "@nativescript/core";
 
 interface Configuration {
-    merchantDisplayName: string;
-    customerConfig: CustomerConfiguration;
+    merchantDisplayName?: string;
+    customerConfig?: CustomerConfiguration;
     applePayConfig?: ApplePayConfiguration;
     allowsDelayedPaymentMethods: boolean;
     googlePayConfig?: GooglePayConfiguration;

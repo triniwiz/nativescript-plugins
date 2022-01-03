@@ -1,4 +1,4 @@
-import { Color } from "@nativescript/core";
+import { Color, Utils } from "@nativescript/core";
 import { Configuration } from ".";
 
 export class PaymentSheet {
@@ -26,12 +26,17 @@ export class PaymentSheet {
     }
 
     static #getConfig(config: Configuration) {
-        const nativeConfig = new com.stripe.android.paymentsheet.PaymentSheet.Configuration.Builder(config.merchantDisplayName);
-        const customerConfiguration = new com.stripe.android.paymentsheet.PaymentSheet.CustomerConfiguration(
-            config.customerConfig.id,
-            config.customerConfig.ephemeralKey
-        );
-        nativeConfig.customer(customerConfiguration);
+        const application = Utils.android.getApplication() as android.app.Application;
+        const nativeConfig = new com.stripe.android.paymentsheet.PaymentSheet.Configuration.Builder(config.merchantDisplayName ?? application.getApplicationInfo().loadLabel(application.getPackageManager()).toString());
+
+        if (config.customerConfig) {
+            const customerConfiguration = new com.stripe.android.paymentsheet.PaymentSheet.CustomerConfiguration(
+                config.customerConfig.id,
+                config.customerConfig.ephemeralKey
+            );
+            nativeConfig.customer(customerConfiguration);
+        }
+
         nativeConfig.allowsDelayedPaymentMethods(config.allowsDelayedPaymentMethods ?? false);
         if (config.googlePayConfig) {
             const googlePay = new com.stripe.android.paymentsheet.PaymentSheet.GooglePayConfiguration(
