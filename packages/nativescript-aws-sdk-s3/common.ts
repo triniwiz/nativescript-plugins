@@ -97,7 +97,7 @@ export enum S3Regions {
   AP_NORTHEAST_2 = 'ap-northeast-2',
   AP_NORTHEAST_3 = 'ap-northeast-3',
   AP_SOUTHEAST_1 = 'ap-southeast-1',
-  AP_SOUTHEAST_2 = 'ap-southeast-1',
+  AP_SOUTHEAST_2 = 'ap-southeast-2',
   CA_CENTRAL_1 = 'ca-central-1',
   CN_NORTH_1 = 'cn-north-1',
   CN_NORTHWEST_1 = 'cn-northwest-1',
