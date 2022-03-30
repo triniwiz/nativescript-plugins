@@ -3,7 +3,7 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.chrisbanes:PhotoView:565505d5cb'
+  implementation 'com.github.chrisbanes:PhotoView:2.3.0'
   implementation 'com.squareup.okhttp3:okhttp:3.14.9'
   implementation 'com.github.bumptech.glide:okhttp3-integration:4.11.0'
   implementation 'jp.wasabeef:glide-transformations:4.1.0'
