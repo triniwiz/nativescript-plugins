@@ -1,7 +1,7 @@
 import {
   Color,
   Device,
-  Enums,
+  CoreTypes,
   Frame,
   Length,
   Screen,
@@ -19,8 +19,8 @@ export class Toasty {
   private _backgroundColor: Color | string;
   private _iOSOpts: ToastyOptions['ios'];
   private _toastStyle;
-  private _x: Length;
-  private _y: Length;
+  private _x: CoreTypes.LengthType;
+  private _y: CoreTypes.LengthType;
   private _tapToDismiss: boolean;
   private _anchorView: any;
 
@@ -120,21 +120,21 @@ export class Toasty {
     }
   }
 
-  set xAxisOffset(value: Length | number) {
+  set xAxisOffset(value: CoreTypes.LengthType | number) {
     this._x = value;
     this._updateToastPosition();
   }
 
-  set yAxisOffset(value: Length | number) {
+  set yAxisOffset(value: CoreTypes.LengthType | number) {
     this._y = value;
     this._updateToastPosition();
   }
 
-  get xAxisOffset(): Length | number {
+  get xAxisOffset(): CoreTypes.LengthType | number {
     return this._x;
   }
 
-  get yAxisOffset(): Length | number {
+  get yAxisOffset(): CoreTypes.LengthType | number {
     return this._y;
   }
 
@@ -358,7 +358,7 @@ export class Toasty {
         let viewController = Frame.topmost().viewController as UIViewController;
         if (viewController.presentedViewController) {
           // on iPad, we don't want to show the toast in the modal, but on iPhone we do
-          if (Device.deviceType !== Enums.DeviceType.Tablet) {
+          if (Device.deviceType !== CoreTypes.DeviceType.Tablet) {
             while (viewController.presentedViewController) {
               viewController = viewController.presentedViewController;
             }

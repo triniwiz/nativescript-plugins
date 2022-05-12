@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-pusher-channels",
+	"sourceRoot": "packages/nativescript-pusher-channels",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-pusher-channels",
+				"tsConfig": "packages/nativescript-pusher-channels/tsconfig.json",
+				"packageJson": "packages/nativescript-pusher-channels/package.json",
+				"main": "packages/nativescript-pusher-channels/index.d.ts",
+				"assets": [
+					"packages/nativescript-pusher-channels/*.md",
+					"packages/nativescript-pusher-channels/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-pusher-channels/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-pusher-channels"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-pusher-channels"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-pusher-channels"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-pusher-channels/**/*.ts"]
+			}
+		}
+	}
+}

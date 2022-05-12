@@ -3,9 +3,12 @@
 	"compilerOptions": {
 		"types": ["node"],
 		"baseUrl": ".",
-    "experimentalDecorators": true,
-    "paths": {
+		"experimentalDecorators": true,
+		"paths": {
 			"@triniwiz/nativescript-accordion": ["../../../dist/packages/nativescript-accordion"]
-		}
-	}
+		},
+		"outDir": "../../../dist/out-tsc",
+		"declarationDir": "../../../dist/out-tsc"
+	},
+	"files": ["index.ts"]
 }

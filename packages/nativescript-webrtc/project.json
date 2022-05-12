@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-webrtc",
+	"sourceRoot": "packages/nativescript-webrtc",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-webrtc",
+				"tsConfig": "packages/nativescript-webrtc/tsconfig.json",
+				"packageJson": "packages/nativescript-webrtc/package.json",
+				"main": "packages/nativescript-webrtc/index.d.ts",
+				"assets": [
+					"packages/nativescript-webrtc/*.md",
+					"packages/nativescript-webrtc/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-webrtc/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-webrtc"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-webrtc"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-webrtc"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-webrtc/**/*.ts"]
+			}
+		}
+	}
+}

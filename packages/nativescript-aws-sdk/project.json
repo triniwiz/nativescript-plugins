@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-aws-sdk",
+	"sourceRoot": "packages/nativescript-aws-sdk",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-aws-sdk",
+				"tsConfig": "packages/nativescript-aws-sdk/tsconfig.json",
+				"packageJson": "packages/nativescript-aws-sdk/package.json",
+				"main": "packages/nativescript-aws-sdk/index.d.ts",
+				"assets": [
+					"packages/nativescript-aws-sdk/*.md",
+					"packages/nativescript-aws-sdk/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-aws-sdk/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-aws-sdk"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-aws-sdk"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-aws-sdk"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-aws-sdk/**/*.ts"]
+			}
+		}
+	}
+}

@@ -5,6 +5,9 @@
 		"baseUrl": ".",
 		"paths": {
 			"@triniwiz/nativescript-youtubeplayer": ["../../../dist/packages/nativescript-youtubeplayer"]
-		}
-	}
+		},
+		"outDir": "../../../dist/out-tsc",
+		"declarationDir": "../../../dist/out-tsc"
+	},
+	"files": ["index.ts"]
 }

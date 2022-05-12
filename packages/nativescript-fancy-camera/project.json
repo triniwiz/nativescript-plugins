@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-fancy-camera",
+	"sourceRoot": "packages/nativescript-fancy-camera",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-fancy-camera",
+				"tsConfig": "packages/nativescript-fancy-camera/tsconfig.json",
+				"packageJson": "packages/nativescript-fancy-camera/package.json",
+				"main": "packages/nativescript-fancy-camera/index.d.ts",
+				"assets": [
+					"packages/nativescript-fancy-camera/*.md",
+					"packages/nativescript-fancy-camera/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-fancy-camera/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-fancy-camera"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-fancy-camera"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-fancy-camera"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-fancy-camera/**/*.ts"]
+			}
+		}
+	}
+}

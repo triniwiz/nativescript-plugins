@@ -1,0 +1,79 @@
+{
+	"root": "packages/nativescript-stripe",
+	"sourceRoot": "packages/nativescript-stripe",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-stripe",
+				"tsConfig": "packages/nativescript-stripe/tsconfig.json",
+				"packageJson": "packages/nativescript-stripe/package.json",
+				"main": "packages/nativescript-stripe/index.d.ts",
+				"assets": [
+					"packages/nativescript-stripe/*.md",
+					"packages/nativescript-stripe/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-stripe/platforms/",
+						"output": "./platforms/"
+					},
+					{
+						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-stripe/paymentMethod/",
+						"output": "./paymentMethod/"
+					},
+					{
+						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-stripe/source/",
+						"output": "./source/"
+					},
+					{
+						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-stripe/standard/",
+						"output": "./standard/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-stripe"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-stripe"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-stripe"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-stripe/**/*.ts"]
+			}
+		}
+	}
+}

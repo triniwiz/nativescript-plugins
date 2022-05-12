@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-splashscreen",
+	"sourceRoot": "packages/nativescript-splashscreen",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-splashscreen",
+				"tsConfig": "packages/nativescript-splashscreen/tsconfig.json",
+				"packageJson": "packages/nativescript-splashscreen/package.json",
+				"main": "packages/nativescript-splashscreen/index.d.ts",
+				"assets": [
+					"packages/nativescript-splashscreen/*.md",
+					"packages/nativescript-splashscreen/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-splashscreen/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-splashscreen"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-splashscreen"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-splashscreen"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-splashscreen/**/*.ts"]
+			}
+		}
+	}
+}

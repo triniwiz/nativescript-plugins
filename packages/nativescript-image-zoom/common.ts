@@ -1,5 +1,4 @@
-import {ImageAsset, ImageSource, Property, View} from "@nativescript/core";
-import {Stretch} from "@nativescript/core/ui/image";
+import {ImageAsset, ImageSource, Property, View, CoreTypes} from "@nativescript/core";
 
 export class ImageZoomBase extends View {
   src: string;
@@ -14,7 +13,7 @@ export const resizeProperty = new Property<ImageZoomBase, string>({
   name: 'resize'
 });
 
-export const stretchProperty = new Property<ImageZoomBase, Stretch>({
+export const stretchProperty = new Property<ImageZoomBase, CoreTypes.ImageStretchType>({
   name: 'stretch'
 });
 

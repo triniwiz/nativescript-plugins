@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-parsesdk",
+	"sourceRoot": "packages/nativescript-parsesdk",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-parsesdk",
+				"tsConfig": "packages/nativescript-parsesdk/tsconfig.json",
+				"packageJson": "packages/nativescript-parsesdk/package.json",
+				"main": "packages/nativescript-parsesdk/index.d.ts",
+				"assets": [
+					"packages/nativescript-parsesdk/*.md",
+					"packages/nativescript-parsesdk/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-parsesdk/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-parsesdk"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-parsesdk"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-parsesdk"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-parsesdk/**/*.ts"]
+			}
+		}
+	}
+}

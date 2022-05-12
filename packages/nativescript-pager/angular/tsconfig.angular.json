@@ -5,6 +5,9 @@
 		"baseUrl": ".",
 		"paths": {
 			"@triniwiz/nativescript-pager": ["../../../dist/packages/nativescript-pager"]
-		}
-	}
+		},
+		"outDir": "../../../dist/out-tsc",
+		"declarationDir": "../../../dist/out-tsc"
+	},
+	"files": ["index.ts"]
 }

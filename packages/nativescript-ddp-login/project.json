@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-ddp-login",
+	"sourceRoot": "packages/nativescript-ddp-login",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-ddp-login",
+				"tsConfig": "packages/nativescript-ddp-login/tsconfig.json",
+				"packageJson": "packages/nativescript-ddp-login/package.json",
+				"main": "packages/nativescript-ddp-login/index.d.ts",
+				"assets": [
+					"packages/nativescript-ddp-login/*.md",
+					"packages/nativescript-ddp-login/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-ddp-login/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-ddp-login"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-ddp-login"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-ddp-login"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-ddp-login/**/*.ts"]
+			}
+		}
+	}
+}

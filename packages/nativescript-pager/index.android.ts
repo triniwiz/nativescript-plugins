@@ -105,6 +105,7 @@ export class Pager extends PagerBase {
     this._views = value;
   }
 
+  // @ts-ignore
   get android() {
     return this.nativeViewProtected;
   }

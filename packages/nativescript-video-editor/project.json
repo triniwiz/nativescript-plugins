@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-video-editor",
+	"sourceRoot": "packages/nativescript-video-editor",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-video-editor",
+				"tsConfig": "packages/nativescript-video-editor/tsconfig.json",
+				"packageJson": "packages/nativescript-video-editor/package.json",
+				"main": "packages/nativescript-video-editor/index.d.ts",
+				"assets": [
+					"packages/nativescript-video-editor/*.md",
+					"packages/nativescript-video-editor/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-video-editor/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-video-editor"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-video-editor"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-video-editor"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-video-editor/**/*.ts"]
+			}
+		}
+	}
+}

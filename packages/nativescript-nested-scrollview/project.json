@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-nested-scrollview",
+	"sourceRoot": "packages/nativescript-nested-scrollview",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-nested-scrollview",
+				"tsConfig": "packages/nativescript-nested-scrollview/tsconfig.json",
+				"packageJson": "packages/nativescript-nested-scrollview/package.json",
+				"main": "packages/nativescript-nested-scrollview/index.d.ts",
+				"assets": [
+					"packages/nativescript-nested-scrollview/*.md",
+					"packages/nativescript-nested-scrollview/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-nested-scrollview/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-nested-scrollview"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-nested-scrollview"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-nested-scrollview"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-nested-scrollview/**/*.ts"]
+			}
+		}
+	}
+}

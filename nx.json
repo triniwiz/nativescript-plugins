@@ -13,187 +13,21 @@
 		"tslint.json": "*",
 		"nx.json": "*"
 	},
-	"projects": {
-		"docs": {
-			"tags": []
-		},
-		"demo": {
-			"tags": []
-		},
-		"demo-angular": {
-			"tags": []
-		},
-		"demo-react": {
-			"tags": []
-		},
-		"demo-vue": {
-			"tags": []
-		},
-		"all": {
-			"tags": []
-		},
-		"nativescript-couchbase": {
-			"tags": []
-		},
-		"nativescript-stripe": {
-			"tags": []
-		},
-		"nativescript-toasty": {
-			"tags": []
-		},
-		"nativescript-image-cache-it": {
-			"tags": []
-		},
-		"nativescript-socketio": {
-			"tags": []
-		},
-		"nativescript-webrtc": {
-			"tags": []
-		},
-		"nativescript-accordion": {
-			"tags": []
-		},
-		"nativescript-downloader": {
-			"tags": []
-		},
-		"nativescript-radar-io": {
-			"tags": []
-		},
-		"nativescript-youtubeplayer": {
-			"tags": []
-		},
-		"nativescript-image-zoom": {
-			"tags": []
-		},
-		"nativescript-sse": {
-			"tags": []
-		},
-		"nativescript-star-ratings": {
-			"tags": []
-		},
-		"nativescript-awesome-loaders": {
-			"tags": []
-		},
-		"nativescript-textdrawable": {
-			"tags": []
-		},
-		"nativescript-pubnub": {
-			"tags": []
-		},
-		"nativescript-popup": {
-			"tags": []
-		},
-		"nativescript-nested-scrollview": {
-			"tags": []
-		},
-		"nativescript-tooltip": {
-			"tags": []
-		},
-		"nativescript-twitter": {
-			"tags": []
-		},
-		"nativescript-splashscreen": {
-			"tags": []
-		},
-		"nativescript-fancy-list-view": {
-			"tags": []
-		},
-		"nativescript-autocomplete": {
-			"tags": []
-		},
-		"nativescript-here": {
-			"tags": []
-		},
-		"nativescript-video-editor": {
-			"tags": []
-		},
-		"nativescript-ffmpeg": {
-			"tags": []
-		},
-		"nativescript-imageoptimize": {
-			"tags": []
-		},
-		"nativescript-aws-sdk": {
-			"tags": []
-		},
-		"nativescript-card-io": {
-			"tags": []
-		},
-		"nativescript-sinch": {
-			"tags": []
-		},
-		"nativescript-ddp-login": {
-			"tags": []
-		},
-		"nativescript-fancy-camera": {
-			"tags": []
-		},
-		"nativescript-mongo-stitch-core": {
-			"tags": []
-		},
-		"nativescript-mongo-stitch-services-mongodb-remote": {
-			"tags": []
-		},
-		"nativescript-mongo-stitch-sdk": {
-			"tags": []
-		},
-		"nativescript-pusher-channels": {
-			"tags": []
-		},
-		"nativescript-pusher-beams": {
-			"tags": []
-		},
-		"nativescript-aws-sdk-s3": {
-			"tags": []
-		},
-		"nativescript-videorecorder": {
-			"tags": []
-		},
-		"nativescript-pager": {
-			"tags": []
-		},
-		"nativescript-accelerometer": {
-			"tags": []
-		},
-		"server-demo": {
-			"tags": []
-		},
-		"nativescript-file-manager": {
-			"tags": []
-		},
-		"nativescript-yogalayout": {
-			"tags": []
-		},
-		"nativescript-kin": {
-			"tags": []
-		},
-		"demo-server": {
-			"tags": []
-		},
-		"nativescript-parsesdk": {
-			"tags": []
-		},
-		"nativescript-supabase": {
-			"tags": []
-		},
-		"nativescript-supabase-gotrue": {
-			"tags": []
-		},
-		"nativescript-supabase-postgrest": {
-			"tags": []
-		},
-		"nativescript-supabase-realtime": {
-			"tags": []
-		},
-		"nativescript-supabase-storage": {
-			"tags": []
-		},
-		"nativescript-opentok": {
-			"tags": []
-		}
-	},
 	"workspaceLayout": {
 		"appsDir": "apps",
 		"libsDir": "packages"
-	}
+	},
+	"tasksRunnerOptions": {
+		"default": {
+			"runner": "@nrwl/workspace/tasks-runners/default",
+			"options": {
+				"cacheableOperations": ["build", "build.all", "lint", "test", "e2e"],
+				"runtimeCacheInputs": ["node -v"]
+			}
+		}
+	},
+	"cli": {
+		"defaultCollection": "@nrwl/node"
+	},
+	"defaultProject": "server-demo"
 }

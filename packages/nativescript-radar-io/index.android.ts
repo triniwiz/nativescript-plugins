@@ -134,7 +134,7 @@ export class RadarIO {
   }
 
   public static requestPermissions(background: boolean) {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       const sdkVersion = android.os.Build.VERSION.SDK_INT;
       const requestCode = 1010;
       const ActivityCompat = androidx.core.app.ActivityCompat;
@@ -456,7 +456,7 @@ export class RadarIO {
       nativeLocation.setLatitude(location.longitude);
       nativeLocation.setAccuracy(location.accuracy);
       io.radar.sdk.Radar.updateLocation(nativeLocation, new io.radar.sdk.Radar.RadarCallback({
-        onComplete(_status: io.radar.sdk.Radar.RadarStatus, location: android.location.Location, events: native.Array<io.radar.sdk.model.RadarEvent>, user: io.radar.sdk.model.RadarUser): void {
+        onComplete(_status: io.radar.sdk.Radar.RadarStatus, location: android.location.Location, events: androidNative.Array<io.radar.sdk.model.RadarEvent>, user: io.radar.sdk.model.RadarUser): void {
           if (_status === io.radar.sdk.Radar.RadarStatus.SUCCESS) {
             const response: RadarIOResult = {
               status: RadarIO.getStatus(_status),

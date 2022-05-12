@@ -43,7 +43,7 @@ export class User extends UserBase {
   }
 
   static logOut() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       com.parse.ParseUser.logOutInBackground(new com.parse.LogOutCallback({
         done(param0: com.parse.ParseException): void {
           if (param0) {
@@ -61,7 +61,7 @@ export class User extends UserBase {
   }
 
   signUp() {
-    return new Promise((resolve, reject) => {
+    return new Promise<void>((resolve, reject) => {
       this.android.signUpInBackground(new com.parse.SignUpCallback({
         done(ex: com.parse.ParseException): void {
           if (ex) {

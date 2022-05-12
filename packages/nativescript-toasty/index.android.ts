@@ -1,4 +1,4 @@
-import {Application, Color, Length, Screen, Utils} from '@nativescript/core';
+import {Application, Color, CoreTypes, Screen, Utils} from '@nativescript/core';
 import {ToastDuration, ToastPosition, ToastyOptions} from './common';
 
 export {ToastDuration, ToastPosition, ToastyOptions} from './common';
@@ -47,8 +47,8 @@ export class Toasty {
   private _toastTextView: android.widget.TextView;
   private _screenHeight: number;
   private _screenWidth: number;
-  private _x: Length | number;
-  private _y: Length | number;
+  private _x: CoreTypes.LengthType | number;
+  private _y: CoreTypes.LengthType | number;
   private _tapToDismiss: boolean;
   private _anchorView: any;
   private static _SNACKBAR_TEXT_ID: number;
@@ -154,21 +154,21 @@ export class Toasty {
     }
   }
 
-  set xAxisOffset(value: Length | number) {
+  set xAxisOffset(value: CoreTypes.LengthType | number) {
     this._x = value;
     this._updateToastPosition();
   }
 
-  set yAxisOffset(value: Length | number) {
+  set yAxisOffset(value: CoreTypes.LengthType | number) {
     this._y = value;
     this._updateToastPosition();
   }
 
-  get xAxisOffset(): Length | number {
+  get xAxisOffset(): CoreTypes.LengthType | number {
     return this._x;
   }
 
-  get yAxisOffset(): Length | number {
+  get yAxisOffset(): CoreTypes.LengthType | number {
     return this._y;
   }
 

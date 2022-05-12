@@ -113,14 +113,17 @@ export class View extends ViewBase {
 		}
 	}
 
+	// @ts-ignore
 	get ios() {
 		return this.nativeView;
 	}
 
+	// @ts-ignore
 	get yoga() {
 		return this.nativeView.yoga;
 	}
 
+	// @ts-ignore
 	get yogaNode() {
 		return this.nativeView.yoga as any;
 	}
@@ -164,6 +167,7 @@ export class View extends ViewBase {
 		return this.nativeView.yoga.height.value;
 	}
 
+	// @ts-ignore
 	set minWidth(value) {
 		this.style.minWidth = value;
 		this._updateMinWidth(value);
@@ -173,6 +177,7 @@ export class View extends ViewBase {
 		return this.style.minWidth;
 	}
 
+	// @ts-ignore
 	set maxWidth(value) {
 		this.style.maxWidth = value;
 		this._updateMaxWidth(value);
@@ -182,6 +187,7 @@ export class View extends ViewBase {
 		return this.style.maxWidth;
 	}
 
+	// @ts-ignore
 	set maxHeight(value) {
 		this.style.maxHeight = value;
 		this._updateMaxHeight(value);
@@ -191,6 +197,7 @@ export class View extends ViewBase {
 		return this.style.maxHeight;
 	}
 
+	// @ts-ignore
 	set left(value) {
 		this.style.left = value;
 		this._updateLeft(value);
@@ -215,6 +222,7 @@ export class View extends ViewBase {
 		return this._getPositionValue('top');
 	}
 
+	// @ts-ignore
 	set right(value) {
 		this.style.right = value;
 		this._updateRight(value);
@@ -227,6 +235,7 @@ export class View extends ViewBase {
 		return this._getPositionValue('right');
 	}
 
+	// @ts-ignore
 	set bottom(value) {
 		this.style.bottom = value;
 		this._updateBottom(value);
@@ -278,6 +287,7 @@ export class View extends ViewBase {
 		this._updatePaddingLeft(value);
 	}
 
+	// @ts-ignore
 	set margin(value) {
 		this.style.margin = value;
 	}
@@ -320,6 +330,7 @@ export class View extends ViewBase {
 		this._updateAlignSelf(value);
 	}
 
+	// @ts-ignore
 	set flex(value) {
 		this.style.flex = value;
 		this._updateFlex(value);
@@ -329,6 +340,7 @@ export class View extends ViewBase {
 		return this.style.flex;
 	}
 
+	// @ts-ignore
 	get flexGrow(){
 		return this.style.flexGrow;
 	}
@@ -338,7 +350,7 @@ export class View extends ViewBase {
 		this._updateFlexGrow(value);
 	}
 
-
+	// @ts-ignore
 	get flexShrink(){
 		return this.style.flexShrink;
 	}
@@ -357,8 +369,7 @@ export class View extends ViewBase {
 		this._updateFlexBasis(value);
 	}
 
-
-
+	// @ts-ignore
 	set flexDirection(value) {
 		this.style.flexDirection = value;
 		this._updateFlexDirection(value);
@@ -368,6 +379,7 @@ export class View extends ViewBase {
 		return this.style.flexDirection as FlexDirection;
 	}
 
+	// @ts-ignore
 	set position(value) {
 		this.style.position = value;
 		this._updatePosition(value);
