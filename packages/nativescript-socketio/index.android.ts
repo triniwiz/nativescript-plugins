@@ -68,9 +68,9 @@ export class SocketIO extends Common {
 						if (!headers.isEmpty()) {
 							opts.setExtraHeaders(headers);
 						}
-					} else {
-						opts[key] = options[key];
-					}
+					} else if (opts['set' + key[0].toUpperCase() + key.substring(1)]) {
+            opts['set' + key[0].toUpperCase() + key.substring(1)](options[key]); // for example transforms to setPath(options[path])
+          }
 				}
 				this.socket = io.socket.client.IO.socket(args[0], opts.build());
 				break;
