@@ -303,7 +303,7 @@ Get a list of documents by id
 ### updateDocument(...)
 
 ```ts
- updateDocument(documentId: string, data: Object, concurrencyMode?: ConcurrencyMode): void;
+ updateDocument(documentId: string, data: Object, concurrencyMode?: ConcurrencyMode): boolean;
 ```
 
 |      Param      |                      Type                       |
