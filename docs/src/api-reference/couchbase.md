@@ -321,7 +321,7 @@ Updates a document
 ### deleteDocument(...)
 
 ```ts
- deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): void;
+ deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): boolean;
 ```
 
 |   Param    |                      Type                       |
