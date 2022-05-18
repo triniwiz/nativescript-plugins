@@ -59,51 +59,61 @@ export class ImageZoom extends ImageZoomBase {
 		return 0;
 	}
 
+	// @ts-ignore
 	set borderRadius(value: any) {
 		this.style.borderRadius = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderWidth(value: any) {
 		this.style.borderWidth = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderLeftWidth(value: any) {
 		this.style.borderLeftWidth = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderRightWidth(value: any) {
 		this.style.borderRightWidth = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderBottomWidth(value: any) {
 		this.style.borderBottomWidth = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderTopWidth(value: any) {
 		this.style.borderTopWidth = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderBottomLeftRadius(value: any) {
 		this.style.borderBottomLeftRadius = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderBottomRightRadius(value: any) {
 		this.style.borderBottomRightRadius = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderTopLeftRadius(value: any) {
 		this.style.borderTopLeftRadius = value;
 		this.setBorderAndRadius();
 	}
 
+	// @ts-ignore
 	set borderTopRightRadius(value: any) {
 		this.style.borderTopRightRadius = value;
 		this.setBorderAndRadius();

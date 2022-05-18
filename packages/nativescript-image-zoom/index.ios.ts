@@ -6,8 +6,7 @@ import {
   stretchProperty,
   zoomScaleProperty
 } from './common';
-import {ImageSource, knownFolders, Utils, path} from "@nativescript/core";
-import {Stretch} from "@nativescript/core/ui/image";
+import {ImageSource, knownFolders, Utils, path, CoreTypes} from "@nativescript/core";
 
 export class ImageZoom extends ImageZoomBase {
   _image: any;
@@ -93,7 +92,7 @@ export class ImageZoom extends ImageZoomBase {
     }
   }
 
-  [stretchProperty.setNative](stretch: Stretch) {
+  [stretchProperty.setNative](stretch: CoreTypes.ImageStretchType) {
     this._image.stretch = stretch;
   }
 
