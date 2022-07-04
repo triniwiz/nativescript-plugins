@@ -46,7 +46,7 @@ export class User extends UserBase {
         if (error) {
           reject(error?.localizedDescription)
         } else {
-          resolve();
+          resolve(null);
         }
       });
     });

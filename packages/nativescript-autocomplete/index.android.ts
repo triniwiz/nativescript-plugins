@@ -14,6 +14,7 @@ export class AutoComplete extends AutoCompleteBase {
     super();
   }
 
+  // @ts-ignore
   get android(): android.widget.AutoCompleteTextView {
     return this._android;
   }

@@ -54,14 +54,14 @@ export abstract class AccordionBase extends ContainerView {
   public _effectiveItemHeaderRowHeight: number = autoEffectiveRowHeight;
   public _effectiveItemContentRowHeight: number = autoEffectiveRowHeight;
   public _effectiveFooterRowHeight: number = autoEffectiveRowHeight;
-  headerRowHeight: Length;
-  itemHeaderRowHeight: Length;
-  itemContentRowHeight: Length;
-  footerRowHeight: Length;
-  iosEstimatedHeaderRowHeight: Length;
-  iosEstimatedItemHeaderRowHeight: Length;
-  iosEstimatedItemContentRowHeight: Length;
-  iosEstimatedFooterRowHeight: Length;
+  headerRowHeight: CoreTypes.LengthType;
+  itemHeaderRowHeight: CoreTypes.LengthType;
+  itemContentRowHeight: CoreTypes.LengthType;
+  footerRowHeight: CoreTypes.LengthType;
+  iosEstimatedHeaderRowHeight: CoreTypes.LengthType;
+  iosEstimatedItemHeaderRowHeight: CoreTypes.LengthType;
+  iosEstimatedItemContentRowHeight: CoreTypes.LengthType;
+  iosEstimatedFooterRowHeight: CoreTypes.LengthType;
   public static selectedIndexesChangeEvent = 'selectedIndexesChange';
   public static knownFunctions = [
     'itemHeaderTemplateSelector', 'itemContentTemplateSelector', 'headerTemplateSelector',
@@ -394,19 +394,19 @@ export abstract class AccordionBase extends ContainerView {
     }
   }
 
-  public _onHeaderRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onHeaderRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     this.refresh();
   }
 
-  public _onItemHeaderRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onItemHeaderRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     this.refresh();
   }
 
-  public _onItemContentRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onItemContentRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     this.refresh();
   }
 
-  public _onFooterRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onFooterRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     this.refresh();
   }
 

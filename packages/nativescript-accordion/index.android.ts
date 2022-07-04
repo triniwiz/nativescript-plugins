@@ -95,6 +95,7 @@ export class Accordion extends AccordionBase {
     }
   }
 
+  // @ts-ignore
   get android() {
     return this.nativeView;
   }

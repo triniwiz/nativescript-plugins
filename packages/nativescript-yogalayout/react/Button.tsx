@@ -21,5 +21,6 @@ export interface RNButtonProps extends Omit<NativeScriptProps<ButtonAttributes, 
 export function Button(props: RNButtonProps){
     const { onPress, title, ...otherProps } = props;
 
+    // @ts-ignore
     return (<button color="black" text={title} {...mapEventHandlersRNToRNS(otherProps)}/>);
 };

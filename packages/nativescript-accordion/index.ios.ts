@@ -8,7 +8,8 @@ import {
   Observable,
   ProxyViewContainer,
   StackLayout,
-  Utils
+  Utils,
+  CoreTypes
 } from '@nativescript/core';
 import {
   AccordionBase,
@@ -212,6 +213,7 @@ export class Accordion extends AccordionBase {
     this.ios.clipsToBounds = true;
   }
 
+  // @ts-ignore
   get ios() {
     return this.nativeViewProtected;
   }
@@ -844,7 +846,7 @@ export class Accordion extends AccordionBase {
     });
   }
 
-  public _onHeaderRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onHeaderRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     const value = Utils.layout.toDeviceIndependentPixels(this._effectiveHeaderRowHeight);
     const nativeView = this.ios;
 
@@ -865,7 +867,7 @@ export class Accordion extends AccordionBase {
     super._onItemHeaderRowHeightPropertyChanged(oldValue, newValue);
   }
 
-  public _onItemHeaderRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onItemHeaderRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     const value = Utils.layout.toDeviceIndependentPixels(this._effectiveItemHeaderRowHeight);
     const nativeView = this.ios;
 
@@ -886,7 +888,7 @@ export class Accordion extends AccordionBase {
     super._onItemHeaderRowHeightPropertyChanged(oldValue, newValue);
   }
 
-  public _onItemContentRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onItemContentRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     const value = Utils.layout.toDeviceIndependentPixels(this._effectiveItemContentRowHeight);
     const nativeView = this.ios;
 
@@ -907,7 +909,7 @@ export class Accordion extends AccordionBase {
     super._onItemContentRowHeightPropertyChanged(oldValue, newValue);
   }
 
-  public _onFooterRowHeightPropertyChanged(oldValue: Length, newValue: Length) {
+  public _onFooterRowHeightPropertyChanged(oldValue: CoreTypes.LengthType, newValue: CoreTypes.LengthType) {
     const value = Utils.layout.toDeviceIndependentPixels(this._effectiveFooterRowHeight);
     const nativeView = this.ios;
 
@@ -995,42 +997,42 @@ export class Accordion extends AccordionBase {
     this.refresh();
   }
 
-  [iosEstimatedHeaderRowHeightProperty.getDefault](): Length {
+  [iosEstimatedHeaderRowHeightProperty.getDefault]() {
     return DEFAULT_HEIGHT;
   }
 
-  [iosEstimatedHeaderRowHeightProperty.setNative](value: Length) {
+  [iosEstimatedHeaderRowHeightProperty.setNative](value: CoreTypes.LengthType) {
     const nativeView = this.ios;
     const estimatedHeight = Length.toDevicePixels(value, 0);
     nativeView.estimatedHeaderRowHeight = estimatedHeight < 0 ? DEFAULT_HEIGHT : estimatedHeight;
   }
 
-  [iosEstimatedItemHeaderRowHeightProperty.getDefault](): Length {
+  [iosEstimatedItemHeaderRowHeightProperty.getDefault]() {
     return DEFAULT_HEIGHT;
   }
 
-  [iosEstimatedItemHeaderRowHeightProperty.setNative](value: Length) {
+  [iosEstimatedItemHeaderRowHeightProperty.setNative](value: CoreTypes.LengthType) {
     const nativeView = this.ios;
     const estimatedHeight = Length.toDevicePixels(value, 0);
     nativeView.estimatedItemHeaderRowHeight = estimatedHeight < 0 ? DEFAULT_HEIGHT : estimatedHeight;
   }
 
-  [iosEstimatedItemContentRowHeightProperty.getDefault](): Length {
+  [iosEstimatedItemContentRowHeightProperty.getDefault]() {
     return DEFAULT_HEIGHT;
   }
 
-  [iosEstimatedItemContentRowHeightProperty.setNative](value: Length) {
+  [iosEstimatedItemContentRowHeightProperty.setNative](value: CoreTypes.LengthType) {
     const nativeView = this.ios;
     const estimatedHeight = Length.toDevicePixels(value, 0);
     nativeView.estimatedItemContentRowHeight = estimatedHeight < 0 ? DEFAULT_HEIGHT : estimatedHeight;
   }
 
 
-  [iosEstimatedFooterRowHeightProperty.getDefault](): Length {
+  [iosEstimatedFooterRowHeightProperty.getDefault]() {
     return DEFAULT_HEIGHT;
   }
 
-  [iosEstimatedFooterRowHeightProperty.setNative](value: Length) {
+  [iosEstimatedFooterRowHeightProperty.setNative](value: CoreTypes.LengthType) {
     const nativeView = this.ios;
     const estimatedHeight = Length.toDevicePixels(value, 0);
     nativeView.estimatedFooterRowHeight = estimatedHeight < 0 ? DEFAULT_HEIGHT : estimatedHeight;

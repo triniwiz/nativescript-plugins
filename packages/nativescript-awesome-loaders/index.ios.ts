@@ -6,6 +6,7 @@ import {layout} from "@nativescript/core/utils";
 export class AwesomeLoaders extends AwesomeLoadersBase {
   private _ios: NVActivityIndicatorView; /* NVActivityIndicatorView */
 
+  // @ts-ignore
   get ios() /* NVActivityIndicatorView */ {
     return this._ios;
   }

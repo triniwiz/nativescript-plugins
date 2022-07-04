@@ -210,6 +210,7 @@ export class View extends ViewBase {
 		return this._getPositionValue('left');
 	}
 
+	// @ts-ignore
 	set top(value) {
 		this.style.top = value;
 		this._updateTop(value);
@@ -397,6 +398,7 @@ export class View extends ViewBase {
 		this._updateAspectRatio(value);
 	}
 
+	// @ts-ignore
 	get start() {
 		return this.style.start;
 	}
@@ -405,6 +407,7 @@ export class View extends ViewBase {
 		this._updateStart(value);
 	}
 
+	// @ts-ignore
 	get end() {
 		return this.style.end;
 	}
@@ -413,6 +416,7 @@ export class View extends ViewBase {
 		this._updateEnd(value);
 	}
 
+	// @ts-ignore
 	get direction() {
 		if (this.nativeView) {
 			switch (this.nativeView.yoga.direction) {
@@ -431,6 +435,7 @@ export class View extends ViewBase {
 		this._updateDirection(value);
 	}
 
+	// @ts-ignore
 	get marginVertical(): any {
 		return this.style.marginVertical;
 	}
@@ -440,6 +445,7 @@ export class View extends ViewBase {
 		this._updateMarginVertical(value);
 	}
 
+	// @ts-ignore
 	get marginHorizontal(): any {
 		return this.style.marginHorizontal;
 	}
@@ -449,6 +455,7 @@ export class View extends ViewBase {
 		this._updateMarginHorizontal(value);
 	}
 
+	// @ts-ignore
 	get paddingHorizontal() {
 		return this.style.paddingHorizontal;
 	}
@@ -458,6 +465,7 @@ export class View extends ViewBase {
 		this._updatePaddingHorizontal(value);
 	}
 
+	// @ts-ignore
 	get paddingVertical() {
 		return this.style.paddingVertical;
 	}

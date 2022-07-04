@@ -42,6 +42,7 @@ export class View extends ViewBase {
   nativeView: com.facebook.yoga.android.YogaLayout;
   _yogaNode: com.facebook.yoga.YogaNode;
 
+  // @ts-ignore
   get yogaNode(): com.facebook.yoga.YogaNode {
     if (!this._yogaNode) {
       if (this.nativeView) {
@@ -194,10 +195,12 @@ export class View extends ViewBase {
     });
   }
 
+  // @ts-ignore
   get android() {
     return this.nativeView;
   }
 
+  // @ts-ignore
   get yoga() {
     return this.nativeView;
   }
@@ -235,6 +238,7 @@ export class View extends ViewBase {
     return this.yogaNode.getHeight().value;
   }
 
+  // @ts-ignore
   set left(value) {
     this.style.left = value;
     this._updateLeft(value);
@@ -247,6 +251,7 @@ export class View extends ViewBase {
     return this._getPositionValue("left");
   }
 
+  // @ts-ignore
   set top(value) {
     this.style.top = value;
     this._updateTop(value);
@@ -259,6 +264,7 @@ export class View extends ViewBase {
     return this._getPositionValue("top");
   }
 
+  // @ts-ignore
   set right(value) {
     this.style.right = value;
     this._updateRight(value);
@@ -271,6 +277,7 @@ export class View extends ViewBase {
     return this._getPositionValue("right");
   }
 
+  // @ts-ignore
   set bottom(value) {
     this.style.bottom = value;
     this._updateBottom(value);
@@ -283,7 +290,7 @@ export class View extends ViewBase {
     return this._getPositionValue("bottom");
   }
 
-
+  // @ts-ignore
   set minWidth(value) {
     this.style.minWidth = value;
     this._updateMinWidth(value);
@@ -294,7 +301,7 @@ export class View extends ViewBase {
     return this.style.minWidth;
   }
 
-
+  // @ts-ignore
   set maxWidth(value) {
     this.style.maxWidth = value;
     this._updateMaxWidth(value);
@@ -305,7 +312,7 @@ export class View extends ViewBase {
     return this.style.maxWidth;
   }
 
-
+  // @ts-ignore
   set maxHeight(value) {
     this.style.maxHeight = value;
     this._updateMaxHeight(value);
@@ -316,7 +323,7 @@ export class View extends ViewBase {
     return this.style.maxHeight;
   }
 
-
+  // @ts-ignore
   set alignItems(value) {
     this.style.alignItems = value;
     this._updateAlignItems(value);
@@ -326,6 +333,7 @@ export class View extends ViewBase {
     return this.style.alignItems as FlexAlignItems;
   }
 
+  // @ts-ignore
   set overflow(value) {
     this.style.overflow = value;
     this._updateOverflow(value);
@@ -335,6 +343,7 @@ export class View extends ViewBase {
     return this.style.overflow;
   }
 
+  // @ts-ignore
   set position(value) {
     this.style.position = value;
     this._updatePosition(value);
@@ -364,6 +373,7 @@ export class View extends ViewBase {
     this._updatePaddingLeft(value);
   }
 
+  // @ts-ignore
   set margin(value) {
     this.style.margin = value;
   }
@@ -422,6 +432,7 @@ export class View extends ViewBase {
     this._updateFlexBasis(value);
   }
 
+  // @ts-ignore
   get flexDirection() {
     return this.style.flexDirection as any;
   }
@@ -439,6 +450,7 @@ export class View extends ViewBase {
     this._updateAspectRatio(value);
   }
 
+  // @ts-ignore
   get start() {
     return this.style.start;
   }
@@ -448,6 +460,7 @@ export class View extends ViewBase {
     this._updateStart(value);
   }
 
+  // @ts-ignore
   get end() {
     return this.style.end;
   }
@@ -457,6 +470,7 @@ export class View extends ViewBase {
     this._updateEnd(value);
   }
 
+  // @ts-ignore
   get direction() {
     if (!this.nativeView) {
       return Direction.Inherit;
@@ -469,6 +483,7 @@ export class View extends ViewBase {
     this._updateDirection(value);
   }
 
+  // @ts-ignore
   get marginVertical(): any {
     return this.style.marginVertical;
   }
@@ -478,6 +493,7 @@ export class View extends ViewBase {
     this._updateMarginVertical(value);
   }
 
+  // @ts-ignore
   get marginHorizontal(): any {
     return this.style.marginHorizontal;
   }
@@ -487,6 +503,7 @@ export class View extends ViewBase {
     this._updateMarginHorizontal(value);
   }
 
+  // @ts-ignore
   get paddingHorizontal() {
     return this.style.paddingHorizontal;
   }
@@ -496,6 +513,7 @@ export class View extends ViewBase {
     this._updatePaddingHorizontal(value);
   }
 
+  // @ts-ignore
   get paddingVertical() {
     return this.style.paddingVertical;
   }
@@ -534,9 +552,11 @@ export class View extends ViewBase {
         position: child.style.position
       };
 
+      // @ts-ignore
       if (child.style.minWidth !== 'none') {
         json['minWidth'] = child.style.minWidth;
       }
+      // @ts-ignore
       if (child.style.minHeight !== 'none') {
         json['minHeight'] = child.style.minHeight;
       }

@@ -238,7 +238,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		}
 	}
 
-	paymentContextDidUpdateShippingAddressCompletion(_paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<PKShippingMethod>, p4: PKShippingMethod) => void): void {
+	paymentContextDidUpdateShippingAddressCompletion(_paymentContext: STPPaymentContext, address: STPAddress, completion: (p1: STPShippingStatus, p2: NSError, p3: NSArray<any>, p4: any) => void): void {
 		const jsAddress = createAddress(address);
 		const methods = this.listener.provideShippingMethods(jsAddress);
 		const isValid = this.listener.provideShippingInformationValidation(jsAddress);
@@ -248,7 +248,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		} else if (!isValid) {
 			completion(STPShippingStatus.Invalid, createError('ShippingError', 123, errorMessage), null, null);
 		} else {
-			let sh = <NSMutableArray<PKShippingMethod>>NSMutableArray.alloc().init();
+			let sh = <NSMutableArray<any>>NSMutableArray.alloc().init();
 			methods.shippingMethods.forEach((m) => sh.addObject(createPKShippingMethod(m)));
 			completion(STPShippingStatus.Valid, null, sh, createPKShippingMethod(methods.selectedShippingMethod));
 		}
@@ -356,13 +356,19 @@ function createShippingMethod(paymentContext: STPPaymentContext): StripeStandard
 	};
 }
 
-function createPKShippingMethod(method: StripeStandardShippingMethod): PKShippingMethod {
-	let m = PKShippingMethod.alloc().init();
-	m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount / 100);
-	m.detail = method.detail;
-	m.label = method.label;
-	m.identifier = method.identifier;
-	return m;
+function createPKShippingMethod(method: StripeStandardShippingMethod) {
+	// let m = PKShippingMethod.alloc().init();
+	// m.amount = NSDecimalNumber.alloc().initWithDouble(method.amount / 100);
+	// m.detail = method.detail;
+	// m.label = method.label;
+	// m.identifier = method.identifier;
+	// return m;
+	return {
+		amount: NSDecimalNumber.alloc().initWithDouble(method.amount / 100),
+		detail: method.detail,
+		label: method.label,
+		identifier: method.identifier
+	};
 }
 
 function createAddress(address: STPAddress): StripeStandardAddress {

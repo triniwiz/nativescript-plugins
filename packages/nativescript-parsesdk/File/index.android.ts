@@ -52,7 +52,7 @@ export class File extends FileBase {
             if (param0) {
               reject(param0?.getMessage?.());
             } else {
-              resolve();
+              resolve(null);
             }
           }
         }), new com.parse.ProgressCallback({
@@ -67,7 +67,7 @@ export class File extends FileBase {
             if (param0) {
               reject(param0?.getMessage?.());
             } else {
-              resolve();
+              resolve(null);
             }
           }
         }));

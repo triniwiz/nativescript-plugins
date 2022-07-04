@@ -1,5 +1,5 @@
 import { CameraPosition, FancyCameraBase, positionProperty } from './common';
-import { Device, path as nsPath } from '@nativescript/core';
+import { Device, knownFolders, path as nsPath } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils';
 
 @NativeClass()
@@ -44,6 +44,9 @@ export class FancyCamera extends FancyCameraBase {
 	_cameraQueue: any;
 	_stoppingRecorder = false;
 	_thumbnails: any[];
+	_outUrl: string;
+	_fileName: string;
+
 	get thumbnails() {
 		return this._thumbnails;
 	}
@@ -58,7 +61,7 @@ export class FancyCamera extends FancyCameraBase {
 	}
 
 	startRecordingVideo() {
-		this._movieOutput?.startRecordingToOutputFileURLRecordingDelegate?.(this._outUrl, this._delegate);
+		this._movieOutput?.startRecordingToOutputFileURLRecordingDelegate?.(NSURL.URLWithString(this._outUrl), this._delegate);
 	}
 
 	stopRecordingVideo() {
@@ -280,7 +283,7 @@ export class FancyCamera extends FancyCameraBase {
 
 	_extractThumbnails() {
 		this._thumbnails = [];
-		let asset = AVURLAsset.alloc().initWithURLOptions(this._file, null);
+		let asset = AVURLAsset.alloc().initWithURLOptions(NSURL.URLWithString(this._fileName), null);
 		let assetIG = AVAssetImageGenerator.alloc().initWithAsset(asset);
 		assetIG.appliesPreferredTrackTransform = true;
 		assetIG.apertureMode = AVAssetImageGeneratorApertureModeEncodedPixels;
@@ -295,9 +298,9 @@ export class FancyCamera extends FancyCameraBase {
 
 			const image = UIImage.alloc().initWithCGImage(thumbnailImageRef);
 
-			const outputFilePath = this._fileName.substr(0, this._fileName.lastIndexOf('.')) + '_thumb_' + index + '.png';
+			const outputFilePath = this._fileName.substring(0, this._fileName.lastIndexOf('.')) + '_thumb_' + index + '.png';
 
-			const path = nsPath.join(this.folder.path, outputFilePath);
+			const path = nsPath.join(knownFolders.temp().path, outputFilePath);
 			const ok = UIImagePNGRepresentation(image).writeToFileAtomically(path, true);
 
 			if (!ok) {

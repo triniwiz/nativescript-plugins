@@ -2,9 +2,7 @@ import {registerElement, RNSStyle} from 'react-nativescript';
 import type {View as YogaLayout} from '../';
 import {ViewAttributes, NativeScriptProps} from 'react-nativescript';
 import {
-  LengthPercentUnit,
-  LengthDipUnit,
-  LengthPxUnit,
+  CoreTypes
 } from '@nativescript/core';
 import { RNTextProps } from './Text';
 
@@ -17,94 +15,94 @@ export interface YogaDistinctAttributes {
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  paddingBottom?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  paddingBottom?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  paddingLeft?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  paddingLeft?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  paddingRight?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  paddingRight?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  paddingTop?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  paddingTop?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  padding?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  padding?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  paddingVertical?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  paddingVertical?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  paddingHorizontal?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  paddingHorizontal?: string | number | CoreTypes.LengthType;
   
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  marginTop?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  marginTop?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  marginRight?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  marginRight?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  marginBottom?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  marginBottom?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  marginLeft?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  marginLeft?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  margin?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  margin?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  marginHorizontal?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  marginHorizontal?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  marginVertical?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  marginVertical?: string | number | CoreTypes.LengthType;
   
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  top?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  top?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  right?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  right?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  bottom?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  bottom?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  left?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  left?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  start?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  start?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  end?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  end?: string | number | CoreTypes.LengthType;
   
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  maxHeight?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  maxHeight?: string | number | CoreTypes.LengthType;
   /**
    * Number values are interpreted as display-independent pixels. Will no-op if set to "auto".
    */
-  maxWidth?: string | number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  maxWidth?: string | number | CoreTypes.LengthType;
   
   alignItems?: "stretch" | "center" | "flex-end" | "flex-start" | "baseline";
   overflow?: "visible" | "hidden" | "scroll";
@@ -116,7 +114,7 @@ export interface YogaDistinctAttributes {
   /**
    * Number values are interpreted as display-independent pixels.
    */
-  flexBasis?: number | LengthDipUnit | LengthPxUnit | LengthPercentUnit;
+  flexBasis?: number | CoreTypes.LengthType;
   flex?: number;
   flexDirection?: "row" | "column" | "column-reverse" | "row-reverse";
   /**

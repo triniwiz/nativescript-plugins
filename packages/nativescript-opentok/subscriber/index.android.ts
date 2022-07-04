@@ -20,9 +20,10 @@ function ensureClass() {
 	if (TNSSubscriberListener) {
 		return;
 	}
+
 	@NativeClass()
 	@Interfaces([com.opentok.android.SubscriberKit.SubscriberListener, com.opentok.android.SubscriberKit.VideoListener, com.opentok.android.SubscriberKit.StreamListener])
-	export class TNSSubscriberListenerImpl extends java.lang.Object implements com.opentok.android.SubscriberKit.SubscriberListener, com.opentok.android.SubscriberKit.VideoListener, com.opentok.android.SubscriberKit.StreamListener {
+	class TNSSubscriberListenerImpl extends java.lang.Object implements com.opentok.android.SubscriberKit.SubscriberListener, com.opentok.android.SubscriberKit.VideoListener, com.opentok.android.SubscriberKit.StreamListener {
 		_owner: WeakRef<TNSSubscriber>;
 		constructor(owner: WeakRef<TNSSubscriber>) {
 			super();

@@ -19,9 +19,9 @@ export enum CameraPosition {
 export abstract class FancyCameraBase extends View {
 	position: CameraPosition | 'front' | 'back';
 	thumbnailCount: number;
-  torch: boolean;
-  fill: boolean;
-  
+	torch: boolean;
+	fill: boolean;
+
 	abstract takePhoto();
 
 	abstract startRecordingVideo();

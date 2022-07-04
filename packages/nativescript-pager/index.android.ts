@@ -1191,7 +1191,7 @@ function initZoomOutPageTransformer() {
   @NativeClass
   @Interfaces([androidx.viewpager2.widget.ViewPager2.PageTransformer])
   class ZoomOutPageTransformerImpl extends java.lang.Object
-    implements androidx.viewpager2.widget.ViewPager2.PageTransformer {
+    implements Partial<androidx.viewpager2.widget.ViewPager2.PageTransformer> {
     owner: WeakRef<Pager>;
 
     constructor() {
@@ -1225,7 +1225,7 @@ function initZoomInPageTransformer() {
   @NativeClass
   @Interfaces([androidx.viewpager2.widget.ViewPager2.PageTransformer])
   class ZoomInPageTransformerImpl extends java.lang.Object
-    implements androidx.viewpager2.widget.ViewPager2.PageTransformer {
+    implements Partial<androidx.viewpager2.widget.ViewPager2.PageTransformer> {
     owner: WeakRef<Pager>;
 
     constructor() {

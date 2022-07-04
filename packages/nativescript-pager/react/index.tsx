@@ -142,6 +142,7 @@ export class _Pager extends React.Component<Props, State> {
 
             // args.view = null;
             RNSRender(
+                // @ts-ignore
                 cellFactory(item),
                 null,
                 () => {
@@ -168,6 +169,7 @@ export class _Pager extends React.Component<Props, State> {
 
         const root = new NSVRoot<View>();
         RNSRender(
+            // @ts-ignore
             cellFactory(item),
             root, () => {
                 // console.log(`Rendered into cell! ref:`);
@@ -241,6 +243,7 @@ export class _Pager extends React.Component<Props, State> {
             //     ref: forwardedRef || this.myRef,
             //     onItemLoading: this.defaultOnItemLoading
             // }, children)
+            // @ts-ignore
             <pager
                 {...rest}
                 onItemLoading={this.defaultOnItemLoading}

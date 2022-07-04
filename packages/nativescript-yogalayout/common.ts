@@ -5,7 +5,8 @@ import {
   PercentLength,
   Style,
   CssProperty,
-  PropertyChangeData
+  PropertyChangeData,
+  CoreTypes
 } from '@nativescript/core';
 import {layout as nsLayout} from '@nativescript/core/utils';
 
@@ -23,7 +24,7 @@ export interface ParsedValue {
   value: number;
 }
 
-export type SizeType = PercentLength | string;
+export type SizeType = CoreTypes.PercentLengthType | string;
 
 export enum FlexDirection {
   Row = 'row',

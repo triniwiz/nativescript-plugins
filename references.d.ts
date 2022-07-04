@@ -4,6 +4,7 @@
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!AssetsLibrary.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!CoreImage.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!CoreLocation.d.ts" />
+/// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!CoreMedia.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!CoreMotion.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!Darwin.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios/objc-x86_64/objc!Metal.d.ts" />

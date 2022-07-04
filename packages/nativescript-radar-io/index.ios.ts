@@ -85,11 +85,12 @@ export class RadarIO {
   }
 
   public static setPlacesProvider(provider: string) {
-    if (provider === 'facebook') {
-      Radar.setPlacesProvider(RadarPlacesProvider.Facebook);
-    } else {
-      Radar.setPlacesProvider(RadarPlacesProvider.None);
-    }
+    console.log('not implemented on iOS at moment.');
+    // if (provider === 'facebook') {
+    //   Radar.setPlacesProvider(RadarPlacesProvider.Facebook);
+    // } else {
+    //   Radar.setPlacesProvider(RadarPlacesProvider.None);
+    // }
   }
 
   public static async getPermissionsStatus(): Promise<RadarIOPermissionStatus> {
@@ -446,20 +447,21 @@ export class RadarIO {
       const nativeLocation = CLLocation.alloc().initWithCoordinateAltitudeHorizontalAccuracyVerticalAccuracyTimestamp(
         CLLocationCoordinate2DMake(location.latitude, location.longitude), -1, location.accuracy, -1, new Date()
       );
-      Radar.updateLocationWithCompletionHandler(nativeLocation, (status: RadarStatus, location: CLLocation, events: NSArray<RadarEvent>, user: RadarUser) => {
-        if (status === RadarStatus.Success) {
-          resolve({
-            status: RadarIO.getStatus(status),
-            location: RadarIO.getLocation(location),
-            events: RadarIO.getEvents(events),
-            user: RadarIO.getUser(user)
-          })
-        } else {
-          reject({
-            status: RadarIO.getStatus(status)
-          });
-        }
-      });
+      console.log('updateLocationWithCompletionHandler not available.');
+      // Radar.updateLocationWithCompletionHandler(nativeLocation, (status: RadarStatus, location: CLLocation, events: NSArray<RadarEvent>, user: RadarUser) => {
+      //   if (status === RadarStatus.Success) {
+      //     resolve({
+      //       status: RadarIO.getStatus(status),
+      //       location: RadarIO.getLocation(location),
+      //       events: RadarIO.getEvents(events),
+      //       user: RadarIO.getUser(user)
+      //     })
+      //   } else {
+      //     reject({
+      //       status: RadarIO.getStatus(status)
+      //     });
+      //   }
+      // });
     });
   }
 

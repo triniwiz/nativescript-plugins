@@ -37,7 +37,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   not(column: keyof T, operator: FilterOperator, value: any): this {
-    this.url.searchParams.append(`${column}`, `not.${operator}.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `not.${operator}.${value}`)
     return this
   }
 
@@ -61,7 +61,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   eq(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${column}`, `eq.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `eq.${value}`)
     return this
   }
 
@@ -73,7 +73,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   neq(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${column}`, `neq.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `neq.${value}`)
     return this
   }
 
@@ -85,7 +85,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   gt(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${column}`, `gt.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `gt.${value}`)
     return this
   }
 
@@ -97,7 +97,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   gte(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${column}`, `gte.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `gte.${value}`)
     return this
   }
 
@@ -109,7 +109,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   lt(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${column}`, `lt.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `lt.${value}`)
     return this
   }
 
@@ -121,7 +121,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   lte(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${column}`, `lte.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `lte.${value}`)
     return this
   }
 
@@ -133,7 +133,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param pattern  The pattern to filter with.
    */
   like(column: keyof T, pattern: string): this {
-    this.url.searchParams.append(`${column}`, `like.${pattern}`)
+    this.url.searchParams.append(`${String(column)}`, `like.${pattern}`)
     return this
   }
 
@@ -145,7 +145,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param pattern  The pattern to filter with.
    */
   ilike(column: keyof T, pattern: string): this {
-    this.url.searchParams.append(`${column}`, `ilike.${pattern}`)
+    this.url.searchParams.append(`${String(column)}`, `ilike.${pattern}`)
     return this
   }
 
@@ -157,7 +157,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   is(column: keyof T, value: boolean | null): this {
-    this.url.searchParams.append(`${column}`, `is.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `is.${value}`)
     return this
   }
 
@@ -177,7 +177,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
         else return `${s}`
       })
       .join(',')
-    this.url.searchParams.append(`${column}`, `in.(${cleanedValues})`)
+    this.url.searchParams.append(`${String(column)}`, `in.(${cleanedValues})`)
     return this
   }
 
@@ -192,13 +192,13 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
     if (typeof value === 'string') {
       // range types can be inclusive '[', ']' or exclusive '(', ')' so just
       // keep it simple and accept a string
-      this.url.searchParams.append(`${column}`, `cs.${value}`)
+      this.url.searchParams.append(`${String(column)}`, `cs.${value}`)
     } else if (Array.isArray(value)) {
       // array
-      this.url.searchParams.append(`${column}`, `cs.{${value.join(',')}}`)
+      this.url.searchParams.append(`${String(column)}`, `cs.{${value.join(',')}}`)
     } else {
       // json
-      this.url.searchParams.append(`${column}`, `cs.${JSON.stringify(value)}`)
+      this.url.searchParams.append(`${String(column)}`, `cs.${JSON.stringify(value)}`)
     }
     return this
   }
@@ -216,13 +216,13 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
   containedBy(column: keyof T, value: string | T[keyof T][] | object): this {
     if (typeof value === 'string') {
       // range
-      this.url.searchParams.append(`${column}`, `cd.${value}`)
+      this.url.searchParams.append(`${String(column)}`, `cd.${value}`)
     } else if (Array.isArray(value)) {
       // array
-      this.url.searchParams.append(`${column}`, `cd.{${value.join(',')}}`)
+      this.url.searchParams.append(`${String(column)}`, `cd.{${value.join(',')}}`)
     } else {
       // json
-      this.url.searchParams.append(`${column}`, `cd.${JSON.stringify(value)}`)
+      this.url.searchParams.append(`${String(column)}`, `cd.${JSON.stringify(value)}`)
     }
     return this
   }
@@ -238,7 +238,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param range  The range to filter with.
    */
   rangeLt(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${column}`, `sl.${range}`)
+    this.url.searchParams.append(`${String(column)}`, `sl.${range}`)
     return this
   }
 
@@ -253,7 +253,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param range  The range to filter with.
    */
   rangeGt(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${column}`, `sr.${range}`)
+    this.url.searchParams.append(`${String(column)}`, `sr.${range}`)
     return this
   }
 
@@ -268,7 +268,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param range  The range to filter with.
    */
   rangeGte(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${column}`, `nxl.${range}`)
+    this.url.searchParams.append(`${String(column)}`, `nxl.${range}`)
     return this
   }
 
@@ -283,7 +283,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param range  The range to filter with.
    */
   rangeLte(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${column}`, `nxr.${range}`)
+    this.url.searchParams.append(`${String(column)}`, `nxr.${range}`)
     return this
   }
 
@@ -298,7 +298,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param range  The range to filter with.
    */
   rangeAdjacent(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${column}`, `adj.${range}`)
+    this.url.searchParams.append(`${String(column)}`, `adj.${range}`)
     return this
   }
 
@@ -315,10 +315,10 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
   overlaps(column: keyof T, value: string | T[keyof T][]): this {
     if (typeof value === 'string') {
       // range
-      this.url.searchParams.append(`${column}`, `ov.${value}`)
+      this.url.searchParams.append(`${String(column)}`, `ov.${value}`)
     } else {
       // array
-      this.url.searchParams.append(`${column}`, `ov.{${value.join(',')}}`)
+      this.url.searchParams.append(`${String(column)}`, `ov.{${value.join(',')}}`)
     }
     return this
   }
@@ -352,7 +352,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
       typePart = 'w'
     }
     const configPart = config === undefined ? '' : `(${config})`
-    this.url.searchParams.append(`${column}`, `${typePart}fts${configPart}.${query}`)
+    this.url.searchParams.append(`${String(column)}`, `${typePart}fts${configPart}.${query}`)
     return this
   }
 
@@ -368,7 +368,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    */
   fts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
     const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${column}`, `fts${configPart}.${query}`)
+    this.url.searchParams.append(`${String(column)}`, `fts${configPart}.${query}`)
     return this
   }
 
@@ -384,7 +384,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    */
   plfts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
     const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${column}`, `plfts${configPart}.${query}`)
+    this.url.searchParams.append(`${String(column)}`, `plfts${configPart}.${query}`)
     return this
   }
 
@@ -400,7 +400,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    */
   phfts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
     const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${column}`, `phfts${configPart}.${query}`)
+    this.url.searchParams.append(`${String(column)}`, `phfts${configPart}.${query}`)
     return this
   }
 
@@ -416,7 +416,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    */
   wfts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
     const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${column}`, `wfts${configPart}.${query}`)
+    this.url.searchParams.append(`${String(column)}`, `wfts${configPart}.${query}`)
     return this
   }
 
@@ -428,7 +428,7 @@ export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder
    * @param value  The value to filter with.
    */
   filter(column: keyof T, operator: FilterOperator, value: any): this {
-    this.url.searchParams.append(`${column}`, `${operator}.${value}`)
+    this.url.searchParams.append(`${String(column)}`, `${operator}.${value}`)
     return this
   }
 

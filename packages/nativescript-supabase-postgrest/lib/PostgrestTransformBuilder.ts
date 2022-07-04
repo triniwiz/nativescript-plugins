@@ -50,7 +50,7 @@ export default class PostgrestTransformBuilder<T> extends PostgrestBuilder<T> {
 
     this.url.searchParams.set(
       key,
-      `${existingOrder ? `${existingOrder},` : ''}${column}.${ascending ? 'asc' : 'desc'}.${
+      `${existingOrder ? `${existingOrder},` : ''}${String(column)}.${ascending ? 'asc' : 'desc'}.${
         nullsFirst ? 'nullsfirst' : 'nullslast'
       }`
     )
