@@ -1,4 +1,4 @@
-import {getFile, Options} from "@triniwiz/nativescript-imageoptimize/common";
+import {getFile, Options} from "./common";
 import {knownFolders, path, Utils, File, Folder} from "@nativescript/core";
 
 declare const com;

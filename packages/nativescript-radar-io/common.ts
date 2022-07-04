@@ -14,6 +14,7 @@ export interface RadarIOTrackingOptions {
   desiredSyncInterval?: number;
   movingGeofenceRadius?: number;
   showBlueBar?: boolean;
+  offline?: 'replayOff' | 'replayStopped';
 }
 
 export interface RadarIOLocation {

@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-supabase-gotrue",
+	"sourceRoot": "packages/nativescript-supabase-gotrue",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-supabase-gotrue",
+				"tsConfig": "packages/nativescript-supabase-gotrue/tsconfig.json",
+				"packageJson": "packages/nativescript-supabase-gotrue/package.json",
+				"main": "packages/nativescript-supabase-gotrue/index.d.ts",
+				"assets": [
+					"packages/nativescript-supabase-gotrue/*.md",
+					"packages/nativescript-supabase-gotrue/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-supabase-gotrue/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-supabase-gotrue"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-supabase-gotrue"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-gotrue"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-supabase-gotrue/**/*.ts"]
+			}
+		}
+	}
+}

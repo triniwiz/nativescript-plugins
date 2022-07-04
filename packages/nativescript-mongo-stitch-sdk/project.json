@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-mongo-stitch-sdk",
+	"sourceRoot": "packages/nativescript-mongo-stitch-sdk",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-mongo-stitch-sdk",
+				"tsConfig": "packages/nativescript-mongo-stitch-sdk/tsconfig.json",
+				"packageJson": "packages/nativescript-mongo-stitch-sdk/package.json",
+				"main": "packages/nativescript-mongo-stitch-sdk/index.d.ts",
+				"assets": [
+					"packages/nativescript-mongo-stitch-sdk/*.md",
+					"packages/nativescript-mongo-stitch-sdk/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-mongo-stitch-sdk/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-mongo-stitch-sdk"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-mongo-stitch-sdk"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-mongo-stitch-sdk"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-mongo-stitch-sdk/**/*.ts"]
+			}
+		}
+	}
+}

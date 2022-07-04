@@ -7,9 +7,8 @@ import {
   Style,
   View,
   Color,
-  ImageAsset, ImageSource, isIOS, Trace
+  ImageAsset, ImageSource, isIOS, Trace, CoreTypes
 } from '@nativescript/core';
-import { Stretch } from '@nativescript/core/ui/enums';
 import { isDataURI, isFileOrResourcePath, isFontIconURI, RESOURCE_PREFIX } from "@nativescript/core/utils/utils";
 
 export enum Transition {
@@ -46,7 +45,7 @@ export const placeHolderProperty = new Property<ImageCacheItBase, any>({
 export const errorHolderProperty = new Property<ImageCacheItBase, string>({
   name: 'errorHolder'
 });
-export const stretchProperty = new Property<ImageCacheItBase, Stretch>({
+export const stretchProperty = new Property<ImageCacheItBase, CoreTypes.ImageStretchType>({
   name: 'stretch',
   affectsLayout: isIOS,
 });
@@ -100,7 +99,7 @@ export class ImageCacheItBase extends View {
   public src: any;
   public placeHolder: any;
   public errorHolder: any;
-  public stretch: Stretch;
+  public stretch: CoreTypes.ImageStretchType;
   public filter: string;
   public transition: Transition;
   public fallback: any;
@@ -258,7 +257,6 @@ export class ImageCacheItBase extends View {
   }
 }
 
-export type Stretch = 'none' | 'fill' | 'aspectFill' | 'aspectFit';
 progressProperty.register(ImageCacheItBase);
 isLoadingProperty.register(ImageCacheItBase);
 loadModeProperty.register(ImageCacheItBase);

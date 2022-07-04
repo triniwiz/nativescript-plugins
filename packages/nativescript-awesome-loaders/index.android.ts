@@ -6,6 +6,7 @@ declare var com: any;
 export class AwesomeLoaders extends AwesomeLoadersBase {
   private _android; /* com.wang.avi.AVLoadingIndicatorView */
 
+  // @ts-ignore
   get android() /* com.wang.avi.AVLoadingIndicatorView */ {
     return this._android;
   }

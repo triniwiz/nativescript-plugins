@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-accordion",
+	"sourceRoot": "packages/nativescript-accordion",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-accordion",
+				"tsConfig": "packages/nativescript-accordion/tsconfig.json",
+				"packageJson": "packages/nativescript-accordion/package.json",
+				"main": "packages/nativescript-accordion/index.d.ts",
+				"assets": [
+					"packages/nativescript-accordion/*.md",
+					"packages/nativescript-accordion/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-accordion/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-accordion"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-accordion"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-accordion"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-accordion/**/*.ts"]
+			}
+		}
+	}
+}

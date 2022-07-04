@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-radar-io",
+	"sourceRoot": "packages/nativescript-radar-io",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-radar-io",
+				"tsConfig": "packages/nativescript-radar-io/tsconfig.json",
+				"packageJson": "packages/nativescript-radar-io/package.json",
+				"main": "packages/nativescript-radar-io/index.d.ts",
+				"assets": [
+					"packages/nativescript-radar-io/*.md",
+					"packages/nativescript-radar-io/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-radar-io/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-radar-io"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-radar-io"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-radar-io"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-radar-io/**/*.ts"]
+			}
+		}
+	}
+}

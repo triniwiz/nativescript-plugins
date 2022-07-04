@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-pusher-beams",
+	"sourceRoot": "packages/nativescript-pusher-beams",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-pusher-beams",
+				"tsConfig": "packages/nativescript-pusher-beams/tsconfig.json",
+				"packageJson": "packages/nativescript-pusher-beams/package.json",
+				"main": "packages/nativescript-pusher-beams/index.d.ts",
+				"assets": [
+					"packages/nativescript-pusher-beams/*.md",
+					"packages/nativescript-pusher-beams/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-pusher-beams/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-pusher-beams"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-pusher-beams"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-pusher-beams"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-pusher-beams/**/*.ts"]
+			}
+		}
+	}
+}

@@ -1,0 +1,79 @@
+{
+	"root": "packages/nativescript-opentok",
+	"sourceRoot": "packages/nativescript-opentok",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-opentok",
+				"tsConfig": "packages/nativescript-opentok/tsconfig.json",
+				"packageJson": "packages/nativescript-opentok/package.json",
+				"main": "packages/nativescript-opentok/index.d.ts",
+				"assets": [
+					"packages/nativescript-opentok/*.md",
+					"packages/nativescript-opentok/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-opentok/platforms/",
+						"output": "./platforms/"
+					},
+					{
+						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-opentok/publisher/",
+						"output": "./publisher/"
+					},
+					{
+						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-opentok/session/",
+						"output": "./session/"
+					},
+					{
+						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-opentok/subscriber/",
+						"output": "./subscriber/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-opentok"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-opentok"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-opentok"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-opentok/**/*.ts"]
+			}
+		}
+	}
+}

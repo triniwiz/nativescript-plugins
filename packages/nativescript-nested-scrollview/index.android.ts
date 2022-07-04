@@ -1,8 +1,6 @@
 import { booleanConverter, makeParser, makeValidator, Property } from '@nativescript/core';
 import { profile } from '@nativescript/core/profiling';
-import { ScrollEventData, ContentView } from '@nativescript/core';
-import { Orientation } from '@nativescript/core/ui/layouts/stack-layout';
-import { layout } from '@nativescript/core/utils';
+import { ScrollEventData, ContentView, CoreTypes, Utils } from '@nativescript/core';
 
 const scrollBarIndicatorVisibleProperty = new Property<NestedScrollView, boolean>({
 	name: 'scrollBarIndicatorVisible',
@@ -10,12 +8,12 @@ const scrollBarIndicatorVisibleProperty = new Property<NestedScrollView, boolean
 	valueConverter: booleanConverter,
 });
 
-const converter = makeParser<Orientation>(makeValidator('horizontal', 'vertical'));
-export const orientationProperty = new Property<NestedScrollView, Orientation>({
+const converter = makeParser<CoreTypes.OrientationType>(makeValidator('horizontal', 'vertical'));
+export const orientationProperty = new Property<NestedScrollView, CoreTypes.OrientationType>({
 	name: 'orientation',
 	defaultValue: 'vertical',
 	affectsLayout: true,
-	valueChanged: (target: NestedScrollView, oldValue: Orientation, newValue: Orientation) => {
+	valueChanged: (target: NestedScrollView, oldValue: CoreTypes.OrientationType, newValue: CoreTypes.OrientationType) => {
 		target._onOrientationChanged();
 	},
 	valueConverter: converter,
@@ -23,7 +21,7 @@ export const orientationProperty = new Property<NestedScrollView, Orientation>({
 
 export class NestedScrollView extends ContentView {
 	public static scrollEvent = 'scroll';
-	public orientation: Orientation;
+	public orientation: CoreTypes.OrientationType;
 	public scrollBarIndicatorVisible: boolean;
 	private _androidViewId: number = -1;
 	private handler;
@@ -100,7 +98,7 @@ export class NestedScrollView extends ContentView {
 	public scrollToVerticalOffset(value: number, animated: boolean) {
 		const nativeView = this.nativeViewProtected;
 		if (nativeView && this.orientation === 'vertical') {
-			value *= layout.getDisplayDensity();
+			value *= Utils.layout.getDisplayDensity();
 
 			if (animated) {
 				nativeView.smoothScrollTo(0, value);
@@ -113,7 +111,7 @@ export class NestedScrollView extends ContentView {
 	public scrollToHorizontalOffset(value: number, animated: boolean) {
 		const nativeView = this.nativeViewProtected;
 		if (nativeView && this.orientation === 'horizontal') {
-			value *= layout.getDisplayDensity();
+			value *= Utils.layout.getDisplayDensity();
 
 			if (animated) {
 				nativeView.smoothScrollTo(value, 0);
@@ -129,7 +127,7 @@ export class NestedScrollView extends ContentView {
 			return 0;
 		}
 
-		return nativeView.getScrollX() / layout.getDisplayDensity();
+		return nativeView.getScrollX() / Utils.layout.getDisplayDensity();
 	}
 
 	get verticalOffset(): number {
@@ -138,7 +136,7 @@ export class NestedScrollView extends ContentView {
 			return 0;
 		}
 
-		return nativeView.getScrollY() / layout.getDisplayDensity();
+		return nativeView.getScrollY() / Utils.layout.getDisplayDensity();
 	}
 
 	get scrollableWidth(): number {
@@ -147,7 +145,7 @@ export class NestedScrollView extends ContentView {
 			return 0;
 		}
 
-		return this.getScrollableLength() / layout.getDisplayDensity();
+		return this.getScrollableLength() / Utils.layout.getDisplayDensity();
 	}
 
 	get scrollableHeight(): number {
@@ -156,7 +154,7 @@ export class NestedScrollView extends ContentView {
 			return 0;
 		}
 
-		return this.getScrollableLength() / layout.getDisplayDensity();
+		return this.getScrollableLength() / Utils.layout.getDisplayDensity();
 	}
 
 	private getScrollableLength(): number {

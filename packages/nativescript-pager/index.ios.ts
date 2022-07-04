@@ -240,6 +240,7 @@ export class Pager extends PagerBase {
     return this.lastIndex;
   }
 
+  // @ts-ignore
   get ios(): any /*UIView*/ {
     return this.nativeView;
   }

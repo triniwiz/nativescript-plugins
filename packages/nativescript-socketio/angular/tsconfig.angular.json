@@ -5,6 +5,9 @@
 		"baseUrl": ".",
 		"paths": {
 			"@triniwiz/nativescript-socketio": ["../../../dist/packages/nativescript-socketio"]
-		}
-	}
+		},
+		"outDir": "../../../dist/out-tsc",
+		"declarationDir": "../../../dist/out-tsc"
+	},
+	"files": ["index.ts"]
 }

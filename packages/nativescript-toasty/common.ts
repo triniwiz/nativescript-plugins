@@ -1,4 +1,4 @@
-import { Color, Length } from '@nativescript/core';
+import { Color, CoreTypes } from '@nativescript/core';
 
 export enum ToastDuration {
 	'SHORT' = 'short',
@@ -46,11 +46,11 @@ export interface ToastyOptions {
 	/**
 	 *  Y Position
 	 */
-	yAxisOffset?: Length | number;
+	yAxisOffset?: CoreTypes.LengthType | number;
 	/**
 	 *  X Position
 	 */
-	xAxisOffset?: Length | number;
+	xAxisOffset?: CoreTypes.LengthType | number;
 
 	/**
 	 *  Tap toast to dismiss

@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-twitter",
+	"sourceRoot": "packages/nativescript-twitter",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-twitter",
+				"tsConfig": "packages/nativescript-twitter/tsconfig.json",
+				"packageJson": "packages/nativescript-twitter/package.json",
+				"main": "packages/nativescript-twitter/index.d.ts",
+				"assets": [
+					"packages/nativescript-twitter/*.md",
+					"packages/nativescript-twitter/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-twitter/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-twitter"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-twitter"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-twitter"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-twitter/**/*.ts"]
+			}
+		}
+	}
+}

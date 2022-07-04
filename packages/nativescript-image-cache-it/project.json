@@ -1,0 +1,64 @@
+{
+	"root": "packages/nativescript-image-cache-it",
+	"sourceRoot": "packages/nativescript-image-cache-it",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"build": {
+			"options": {
+				"outputPath": "dist/packages/nativescript-image-cache-it",
+				"tsConfig": "packages/nativescript-image-cache-it/tsconfig.json",
+				"packageJson": "packages/nativescript-image-cache-it/package.json",
+				"main": "packages/nativescript-image-cache-it/index.d.ts",
+				"assets": [
+					"packages/nativescript-image-cache-it/*.md",
+					"packages/nativescript-image-cache-it/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-image-cache-it/platforms/",
+						"output": "./platforms/"
+					}
+				]
+			},
+			"executor": "@nrwl/js:tsc",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				}
+			]
+		},
+		"build.all": {
+			"outputs": ["dist/packages/nativescript-image-cache-it"],
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-image-cache-it"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands",
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-image-cache-it"],
+				"parallel": false
+			},
+			"executor": "@nrwl/workspace:run-commands"
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-image-cache-it/**/*.ts"]
+			}
+		}
+	}
+}
