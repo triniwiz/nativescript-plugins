@@ -1,46 +1,46 @@
 {
-	"name": "@triniwiz/nativescript-pager",
-	"version": "13.0.3",
-	"description": "A Carousel/Pager plugin for NativeScript",
-	"main": "index",
-	"typings": "index.d.ts",
-	"nativescript": {
-		"platforms": {
-			"ios": "7.0.0",
-			"android": "7.0.0"
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/triniwiz/nativescript-plugins.git"
-	},
-	"keywords": [
-		"NativeScript",
-		"JavaScript",
-		"Android",
-		"iOS",
-		"pager",
-		"viewpager",
-		"UIPageViewController",
-		"slides",
-		"Carousel",
-		"ng",
-		"angular",
-		"vue",
-		"nativescript-angular",
-		"nativescript-vue",
-		"nativescript-react",
-		"nativescript-svelte"
-	],
-	"author": {
-		"name": "Osei Fortune",
-		"email": "fortune.osei@yahoo.com"
-	},
-	"bugs": {
-		"url": "https://github.com/NativeScript/plugins/issues"
-	},
-	"license": "Apache-2.0",
-	"homepage": "https://github.com/NativeScript/plugins",
-	"readmeFilename": "README.md",
-	"bootstrapper": "@nativescript/plugin-seed"
+  "name": "@triniwiz/nativescript-pager",
+  "version": "13.0.4",
+  "description": "A Carousel/Pager plugin for NativeScript",
+  "main": "index",
+  "typings": "index.d.ts",
+  "nativescript": {
+    "platforms": {
+      "ios": "7.0.0",
+      "android": "7.0.0"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/triniwiz/nativescript-plugins.git"
+  },
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "Android",
+    "iOS",
+    "pager",
+    "viewpager",
+    "UIPageViewController",
+    "slides",
+    "Carousel",
+    "ng",
+    "angular",
+    "vue",
+    "nativescript-angular",
+    "nativescript-vue",
+    "nativescript-react",
+    "nativescript-svelte"
+  ],
+  "author": {
+    "name": "Osei Fortune",
+    "email": "fortune.osei@yahoo.com"
+  },
+  "bugs": {
+    "url": "https://github.com/NativeScript/plugins/issues"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/NativeScript/plugins",
+  "readmeFilename": "README.md",
+  "bootstrapper": "@nativescript/plugin-seed"
 }
