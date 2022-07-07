@@ -9,5 +9,4 @@ registerElement('YoutubePlayer', () => YoutubePlayer);
 	exports: [DIRECTIVES],
 	schemas: [NO_ERRORS_SCHEMA],
 })
-//@ts-ignore
 export class YoutubePlayerModule {}

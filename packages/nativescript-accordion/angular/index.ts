@@ -40,7 +40,7 @@ import {
 import {getSingleViewRecursive, registerElement} from '@nativescript/angular';
 import {Accordion} from '@triniwiz/nativescript-accordion';
 
-registerElement('Accordion', () => require('@triniwiz/nativescript-accordion').Accordion);
+registerElement('Accordion', () => Accordion);
 
 const NG_VIEW = '_ngViewRef';
 

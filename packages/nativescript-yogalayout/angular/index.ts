@@ -4,12 +4,13 @@ import {registerElement} from '@nativescript/angular';
 import {YogaLayoutItDirective} from './yogalayout.directive';
 export * from './yogalayout.directive';
 
+import { View } from '@triniwiz/nativescript-yogalayout';
+
 @NgModule({
   declarations: [YogaLayoutItDirective],
   exports: [YogaLayoutItDirective],
 })
-// @ts-ignore
 export class YogaLayoutModule {
 }
 
-registerElement('View', () => require('@triniwiz/nativescript-yogalayout').View);
+registerElement('View', () => View);
