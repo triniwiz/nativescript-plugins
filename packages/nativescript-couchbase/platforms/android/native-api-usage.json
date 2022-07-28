@@ -1,0 +1,3 @@
+{
+	"uses": ["com.couchbase*:*", "com.github.triniwiz.couchbase*:*", "java.net:URL*", "java.net:URI*", "java.util:Arrays*", "java.util:TimeZone*", "java.lang:Runnable*", "java.text:SimpleDateFormat*"]
+}
