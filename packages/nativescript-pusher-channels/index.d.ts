@@ -1,11 +1,11 @@
-import {TNSPusherBase, TNSPusherChannelBase, TNSPusherConnectionBase, TNSAuthorizerBase} from './common';
+import {NSCPusherBase, NSCPusherChannelBase, NSCPusherConnectionBase, TNSAuthorizerBase} from './common';
 import {ChannelEventMap, Options, ConnectionStatusEvent} from './interfaces';
 import {ConnectionStatus} from './enums';
 
 export {ChannelEventMap, Options, ConnectionStatusEvent, ConnectionStatus};
 
 
-export declare class TNSPusher extends TNSPusherBase {
+export declare class NSCPusher extends NSCPusherBase {
   /**
    * Native ios (instance)[https://github.com/pusher/pusher-websocket-swift]
    */
@@ -17,13 +17,13 @@ export declare class TNSPusher extends TNSPusherBase {
 
   constructor(apiKey: string, options?: Options);
 
-  connection: TNSPusherConnectionBase;
+  connection: NSCPusherConnectionBase;
 
   connect(): void;
 
   disconnect(): void;
 
-  subscribe(channelName: string): TNSPusherChannelBase;
+  subscribe(channelName: string): NSCPusherChannelBase;
 
   unsubscribe(channelName: string): void;
 

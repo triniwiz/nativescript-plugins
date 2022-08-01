@@ -1,4 +1,4 @@
-import {TNSAuthorizerBase, TNSPusherBase, TNSPusherChannelBase, TNSPusherConnectionBase} from './common';
+import {NSCAuthorizerBase, NSCPusherBase, NSCPusherChannelBase, NSCPusherConnectionBase} from './common';
 import {Options} from './interfaces';
 import {ConnectionStatus} from './enums';
 
@@ -7,7 +7,7 @@ export * from './enums';
 
 declare const io;
 
-export class TNSAuthorizer extends TNSAuthorizerBase {
+export class TNSAuthorizer extends NSCAuthorizerBase {
   _android: any;
   _isAttached = false;
   _callbackHandler: any;
@@ -26,7 +26,7 @@ export class TNSAuthorizer extends TNSAuthorizerBase {
   }
 }
 
-export class TNSPusher extends TNSPusherBase {
+export class NSCPusher extends NSCPusherBase {
   android: com.pusher.client.Pusher;
 
   connectionEvents = new Map<Function,
@@ -71,7 +71,7 @@ export class TNSPusher extends TNSPusherBase {
         }
         options.authorizer._isAttached = true;
         const ref = new WeakRef<TNSAuthorizer>(options.authorizer);
-        options.authorizer._callbackHandler = new io.github.triniwiz.pusher.TNSPusherAuthorizer.Callback({
+        options.authorizer._callbackHandler = new io.github.triniwiz.pusher.NSCPusherAuthorizer.Callback({
           owner: ref,
           onAuthorize(channelName: string, socketID: string, authorizer: any) {
             const owner = this.owner.get();
@@ -83,7 +83,7 @@ export class TNSPusher extends TNSPusherBase {
             }
           }
         });
-        options.authorizer._android = new io.github.triniwiz.pusher.TNSPusherAuthorizer(options.authorizer._callbackHandler);
+        options.authorizer._android = new io.github.triniwiz.pusher.NSCPusherAuthorizer(options.authorizer._callbackHandler);
         authorizer = options.authorizer._android;
       }
       if (authorizer) {
@@ -128,17 +128,17 @@ export class TNSPusher extends TNSPusherBase {
     }
   }
 
-  private _connection: TNSPusherConnection;
+  private _connection: NSCPusherConnection;
 
   public get connection() {
     if (!this._connection) {
-      this._connection = new TNSPusherConnection(this.android, this);
+      this._connection = new NSCPusherConnection(this.android, this);
     }
     return this._connection;
   }
 
   connect(): void {
-    const ref = new WeakRef<TNSPusher>(this);
+    const ref = new WeakRef<NSCPusher>(this);
     this.android.connect(
       new com.pusher.client.connection.ConnectionEventListener({
         onConnectionStateChange(
@@ -146,10 +146,10 @@ export class TNSPusher extends TNSPusherBase {
         ) {
           const owner = ref.get();
           if (owner) {
-            const current = TNSPusher.getConnectionStatus(
+            const current = NSCPusher.getConnectionStatus(
               state.getCurrentState()
             );
-            const previous = TNSPusher.getConnectionStatus(
+            const previous = NSCPusher.getConnectionStatus(
               state.getPreviousState()
             );
             owner.connection._state = current;
@@ -187,10 +187,10 @@ export class TNSPusher extends TNSPusherBase {
 
   subscribe(channelName: string) {
     let subscription;
-    const ref = new WeakRef<TNSPusher>(this);
+    const ref = new WeakRef<NSCPusher>(this);
     if (channelName.startsWith('private-')) {
       if (this.android.getPrivateChannel(channelName)) {
-        return new TNSPusherChannel(
+        return new NSCPusherChannel(
           this.android,
           this.android.getPrivateChannel(channelName),
           this
@@ -242,7 +242,7 @@ export class TNSPusher extends TNSPusherBase {
       );
     } else if (channelName.startsWith('presence-')) {
       if (this.android.getPresenceChannel(channelName)) {
-        return new TNSPusherChannel(
+        return new NSCPusherChannel(
           this.android,
           this.android.getPresenceChannel(channelName),
           this
@@ -308,7 +308,7 @@ export class TNSPusher extends TNSPusherBase {
       );
     } else {
       if (this.android.getChannel(channelName)) {
-        return new TNSPusherChannel(
+        return new NSCPusherChannel(
           this.android,
           this.android.getChannel(channelName),
           this
@@ -339,7 +339,7 @@ export class TNSPusher extends TNSPusherBase {
         []
       );
     }
-    return new TNSPusherChannel(this.android, subscription, this);
+    return new NSCPusherChannel(this.android, subscription, this);
   }
 
   unsubscribeAll(): void {
@@ -364,15 +364,15 @@ export class TNSPusher extends TNSPusherBase {
   }
 }
 
-export class TNSPusherChannel extends TNSPusherChannelBase {
+export class NSCPusherChannel extends NSCPusherChannelBase {
   channel:
     | com.pusher.client.channel.Channel
     | com.pusher.client.channel.PrivateChannel
     | com.pusher.client.channel.PresenceChannel;
   android: com.pusher.client.Pusher;
-  ref: TNSPusher;
+  ref: NSCPusher;
 
-  constructor(instance: any, channel: any, ref: TNSPusher) {
+  constructor(instance: any, channel: any, ref: NSCPusher) {
     super();
     this.android = instance;
     this.channel = channel;
@@ -500,12 +500,12 @@ export class TNSPusherChannel extends TNSPusherChannelBase {
   }
 }
 
-export class TNSPusherConnection extends TNSPusherConnectionBase {
+export class NSCPusherConnection extends NSCPusherConnectionBase {
   android: com.pusher.client.Pusher;
-  ref: TNSPusher;
+  ref: NSCPusher;
   _state: any;
 
-  constructor(instance: any, ref: TNSPusher) {
+  constructor(instance: any, ref: NSCPusher) {
     super();
     this.android = instance;
     this.ref = ref;

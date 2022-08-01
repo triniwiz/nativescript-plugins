@@ -95,8 +95,6 @@ declare class Pusher extends NSObject {
 
 	constructor(o: { key: string; options: PusherClientOptions; });
 
-	bind(callback: (p1: any) => void): string;
-
 	bindWithEventCallback(eventCallback: (p1: PusherEvent) => void): string;
 
 	connect(): void;
@@ -109,17 +107,17 @@ declare class Pusher extends NSObject {
 
 	initWithKeyOptions(key: string, options: PusherClientOptions): this;
 
-	subscribeAuthOnMemberAddedOnMemberRemoved(channelName: string, auth: PusherAuth, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void): PusherChannel;
+	subscribeAuthOnMemberAddedOnMemberRemovedOnSubscriptionCountChanged(channelName: string, auth: PusherAuth, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void, onSubscriptionCountChanged: (p1: number) => void): PusherChannel;
 
 	subscribeToPresenceChannelWithChannelName(channelName: string): PusherPresenceChannel;
 
-	subscribeToPresenceChannelWithChannelNameAuthOnMemberAddedOnMemberRemoved(channelName: string, auth: PusherAuth, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void): PusherPresenceChannel;
+	subscribeToPresenceChannelWithChannelNameAuthOnMemberAddedOnMemberRemovedOnSubscriptionCountChanged(channelName: string, auth: PusherAuth, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void, onSubscriptionCountChanged: (p1: number) => void): PusherPresenceChannel;
 
-	subscribeToPresenceChannelWithChannelNameOnMemberAddedOnMemberRemoved(channelName: string, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void): PusherPresenceChannel;
+	subscribeToPresenceChannelWithChannelNameOnMemberAddedOnMemberRemovedOnSubscriptionCountChanged(channelName: string, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void, onSubscriptionCountChanged: (p1: number) => void): PusherPresenceChannel;
 
 	subscribeWithChannelName(channelName: string): PusherChannel;
 
-	subscribeWithChannelNameOnMemberAddedOnMemberRemoved(channelName: string, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void): PusherChannel;
+	subscribeWithChannelNameOnMemberAddedOnMemberRemovedOnSubscriptionCountChanged(channelName: string, onMemberAdded: (p1: PusherPresenceChannelMember) => void, onMemberRemoved: (p1: PusherPresenceChannelMember) => void, onSubscriptionCountChanged: (p1: number) => void): PusherChannel;
 
 	unbindAll(): void;
 
@@ -149,17 +147,17 @@ declare class PusherChannel extends NSObject {
 
 	readonly name: string;
 
+	onSubscriptionCountChanged: (p1: number) => void;
+
 	subscribed: boolean;
 
-	constructor(o: { name: string; connection: PusherConnection; auth: PusherAuth; });
-
-	bindWithEventNameCallback(eventName: string, callback: (p1: any) => void): string;
+	constructor(o: { name: string; connection: PusherConnection; auth: PusherAuth; onSubscriptionCountChanged: (p1: number) => void; });
 
 	bindWithEventNameEventCallback(eventName: string, eventCallback: (p1: PusherEvent) => void): string;
 
 	handleEventWithEvent(event: PusherEvent): void;
 
-	initWithNameConnectionAuth(name: string, connection: PusherConnection, auth: PusherAuth): this;
+	initWithNameConnectionAuthOnSubscriptionCountChanged(name: string, connection: PusherConnection, auth: PusherAuth, onSubscriptionCountChanged: (p1: number) => void): this;
 
 	triggerWithEventNameData(eventName: string, data: any): void;
 

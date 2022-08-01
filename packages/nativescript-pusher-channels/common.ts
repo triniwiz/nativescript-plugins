@@ -9,7 +9,7 @@ export enum InternalPusherEvents {
   Pong = 'pusher:pong'
 }
 
-export abstract class TNSPusherBase {
+export abstract class NSCPusherBase {
   /**
    * Native android pusher instance.
    */
@@ -25,7 +25,7 @@ export abstract class TNSPusherBase {
 
   abstract subscribe(
     channelName: string
-  ): TNSPusherChannelBase;
+  ): NSCPusherChannelBase;
 
   abstract unsubscribe(channelName: string): void;
 
@@ -36,7 +36,7 @@ export abstract class TNSPusherBase {
   abstract unsubscribeAll(): void;
 }
 
-export abstract class TNSPusherConnectionBase {
+export abstract class NSCPusherConnectionBase {
   abstract bind(event: string, callback: Function);
 
   get state() {
@@ -44,7 +44,7 @@ export abstract class TNSPusherConnectionBase {
   }
 }
 
-export abstract class TNSPusherChannelBase {
+export abstract class NSCPusherChannelBase {
   abstract bind(event: string, callback: Function);
 
   abstract unbind(event: string, callback?: Function);

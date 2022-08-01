@@ -4,19 +4,19 @@ import com.pusher.client.Authorizer;
 import com.pusher.client.AuthorizationFailureException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-public class TNSPusherAuthorizer implements Authorizer {
+public class NSCPusherAuthorizer implements Authorizer {
   private Callback callback;
   public String error;
   public CountDownLatch lock;
   public String authToken;
   public long timeOut = 120l;
-  public TNSPusherAuthorizer(Callback callback){
+  public NSCPusherAuthorizer(Callback callback){
     this.callback = callback;
     lock = new CountDownLatch(1);
   }
 
   public interface Callback {
-    void onAuthorize(final String channelName, final String socketID, final TNSPusherAuthorizer authorizer);
+    void onAuthorize(final String channelName, final String socketID, final NSCPusherAuthorizer authorizer);
   }
 
   @Override

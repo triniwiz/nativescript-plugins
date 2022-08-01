@@ -1,8 +1,9 @@
-declare class TNSPusherUtils extends NSObject {
 
-	static alloc(): TNSPusherUtils; // inherited from NSObject
+declare class NSCPusherUtils extends NSObject {
 
-	static createPusherAuth(authToken: NSDictionary): PusherAuth;
+	static alloc(): NSCPusherUtils; // inherited from NSObject
 
-	static new(): TNSPusherUtils; // inherited from NSObject
+	static createPusherAuth(authToken: NSDictionary<string, NSObject>): PusherAuth;
+
+	static new(): NSCPusherUtils; // inherited from NSObject
 }

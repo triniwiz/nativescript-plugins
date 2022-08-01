@@ -1,17 +1,17 @@
-import { InternalPusherEvents, TNSPusherBase, TNSPusherChannelBase, TNSPusherConnectionBase, TNSAuthorizerBase } from './common';
+import { InternalPusherEvents, NSCPusherBase, NSCPusherChannelBase, NSCPusherConnectionBase, NSCAuthorizerBase } from './common';
 import { Options } from './interfaces';
 import { ConnectionStatus } from './enums';
 
 export * from './interfaces';
 export * from './enums';
 
-export class TNSPusher extends TNSPusherBase {
+export class NSCPusher extends NSCPusherBase {
 	ios: Pusher;
 	readonly #delegate: PusherDelegateImpl;
 	_globalEvents: Map<Function, string>;
 	_channelEvents: Map<Function, { channelName: string; event: string; id: string }>;
 	_connectionEvents: Map<Function, { event: string; id: string }>;
-	_connection: TNSPusherConnection;
+	_connection: NSCPusherConnection;
 	_authBuilder: any;
 
 	constructor(apiKey: string, options?: Options) {
@@ -26,9 +26,9 @@ export class TNSPusher extends TNSPusherBase {
 				this._authBuilder = PusherAuthRequestBuilder.initWithURLParamsHeaders(options.authEndpoint, options.auth?.params, options?.auth?.headers);
 				authEndpoint = OCAuthMethod.alloc().initWithAuthRequestBuilder(this._authBuilder);
 			}
-			if (options.authorizer instanceof TNSAuthorizer) {
+			if (options.authorizer instanceof NSCAuthorizer) {
 				if (options.authorizer._isAttached) {
-					throw new Error('Cannot use previously attached TNSAuthorizer.');
+					throw new Error('Cannot use previously attached NSCAuthorizer.');
 				}
 				options.authorizer._ios = PusherAuthorizer.initWithOwner(new WeakRef(options.authorizer) as any);
 				authEndpoint = OCAuthMethod.alloc().initWithAuthorizer(options.authorizer._ios);
@@ -62,7 +62,7 @@ export class TNSPusher extends TNSPusherBase {
 
 	public get connection() {
 		if (!this._connection) {
-			this._connection = new TNSPusherConnection(this.ios, new WeakRef(this));
+			this._connection = new NSCPusherConnection(this.ios, new WeakRef(this));
 		}
 		return this._connection;
 	}
@@ -101,13 +101,14 @@ export class TNSPusher extends TNSPusherBase {
 	subscribe(event: string) {
 		let channel = this.ios?.connection?.channels?.findWithName?.(event);
 		if (!channel) {
-			channel = this.ios.subscribeWithChannelNameOnMemberAddedOnMemberRemoved(
+			channel = this.ios.subscribeWithChannelNameOnMemberAddedOnMemberRemovedOnSubscriptionCountChanged(
 				event,
+				(p1) => {},
 				(p1) => {},
 				(p1) => {}
 			);
 		}
-		return new TNSPusherChannel(this.ios, channel, new WeakRef<TNSPusher>(this));
+		return new NSCPusherChannel(this.ios, channel, new WeakRef<NSCPusher>(this));
 	}
 
 	unsubscribeAll(): void {
@@ -119,13 +120,13 @@ export class TNSPusher extends TNSPusherBase {
 	}
 }
 
-export class TNSPusherChannel extends TNSPusherChannelBase {
+export class NSCPusherChannel extends NSCPusherChannelBase {
 	channel: PusherChannel;
 	ios: Pusher;
 	connection: any;
-	ref: WeakRef<TNSPusher>;
+	ref: WeakRef<NSCPusher>;
 
-	constructor(instance: any, channel: any, ref: WeakRef<TNSPusher>) {
+	constructor(instance: any, channel: any, ref: WeakRef<NSCPusher>) {
 		super();
 		this.ios = instance;
 		this.channel = channel;
@@ -182,12 +183,12 @@ export class TNSPusherChannel extends TNSPusherChannelBase {
 	}
 }
 
-export class TNSPusherConnection extends TNSPusherConnectionBase {
+export class NSCPusherConnection extends NSCPusherConnectionBase {
 	ios: Pusher;
 	_state: any;
-	ref: WeakRef<TNSPusher>;
+	ref: WeakRef<NSCPusher>;
 
-	constructor(instance: any, ref: WeakRef<TNSPusher>) {
+	constructor(instance: any, ref: WeakRef<NSCPusher>) {
 		super();
 		this.ios = instance;
 		this.ref = ref;
@@ -245,7 +246,7 @@ export class TNSPusherConnection extends TNSPusherConnectionBase {
 	}
 }
 
-export class TNSAuthorizer extends TNSAuthorizerBase {
+export class NSCAuthorizer extends NSCAuthorizerBase {
 	_ios: PusherAuthorizer;
 	_isAttached = false;
 	_currentHandler;
@@ -256,7 +257,7 @@ export class TNSAuthorizer extends TNSAuthorizerBase {
 		}
 		if (value) {
 			try {
-				this._currentHandler(TNSPusherUtils.createPusherAuth(JSON.parse(value)));
+				this._currentHandler(NSCPusherUtils.createPusherAuth(JSON.parse(value)));
 			} catch (e) {
 				this._currentHandler(null);
 			}
@@ -310,9 +311,9 @@ class PusherAuthRequestBuilder extends NSObject implements AuthRequestBuilderPro
 @NativeClass()
 @ObjCClass(Authorizer)
 class PusherAuthorizer extends NSObject implements Authorizer {
-	_owner: WeakRef<TNSAuthorizer>;
+	_owner: WeakRef<NSCAuthorizer>;
 
-	public static initWithOwner(owner: WeakRef<TNSAuthorizer>) {
+	public static initWithOwner(owner: WeakRef<NSCAuthorizer>) {
 		const auth = PusherAuthorizer.alloc().init() as PusherAuthorizer;
 		auth._owner = owner;
 		return auth;
@@ -332,9 +333,9 @@ class PusherAuthorizer extends NSObject implements Authorizer {
 @NativeClass()
 @ObjCClass(PusherDelegate)
 class PusherDelegateImpl extends NSObject implements PusherDelegate {
-	_owner: WeakRef<TNSPusher>;
+	_owner: WeakRef<NSCPusher>;
 
-	public static initWithOwner(owner: WeakRef<TNSPusher>) {
+	public static initWithOwner(owner: WeakRef<NSCPusher>) {
 		const delegate = PusherDelegateImpl.new() as PusherDelegateImpl;
 		delegate._owner = owner;
 		return delegate;

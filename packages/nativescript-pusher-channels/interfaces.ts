@@ -5,7 +5,7 @@ export interface ChannelEventMap {
   callback: Function;
 }
 
-export abstract class TNSAuthorizerBase {
+export abstract class NSCAuthorizerBase {
   readonly callback: (channelName: string, socketID: string) => void
 
   constructor(callback: (channelName: string, socketID: string) => void) {
@@ -25,7 +25,7 @@ export interface Options {
   port?: number;
   autoReconnect?: boolean;
   authEndpoint?: string;
-  authorizer?: TNSAuthorizerBase;
+  authorizer?: NSCAuthorizerBase;
   wsPort?: number;
   wssPort?: number;
   auth?: { headers?: Object, params?: Object }
