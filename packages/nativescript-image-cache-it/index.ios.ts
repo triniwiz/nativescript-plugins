@@ -3,8 +3,6 @@ import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Applic
 import { isNullOrUndefined } from '@nativescript/core/utils/types';
 import { isDataURI, isFileOrResourcePath, isFontIconURI, layout, RESOURCE_PREFIX } from '@nativescript/core/utils/utils';
 
-declare var SDWebImageManager, SDWebImageOptions, SDImageCacheType, SDImageCache, ImageCacheItUtils;
-
 const main_queue = dispatch_get_current_queue();
 let concurrentQueue;
 
@@ -549,7 +547,7 @@ export class ImageCacheIt extends ImageCacheItBase {
        return overlayedImg;
 
        */
-			return ImageCacheItUtils.createImageOverlay(image, this.imageSource.width, this.imageSource.height, value.r / 255, value.g / 255, value.b / 255, value.a / 255);
+			return ImageCacheItUtils.createImageOverlayColors(image, this.imageSource.width, this.imageSource.height, value.r / 255, value.g / 255, value.b / 255, value.a / 255);
 		}
 		return image;
 	}
@@ -603,7 +601,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 			if (!overlayColor) {
 				delete options.overlayColor;
 			}
-			ImageCacheItUtils.applyProcessing(this.ctx, nativeImage, options, (image) => {
+			ImageCacheItUtils.applyProcessing(this.ctx, nativeImage, <any>options, (image) => {
 				setImage(image);
 			}, null);
 			/*dispatch_async(this.filterQueue, () => {
@@ -619,7 +617,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 					ImageCacheItUtils.applyProcessing(
 						this.ctx,
 						nativeImage,
-						{
+						<any>{
 							overlayColor: overlayColor,
 						},
 						(image) => {
@@ -640,7 +638,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 					ImageCacheItUtils.applyProcessing(
 						this.ctx,
 						nativeImage,
-						{
+						<any>{
 							overlayColor: overlayColor,
 						},
 						(image) => {
@@ -850,7 +848,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 			const manager = SDWebImageManager.sharedManager;
 			if (manager) {
 				const key = manager.cacheKeyForURL(NSURL.URLWithString(src));
-				manager.imageCache.removeImageForKeyFromDiskWithCompletion(key, true, () => {
+				(<SDImageCache>manager.imageCache).removeImageForKeyFromDiskWithCompletion(key, true, () => {
 					resolve(undefined);
 				});
 			} else {
@@ -867,21 +865,21 @@ export class ImageCacheIt extends ImageCacheItBase {
 					const nativeSrc = NSURL.URLWithString(src);
 					manager.loadImageWithURLOptionsProgressCompleted(
 						nativeSrc,
-						SDWebImageOptions.scaleDownLargeImages,
+						SDWebImageOptions.ScaleDownLargeImages,
 						(receivedSize: number, expectedSize: number, path: NSURL) => {},
 						(image, data, error, type, finished, completedUrl) => {
 							if (image === null && error !== null && data === null) {
 								reject(error.localizedDescription);
 							} else if (finished && completedUrl != null) {
-								if (type === SDImageCacheType.disk) {
+								if (type === SDImageCacheType.Disk) {
 									const key = manager.cacheKeyForURL(completedUrl);
-									const source = manager.imageCache.cachePathForKey(key);
+									const source = (<SDImageCache>manager.imageCache).cachePathForKey(key);
 									resolve(source);
 								} else {
 									const sharedCache = SDImageCache.sharedImageCache;
 									sharedCache.storeImageForKeyCompletion(image, completedUrl.absoluteString, () => {
 										const key = manager.cacheKeyForURL(completedUrl);
-										const source = manager.imageCache.cachePathForKey(key);
+										const source = (<SDImageCache>manager.imageCache).cachePathForKey(key);
 										resolve(source);
 									});
 								}
@@ -899,8 +897,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 		return new Promise((resolve, reject) => {
 			const manager = SDWebImageManager.sharedManager;
 			if (manager) {
-				manager.imageCache.clearMemory();
-				manager.imageCache.clearDiskOnCompletion(() => {
+				(<SDImageCache>manager.imageCache).clearMemory();
+				(<SDImageCache>manager.imageCache).clearDiskOnCompletion(() => {
 					resolve(undefined);
 				});
 			}
@@ -913,7 +911,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 		ImageCacheIt.autoMMCallback = (args) => {
 			const manager = SDWebImageManager.sharedManager;
 			if (manager) {
-				manager.imageCache.clearMemory();
+				(<SDImageCache>manager.imageCache).clearMemory();
 			}
 		};
 		Application.on(Application.lowMemoryEvent as any, ImageCacheIt.autoMMCallback);

@@ -8,16 +8,16 @@
 import Foundation
 import UIKit
 import SDWebImage
-@objcMembers
+
 @objc(ImageCacheItUtils)
 public class ImageCacheItUtils: NSObject {
     private static var queueCount: Int64 = 0
-    public static func createConcurrentQueue(_ name: String) -> DispatchQueue {
+    @objc public static func createConcurrentQueue(_ name: String) -> DispatchQueue {
         ImageCacheItUtils.queueCount += 1
         return DispatchQueue(label: name, attributes: .concurrent)
     }
 
-    public static func createSerialQueue(_ name: String) -> DispatchQueue {
+    @objc public static func createSerialQueue(_ name: String) -> DispatchQueue {
         ImageCacheItUtils.queueCount += 1
         return DispatchQueue(label: name)
     }
@@ -41,7 +41,7 @@ public class ImageCacheItUtils: NSObject {
     }
 
 
-      public static func applyProcessing(_ ctx: CIContext,_ image: UIImage?, _ filters: [String: Any], _ callback: @escaping (UIImage?)-> Void, _ queue: DispatchQueue?) -> DispatchQueue? {
+    @objc public static func applyProcessing(_ ctx: CIContext,_ image: UIImage?, _ filters: [String: Any], _ callback: @escaping (UIImage?)-> Void, _ queue: DispatchQueue?) -> DispatchQueue? {
             guard image != nil else {
                 DispatchQueue.main.async {
                     callback(nil)
@@ -70,7 +70,7 @@ public class ImageCacheItUtils: NSObject {
 
 
 
-    public static func createImageOverlay(_ image: UIImage?, _ color: String) -> UIImage? {
+    @objc public static func createImageOverlay(_ image: UIImage?, _ color: String) -> UIImage? {
 
         let rgba = color.replacingOccurrences(of: "rgba(", with: "").replacingOccurrences(of: ")", with: "").replacingOccurrences(of: " ", with: "").split(separator: ",")
         let formatter = NumberFormatter()
@@ -79,10 +79,10 @@ public class ImageCacheItUtils: NSObject {
         let blue = CGFloat(Int32(truncating:formatter.number(from: String(rgba[2])) ?? 255)) / 255.0
         let alpha = CGFloat(truncating: formatter.number(from: String(rgba[3])) ?? 1)
 
-        return createImageOverlay(image, image?.size.width ?? 0 , image?.size.height ?? 0, red, green, blue, alpha)
+        return createImageOverlayColors(image, image?.size.width ?? 0 , image?.size.height ?? 0, red, green, blue, alpha)
     }
     
-    public static func createImageOverlay(_ image: UIImage?,_ width: CGFloat,_ height: CGFloat,_ red: CGFloat,_ green: CGFloat,_ blue: CGFloat,_ alpha: CGFloat) -> UIImage? {
+    @objc public static func createImageOverlayColors(_ image: UIImage?,_ width: CGFloat,_ height: CGFloat,_ red: CGFloat,_ green: CGFloat,_ blue: CGFloat,_ alpha: CGFloat) -> UIImage? {
         if(image == nil){
             return image
         }

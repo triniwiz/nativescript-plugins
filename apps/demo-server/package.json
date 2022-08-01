@@ -1,38 +1,6 @@
 {
-  "name": "@nativescript/template-blank-vue",
-  "main": "app.js",
-  "displayName": "Blank",
-  "version": "7.0.5",
-  "description": "NativeScript Application",
-  "author": "NativeScript Team <oss@nativescript.org>",
-  "license": "SEE LICENSE IN <your-license-filename>",
-  "repository": "<fill-your-repository-here>",
-  "homepage": "https://github.com/NativeScript/nativescript-app-templates",
-  "bugs": {
-    "url": "https://github.com/NativeScript/NativeScript/issues"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "keywords": [
-    "nstudio",
-    "nativescript",
-    "mobile",
-    "{N}",
-    "tns",
-    "vue",
-    "nativescript-vue",
-    "template",
-    "master-detail",
-    "detail",
-    "category-general"
-  ],
   "dependencies": {
-    "@nativescript/core": "~7.1.0",
-    "@nativescript/theme": "~2.3.0",
-    "nativescript-vue": "~2.8.0",
     "@triniwiz/nativescript-image-cache-it": "file:../../packages/nativescript-image-cache-it",
-    "nativescript-videoplayer": "^5.0.1",
     "@triniwiz/nativescript-accelerometer": "file:../../packages/nativescript-accelerometer",
     "@triniwiz/nativescript-accordion": "file:../../packages/nativescript-accordion",
     "@triniwiz/nativescript-autocomplete": "file:../../packages/nativescript-autocomplete",
@@ -83,18 +51,5 @@
     "@triniwiz/nativescript-webrtc": "file:../../packages/nativescript-webrtc",
     "@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout",
     "@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer"
-  },
-  "devDependencies": {
-    "@babel/core": "~7.1.0",
-    "@babel/preset-env": "~7.1.0",
-    "@nativescript/android": "~8.1.1",
-    "@nativescript/ios": "~8.1.0",
-    "@nativescript/webpack": "~4.0.0",
-    "babel-loader": "~8.0.0",
-    "nativescript-vue-template-compiler": "~2.8.0",
-    "sass": "^1.32.8",
-    "vue-loader": "~15.9.3"
-  },
-  "private": "true",
-  "readme": "NativeScript Application"
+  }
 }
