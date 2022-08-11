@@ -16,5 +16,5 @@ repositories {
   }
 }
 dependencies {
-  implementation 'com.couchbase.lite:couchbase-lite-android:2.8.6'
+  implementation 'com.couchbase.lite:couchbase-lite-android:3.0.0'
 }
