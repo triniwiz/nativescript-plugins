@@ -32,7 +32,7 @@ The minimum required SDK is version 21 (Lollipop :lollipop:)
 ## iOS
 
 ::: warning Note
-The minimum required platform version is 11
+The minimum required platform version is 12
 :::
 
 ## Angular

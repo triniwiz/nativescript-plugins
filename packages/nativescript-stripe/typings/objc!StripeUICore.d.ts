@@ -1,47 +1,182 @@
 
-declare class Button extends UIControl {
+declare class STPEmailAddressValidator extends NSObject {
 
-	static alloc(): Button; // inherited from NSObject
+	static alloc(): STPEmailAddressValidator; // inherited from NSObject
 
-	static appearance(): Button; // inherited from UIAppearance
-
-	static appearanceForTraitCollection(trait: UITraitCollection): Button; // inherited from UIAppearance
-
-	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): Button; // inherited from UIAppearance
-
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): Button; // inherited from UIAppearance
-
-	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): Button; // inherited from UIAppearance
-
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): Button; // inherited from UIAppearance
-
-	static new(): Button; // inherited from NSObject
+	static new(): STPEmailAddressValidator; // inherited from NSObject
 }
 
-declare class DoneButtonToolbar extends UIToolbar {
+declare class STP_Internal_ActivityIndicator extends UIView {
 
-	static alloc(): DoneButtonToolbar; // inherited from NSObject
+	static alloc(): STP_Internal_ActivityIndicator; // inherited from NSObject
 
-	static appearance(): DoneButtonToolbar; // inherited from UIAppearance
+	static appearance(): STP_Internal_ActivityIndicator; // inherited from UIAppearance
 
-	static appearanceForTraitCollection(trait: UITraitCollection): DoneButtonToolbar; // inherited from UIAppearance
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_ActivityIndicator; // inherited from UIAppearance
 
-	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): DoneButtonToolbar; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_ActivityIndicator; // inherited from UIAppearance
 
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): DoneButtonToolbar; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_ActivityIndicator; // inherited from UIAppearance
 
-	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): DoneButtonToolbar; // inherited from UIAppearance
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_ActivityIndicator; // inherited from UIAppearance
 
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): DoneButtonToolbar; // inherited from UIAppearance
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_ActivityIndicator; // inherited from UIAppearance
 
-	static new(): DoneButtonToolbar; // inherited from NSObject
+	static new(): STP_Internal_ActivityIndicator; // inherited from NSObject
 }
 
-declare class DropdownFieldElement extends NSObject implements UIPickerViewDataSource, UIPickerViewDelegate {
+declare class STP_Internal_Button extends UIControl {
 
-	static alloc(): DropdownFieldElement; // inherited from NSObject
+	static alloc(): STP_Internal_Button; // inherited from NSObject
 
-	static new(): DropdownFieldElement; // inherited from NSObject
+	static appearance(): STP_Internal_Button; // inherited from UIAppearance
+
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_Button; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_Button; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_Button; // inherited from UIAppearance
+
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_Button; // inherited from UIAppearance
+
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_Button; // inherited from UIAppearance
+
+	static new(): STP_Internal_Button; // inherited from NSObject
+}
+
+declare class STP_Internal_CheckboxButton extends UIControl implements UITextViewDelegate {
+
+	static alloc(): STP_Internal_CheckboxButton; // inherited from NSObject
+
+	static appearance(): STP_Internal_CheckboxButton; // inherited from UIAppearance
+
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_CheckboxButton; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_CheckboxButton; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_CheckboxButton; // inherited from UIAppearance
+
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_CheckboxButton; // inherited from UIAppearance
+
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_CheckboxButton; // inherited from UIAppearance
+
+	static new(): STP_Internal_CheckboxButton; // inherited from NSObject
+
+	readonly debugDescription: string; // inherited from NSObjectProtocol
+
+	readonly description: string; // inherited from NSObjectProtocol
+
+	readonly hash: number; // inherited from NSObjectProtocol
+
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+	readonly  // inherited from NSObjectProtocol
+
+	class(): typeof NSObject;
+
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
+
+	scrollViewDidEndDecelerating(scrollView: UIScrollView): void;
+
+	scrollViewDidEndDraggingWillDecelerate(scrollView: UIScrollView, decelerate: boolean): void;
+
+	scrollViewDidEndScrollingAnimation(scrollView: UIScrollView): void;
+
+	scrollViewDidEndZoomingWithViewAtScale(scrollView: UIScrollView, view: UIView, scale: number): void;
+
+	scrollViewDidScroll(scrollView: UIScrollView): void;
+
+	scrollViewDidScrollToTop(scrollView: UIScrollView): void;
+
+	scrollViewDidZoom(scrollView: UIScrollView): void;
+
+	scrollViewShouldScrollToTop(scrollView: UIScrollView): boolean;
+
+	scrollViewWillBeginDecelerating(scrollView: UIScrollView): void;
+
+	scrollViewWillBeginDragging(scrollView: UIScrollView): void;
+
+	scrollViewWillBeginZoomingWithView(scrollView: UIScrollView, view: UIView): void;
+
+	scrollViewWillEndDraggingWithVelocityTargetContentOffset(scrollView: UIScrollView, velocity: CGPoint, targetContentOffset: interop.Pointer | interop.Reference<CGPoint>): void;
+
+	self(): this;
+
+	textViewDidBeginEditing(textView: UITextView): void;
+
+	textViewDidChange(textView: UITextView): void;
+
+	textViewDidChangeSelection(textView: UITextView): void;
+
+	textViewDidEndEditing(textView: UITextView): void;
+
+	textViewEditMenuForTextInRangeSuggestedActions(textView: UITextView, range: NSRange, suggestedActions: NSArray<UIMenuElement> | UIMenuElement[]): UIMenu;
+
+	textViewShouldBeginEditing(textView: UITextView): boolean;
+
+	textViewShouldChangeTextInRangeReplacementText(textView: UITextView, range: NSRange, text: string): boolean;
+
+	textViewShouldEndEditing(textView: UITextView): boolean;
+
+	textViewShouldInteractWithTextAttachmentInRange(textView: UITextView, textAttachment: NSTextAttachment, characterRange: NSRange): boolean;
+
+	textViewShouldInteractWithTextAttachmentInRangeInteraction(textView: UITextView, textAttachment: NSTextAttachment, characterRange: NSRange, interaction: UITextItemInteraction): boolean;
+
+	textViewShouldInteractWithURLInRange(textView: UITextView, URL: NSURL, characterRange: NSRange): boolean;
+
+	textViewShouldInteractWithURLInRangeInteraction(textView: UITextView, URL: NSURL, characterRange: NSRange, interaction: UITextItemInteraction): boolean;
+
+	textViewWillDismissEditMenuWithAnimator(textView: UITextView, animator: UIEditMenuInteractionAnimating): void;
+
+	textViewWillPresentEditMenuWithAnimator(textView: UITextView, animator: UIEditMenuInteractionAnimating): void;
+
+	viewForZoomingInScrollView(scrollView: UIScrollView): UIView;
+}
+
+declare class STP_Internal_DoneButtonToolbar extends UIToolbar {
+
+	static alloc(): STP_Internal_DoneButtonToolbar; // inherited from NSObject
+
+	static appearance(): STP_Internal_DoneButtonToolbar; // inherited from UIAppearance
+
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_DoneButtonToolbar; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_DoneButtonToolbar; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_DoneButtonToolbar; // inherited from UIAppearance
+
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_DoneButtonToolbar; // inherited from UIAppearance
+
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_DoneButtonToolbar; // inherited from UIAppearance
+
+	static new(): STP_Internal_DoneButtonToolbar; // inherited from NSObject
+}
+
+declare class STP_Internal_DropdownFieldElement extends NSObject implements UIPickerViewDataSource, UIPickerViewDelegate {
+
+	static alloc(): STP_Internal_DropdownFieldElement; // inherited from NSObject
+
+	static new(): STP_Internal_DropdownFieldElement; // inherited from NSObject
 
 	readonly debugDescription: string; // inherited from NSObjectProtocol
 
@@ -94,30 +229,61 @@ declare class DropdownFieldElement extends NSObject implements UIPickerViewDataS
 	self(): this;
 }
 
-declare class DynamicHeightContainerView extends UIView {
+declare class STP_Internal_DynamicHeightContainerView extends UIView {
 
-	static alloc(): DynamicHeightContainerView; // inherited from NSObject
+	static alloc(): STP_Internal_DynamicHeightContainerView; // inherited from NSObject
 
-	static appearance(): DynamicHeightContainerView; // inherited from UIAppearance
+	static appearance(): STP_Internal_DynamicHeightContainerView; // inherited from UIAppearance
 
-	static appearanceForTraitCollection(trait: UITraitCollection): DynamicHeightContainerView; // inherited from UIAppearance
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_DynamicHeightContainerView; // inherited from UIAppearance
 
-	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): DynamicHeightContainerView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_DynamicHeightContainerView; // inherited from UIAppearance
 
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): DynamicHeightContainerView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_DynamicHeightContainerView; // inherited from UIAppearance
 
-	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): DynamicHeightContainerView; // inherited from UIAppearance
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_DynamicHeightContainerView; // inherited from UIAppearance
 
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): DynamicHeightContainerView; // inherited from UIAppearance
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_DynamicHeightContainerView; // inherited from UIAppearance
 
-	static new(): DynamicHeightContainerView; // inherited from NSObject
+	static new(): STP_Internal_DynamicHeightContainerView; // inherited from NSObject
 }
 
-declare class STPEmailAddressValidator extends NSObject {
+declare class STP_Internal_FormView extends UIView {
 
-	static alloc(): STPEmailAddressValidator; // inherited from NSObject
+	static alloc(): STP_Internal_FormView; // inherited from NSObject
 
-	static new(): STPEmailAddressValidator; // inherited from NSObject
+	static appearance(): STP_Internal_FormView; // inherited from UIAppearance
+
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_FormView; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_FormView; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_FormView; // inherited from UIAppearance
+
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_FormView; // inherited from UIAppearance
+
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_FormView; // inherited from UIAppearance
+
+	static new(): STP_Internal_FormView; // inherited from NSObject
+}
+
+declare class STP_Internal_StackViewWithSeparator extends UIStackView {
+
+	static alloc(): STP_Internal_StackViewWithSeparator; // inherited from NSObject
+
+	static appearance(): STP_Internal_StackViewWithSeparator; // inherited from UIAppearance
+
+	static appearanceForTraitCollection(trait: UITraitCollection): STP_Internal_StackViewWithSeparator; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): STP_Internal_StackViewWithSeparator; // inherited from UIAppearance
+
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_StackViewWithSeparator; // inherited from UIAppearance
+
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): STP_Internal_StackViewWithSeparator; // inherited from UIAppearance
+
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): STP_Internal_StackViewWithSeparator; // inherited from UIAppearance
+
+	static new(): STP_Internal_StackViewWithSeparator; // inherited from NSObject
 }
 
 declare var StripeUICoreVersionNumber: number;
