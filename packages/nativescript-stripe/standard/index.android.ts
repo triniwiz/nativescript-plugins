@@ -61,14 +61,14 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 export class StripeStandardCustomerSession {
 	readonly native: com.stripe.android.CustomerSession;
 
-	constructor() {
+	constructor(shouldPrefetchEphemeralKey: boolean = false) {
 		StripeStandardConfig.shared.initPaymentConfiguration();
-		com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, createKeyProvider());
+		com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, createKeyProvider(), shouldPrefetchEphemeralKey);
 		this.native = com.stripe.android.CustomerSession.getInstance();
 	}
 
 	private static get context(): android.content.Context {
-		return Application.android.context;
+        return Utils.android.getApplicationContext();
 	}
 }
 

@@ -328,7 +328,11 @@ export class Stripe {
 			}
 			return this.findTopViewController(selected);
 		} else {
-			return root;
+            if(presented == root.presentedViewController) {
+                return UIWindow.visibleViewController;
+            } else {
+                return root;
+            }
 		}
 	}
 

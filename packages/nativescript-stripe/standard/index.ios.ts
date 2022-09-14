@@ -211,11 +211,15 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 	paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: STPPaymentStatus, p2: NSError) => void): void {
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
-			.then((value) => {
-				completion(STPPaymentStatus.Success, null);
+			.then((value: any) => {
+                if(!value._native.lastPaymentError || value._native.lastPaymentError == "undefined") {
+                    completion(STPPaymentStatus.Success, null);
+                    return
+                }
+                completion(STPPaymentStatus.UserCancellation, null);
 			})
 			.catch((e) => {
-				completion(null, createError('PaymentError', 100, e));
+				completion(STPPaymentStatus.Error, createError('PaymentError', 100, e));
 			});
 	}
 
