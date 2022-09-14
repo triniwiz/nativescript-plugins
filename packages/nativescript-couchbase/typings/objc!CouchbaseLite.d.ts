@@ -1,4 +1,3 @@
- // Generated with v2.8.1
 
 declare class CBLArray extends NSObject implements CBLArrayProtocol, NSCopying, NSMutableCopying {
 
@@ -74,6 +73,8 @@ declare class CBLArray extends NSObject implements CBLArrayProtocol, NSCopying, 
 
 	toArray(): NSArray<any>;
 
+	toJSON(): string;
+
 	toMutable(): CBLMutableArray;
 
 	valueAtIndex(index: number): any;
@@ -116,6 +117,8 @@ interface CBLArrayProtocol extends CBLArrayFragment, NSFastEnumeration, NSObject
 
 	toArray(): NSArray<any>;
 
+	toJSON(): string;
+
 	valueAtIndex(index: number): any;
 }
 declare var CBLArrayProtocol: {
@@ -149,6 +152,8 @@ declare class CBLBlob extends NSObject {
 
 	static alloc(): CBLBlob; // inherited from NSObject
 
+	static isBlob(properties: NSDictionary<string, any>): boolean;
+
 	static new(): CBLBlob; // inherited from NSObject
 
 	readonly content: NSData;
@@ -174,6 +179,8 @@ declare class CBLBlob extends NSObject {
 	initWithContentTypeData(contentType: string, data: NSData): this;
 
 	initWithContentTypeFileURLError(contentType: string, fileURL: NSURL): this;
+
+	toJSON(): string;
 }
 
 declare const enum CBLConcurrencyControl {
@@ -275,8 +282,6 @@ declare class CBLDatabase extends NSObject {
 
 	static new(): CBLDatabase; // inherited from NSObject
 
-	static setLogLevelDomain(level: CBLLogLevel, domain: CBLLogDomain): void;
-
 	readonly config: CBLDatabaseConfiguration;
 
 	readonly count: number;
@@ -301,9 +306,11 @@ declare class CBLDatabase extends NSObject {
 
 	close(): boolean;
 
-	compact(): boolean;
+	createIndexWithConfigNameError(config: CBLIndexConfiguration, name: string): boolean;
 
 	createIndexWithNameError(index: CBLIndex, name: string): boolean;
+
+	createQueryError(query: string): CBLQuery;
 
 	delete(): boolean;
 
@@ -314,6 +321,8 @@ declare class CBLDatabase extends NSObject {
 	deleteIndexForNameError(name: string): boolean;
 
 	documentWithID(id: string): CBLDocument;
+
+	getBlob(properties: NSDictionary<any, any>): CBLBlob;
 
 	getDocumentExpirationWithID(documentID: string): Date;
 
@@ -332,6 +341,8 @@ declare class CBLDatabase extends NSObject {
 	purgeDocumentWithIDError(documentID: string): boolean;
 
 	removeChangeListenerWithToken(token: CBLListenerToken): void;
+
+	saveBlobError(blob: CBLBlob): boolean;
 
 	saveDocumentConcurrencyControlError(document: CBLMutableDocument, concurrencyControl: CBLConcurrencyControl): boolean;
 
@@ -443,6 +454,8 @@ declare class CBLDictionary extends NSObject implements CBLDictionaryProtocol, N
 
 	toDictionary(): NSDictionary<string, any>;
 
+	toJSON(): string;
+
 	toMutable(): CBLMutableDictionary;
 
 	valueForKey(key: string): any;
@@ -488,6 +501,8 @@ interface CBLDictionaryProtocol extends CBLDictionaryFragment, NSFastEnumeration
 	stringForKey(key: string): string;
 
 	toDictionary(): NSDictionary<string, any>;
+
+	toJSON(): string;
 
 	valueForKey(key: string): any;
 }
@@ -576,6 +591,8 @@ declare class CBLDocument extends NSObject implements CBLDictionaryProtocol, NSM
 	stringForKey(key: string): string;
 
 	toDictionary(): NSDictionary<string, any>;
+
+	toJSON(): string;
 
 	toMutable(): CBLMutableDocument;
 
@@ -718,6 +735,8 @@ declare const CBLErrorHTTPProxyAuthRequired: number;
 declare const CBLErrorHTTPServiceUnavailable: number;
 
 declare const CBLErrorIOError: number;
+
+declare const CBLErrorInvalidJSON: number;
 
 declare const CBLErrorInvalidParameter: number;
 
@@ -960,6 +979,21 @@ declare class CBLFullTextIndex extends CBLIndex {
 	language: string;
 }
 
+declare class CBLFullTextIndexConfiguration extends CBLIndexConfiguration {
+
+	static alloc(): CBLFullTextIndexConfiguration; // inherited from NSObject
+
+	static new(): CBLFullTextIndexConfiguration; // inherited from NSObject
+
+	readonly ignoreAccents: boolean;
+
+	readonly language: string;
+
+	constructor(o: { expression: NSArray<string> | string[]; ignoreAccents: boolean; language: string; });
+
+	initWithExpressionIgnoreAccentsLanguage(expressions: NSArray<string> | string[], ignoreAccents: boolean, language: string): this;
+}
+
 declare class CBLFullTextIndexItem extends NSObject {
 
 	static alloc(): CBLFullTextIndexItem; // inherited from NSObject
@@ -985,6 +1019,15 @@ declare class CBLIndexBuilder extends NSObject {
 	static new(): CBLIndexBuilder; // inherited from NSObject
 
 	static valueIndexWithItems(items: NSArray<CBLValueIndexItem> | CBLValueIndexItem[]): CBLValueIndex;
+}
+
+declare class CBLIndexConfiguration extends NSObject {
+
+	static alloc(): CBLIndexConfiguration; // inherited from NSObject
+
+	static new(): CBLIndexConfiguration; // inherited from NSObject
+
+	readonly expressions: NSArray<string>;
 }
 
 interface CBLListenerToken extends NSObjectProtocol {
@@ -1071,7 +1114,11 @@ declare const enum CBLMaintenanceType {
 
 	kCBLMaintenanceTypeReindex = 1,
 
-	kCBLMaintenanceTypeIntegrityCheck = 2
+	kCBLMaintenanceTypeIntegrityCheck = 2,
+
+	kCBLMaintenanceTypeOptimize = 3,
+
+	kCBLMaintenanceTypeFullOptimize = 4
 }
 
 declare class CBLMutableArray extends CBLArray implements CBLMutableArrayProtocol {
@@ -1099,6 +1146,8 @@ declare class CBLMutableArray extends CBLArray implements CBLMutableArrayProtoco
 	[Symbol.iterator](): Iterator<any>;
 
 	constructor(o: { data: NSArray<any> | any[]; });
+
+	constructor(o: { JSON: string; });
 
 	addArray(value: CBLArray): void;
 
@@ -1143,6 +1192,8 @@ declare class CBLMutableArray extends CBLArray implements CBLMutableArrayProtoco
 	floatAtIndex(index: number): number;
 
 	initWithData(data: NSArray<any> | any[]): this;
+
+	initWithJSONError(json: string): this;
 
 	insertArrayAtIndex(value: CBLArray, index: number): void;
 
@@ -1214,6 +1265,8 @@ declare class CBLMutableArray extends CBLArray implements CBLMutableArrayProtoco
 
 	setIntegerAtIndex(value: number, index: number): void;
 
+	setJSONError(json: string): boolean;
+
 	setLongLongAtIndex(value: number, index: number): void;
 
 	setNumberAtIndex(value: number, index: number): void;
@@ -1225,6 +1278,8 @@ declare class CBLMutableArray extends CBLArray implements CBLMutableArrayProtoco
 	stringAtIndex(index: number): string;
 
 	toArray(): NSArray<any>;
+
+	toJSON(): string;
 
 	valueAtIndex(index: number): any;
 }
@@ -1352,6 +1407,8 @@ declare class CBLMutableDictionary extends CBLDictionary implements CBLMutableDi
 
 	constructor(o: { data: NSDictionary<string, any>; });
 
+	constructor(o: { JSON: string; });
+
 	arrayForKey(key: string): CBLMutableArray;
 
 	blobForKey(key: string): CBLBlob;
@@ -1373,6 +1430,8 @@ declare class CBLMutableDictionary extends CBLDictionary implements CBLMutableDi
 	floatForKey(key: string): number;
 
 	initWithData(data: NSDictionary<string, any>): this;
+
+	initWithJSONError(json: string): this;
 
 	integerForKey(key: string): number;
 
@@ -1420,6 +1479,8 @@ declare class CBLMutableDictionary extends CBLDictionary implements CBLMutableDi
 
 	setIntegerForKey(value: number, key: string): void;
 
+	setJSONError(json: string): boolean;
+
 	setLongLongForKey(value: number, key: string): void;
 
 	setNumberForKey(value: number, key: string): void;
@@ -1431,6 +1492,8 @@ declare class CBLMutableDictionary extends CBLDictionary implements CBLMutableDi
 	stringForKey(key: string): string;
 
 	toDictionary(): NSDictionary<string, any>;
+
+	toJSON(): string;
 
 	valueForKey(key: string): any;
 }
@@ -1469,6 +1532,8 @@ interface CBLMutableDictionaryProtocol extends CBLDictionaryProtocol, CBLMutable
 	setFloatForKey(value: number, key: string): void;
 
 	setIntegerForKey(value: number, key: string): void;
+
+	setJSONError(json: string): boolean;
 
 	setLongLongForKey(value: number, key: string): void;
 
@@ -1516,6 +1581,10 @@ declare class CBLMutableDocument extends CBLDocument implements CBLMutableDictio
 
 	constructor(o: { ID: string; data: NSDictionary<string, any>; });
 
+	constructor(o: { ID: string; json: string; });
+
+	constructor(o: { JSON: string; });
+
 	arrayForKey(key: string): CBLMutableArray;
 
 	blobForKey(key: string): CBLBlob;
@@ -1541,6 +1610,10 @@ declare class CBLMutableDocument extends CBLDocument implements CBLMutableDictio
 	initWithID(documentID: string): this;
 
 	initWithIDData(documentID: string, data: NSDictionary<string, any>): this;
+
+	initWithIDJsonError(documentID: string, json: string): this;
+
+	initWithJSONError(json: string): this;
 
 	integerForKey(key: string): number;
 
@@ -1588,6 +1661,8 @@ declare class CBLMutableDocument extends CBLDocument implements CBLMutableDictio
 
 	setIntegerForKey(value: number, key: string): void;
 
+	setJSONError(json: string): boolean;
+
 	setLongLongForKey(value: number, key: string): void;
 
 	setNumberForKey(value: number, key: string): void;
@@ -1599,6 +1674,8 @@ declare class CBLMutableDocument extends CBLDocument implements CBLMutableDictio
 	stringForKey(key: string): string;
 
 	toDictionary(): NSDictionary<string, any>;
+
+	toJSON(): string;
 
 	valueForKey(key: string): any;
 }
@@ -1903,7 +1980,11 @@ declare class CBLQueryExpression extends NSObject {
 
 	isNot(expression: CBLQueryExpression): CBLQueryExpression;
 
+	isNotValued(): CBLQueryExpression;
+
 	isNullOrMissing(): CBLQueryExpression;
+
+	isValued(): CBLQueryExpression;
 
 	lessThan(expression: CBLQueryExpression): CBLQueryExpression;
 
@@ -1941,6 +2022,8 @@ declare class CBLQueryFullTextFunction extends NSObject {
 
 	static alloc(): CBLQueryFullTextFunction; // inherited from NSObject
 
+	static matchWithIndexNameQuery(indexName: string, query: string): CBLQueryExpression;
+
 	static new(): CBLQueryFullTextFunction; // inherited from NSObject
 
 	static rank(indexName: string): CBLQueryExpression;
@@ -1958,7 +2041,7 @@ declare class CBLQueryFunction extends NSObject {
 
 	static atan(expression: CBLQueryExpression): CBLQueryExpression;
 
-	static atan2Y(x: CBLQueryExpression, y: CBLQueryExpression): CBLQueryExpression;
+	static atan2X(y: CBLQueryExpression, x: CBLQueryExpression): CBLQueryExpression;
 
 	static avg(expression: CBLQueryExpression): CBLQueryExpression;
 
@@ -2236,6 +2319,8 @@ declare class CBLQueryResult extends NSObject implements CBLArrayProtocol, CBLDi
 
 	toDictionary(): NSDictionary<string, any>;
 
+	toJSON(): string;
+
 	valueAtIndex(index: number): any;
 
 	valueForKey(key: string): any;
@@ -2330,8 +2415,6 @@ declare class CBLReplicator extends NSObject {
 
 	removeChangeListenerWithToken(token: CBLListenerToken): void;
 
-	resetCheckpoint(): void;
-
 	start(): void;
 
 	startWithReset(reset: boolean): void;
@@ -2383,7 +2466,17 @@ declare class CBLReplicatorConfiguration extends NSObject {
 
 	documentIDs: NSArray<string>;
 
+	enableAutoPurge: boolean;
+
 	headers: NSDictionary<string, string>;
+
+	heartbeat: number;
+
+	maxAttemptWaitTime: number;
+
+	maxAttempts: number;
+
+	networkInterface: string;
 
 	pinnedServerCertificate: any;
 
@@ -2505,6 +2598,17 @@ declare class CBLValueIndex extends CBLIndex {
 	static new(): CBLValueIndex; // inherited from NSObject
 }
 
+declare class CBLValueIndexConfiguration extends CBLIndexConfiguration {
+
+	static alloc(): CBLValueIndexConfiguration; // inherited from NSObject
+
+	static new(): CBLValueIndexConfiguration; // inherited from NSObject
+
+	constructor(o: { expression: NSArray<string> | string[]; });
+
+	initWithExpression(expressions: NSArray<string> | string[]): this;
+}
+
 declare class CBLValueIndexItem extends NSObject {
 
 	static alloc(): CBLValueIndexItem; // inherited from NSObject
@@ -2519,3 +2623,13 @@ declare class CBLValueIndexItem extends NSObject {
 declare var CouchbaseLiteVersionNumber: number;
 
 declare var CouchbaseLiteVersionString: interop.Reference<number>;
+
+declare var kCBLBlobContentTypeProperty: string;
+
+declare var kCBLBlobDigestProperty: string;
+
+declare var kCBLBlobLengthProperty: string;
+
+declare var kCBLBlobType: string;
+
+declare var kCBLTypeProperty: string;
