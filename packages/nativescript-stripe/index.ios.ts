@@ -123,7 +123,7 @@ export class BankAccount implements IBankAccount {
 	readonly currency: string;
 	readonly fingerprint: string;
 	readonly last4: string;
-	readonly metadata: Readonly<{}>;
+	readonly metadata: Readonly<any>;
 	readonly routingNumber: string;
 	readonly status: BankAccountStatus;
 
@@ -183,6 +183,7 @@ export function handleContinueUserActivity(userActivity: NSUserActivity): boolea
 }
 
 export class StripeThreeDSUICustomization {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
 	public static init() {}
 }
 
@@ -305,35 +306,35 @@ export class Stripe {
 	}
 
 	private findTopViewController(root: UIViewController): UIViewController | undefined {
-		const presented = root.presentedViewController;
-		if (presented != null) {
-			return this.findTopViewController(presented);
-		}
-		if (root instanceof UISplitViewController) {
-			const last = root.viewControllers.lastObject;
-			if (last == null) {
-				return root;
-			}
-			return this.findTopViewController(last);
-		} else if (root instanceof UINavigationController) {
-			const top = root.topViewController;
-			if (top == null) {
-				return root;
-			}
-			return this.findTopViewController(top);
-		} else if (root instanceof UITabBarController) {
-			const selected = root.selectedViewController;
-			if (selected == null) {
-				return root;
-			}
-			return this.findTopViewController(selected);
-		} else {
-            if(presented == root.presentedViewController) {
-                return UIWindow.visibleViewController;
-            } else {
-                return root;
-            }
-		}
+    const presented = root.presentedViewController;
+    if (presented !== null) {
+      return this.findTopViewController(presented);
+    }
+    if (root instanceof UISplitViewController) {
+      const last = root.viewControllers.lastObject;
+      if (last == null) {
+        return root;
+      }
+      return this.findTopViewController(last);
+    } else if (root instanceof UINavigationController) {
+      const top = root.topViewController;
+      if (top == null) {
+        return root;
+      }
+      return this.findTopViewController(top);
+    } else if (root instanceof UITabBarController) {
+      const selected = root.selectedViewController;
+      if (selected == null) {
+        return root;
+      }
+      return this.findTopViewController(selected);
+    } else {
+      if (presented === root.presentedViewController) {
+        return presented;
+      } else {
+        return root;
+      }
+    }
 	}
 
 	_ctxImpl: STPAuthenticationContextImp;
@@ -828,7 +829,7 @@ class StripeIntent {
 
 export class StripePaymentIntent extends StripeIntent implements IStripePaymentIntent {
 	// @ts-ignore
-	native: STPPaymentIntent;
+  native: STPPaymentIntent;
 
 	static fromNative(native: STPPaymentIntent): StripePaymentIntent {
 		const pi = new StripePaymentIntent();

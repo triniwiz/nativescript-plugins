@@ -26,6 +26,11 @@
 					},
 					{
 						"glob": "**/*.d.ts",
+						"input": "packages/nativescript-stripe/paymentSheet/",
+						"output": "./paymentSheet/"
+					},
+					{
+						"glob": "**/*.d.ts",
 						"input": "packages/nativescript-stripe/source/",
 						"output": "./source/"
 					},
