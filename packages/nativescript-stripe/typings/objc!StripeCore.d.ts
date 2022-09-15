@@ -12,6 +12,13 @@ declare class STPAnalyticsClient extends NSObject {
 	static readonly sharedClient: STPAnalyticsClient;
 }
 
+declare class STPNumericStringValidator extends NSObject {
+
+	static alloc(): STPNumericStringValidator; // inherited from NSObject
+
+	static new(): STPNumericStringValidator; // inherited from NSObject
+}
+
 declare class STPURLCallbackHandler extends NSObject {
 
 	static alloc(): STPURLCallbackHandler; // inherited from NSObject
