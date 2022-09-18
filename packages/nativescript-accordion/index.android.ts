@@ -294,17 +294,19 @@ export class Accordion extends AccordionBase {
 
   private clearRealizedCells(): void {
     // clear the cache
-    this._realizedItems.forEach((view, nativeView) => {
-      if (view.parent) {
-        // This is to clear the StackLayout that is used to wrap non LayoutBase & ProxyViewContainer instances.
-        if (!(view.parent instanceof Accordion)) {
-          this._removeView(view.parent);
+    if (this._realizedItems) {
+      this._realizedItems.forEach((view, nativeView) => {
+        if (view.parent) {
+          // This is to clear the StackLayout that is used to wrap non LayoutBase & ProxyViewContainer instances.
+          if (!(view.parent instanceof Accordion)) {
+            this._removeView(view.parent);
+          }
+          view.parent._removeView(view);
         }
-        view.parent._removeView(view);
-      }
-    });
-
-    this._realizedItems.clear();
+      });
+  
+      this._realizedItems.clear();
+    }
     this._realizedItemContentTemplates.clear();
     this._realizedItemHeaderTemplates.clear();
     this._realizedHeaderTemplates.clear();

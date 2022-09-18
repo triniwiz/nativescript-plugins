@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-aws-sdk-s3",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-aws-sdk-s3",
 	"projectType": "library",
 	"generators": {},

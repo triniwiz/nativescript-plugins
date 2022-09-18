@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-awesome-loaders",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-awesome-loaders",
 	"projectType": "library",
 	"generators": {},

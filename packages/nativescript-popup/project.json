@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-popup",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-popup",
 	"projectType": "library",
 	"generators": {},

@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-supabase-gotrue",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-supabase-gotrue",
 	"projectType": "library",
 	"generators": {},

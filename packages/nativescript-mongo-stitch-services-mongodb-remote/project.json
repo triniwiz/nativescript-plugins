@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-mongo-stitch-services-mongodb-remote",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-mongo-stitch-services-mongodb-remote",
 	"projectType": "library",
 	"generators": {},

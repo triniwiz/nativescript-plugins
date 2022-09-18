@@ -1,5 +1,5 @@
 {
-	"root": "apps/demo-react/",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "apps/demo-react/src",
 	"projectType": "application",
 	"prefix": "demo",

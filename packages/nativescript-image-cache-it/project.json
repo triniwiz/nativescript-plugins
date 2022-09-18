@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-image-cache-it",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-image-cache-it",
 	"projectType": "library",
 	"generators": {},

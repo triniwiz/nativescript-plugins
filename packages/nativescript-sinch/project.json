@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-sinch",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-sinch",
 	"projectType": "library",
 	"generators": {},

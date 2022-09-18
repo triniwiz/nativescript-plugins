@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-ffmpeg",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-ffmpeg",
 	"projectType": "library",
 	"generators": {},

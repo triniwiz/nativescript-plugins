@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-pusher-beams",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-pusher-beams",
 	"projectType": "library",
 	"generators": {},

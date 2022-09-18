@@ -28,8 +28,6 @@
 			}
 		}
 	},
-	"cli": {
-		"defaultCollection": "@nrwl/node"
-	},
-	"defaultProject": "server-demo"
+	"defaultProject": "server-demo",
+	"$schema": "./node_modules/nx/schemas/nx-schema.json"
 }

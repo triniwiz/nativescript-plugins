@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-file-manager",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-file-manager",
 	"projectType": "library",
 	"generators": {},

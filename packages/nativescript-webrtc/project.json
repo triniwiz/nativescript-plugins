@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-webrtc",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-webrtc",
 	"projectType": "library",
 	"generators": {},

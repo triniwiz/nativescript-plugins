@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-imageoptimize",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-imageoptimize",
 	"projectType": "library",
 	"generators": {},

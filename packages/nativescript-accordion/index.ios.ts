@@ -727,12 +727,22 @@ export class Accordion extends AccordionBase {
       if (newIndexes.length > 0) {
         const index = newIndexes.length - 1;
         const newItems = [index];
-        this._expandedViews.clear();
-        this._indexSet.removeAllIndexes();
-        if (!this._expandedViews.get(index)) {
-          this._expandedViews.set(index, true);
-          this._indexSet.addIndex(index);
-          this.ios.reloadData();
+        if (this._expandedViews) {
+          this._expandedViews.clear();
+        }
+        if (this._indexSet) {
+          this._indexSet.removeAllIndexes();
+        }
+        if (!this._expandedViews?.get(index)) {
+          if (this._expandedViews) {
+            this._expandedViews.set(index, true);
+          }
+          if (this._indexSet) {
+            this._indexSet.addIndex(index);
+          }
+          if (this.ios) {
+            this.ios.reloadData();
+          }
         }
       }
     }
@@ -757,7 +767,9 @@ export class Accordion extends AccordionBase {
   }
 
   collapseAll(): void {
-    this._expandedViews.clear();
+    if (this._expandedViews) {
+      this._expandedViews.clear();
+    }
     this._indexSet.removeAllIndexes();
     this.ios.reloadData();
   }

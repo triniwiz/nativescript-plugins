@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-socketio",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-socketio",
 	"projectType": "library",
 	"generators": {},

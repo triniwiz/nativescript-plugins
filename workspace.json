@@ -59,5 +59,6 @@
 		"nativescript-yogalayout": "packages/nativescript-yogalayout",
 		"nativescript-youtubeplayer": "packages/nativescript-youtubeplayer",
 		"server-demo": "apps/server-demo"
-	}
+	},
+	"$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

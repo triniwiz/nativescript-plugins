@@ -1,5 +1,5 @@
 {
-	"root": "packages/nativescript-pager",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-pager",
 	"projectType": "library",
 	"generators": {},
