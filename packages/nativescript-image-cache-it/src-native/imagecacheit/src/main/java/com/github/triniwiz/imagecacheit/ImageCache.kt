@@ -2,6 +2,8 @@ package com.github.triniwiz.imagecacheit
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
@@ -48,16 +50,17 @@ class ImageCache {
     @SuppressLint("CheckResult")
     @JvmStatic
     fun hasItem(url: String?, callback: Callback?) {
+      val asyncCallback = makeAsync(callback);
       val requestOptions = RequestOptions()
       requestOptions.onlyRetrieveFromCache(true)
       manager?.asFile()?.load(url)?.apply(requestOptions)?.listener(object : RequestListener<File> {
         override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
-          callback?.onError(e)
+          asyncCallback?.onError(e)
           return false
         }
 
         override fun onResourceReady(resource: File, model: Any, target: Target<File>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-          callback?.onSuccess(resource.absolutePath)
+          asyncCallback?.onSuccess(resource.absolutePath)
           return false
         }
       })?.submit()
@@ -66,18 +69,19 @@ class ImageCache {
 
     @JvmStatic
     fun getItem(url: String?, options: Map<String?, String?>?, callback: Callback?) {
+      val asyncCallback = makeAsync(callback);
       val requestOptions = RequestOptions()
       manager?.asFile()
         ?.load(url)
         ?.apply(requestOptions)
         ?.listener(object : RequestListener<File> {
           override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
-            callback?.onError(e)
+            asyncCallback?.onError(e)
             return false
           }
 
           override fun onResourceReady(resource: File, model: Any, target: Target<File>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
-            callback?.onSuccess(resource.absolutePath)
+            asyncCallback?.onSuccess(resource.absolutePath)
             return false
           }
         })
@@ -89,6 +93,23 @@ class ImageCache {
       if (glide != null) {
         glide!!.clearMemory()
         executorService!!.execute { glide!!.clearDiskCache() }
+      }
+    }
+
+    @JvmStatic
+    private fun makeAsync(callback: Callback?): Callback? {
+      if (callback == null) {
+        return null;
+      }
+      val handler = Handler(Looper.myLooper()!!);
+      return object : Callback {
+        override fun onSuccess(value: Any?) {
+          handler.post { callback.onSuccess(value); }
+        }
+
+        override fun onError(value: Any?) {
+          handler.post { callback.onError(value); }
+        }
       }
     }
   }
