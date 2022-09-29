@@ -212,7 +212,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
 			.then((value: any) => {
-                if(!value._native.lastPaymentError || value._native.lastPaymentError == "undefined") {
+                if(!value._native?.lastPaymentError || value._native?.lastPaymentError == "undefined") {
                     completion(STPPaymentStatus.Success, null);
                     return
                 }
