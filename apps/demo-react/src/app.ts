@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactNativeScript from 'react-nativescript';
 import { AppContainer } from './components/AppContainer';
-import { registerYogaLayout } from "@triniwiz/nativescript-yogalayout/react";
+import { registerYogaLayout } from '@triniwiz/nativescript-yogalayout/react';
 
 // In NativeScript, the app.ts file is the entry point to your application. You
 // can use this file to perform app-level initialization, but the primary
