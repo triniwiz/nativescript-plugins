@@ -1,13 +1,14 @@
 import {registerElement, RNSStyle} from 'react-nativescript';
-import type {View as YogaLayout} from '../';
+import type { View as YogaLayout } from '..';
 import {ViewAttributes, NativeScriptProps} from 'react-nativescript';
 import {
   CoreTypes
 } from '@nativescript/core';
-import { RNTextProps } from './Text';
 
 export function registerYogaLayout(): void {
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   registerElement('yoga', () => require('../').View);
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
   registerElement('yogaText', () => require('../text').Text);
 }
 
@@ -137,7 +138,7 @@ export type YogaAttributes = ViewAttributes & YogaDistinctAttributes;
  * This allows for stricter typings; for RNSStyle, we accept arbitrary strings (as it's easier than fixing the
  * Core typings). But for YogaLayout-specific properties, we can tighten things up and enforce enumerated strings.
  */
-type OptionalStyleAllowingStringWithFlexExceptions = Omit<RNSStyle, keyof YogaDistinctAttributes> & {
+export type OptionalStyleAllowingStringWithFlexExceptions = Omit<RNSStyle, keyof YogaDistinctAttributes> & {
   [P in keyof YogaDistinctAttributes]?: YogaDistinctAttributes[P];
 };
 
@@ -146,10 +147,11 @@ export interface YogaProps extends Omit<NativeScriptProps<YogaAttributes, YogaLa
 }
 
 declare global {
+  // eslint-disable-next-line @typescript-eslint/prefer-namespace-keyword, @typescript-eslint/no-namespace
   module JSX {
     interface IntrinsicElements {
       yoga: YogaProps;
-      yogaText: RNTextProps;
+      yogaText: import("./Text").RNTextProps;
     }
   }
 }
@@ -180,7 +182,11 @@ declare module "react-nativescript" {
   }
 }
 
-export { View, RNViewProps as ViewProps } from "./View";
-export { Text, RNTextProps as TextProps } from "./Text";
-export { TextInput, RNTextInputProps as TextInputProps } from "./TextInput";
-export { Button, RNButtonProps as ButtonProps } from "./Button";
+export { View } from "./View";
+export { Text } from "./Text";
+export { TextInput } from "./TextInput";
+export { Button } from "./Button";
+export type {  RNViewProps as ViewProps } from "./View";
+export type {  RNTextProps as TextProps } from "./Text";
+export type {  RNTextInputProps as TextInputProps } from "./TextInput";
+export type {  RNButtonProps as ButtonProps } from "./Button";

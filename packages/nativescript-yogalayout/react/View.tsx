@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./index.ts" />
 
 import * as React from "react";
@@ -19,6 +20,7 @@ export function View(props: RNViewProps = {}){
  * @see https://github.com/facebook/react-native/blob/master/Libraries/Components/View/ViewStylePropTypes.js
  * @see ViewStyle
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RNOnlyViewStyles {
     // There are certainly some, but not used in RNTester.
 }

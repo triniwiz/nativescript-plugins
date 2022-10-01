@@ -1,8 +1,11 @@
-import { Color } from "@nativescript/core";
-// Conflicts with NativeScript 7 (which this monorepo uses), so we'll use the underlying values of the enum directly instead.
-// import { FontWeight } from "@nativescript/core/ui/enums";
+/* eslint-disable no-duplicate-case */
+import { Color, FontWeight } from "@nativescript/core";
 
-export function mapEventHandlersRNToRNS<T extends {}>(handlers: T): T {
+import { OptionalStyleAllowingStringWithFlexExceptions } from './index';
+import { RNSStyle } from 'react-nativescript';
+
+// I can't figure out the ideal generic typing for this, sorry!
+export function mapEventHandlersRNToRNS<T extends Record<string, unknown>>(handlers: T): T {
     return Object.keys(handlers).reduce((acc: T, name: string) => {
         const handler = handlers[name];
         const mappedName = mapEventHandlerNameRNToRNS(name);
@@ -14,6 +17,9 @@ export function mapEventHandlersRNToRNS<T extends {}>(handlers: T): T {
             return acc;
         }
         delete handlers[name];
+
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore I can't figure out this typings issue, either :P
         handlers[mappedName] = handler;
         return acc;
     }, handlers);
@@ -31,13 +37,11 @@ export function mapEventHandlerNameRNToRNS(name: string): string | null {
     }
 }
 
-export function convertStyleRNToRNS<T extends {}>(styles: T | T[]): T {
-    const flattenedStyle: T = flattenStyle(styles);
+export function convertStyleRNToRNS<T extends RNSStyle>(styles: T | T[]): OptionalStyleAllowingStringWithFlexExceptions {
+    const flattenedStyle = flattenStyle(styles);
 
     /* Here we shallow-clone the flattened style to avoid any objects sharing the same instance of e.g. FontWeight and Color. */
-    // const style: Partial<PermissiveStyle> = { ...flattenedStyle };
-
-    return Object.keys(flattenedStyle).reduce((acc: T, name: string) => {
+    return Object.keys(flattenedStyle).reduce((acc: OptionalStyleAllowingStringWithFlexExceptions, name: string) => {
         const mapping = mapStyleRNToRNS(name, flattenedStyle[name]);
         if(mapping === null){
             return acc; // Explicitly not supported.
@@ -47,59 +51,70 @@ export function convertStyleRNToRNS<T extends {}>(styles: T | T[]): T {
             acc[key] = mapping[key];
         });
         return acc;
-    }, {} as T);
+    }, {});
 }
 
-export function flattenStyle<T extends {}>(styles: T | T[]): T {
+export function flattenStyle<T extends RNSStyle>(styles: T | T[]): T {
     if(!Array.isArray(styles)) return styles;
     return Object.assign({}, ...styles);
 }
 
-export function mapStyleRNToRNS(name: string, value: string): Record<string, any>|null {
+export function mapStyleRNToRNS(name: string, value: unknown): Record<string, any>|null {
     switch(name){
         case "textShadowColor":
         case "textShadowRadius":
         case "textShadowOffset":
         case "fontVariant":
             return null;
-        case "fontWeight":
+        case "fontWeight": {
             /**
              * FIXME: Migrate to FontWeight enum once monorepo is using NativeScript 8 for this package.
              */
-            let fontWeight;
+            let fontWeight: FontWeight;
             switch(value){
                 case "100":
                 case "thin":
-                    fontWeight = "100"; // FontWeight.thin; // 100
+                    fontWeight = FontWeight.THIN; // 100
+                    break;
                 case "200":
                 case "extraLight":
-                    fontWeight = "200"; // FontWeight.extraLight; // 200
+                    fontWeight = FontWeight.EXTRA_LIGHT; // 200
+                    break;
                 case "300":
                 case "light":
-                    fontWeight = "300"; // FontWeight.light; // 300
+                    fontWeight = FontWeight.LIGHT; // 300
+                    break;
                 case "400":
                 case "normal":
-                    fontWeight = "400"; // FontWeight.normal; // 400
+                    fontWeight = FontWeight.NORMAL; // 400
+                    break;
                 case "500":
                 case "medium":
-                    fontWeight = "500"; // FontWeight.medium; // 500
+                    fontWeight = FontWeight.MEDIUM; // 500
+                    break;
                 case "600":
                 case "semiBold":
-                    fontWeight = "600"; // FontWeight.semiBold; // 600
+                    fontWeight = FontWeight.SEMI_BOLD; // 600
+                    break;
                 case "700":
                 case "bold":
-                    fontWeight = "700"; // FontWeight.bold; // 700
+                    fontWeight = FontWeight.BOLD; // 700
+                    break;
                 case "800":
                 case "extraBold":
-                    fontWeight = "800"; // FontWeight.extraBold; // 800
+                    fontWeight = FontWeight.EXTRA_BOLD; // 800
+                    break;
                 case "900":
                 case "black":
-                    fontWeight = "900"; // FontWeight.black; // 900
+                    fontWeight = FontWeight.BLACK; // 900
+                    break;
                 default:
                     // Here we don't support in-between values, but I think they're disallowed in RN and CSS anyway.
-                    fontWeight = "400"; // FontWeight.normal;
+                    fontWeight = FontWeight.NORMAL;
+                    break;
             }
             return { [name]: fontWeight };
+        }
         case "textAlign": {
             if(value === "justify" || value === "auto"){
                 // Not supported.
@@ -132,7 +147,7 @@ export function mapStyleRNToRNS(name: string, value: string): Record<string, any
             /**
              * @see https://facebook.github.io/react-native/docs/colors
              */
-            if(typeof value === "string" || (value as any) instanceof Color){
+            if(typeof value === "string" || (value as unknown) instanceof Color){
                 return { [name]: value };
             }
             return null;

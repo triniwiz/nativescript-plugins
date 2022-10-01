@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./index.ts" />
 
 import * as React from "react";
@@ -19,8 +20,8 @@ export interface RNButtonProps extends Omit<NativeScriptProps<ButtonAttributes, 
 }
 
 export function Button(props: RNButtonProps){
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { onPress, title, ...otherProps } = props;
 
-    // @ts-ignore
     return (<button color="black" text={title} {...mapEventHandlersRNToRNS(otherProps)}/>);
 };

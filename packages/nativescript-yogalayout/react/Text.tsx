@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./index.ts" />
 
 import * as React from "react";
@@ -7,7 +9,9 @@ import { TextView } from "@nativescript/core";
 import { NativeScriptProps, RNSStyle, TextViewAttributes } from "react-nativescript";
 
 export interface RNOnlyTextProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onPress?: (...args: any[]) => void,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onTextLayout?: (...args: any[]) => void,
     suppressHighlighting?: boolean,
     allowFontScaling?: boolean,

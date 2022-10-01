@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="./index.ts" />
 
 import * as React from "react";
@@ -12,6 +14,7 @@ import { NativeScriptProps, RNSStyle, TextFieldAttributes } from "react-nativesc
  * @see https://facebook.github.io/react-native/docs/textinput.html#props
  * @see TextInputProps["style"] in @types/react-native
  */
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface RNOnlyTextInputStyles extends RNOnlyTextStyles {}
 
 /**
@@ -26,6 +29,7 @@ export interface RNOnlyTextInputStyles extends RNOnlyTextStyles {}
  * these for now.
  */
 export interface RNTextInputProps extends Omit<NativeScriptProps<TextFieldAttributes, TextField>, "style">, RNOnlyTextProps {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onTextLayout?: (...args: any[]) => void,
     suppressHighlighting?: boolean,
     allowFontScaling?: boolean,
