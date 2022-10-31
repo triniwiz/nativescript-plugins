@@ -170,8 +170,8 @@ export class StripeStandardPaymentSession {
 				createAddress(data?.getShippingInformation())
 			)
 			.then((res: any) => {
-                // 3DS Failed/Cancelled Authentication
-                if(res?.status == "canceled") {
+                // 3DS Failed/Cancelled Authentication && if the use close the 3DS authentication window
+                if(res?.status == "canceled" || res?.native?.lastPaymentError != null) {
                     this.paymentInProgress = false;
                     this.listener.onUserCancelled();
                     return;
