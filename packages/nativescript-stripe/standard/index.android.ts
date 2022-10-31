@@ -155,14 +155,27 @@ export class StripeStandardPaymentSession {
 		const data = this._data;
 		const shippingMethod = data.getShippingMethod();
 		const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
+        const component1 = data.getPaymentMethod()?.component1();
+        if(!component1) {
+            console.log('Payment method undefined!');
+            this.listener.onError(500, 'Payment method undefined!');
+            this.paymentInProgress = false;
+            return
+        }
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(
-				data.getPaymentMethod().component1(), // id
+				component1, // id
 				data.getCartTotal() + shippingCost,
 				createShippingMethod(shippingMethod),
-				createAddress(data.getShippingInformation())
+				createAddress(data?.getShippingInformation())
 			)
-			.then(() => {
+			.then((res: any) => {
+                // 3DS Failed/Cancelled Authentication
+                if(res?.status == "canceled") {
+                    this.paymentInProgress = false;
+                    this.listener.onUserCancelled();
+                    return;
+                }
 				this.paymentInProgress = false;
 				this.listener.onPaymentSuccess();
 				this.native.onCompleted();
