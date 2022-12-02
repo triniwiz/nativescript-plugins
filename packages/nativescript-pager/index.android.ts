@@ -2,16 +2,15 @@ import {
   ChangeType,
   Color,
   Device,
+  KeyedTemplate,
   ObservableArray,
   profile,
   Property,
   Screen,
   StackLayout,
-  View
+  View,
+  Utils
 } from "@nativescript/core";
-import {KeyedTemplate} from "@nativescript/core/ui/core/view";
-import * as types from "@nativescript/core/utils/types";
-import {layout} from "@nativescript/core/utils/utils";
 import {
   autoplayDelayProperty,
   autoPlayProperty,
@@ -282,7 +281,7 @@ export class Pager extends PagerBase {
   }
 
   private _setTransformers(transformers: string) {
-    if (!types.isString(transformers)) {
+    if (!Utils.isString(transformers)) {
       return;
     }
     const transformsArray = transformers.split(" ");
@@ -402,7 +401,7 @@ export class Pager extends PagerBase {
     if (this.indicatorView) {
       if (value instanceof Color) {
         this.indicatorView.setUnselectedColor(value.android);
-      } else if (types.isString(value)) {
+      } else if (Utils.isString(value)) {
         this.indicatorView.setUnselectedColor(new Color(value).android);
       }
     }
@@ -412,7 +411,7 @@ export class Pager extends PagerBase {
     if (this.indicatorView) {
       if (value instanceof Color) {
         this.indicatorView.setSelectedColor(value.android);
-      } else if (types.isString(value)) {
+      } else if (Utils.isString(value)) {
         this.indicatorView.setSelectedColor(new Color(value).android);
       }
     }
@@ -611,12 +610,12 @@ export class Pager extends PagerBase {
 
   _horizontalOffset: number = 0;
   get horizontalOffset(): number {
-    return this._horizontalOffset / layout.getDisplayDensity();
+    return this._horizontalOffset / Utils.layout.getDisplayDensity();
   }
 
   _verticalOffset: number = 0;
   get verticalOffset(): number {
-    return this._verticalOffset / layout.getDisplayDensity();
+    return this._verticalOffset / Utils.layout.getDisplayDensity();
   }
 
   static getProgress(indicator, position, positionOffset, isRtl) {

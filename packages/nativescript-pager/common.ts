@@ -21,9 +21,9 @@ import {
   View,
   ObservableArray,
   Observable,
-  CoreTypes
+  CoreTypes,
+  Utils
 } from "@nativescript/core";
-import {layout} from "@nativescript/core/utils/utils";
 
 export type Orientation = "horizontal" | "vertical";
 
@@ -288,10 +288,10 @@ export abstract class PagerBase
       this.effectivePaddingTop -
       this.effectivePaddingBottom;
     this._effectiveItemWidth = global.isIOS
-      ? layout.getMeasureSpecSize((this as any)._currentWidthMeasureSpec)
+      ? Utils.layout.getMeasureSpecSize((this as any)._currentWidthMeasureSpec)
       : this.getMeasuredWidth();
     this._effectiveItemHeight = global.isIOS
-      ? layout.getMeasureSpecSize((this as any)._currentHeightMeasureSpec)
+      ? Utils.layout.getMeasureSpecSize((this as any)._currentHeightMeasureSpec)
       : this.getMeasuredHeight();
   }
 
@@ -299,13 +299,13 @@ export abstract class PagerBase
     let size = 0;
     if (this.orientation === "horizontal") {
       size = global.isIOS
-        ? layout.getMeasureSpecSize(
+        ? Utils.layout.getMeasureSpecSize(
           (this as any)._currentWidthMeasureSpec
         )
         : this.getMeasuredWidth();
     } else {
       size = global.isIOS
-        ? layout.getMeasureSpecSize(
+        ? Utils.layout.getMeasureSpecSize(
           (this as any)._currentHeightMeasureSpec
         )
         : this.getMeasuredHeight();
@@ -315,23 +315,23 @@ export abstract class PagerBase
     if (length && length.unit === "px") {
       converted = length.value;
     } else if (length && length.unit === "dip") {
-      converted = layout.toDevicePixels(length.value);
+      converted = Utils.layout.toDevicePixels(length.value);
     } else if (length && length.unit === "%") {
       converted = size * length.value;
     } else if (typeof length === "string") {
       if (length.indexOf("px") > -1) {
         converted = parseInt(length.replace("px", ""));
       } else if (length.indexOf("dip") > -1) {
-        converted = layout.toDevicePixels(
+        converted = Utils.layout.toDevicePixels(
           parseInt(length.replace("dip", ""))
         );
       } else if (length.indexOf("%") > -1) {
         converted = size * (parseInt(length.replace("%", "")) / 100);
       } else {
-        converted = layout.toDevicePixels(parseInt(length));
+        converted = Utils.layout.toDevicePixels(parseInt(length));
       }
     } else if (typeof length === "number") {
-      converted = layout.toDevicePixels(length);
+      converted = Utils.layout.toDevicePixels(length);
     }
 
     if (isNaN(converted)) {

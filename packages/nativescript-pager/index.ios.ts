@@ -2,6 +2,7 @@ import {
   ChangeType,
   Color,
   EventData,
+  KeyedTemplate,
   ObservableArray,
   profile,
   ProxyViewContainer,
@@ -9,9 +10,6 @@ import {
   Utils,
   View,
 } from "@nativescript/core";
-import { KeyedTemplate } from "@nativescript/core/ui/core/view";
-import * as types from "@nativescript/core/utils/types";
-import { layout } from "@nativescript/core/utils/utils";
 import * as common from "./common";
 import {
   autoplayDelayProperty,
@@ -158,12 +156,12 @@ export class Pager extends PagerBase {
     let height = 0;
     let width = 0;
     width =
-      (layout.toDeviceIndependentPixels(this._effectiveItemWidth) -
+      (Utils.layout.toDeviceIndependentPixels(this._effectiveItemWidth) -
         (this.perPage * 2 * this._getSpacing() +
           this._getPeaking() * 2)) /
       this.perPage;
     height =
-      (layout.toDeviceIndependentPixels(this._effectiveItemHeight) -
+      (Utils.layout.toDeviceIndependentPixels(this._effectiveItemHeight) -
         (this.perPage * 2 * this._getSpacing() +
           this._getPeaking() * 2)) /
       this.perPage;
@@ -560,7 +558,7 @@ export class Pager extends PagerBase {
     if (this.indicatorView) {
       if (value instanceof Color) {
         this.indicatorView.tintColor = value.ios;
-      } else if (types.isString(value)) {
+      } else if (Utils.isString(value)) {
         this.indicatorView.tintColor = new Color(value).ios;
       }
     }
@@ -570,7 +568,7 @@ export class Pager extends PagerBase {
     if (this.indicatorView) {
       if (value instanceof Color) {
         this.indicatorView.currentPageTintColor = value.ios;
-      } else if (types.isString(value)) {
+      } else if (Utils.isString(value)) {
         this.indicatorView.currentPageTintColor = new Color(value).ios;
       }
     }
@@ -667,8 +665,8 @@ export class Pager extends PagerBase {
     }
     const size = this._getSize();
     this._map.forEach((childView, pagerCell) => {
-      const width = layout.toDevicePixels(size.width);
-      const height = layout.toDevicePixels(size.height);
+      const width = Utils.layout.toDevicePixels(size.width);
+      const height = Utils.layout.toDevicePixels(size.height);
       View.layoutChild(this, childView, 0, 0, width, height);
     });
   }
@@ -746,16 +744,16 @@ export class Pager extends PagerBase {
   _layoutCell(cellView: View, index: NSIndexPath) {
     if (cellView) {
       const size = this._getSize();
-      let width = layout.toDevicePixels(size.width);
-      let height = layout.toDevicePixels(size.height);
-      const widthMeasureSpec = layout.makeMeasureSpec(
+      let width = Utils.layout.toDevicePixels(size.width);
+      let height = Utils.layout.toDevicePixels(size.height);
+      const widthMeasureSpec = Utils.layout.makeMeasureSpec(
         width,
-        layout.EXACTLY
+        Utils.layout.EXACTLY
       );
 
-      const heightMeasureSpec = layout.makeMeasureSpec(
+      const heightMeasureSpec = Utils.layout.makeMeasureSpec(
         height,
-        layout.EXACTLY
+        Utils.layout.EXACTLY
       );
 
       const measured = View.measureChild(
@@ -798,13 +796,13 @@ export class Pager extends PagerBase {
   }
 
   _getSpacing(): number {
-    return layout.toDeviceIndependentPixels(
+    return Utils.layout.toDeviceIndependentPixels(
       this.convertToSize(this.spacing)
     );
   }
 
   _getPeaking(): number {
-    return layout.toDeviceIndependentPixels(
+    return Utils.layout.toDeviceIndependentPixels(
       this.convertToSize(this.peaking)
     );
   }
@@ -813,10 +811,10 @@ export class Pager extends PagerBase {
     let width = 0;
     let height = 0;
     if (width === 0) {
-      width = layout.toDeviceIndependentPixels(this._effectiveItemWidth);
+      width = Utils.layout.toDeviceIndependentPixels(this._effectiveItemWidth);
     }
     if (height === 0) {
-      height = layout.toDeviceIndependentPixels(
+      height = Utils.layout.toDeviceIndependentPixels(
         this._effectiveItemHeight
       );
     }
@@ -1195,8 +1193,8 @@ class UICollectionViewDataSourceImpl
       }
 
       owner._layoutCell(view, indexPath);
-      let width = layout.toDevicePixels(size.width);
-      let height = layout.toDevicePixels(size.height);
+      let width = Utils.layout.toDevicePixels(size.width);
+      let height = Utils.layout.toDevicePixels(size.height);
       if (view && (view as any).isLayoutRequired) {
         View.layoutChild(owner, view, 0, 0, width, height);
       }
@@ -1221,8 +1219,8 @@ class UICollectionViewDataSourceImpl
           cellView,
           0,
           0,
-          layout.toDevicePixels(size.width),
-          layout.toDevicePixels(size.height)
+          Utils.layout.toDevicePixels(size.width),
+          Utils.layout.toDevicePixels(size.height)
         );
       }
     }
