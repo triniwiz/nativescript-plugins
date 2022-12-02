@@ -1,7 +1,5 @@
 import { fallbackProperty, filterProperty, headersProperty, ImageCacheItBase, imageSourceProperty, overlayColorProperty, Priority, priorityProperty, srcProperty, stretchProperty, tintColorProperty } from './common';
-import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Application, Screen } from '@nativescript/core';
-import { isNullOrUndefined } from '@nativescript/core/utils/types';
-import { isDataURI, isFileOrResourcePath, isFontIconURI, layout, RESOURCE_PREFIX } from '@nativescript/core/utils/utils';
+import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Application, Screen, Utils } from '@nativescript/core';
 
 const main_queue = dispatch_get_current_queue();
 let concurrentQueue;
@@ -108,21 +106,21 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-		const width = layout.getMeasureSpecSize(widthMeasureSpec);
-		const widthMode = layout.getMeasureSpecMode(widthMeasureSpec);
-		const height = layout.getMeasureSpecSize(heightMeasureSpec);
-		const heightMode = layout.getMeasureSpecMode(heightMeasureSpec);
+		const width = Utils.layout.getMeasureSpecSize(widthMeasureSpec);
+		const widthMode = Utils.layout.getMeasureSpecMode(widthMeasureSpec);
+		const height = Utils.layout.getMeasureSpecSize(heightMeasureSpec);
+		const heightMode = Utils.layout.getMeasureSpecMode(heightMeasureSpec);
 
-		const nativeWidth = this.imageSource ? layout.toDevicePixels(this.imageSource.width) : 0;
-		const nativeHeight = this.imageSource ? layout.toDevicePixels(this.imageSource.height) : 0;
+		const nativeWidth = this.imageSource ? Utils.layout.toDevicePixels(this.imageSource.width) : 0;
+		const nativeHeight = this.imageSource ? Utils.layout.toDevicePixels(this.imageSource.height) : 0;
 
 		let measureWidth = Math.max(nativeWidth, this.effectiveMinWidth);
 		let measureHeight = Math.max(nativeHeight, this.effectiveMinHeight);
 
-		const finiteWidth: boolean = widthMode !== layout.UNSPECIFIED;
-		const finiteHeight: boolean = heightMode !== layout.UNSPECIFIED;
+		const finiteWidth: boolean = widthMode !== Utils.layout.UNSPECIFIED;
+		const finiteHeight: boolean = heightMode !== Utils.layout.UNSPECIFIED;
 
-		this._imageSourceAffectsLayout = widthMode !== layout.EXACTLY || heightMode !== layout.EXACTLY;
+		this._imageSourceAffectsLayout = widthMode !== Utils.layout.EXACTLY || heightMode !== Utils.layout.EXACTLY;
 
 		if (nativeWidth !== 0 && nativeHeight !== 0 && (finiteWidth || finiteHeight)) {
 			const scale = ImageCacheIt.computeScaleFactor(width, height, finiteWidth, finiteHeight, nativeWidth, nativeHeight, this.stretch);
@@ -191,19 +189,19 @@ export class ImageCacheIt extends ImageCacheItBase {
 		let placeHolder = null;
 		if (typeof src === 'string') {
 			try {
-				if (isFileOrResourcePath(src)) {
-					if (src.indexOf(RESOURCE_PREFIX) === 0) {
-						const resPath = src.substr(RESOURCE_PREFIX.length);
+				if (Utils.isFileOrResourcePath(src)) {
+					if (src.indexOf(Utils.RESOURCE_PREFIX) === 0) {
+						const resPath = src.substring(Utils.RESOURCE_PREFIX.length);
 						placeHolder = ImageSource.fromResourceSync(resPath);
 					} else {
 						placeHolder = ImageSource.fromFileSync(src);
 					}
-				} else if (isDataURI(src)) {
+				} else if (Utils.isDataURI(src)) {
 					const base64Data = src.split(',')[1];
 					if (base64Data !== undefined) {
 						placeHolder = ImageSource.fromBase64Sync(base64Data);
 					}
-				} else if (isFontIconURI(src)) {
+				} else if (Utils.isFontIconURI(src)) {
 					const fontIconCode = src.split('//')[1];
 					if (fontIconCode !== undefined) {
 						// support sync mode only
@@ -362,15 +360,15 @@ export class ImageCacheIt extends ImageCacheItBase {
 			ImageCacheIt.cacheHeaders[this.uuid] = data;
 			this._loadImage(src);
 		} else {
-			if (isNullOrUndefined(src)) {
+			if (Utils.isNullOrUndefined(src)) {
 				this._handleFallbackImage();
 				return;
 			}
 			const sync = this.loadMode === 'sync';
 			try {
-				if (isFileOrResourcePath(src)) {
-					if (src.indexOf(RESOURCE_PREFIX) === 0) {
-						const resPath = src.substr(RESOURCE_PREFIX.length);
+				if (Utils.isFileOrResourcePath(src)) {
+					if (src.indexOf(Utils.RESOURCE_PREFIX) === 0) {
+						const resPath = src.substr(Utils.RESOURCE_PREFIX.length);
 						const loadResImage = () => {
 							const url = NSBundle.mainBundle.URLForResourceWithExtension(resPath, 'gif');
 							let image;
@@ -665,7 +663,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 	private static ciFilterMap = {};
 
 	private _setupFilter(image) {
-		if (isNullOrUndefined(image)) {
+		if (Utils.isNullOrUndefined(image)) {
 			return image;
 		}
 		const getValue = (value: string) => {
