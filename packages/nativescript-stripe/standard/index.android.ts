@@ -150,40 +150,42 @@ export class StripeStandardPaymentSession {
 	}
 
 	requestPayment() {
-		console.log('requestPayment')
-		this.paymentInProgress = true;
-		const data = this._data;
-		const shippingMethod = data.getShippingMethod();
-		const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-        const component1 = data.getPaymentMethod()?.component1();
-        if(!component1) {
-            console.log('Payment method undefined!');
-            this.listener.onError(500, 'Payment method undefined!');
-            this.paymentInProgress = false;
-            return
-        }
-		StripeStandardConfig.shared.backendAPI
-			.capturePayment(
-				component1, // id
-				data.getCartTotal() + shippingCost,
-				createShippingMethod(shippingMethod),
-				createAddress(data?.getShippingInformation())
-			)
-			.then((res: any) => {
-                // 3DS Failed/Cancelled Authentication && if the use close the 3DS authentication window
-                if(res?.status == "canceled" || res?.native?.lastPaymentError != null) {
-                    this.paymentInProgress = false;
-                    this.listener.onUserCancelled();
-                    return;
-                }
-				this.paymentInProgress = false;
-				this.listener.onPaymentSuccess();
-				this.native.onCompleted();
-			})
-			.catch((e) => {
-				this.listener.onError(100, e);
-				this.paymentInProgress = false;
-			});
+		 setTimeout(() => {
+      console.log('requestPayment')
+      this.paymentInProgress = true;
+      const data = this._data;
+      const shippingMethod = data?.getShippingMethod();
+      const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
+          const component1 = data.getPaymentMethod()?.component1();
+          if(!component1) {
+              console.log('Payment method undefined!');
+              this.listener.onError(500, 'Payment method undefined!');
+              this.paymentInProgress = false;
+              return
+          }
+      StripeStandardConfig.shared.backendAPI
+        .capturePayment(
+          component1, // id
+          data.getCartTotal() + shippingCost,
+          createShippingMethod(shippingMethod),
+          createAddress(data?.getShippingInformation())
+        )
+        .then((res: any) => {
+                  // 3DS Failed/Cancelled Authentication && if the use close the 3DS authentication window
+                  if(res?.status == "canceled" || res?.native?.lastPaymentError != null) {
+                      this.paymentInProgress = false;
+                      this.listener.onUserCancelled();
+                      return;
+                  }
+          this.paymentInProgress = false;
+          this.listener.onPaymentSuccess();
+          this.native.onCompleted();
+        })
+        .catch((e) => {
+          this.listener.onError(100, e);
+          this.paymentInProgress = false;
+        });
+     })
 	}
 
 	presentPaymentMethods(): void {
