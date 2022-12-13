@@ -316,7 +316,7 @@ export class FFmpeg {
 
 	public static execute(cmd: string, statisticsCallback: (session: TNSStatistics) => void = null, logCallback: (session: TNSLog) => void = null): Promise<TNSSession> {
 		return new Promise((resolve, reject) => {
-			FFmpegKit.executeAsyncWithExecuteCallbackWithLogCallbackWithStatisticsCallback(
+			FFmpegKit.executeAsyncWithCompleteCallbackWithLogCallbackWithStatisticsCallback(
 				cmd,
 				(session) => {
 					resolve(new TNSSession(session));
@@ -370,7 +370,7 @@ export class FFmpeg {
 
 	public static getMediaInformation(file: string, sessionCallback: (session: TNSSession) => void = null, logCallback: (session: TNSLog) => void = null, timeOut = 10000): Promise<TNSMediaInformation> {
 		return new Promise((resolve, reject) => {
-			FFprobeKit.getMediaInformationAsyncWithExecuteCallbackWithLogCallbackWithTimeout(
+			FFprobeKit.getMediaInformationAsyncWithCompleteCallbackWithLogCallbackWithTimeout(
 				file,
 				(session) => {
 					if(!session){
