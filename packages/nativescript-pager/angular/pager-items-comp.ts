@@ -259,6 +259,10 @@ export abstract class TemplatedItemsComponent
           `ViewReference not found for item ${index}. View recycling is not working`
         );
       }
+
+      if(!viewRef){
+        return;
+      }
     }
 
     if (!viewRef) {

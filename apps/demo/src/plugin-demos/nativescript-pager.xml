@@ -8,8 +8,7 @@
   </Page.actionBar>
   <GridLayout rows="*,*">
     <c:Pager
-      peaking="10%"
-      spacing="5%"
+    iosOverflowSafeArea="false" 
       scroll="{{onScroll}}" selectedIndex="4"
              loaded="{{ pagerLoaded }}"
              selectedIndexChange="{{selectedIndexChange}}"
@@ -24,7 +23,7 @@
              autoPlay="{{ autoPlay }}"
     >
       <c:Pager.itemTemplate>
-        <GridLayout iosOverflowSafeArea="false" id="{{ title }}" loaded="{{loaded}}" rows="auto,*" columns="*">
+        <GridLayout id="{{ title }}" loaded="{{loaded}}" rows="auto,*" columns="*">
           <Label row="0" text="{{title}}"/>
           <i:ImageCacheIt stretch="aspectFill" loaded="{{loadedImage}}" row="1"
                  src="{{ image }}"/>
