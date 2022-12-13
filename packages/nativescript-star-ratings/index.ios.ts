@@ -7,7 +7,8 @@ import {
   emptyColorProperty,
   filledColorProperty,
   fillModeProperty,
-  FillMode
+  FillMode,
+  starSize, starMargin, updateOnTouch 
 } from './common';
 import {Color} from '@nativescript/core';
 
@@ -25,6 +26,9 @@ export class StarRating extends StarRatingBase {
     nativeView.settings.filledColor = new Color('blue').ios;
     nativeView.rating = 0;
     nativeView.settings.minTouchRating = 0;
+    nativeView.settings.updateOnTouch = true;
+    nativeView.settings.starSize = 30;
+    nativeView.settings.starMargin = 5;
     return nativeView;
   }
 
@@ -37,6 +41,9 @@ export class StarRating extends StarRatingBase {
     this._handleMax(this.max);
     this._handleValue(this.value);
     this._handleFillMode(this.fillMode);
+    this._handleUpdateOnTouch(this.updateOnTouch);
+    this._handleSize(this.starSize);
+    this._handleMargin(this.starMargin);
   }
 
   public onLoaded() {
@@ -163,5 +170,29 @@ export class StarRating extends StarRatingBase {
 
   [maxProperty.setNative](max: number) {
     this._handleMax(max)
+  }
+  [starSize.setNative](value) {
+    this._handleSize(value);
+  }
+  _handleSize(value) {
+      if (this.nativeView) {
+          this.nativeView.settings.starSize = value;
+      }
+  }
+  [starMargin.setNative](value) {
+      this._handleMargin(value);
+  }
+  _handleMargin(value) {
+      if (this.nativeView) {
+          this.nativeView.settings.starMargin = value;
+      }
+  }
+  [updateOnTouch.setNative](value) {
+      this._handleUpdateOnTouch(value);
+  }
+  _handleUpdateOnTouch(value) {
+      if (this.nativeView) {
+          this.nativeView.settings.updateOnTouch = value;
+      }
   }
 }

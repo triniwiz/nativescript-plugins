@@ -9,12 +9,15 @@ export enum FillMode {
 export abstract class StarRatingBase extends View {
 	max: number;
 	value: number;
+    starSize: number;
+    starMargin: number;
 	fillMode: FillMode;
 	abstract emptyBorderColor: Color | string;
 	abstract filledBorderColor: Color | string;
 	abstract emptyColor: Color | string;
 	abstract filledColor: Color | string;
 	indicator: boolean;
+    updateOnTouch: boolean;
 }
 
 export const maxProperty = new Property<StarRatingBase, number>({
@@ -24,6 +27,14 @@ export const maxProperty = new Property<StarRatingBase, number>({
 export const valueProperty = new Property<StarRatingBase, number>({
 	name: 'value',
 	defaultValue: 1,
+});
+export const starSize = new Property({
+    name: 'starSize',
+    defaultValue: 20,
+});
+export const starMargin = new Property({
+    name: 'starMargin',
+    defaultValue: 5,
 });
 export const fillModeProperty = new Property<StarRatingBase, FillMode | 'full' | 'half' | 'precise'>({
 	name: 'fillMode',
@@ -50,7 +61,11 @@ export const indicatorProperty = new Property<StarRatingBase, boolean>({
 	defaultValue: false,
 	valueConverter: booleanConverter,
 });
-
+export const updateOnTouch = new Property({
+    name: 'updateOnTouch',
+    defaultValue: false,
+    valueConverter: booleanConverter,
+});
 declare module '@nativescript/core/ui/styling/style' {
 	interface Style {
 		emptyBorderColor: Color | string;
@@ -60,6 +75,9 @@ declare module '@nativescript/core/ui/styling/style' {
 	}
 }
 
+starSize.register(StarRatingBase);
+starMargin.register(StarRatingBase);
+updateOnTouch.register(StarRatingBase);
 indicatorProperty.register(StarRatingBase);
 fillModeProperty.register(StarRatingBase);
 emptyBorderColorProperty.register(Style);
