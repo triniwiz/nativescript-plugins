@@ -1,4 +1,4 @@
-import { Frame, Utils, View } from '@nativescript/core';
+import { Frame, Utils, View, Application } from '@nativescript/core';
 import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, GetBrand, IAddress, IBankAccount, ICard, ICardParams, IPaymentMethod, IStripePaymentIntent, isUSZipRequiredProperty, IToken, PaymentMethodType, showPostalCodeProperty, StripePaymentIntentStatus } from './common';
 import { PaymentMethodCard } from './paymentMethod';
 import { Source } from './source';
@@ -945,3 +945,38 @@ export class StripeRedirectSession {
 		return keyWindow != null ? keyWindow.rootViewController : undefined;
 	}
 }
+
+@NativeClass()
+class CustomUIApplicationDelegate extends UIResponder implements UIApplicationDelegate {
+    public static ObjCProtocols = [UIApplicationDelegate];
+}
+
+// setup app delegate
+let delegate = Application.ios.delegate;
+if (!delegate) {
+    delegate = Application.ios.delegate = CustomUIApplicationDelegate;
+}
+
+/**
+ * Add delegate method handler, but also preserve any existing one.
+ */
+function addDelegateHandler(classRef: Function, methodName: string, handler: Function) {
+    const crtHandler = classRef.prototype[methodName];
+    classRef.prototype[methodName] = function () {
+        const args = Array.from(arguments);
+        if (crtHandler) {
+            const result = crtHandler.apply(this, args);
+            args.push(result);
+        }
+
+        return handler.apply(this, args);
+    };
+}
+
+addDelegateHandler(delegate, 'applicationContinueUserActivityRestorationHandler', (_application: UIApplication, userActivity: NSUserActivity) => {
+    return handleContinueUserActivity(userActivity);
+});
+
+addDelegateHandler(delegate, 'applicationOpenURLOptions', (_app, url, _options) => {
+    return handleOpenURL(url);
+});

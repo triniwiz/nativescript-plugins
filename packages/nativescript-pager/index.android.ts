@@ -1,8 +1,39 @@
-import { ChangeType, Color, Device, ObservableArray, profile, Property, Screen, StackLayout, View } from '@nativescript/core';
-import { KeyedTemplate } from '@nativescript/core/ui/core/view';
-import * as types from '@nativescript/core/utils/types';
-import { layout } from '@nativescript/core/utils/utils';
-import { autoplayDelayProperty, autoPlayProperty, disableSwipeProperty, Indicator, indicatorColorProperty, indicatorProperty, indicatorSelectedColorProperty, ItemEventData, ITEMLOADING, itemsProperty, itemTemplatesProperty, LOADMOREITEMS, Orientation, orientationProperty, PagerBase, PagerItem, peakingProperty, selectedIndexProperty, showIndicatorProperty, spacingProperty, Transformer } from './common';
+import {
+  ChangeType,
+  Color,
+  Device,
+  KeyedTemplate,
+  ObservableArray,
+  profile,
+  Property,
+  Screen,
+  StackLayout,
+  View,
+  Utils
+} from "@nativescript/core";
+import {
+  autoplayDelayProperty,
+  autoPlayProperty,
+  disableSwipeProperty,
+  Indicator,
+  indicatorColorProperty,
+  indicatorProperty,
+  indicatorSelectedColorProperty,
+  ItemEventData,
+  ITEMLOADING,
+  itemsProperty,
+  itemTemplatesProperty,
+  LOADMOREITEMS,
+  Orientation,
+  orientationProperty,
+  PagerBase,
+  PagerItem,
+  peakingProperty,
+  selectedIndexProperty,
+  showIndicatorProperty,
+  spacingProperty,
+  Transformer
+} from "./common";
 
 export * from './common';
 export { ItemsSource, Transformer } from './common';
@@ -46,7 +77,7 @@ export class Pager extends PagerBase {
 	private _lastPeaking = 0;
 	private compositeTransformer: any;
 	private marginTransformer: any;
-	private _transformer: any[];
+	private _transformers: any[];
 	private _selectedIndexBeforeLoad = 0;
 	private _pager;
 	private _indicatorView;
@@ -54,7 +85,7 @@ export class Pager extends PagerBase {
 	constructor() {
 		super();
 		this._childrenViews = new Map<number, View>();
-		this._transformer = [];
+		this._transformers = [];
 	}
 
 	get views() {
@@ -220,28 +251,28 @@ export class Pager extends PagerBase {
 		}
 	}
 
-	private _setTransformers(transformers: string) {
-		if (!types.isString(transformers)) {
-			return;
-		}
-		const transformsArray = transformers.split(' ');
-		this._transformer.forEach((transformer) => {
-			this.compositeTransformer.removeTransformer(transformer);
-		});
-		for (const transformer of transformsArray) {
-			if (transformer === Transformer.SCALE) {
-				initZoomOutPageTransformer();
-				const nativeTransformer = new ZoomOutPageTransformer();
-				nativeTransformer.owner = new WeakRef<Pager>(this);
-				this._transformer.push(nativeTransformer);
-				this.compositeTransformer.addTransformer(nativeTransformer);
-			}
-		}
-		if (transformsArray.length === 0) {
-			this._transformer.forEach((transformer) => {
-				this.compositeTransformer.removeTransformer(transformer);
-			});
-		}
+  private _setTransformers(transformers: string) {
+    if (!Utils.isString(transformers)) {
+      return;
+    }
+    const transformsArray = transformers.split(" ");
+    this._transformers.forEach((transformer) => {
+      this.compositeTransformer.removeTransformer(transformer);
+    });
+    for (const transformer of transformsArray) {
+      if (transformer === Transformer.SCALE) {
+        initZoomOutPageTransformer();
+        const nativeTransformer = new ZoomOutPageTransformer();
+        nativeTransformer.owner = new WeakRef<Pager>(this);
+        this._transformers.push(nativeTransformer);
+        this.compositeTransformer.addTransformer(nativeTransformer);
+      }
+    }
+    if (transformsArray.length === 0) {
+      this._transformers.forEach((transformer) => {
+        this.compositeTransformer.removeTransformer(transformer);
+      });
+    }
 
 		this.pager.setPageTransformer(this.compositeTransformer);
 	}
@@ -306,7 +337,7 @@ export class Pager extends PagerBase {
 		this._realizedTemplates.clear();
 		this._pageListener = null;
 		this._pagerAdapter = null;
-		this._transformer = [];
+		this._transformers = [];
 		if (this._observableArrayInstance) {
 			this._observableArrayInstance.off(ObservableArray.changeEvent, this._observableArrayHandler);
 			this._observableArrayInstance = null;
@@ -330,25 +361,25 @@ export class Pager extends PagerBase {
 		return this.items ? this.items.length : this._childrenViews ? this._childrenViews.size : 0;
 	}
 
-	[indicatorColorProperty.setNative](value: Color | string) {
-		if (this.indicatorView) {
-			if (value instanceof Color) {
-				this.indicatorView.setUnselectedColor(value.android);
-			} else if (types.isString(value)) {
-				this.indicatorView.setUnselectedColor(new Color(value).android);
-			}
-		}
-	}
+  [indicatorColorProperty.setNative](value: Color | string) {
+    if (this.indicatorView) {
+      if (value instanceof Color) {
+        this.indicatorView.setUnselectedColor(value.android);
+      } else if (Utils.isString(value)) {
+        this.indicatorView.setUnselectedColor(new Color(value).android);
+      }
+    }
+  }
 
-	[indicatorSelectedColorProperty.setNative](value: Color | string) {
-		if (this.indicatorView) {
-			if (value instanceof Color) {
-				this.indicatorView.setSelectedColor(value.android);
-			} else if (types.isString(value)) {
-				this.indicatorView.setSelectedColor(new Color(value).android);
-			}
-		}
-	}
+  [indicatorSelectedColorProperty.setNative](value: Color | string) {
+    if (this.indicatorView) {
+      if (value instanceof Color) {
+        this.indicatorView.setSelectedColor(value.android);
+      } else if (Utils.isString(value)) {
+        this.indicatorView.setSelectedColor(new Color(value).android);
+      }
+    }
+  }
 
 	[disableSwipeProperty.setNative](value: boolean) {
 		if (this.pager) {
@@ -520,15 +551,15 @@ export class Pager extends PagerBase {
 		}
 	}
 
-	_horizontalOffset: number = 0;
-	get horizontalOffset(): number {
-		return this._horizontalOffset / layout.getDisplayDensity();
-	}
+  _horizontalOffset: number = 0;
+  get horizontalOffset(): number {
+    return this._horizontalOffset / Utils.layout.getDisplayDensity();
+  }
 
-	_verticalOffset: number = 0;
-	get verticalOffset(): number {
-		return this._verticalOffset / layout.getDisplayDensity();
-	}
+  _verticalOffset: number = 0;
+  get verticalOffset(): number {
+    return this._verticalOffset / Utils.layout.getDisplayDensity();
+  }
 
 	static getProgress(indicator, position, positionOffset, isRtl) {
 		const count = indicator.getCount();

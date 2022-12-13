@@ -1,5 +1,29 @@
-import { AddChildFromBuilder, addWeakEventListener, Builder, CoercibleProperty, Color, ContainerView, CSSType, GridLayout, ItemsSource, KeyedTemplate, Label, Length, makeParser, makeValidator, PercentLength, Property, removeWeakEventListener, Template, Trace, View, ObservableArray, Observable, CoreTypes } from '@nativescript/core';
-import { layout } from '@nativescript/core/utils/utils';
+import {
+  AddChildFromBuilder,
+  addWeakEventListener,
+  Builder,
+  CoercibleProperty,
+  Color,
+  ContainerView,
+  CSSType,
+  GridLayout,
+  ItemsSource,
+  KeyedTemplate,
+  Label,
+  Length,
+  makeParser,
+  makeValidator,
+  PercentLength,
+  Property,
+  removeWeakEventListener,
+  Template,
+  Trace,
+  View,
+  ObservableArray,
+  Observable,
+  CoreTypes,
+  Utils
+} from "@nativescript/core";
 
 export type Orientation = 'horizontal' | 'vertical';
 
@@ -233,30 +257,30 @@ export abstract class PagerBase extends ContainerView implements AddChildFromBui
 	public convertToSize(length): number {
 		let size = 0;
 		if (this.orientation === 'horizontal') {
-			size = global.isIOS ? layout.getMeasureSpecSize((this as any)._currentWidthMeasureSpec) : this.getMeasuredWidth();
+			size = global.isIOS ? Utils.layout.getMeasureSpecSize((this as any)._currentWidthMeasureSpec) : this.getMeasuredWidth();
 		} else {
-			size = global.isIOS ? layout.getMeasureSpecSize((this as any)._currentHeightMeasureSpec) : this.getMeasuredHeight();
+			size = global.isIOS ? Utils.layout.getMeasureSpecSize((this as any)._currentHeightMeasureSpec) : this.getMeasuredHeight();
 		}
 
 		let converted = 0;
 		if (length && length.unit === 'px') {
 			converted = length.value;
 		} else if (length && length.unit === 'dip') {
-			converted = layout.toDevicePixels(length.value);
+			converted = Utils.layout.toDevicePixels(length.value);
 		} else if (length && length.unit === '%') {
 			converted = size * length.value;
 		} else if (typeof length === 'string') {
 			if (length.indexOf('px') > -1) {
 				converted = parseInt(length.replace('px', ''));
 			} else if (length.indexOf('dip') > -1) {
-				converted = layout.toDevicePixels(parseInt(length.replace('dip', '')));
+				converted = Utils.layout.toDevicePixels(parseInt(length.replace('dip', '')));
 			} else if (length.indexOf('%') > -1) {
 				converted = size * (parseInt(length.replace('%', '')) / 100);
 			} else {
-				converted = layout.toDevicePixels(parseInt(length));
+				converted = Utils.layout.toDevicePixels(parseInt(length));
 			}
 		} else if (typeof length === 'number') {
-			converted = layout.toDevicePixels(length);
+			converted = Utils.layout.toDevicePixels(length);
 		}
 
 		if (isNaN(converted)) {

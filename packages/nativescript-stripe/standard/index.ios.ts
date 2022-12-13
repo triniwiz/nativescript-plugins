@@ -232,20 +232,20 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
     this.listener.onPaymentDataChanged(data);
   }
 
-  paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: STPPaymentStatus, p2: NSError) => void): void {
-    StripeStandardConfig.shared.backendAPI
-      .capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
-      .then((value: any) => {
-        if (!value._native.lastPaymentError || value._native.lastPaymentError == "undefined") {
-          completion(STPPaymentStatus.Success, null);
-          return
-        }
-        completion(STPPaymentStatus.UserCancellation, null);
-      })
-      .catch((e) => {
-        completion(STPPaymentStatus.Error, createError('PaymentError', 100, e));
-      });
-  }
+	paymentContextDidCreatePaymentResultCompletion(paymentContext: STPPaymentContext, paymentResult: STPPaymentResult, completion: (p1: STPPaymentStatus, p2: NSError) => void): void {
+		StripeStandardConfig.shared.backendAPI
+			.capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
+			.then((value: any) => {
+                if(!value._native?.lastPaymentError || value._native?.lastPaymentError == "undefined") {
+                    completion(STPPaymentStatus.Success, null);
+                    return
+                }
+                completion(STPPaymentStatus.UserCancellation, null);
+			})
+			.catch((e) => {
+				completion(STPPaymentStatus.Error, createError('PaymentError', 100, e));
+			});
+	}
 
   paymentContextDidFailToLoadWithError(paymentContext: STPPaymentContext, error: NSError): void {
     this.listener.onError(error.code, error.localizedDescription);
