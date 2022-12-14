@@ -2588,6 +2588,8 @@ interface STPApplePayContextDelegate extends NSObjectProtocol {
 	applePayContextDidSelectShippingContactHandler?(context: STPApplePayContext, contact: PKContact, handler: (p1: PKPaymentRequestShippingContactUpdate) => void): void;
 
 	applePayContextDidSelectShippingMethodHandler?(context: STPApplePayContext, shippingMethod: PKShippingMethod, handler: (p1: PKPaymentRequestShippingMethodUpdate) => void): void;
+
+	applePayContextWillCompleteWithResultHandler?(context: STPApplePayContext, authorizationResult: PKPaymentAuthorizationResult, handler: (p1: PKPaymentAuthorizationResult) => void): void;
 }
 declare var STPApplePayContextDelegate: {
 
@@ -2754,7 +2756,11 @@ declare class STPBankAccountCollector extends NSObject {
 
 	collectBankAccountForPaymentWithClientSecretParamsFromCompletion(clientSecret: string, params: STPCollectBankAccountParams, viewController: UIViewController, completion: (p1: STPPaymentIntent, p2: NSError) => void): void;
 
+	collectBankAccountForPaymentWithClientSecretReturnURLParamsFromCompletion(clientSecret: string, returnURL: string, params: STPCollectBankAccountParams, viewController: UIViewController, completion: (p1: STPPaymentIntent, p2: NSError) => void): void;
+
 	collectBankAccountForSetupWithClientSecretParamsFromCompletion(clientSecret: string, params: STPCollectBankAccountParams, viewController: UIViewController, completion: (p1: STPSetupIntent, p2: NSError) => void): void;
+
+	collectBankAccountForSetupWithClientSecretReturnURLParamsFromCompletion(clientSecret: string, returnURL: string, params: STPCollectBankAccountParams, viewController: UIViewController, completion: (p1: STPSetupIntent, p2: NSError) => void): void;
 
 	initWithAPIClient(apiClient: STPAPIClient): this;
 }
@@ -4953,7 +4959,9 @@ declare const enum STPIntentActionType {
 
 	BoletoDisplayDetails = 7,
 
-	VerifyWithMicrodeposits = 8
+	VerifyWithMicrodeposits = 8,
+
+	UpiAwaitNotification = 9
 }
 
 declare class STPIntentActionVerifyWithMicrodeposits extends NSObject implements STPAPIResponseDecodable {
