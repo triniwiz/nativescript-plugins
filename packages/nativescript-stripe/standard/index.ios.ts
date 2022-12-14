@@ -236,11 +236,27 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
 			.then((value: any) => {
-                if(!value._native?.lastPaymentError || value._native?.lastPaymentError == "undefined") {
-                    completion(STPPaymentStatus.Success, null);
-                    return
-                }
-                completion(STPPaymentStatus.UserCancellation, null);
+          switch (value._native?.status) {
+              case STPPaymentIntentStatus.STPPaymentIntentStatusUnknown:
+                  completion(STPPaymentStatus.UserCancellation, null);
+                  break;
+              case STPPaymentIntentStatus.STPPaymentIntentStatusCanceled:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresPaymentMethod:
+                  case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresSourceAction:
+                  completion(STPPaymentStatus.UserCancellation, null);
+                  break;
+              case STPPaymentIntentStatus.STPPaymentIntentStatusSucceeded:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresSource:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresConfirmation:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresAction:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusProcessing:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresCapture:
+                  completion(STPPaymentStatus.Success, null);
+                  break;
+              default:
+                  completion(STPPaymentStatus.Error, createError('PaymentError', 100, e));
+                  break;
+          }
 			})
 			.catch((e) => {
 				completion(STPPaymentStatus.Error, createError('PaymentError', 100, e));
