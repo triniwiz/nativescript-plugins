@@ -242,7 +242,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
                   break;
               case STPPaymentIntentStatus.STPPaymentIntentStatusCanceled:
               case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresPaymentMethod:
-                  case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresSourceAction:
+              case STPPaymentIntentStatus.STPPaymentIntentStatusRequiresSourceAction:
                   completion(STPPaymentStatus.UserCancellation, null);
                   break;
               case STPPaymentIntentStatus.STPPaymentIntentStatusSucceeded:
