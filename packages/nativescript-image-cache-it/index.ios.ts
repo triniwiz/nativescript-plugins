@@ -86,9 +86,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 		SDImageCache.sharedImageCache.config.maxDiskAge = age;
 	}
 
-	public createNativeView() {
-		this.uuid = NSUUID.UUID().UUIDString;
-		this.filterQueue = ImageCacheItUtils.createConcurrentQueue('TNSImageOptimizeQueue');
+	private static setModifier() {
 		if (!ImageCacheIt.hasModifier) {
 			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock((request: NSURLRequest): NSURLRequest => {
 				if (request && request.URL && (request as any).URL.uuid && ImageCacheIt.cacheHeaders[(request as any).URL.uuid]) {
@@ -107,6 +105,12 @@ export class ImageCacheIt extends ImageCacheItBase {
 			});
 			ImageCacheIt.hasModifier = true;
 		}
+	}
+
+	public createNativeView() {
+		this.uuid = NSUUID.UUID().UUIDString;
+		this.filterQueue = ImageCacheItUtils.createConcurrentQueue('TNSImageOptimizeQueue');
+		ImageCacheIt.setModifier();
 		const nativeView = SDAnimatedImageView.new();
 		nativeView.contentMode = UIViewContentMode.ScaleAspectFit;
 		nativeView.userInteractionEnabled = true;
@@ -897,12 +901,23 @@ export class ImageCacheIt extends ImageCacheItBase {
 		});
 	}
 
-	public static getItem(src: string): Promise<any> {
+	public static getItem(src: string, headers: Map<string, string>): Promise<any> {
+		ImageCacheIt.setModifier();
 		return new Promise<any>((resolve, reject) => {
 			const manager = SDWebImageManager.sharedManager;
 			if (manager) {
 				if (src && src.indexOf('http') > -1) {
 					const nativeSrc = NSURL.URLWithString(src);
+
+					if (headers) {
+						const uuid = NSUUID.UUID().UUIDString;
+						(<any>nativeSrc).uuid = uuid;
+						const data = ImageCacheIt.cacheHeaders[uuid] || { url: undefined, headers: undefined };
+						data.headers = headers;
+						data.url = src;
+						ImageCacheIt.cacheHeaders[uuid] = data;
+					}
+
 					manager.loadImageWithURLOptionsProgressCompleted(
 						nativeSrc,
 						SDWebImageOptions.ScaleDownLargeImages,

@@ -8,6 +8,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.model.GlideUrl
+import com.bumptech.glide.load.model.LazyHeaders
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
@@ -54,18 +56,76 @@ class ImageCache {
       val requestOptions = RequestOptions()
       requestOptions.onlyRetrieveFromCache(true)
       manager?.asFile()?.load(url)?.apply(requestOptions)?.listener(object : RequestListener<File> {
-        override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
+        override fun onLoadFailed(
+          e: GlideException?,
+          model: Any,
+          target: Target<File>,
+          isFirstResource: Boolean
+        ): Boolean {
           asyncCallback?.onError(e)
           return false
         }
 
-        override fun onResourceReady(resource: File, model: Any, target: Target<File>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+        override fun onResourceReady(
+          resource: File,
+          model: Any,
+          target: Target<File>,
+          dataSource: DataSource,
+          isFirstResource: Boolean
+        ): Boolean {
           asyncCallback?.onSuccess(resource.absolutePath)
           return false
         }
       })?.submit()
 
     }
+
+
+    @JvmStatic
+    fun getItemWithHeaders(url: String?, headers: Map<String, String>, callback: Callback?) {
+      val asyncCallback = makeAsync(callback);
+
+
+      val lazyHeaders = LazyHeaders.Builder()
+
+      for ((key, value) in headers) {
+        lazyHeaders.addHeader(key, value)
+      }
+
+      val gurl: GlideUrl? = if (url != null) GlideUrl(url, lazyHeaders.build()) else {
+        null
+      }
+
+
+      val requestOptions = RequestOptions()
+      manager?.asFile()
+        ?.load(gurl)
+        ?.apply(requestOptions)
+        ?.listener(object : RequestListener<File> {
+          override fun onLoadFailed(
+            e: GlideException?,
+            model: Any,
+            target: Target<File>,
+            isFirstResource: Boolean
+          ): Boolean {
+            asyncCallback?.onError(e)
+            return false
+          }
+
+          override fun onResourceReady(
+            resource: File,
+            model: Any,
+            target: Target<File>,
+            dataSource: DataSource,
+            isFirstResource: Boolean
+          ): Boolean {
+            asyncCallback?.onSuccess(resource.absolutePath)
+            return false
+          }
+        })
+        ?.submit()
+    }
+
 
     @JvmStatic
     fun getItem(url: String?, options: Map<String?, String?>?, callback: Callback?) {
@@ -75,12 +135,23 @@ class ImageCache {
         ?.load(url)
         ?.apply(requestOptions)
         ?.listener(object : RequestListener<File> {
-          override fun onLoadFailed(e: GlideException?, model: Any, target: Target<File>, isFirstResource: Boolean): Boolean {
+          override fun onLoadFailed(
+            e: GlideException?,
+            model: Any,
+            target: Target<File>,
+            isFirstResource: Boolean
+          ): Boolean {
             asyncCallback?.onError(e)
             return false
           }
 
-          override fun onResourceReady(resource: File, model: Any, target: Target<File>, dataSource: DataSource, isFirstResource: Boolean): Boolean {
+          override fun onResourceReady(
+            resource: File,
+            model: Any,
+            target: Target<File>,
+            dataSource: DataSource,
+            isFirstResource: Boolean
+          ): Boolean {
             asyncCallback?.onSuccess(resource.absolutePath)
             return false
           }

@@ -445,21 +445,41 @@ export class ImageCacheIt extends ImageCacheItBase {
 		this.lastActivity = new WeakRef(activity);
 		com.github.triniwiz.imagecacheit.ImageCache.init(activity);
 	}
-	public static getItem(src: string): Promise<any> {
+	public static getItem(src: string, headers: Map<string, string> = undefined): Promise<any> {
 		this._init();
+
 		return new Promise<any>((resolve, reject) => {
-			com.github.triniwiz.imagecacheit.ImageCache.getItem(
-				src,
-				null,
-				new com.github.triniwiz.imagecacheit.ImageCache.Callback({
-					onSuccess(value) {
-						resolve(value);
-					},
-					onError(error) {
-						reject(ImageCacheItError.fromNative(error));
-					},
-				})
-			);
+			if (headers) {
+				const map = new java.util.HashMap<string, string>();
+				headers.forEach((value, key) => {
+					map.put(key, value);
+				});
+				com.github.triniwiz.imagecacheit.ImageCache.getItemWithHeaders(
+					src,
+					map,
+					new com.github.triniwiz.imagecacheit.ImageCache.Callback({
+						onSuccess(value) {
+							resolve(value);
+						},
+						onError(error) {
+							reject(ImageCacheItError.fromNative(error));
+						},
+					})
+				);
+			} else {
+				com.github.triniwiz.imagecacheit.ImageCache.getItem(
+					src,
+					null,
+					new com.github.triniwiz.imagecacheit.ImageCache.Callback({
+						onSuccess(value) {
+							resolve(value);
+						},
+						onError(error) {
+							reject(ImageCacheItError.fromNative(error));
+						},
+					})
+				);
+			}
 		});
 	}
 

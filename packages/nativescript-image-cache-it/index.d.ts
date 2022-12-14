@@ -6,6 +6,9 @@ declare class ImageCacheItError extends Error {
 }
 
 export declare class ImageCacheIt extends ImageCacheItBase {
+	
+	public static getItem(src: string, headers: Map<string, string>): Promise<string>;
+
 	public static getItem(src: string): Promise<string>;
 
 	public static deleteItem(src: string): Promise<any>;
