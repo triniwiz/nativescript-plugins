@@ -44,7 +44,6 @@
     "@triniwiz/nativescript-here": "file:../../packages/nativescript-here",
     "@triniwiz/nativescript-image-zoom": "file:../../packages/nativescript-image-zoom",
     "@triniwiz/nativescript-imageoptimize": "file:../../packages/nativescript-imageoptimize",
-    "@triniwiz/nativescript-kin": "file:../../packages/nativescript-kin",
     "@triniwiz/nativescript-nested-scrollview": "file:../../packages/nativescript-nested-scrollview",
     "@triniwiz/nativescript-opentok": "file:../../packages/nativescript-opentok",
     "@triniwiz/nativescript-pager": "file:../../packages/nativescript-pager",

@@ -13,6 +13,42 @@ interface CacheHeaders {
 	[header: string]: CacheItem;
 }
 
+export class ImageCacheItError extends Error {
+	_native: NSError;
+	static fromNative(native: NSError, message: string = undefined) {
+		const error = new ImageCacheItError(message);
+		error._native = native;
+		return error;
+	}
+
+	get native() {
+		return this._native;
+	}
+
+	_message: string;
+	get message() {
+		if (!this._message) {
+			this._message = this.native?.localizedDescription;
+		}
+		return this._message;
+	}
+
+	intoNative() {
+		if (!this._native) {
+			const exception = NSException.exceptionWithNameReasonUserInfo(NSGenericException, this.message, null);
+			const info = {};
+			info['ExceptionName'] = exception.name;
+			info['ExceptionReason'] = exception.reason;
+			info['ExceptionCallStackReturnAddresses'] = exception.callStackReturnAddresses;
+			info['ExceptionCallStackSymbols'] = exception.callStackSymbols;
+			info['ExceptionUserInfo'] = exception.userInfo;
+			const error = NSError.alloc().initWithDomainCodeUserInfo('NativeScript', 1000, info as any);
+			return error;
+		}
+		return this._native;
+	}
+}
+
 export class ImageCacheIt extends ImageCacheItBase {
 	nativeViewProtected: SDAnimatedImageView;
 	private ctx;
@@ -54,23 +90,21 @@ export class ImageCacheIt extends ImageCacheItBase {
 		this.uuid = NSUUID.UUID().UUIDString;
 		this.filterQueue = ImageCacheItUtils.createConcurrentQueue('TNSImageOptimizeQueue');
 		if (!ImageCacheIt.hasModifier) {
-			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock(
-				(request: NSURLRequest): NSURLRequest => {
-					if (request && request.URL && (request as any).URL.uuid && ImageCacheIt.cacheHeaders[(request as any).URL.uuid]) {
-						const cachedHeader = ImageCacheIt.cacheHeaders[(request as any).URL.uuid];
-						if (cachedHeader.url === request.URL.absoluteString) {
-							const newRequest = request.mutableCopy() as NSMutableURLRequest;
-							if (cachedHeader.headers) {
-								cachedHeader.headers.forEach((value, key) => {
-									newRequest.addValueForHTTPHeaderField(value, key);
-								});
-							}
-							return newRequest.copy();
+			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock((request: NSURLRequest): NSURLRequest => {
+				if (request && request.URL && (request as any).URL.uuid && ImageCacheIt.cacheHeaders[(request as any).URL.uuid]) {
+					const cachedHeader = ImageCacheIt.cacheHeaders[(request as any).URL.uuid];
+					if (cachedHeader.url === request.URL.absoluteString) {
+						const newRequest = request.mutableCopy() as NSMutableURLRequest;
+						if (cachedHeader.headers) {
+							cachedHeader.headers.forEach((value, key) => {
+								newRequest.addValueForHTTPHeaderField(value, key);
+							});
 						}
+						return newRequest.copy();
 					}
-					return request;
 				}
-			);
+				return request;
+			});
 			ImageCacheIt.hasModifier = true;
 		}
 		const nativeView = SDAnimatedImageView.new();
@@ -265,7 +299,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 					progress = Math.max(Math.min(progress, 1), 0) * 100;
 					dispatch_async(main_queue, () => {
 						if (!owner._loadStarted) {
-							owner._emitLoadStartEvent(p3?.absoluteString ? p3.absoluteString : (url?.absoluteString ? url.absoluteString : src));
+							owner._emitLoadStartEvent(p3?.absoluteString ? p3.absoluteString : url?.absoluteString ? url.absoluteString : src);
 							owner._loadStarted = true;
 						}
 						owner.progress = progress;
@@ -278,8 +312,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 				if (owner) {
 					owner.isLoading = false;
 					if (p2) {
-						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : (url?.absoluteString ? url.absoluteString : src));
-						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : (url?.absoluteString ? url.absoluteString : src));
+						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
+						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
 						if (owner.errorHolder) {
 							const errorHolder = this._handlePlaceholder(this.errorHolder);
 							owner.imageSource = new ImageSource(errorHolder);
@@ -297,7 +331,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 								owner.nativeView.alpha = 0;
 								UIView.animateWithDurationAnimations(1, () => {
 									owner.nativeView.alpha = 1;
-									owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : (url && url.absoluteString ? url.absoluteString : src));
+									owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
 								});
 								break;
 							default:
@@ -599,9 +633,15 @@ export class ImageCacheIt extends ImageCacheItBase {
 			if (!overlayColor) {
 				delete options.overlayColor;
 			}
-			ImageCacheItUtils.applyProcessing(this.ctx, nativeImage, <any>options, (image) => {
-				setImage(image);
-			}, null);
+			ImageCacheItUtils.applyProcessing(
+				this.ctx,
+				nativeImage,
+				<any>options,
+				(image) => {
+					setImage(image);
+				},
+				null
+			);
 			/*dispatch_async(this.filterQueue, () => {
           nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
           nativeImage = this._setupFilter(nativeImage);
@@ -620,7 +660,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 						},
 						(image) => {
 							setImage(image);
-						}, null
+						},
+						null
 					);
 					/* dispatch_async(this.filterQueue, () => {
                nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
@@ -641,7 +682,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 						},
 						(image) => {
 							setImage(image);
-						}, null
+						},
+						null
 					);
 				} else {
 					dispatch_async(main_queue, () => {
@@ -867,7 +909,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						(receivedSize: number, expectedSize: number, path: NSURL) => {},
 						(image, data, error, type, finished, completedUrl) => {
 							if (image === null && error !== null && data === null) {
-								reject(error.localizedDescription);
+								reject(ImageCacheItError.fromNative(error));
 							} else if (finished && completedUrl != null) {
 								if (type === SDImageCacheType.Disk) {
 									const key = manager.cacheKeyForURL(completedUrl);

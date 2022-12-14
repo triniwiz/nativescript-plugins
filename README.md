@@ -10,7 +10,6 @@
 - [@triniwiz/nativescript-image-cache-it](packages/nativescript-image-cache-it/README.md)
 - [@triniwiz/nativescript-image-zoom](packages/nativescript-image-zoom/README.md)
 - [@triniwiz/nativescript-imageoptimize](packages/nativescript-imageoptimize/README.md)
-- [@triniwiz/nativescript-kin](packages/nativescript-kin/README.md)
 - [@triniwiz/nativescript-nested-scrollview](packages/nativescript-nested-scrollview/README.md)
 - [@triniwiz/nativescript-opentok](packages/nativescript-opentok/README.md)
 - [@triniwiz/nativescript-pager](packages/nativescript-pager/README.md)

@@ -67,7 +67,7 @@ export enum QueryMeta {
 	ID = 'COUCHBASE_ID',
 }
 
-export type QueryComparisonOperator = 'modulo' | 'is' | 'between' | 'isNot' | 'collate' | 'in' | 'add' | 'isNullOrMissing' | 'greaterThan' | 'divide' | 'notEqualTo' | 'greaterThanOrEqualTo' | 'like' | 'subtract' | 'lessThanOrEqualTo' | 'lessThan' | 'notNullOrMissing' | 'regex' | 'equalTo' | 'multiply' | 'contains';
+export type QueryComparisonOperator = 'modulo' | 'is' | 'between' | 'isNot' | 'collate' | 'in' | 'add' | 'isNullOrMissing' | 'isNotValued' | 'greaterThan' | 'divide' | 'notEqualTo' | 'greaterThanOrEqualTo' | 'like' | 'subtract' | 'lessThanOrEqualTo' | 'lessThan' | 'notNullOrMissing' | 'isValued' | 'regex' | 'equalTo' | 'multiply' | 'contains';
 
 export enum QueryLogicalOperator {
 	AND = 'and',

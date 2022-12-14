@@ -23,7 +23,7 @@
         <Button text="nativescript-image-cache-it" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-image-zoom" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-imageoptimize" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-kin" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        
         
         
         

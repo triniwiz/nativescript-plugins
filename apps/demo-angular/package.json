@@ -36,7 +36,6 @@
     "@triniwiz/nativescript-youtubeplayer": "file:../../dist/packages/nativescript-youtubeplayer",
     "@triniwiz/nativescript-accelerometer": "file:../../dist/packages/nativescript-accelerometer",
     "@triniwiz/nativescript-yogalayout": "file:../../dist/packages/nativescript-yogalayout",
-    "@triniwiz/nativescript-kin": "file:../../dist/packages/nativescript-kin",
     "@triniwiz/nativescript-parsesdk": "file:../../dist/packages/nativescript-parsesdk",
     "@triniwiz/nativescript-supabase": "file:../../dist/packages/nativescript-supabase",
     "@triniwiz/nativescript-supabase-gotrue": "file:../../dist/packages/nativescript-supabase-gotrue",

@@ -353,7 +353,7 @@ export class Stripe {
 	}
 }
 
-@NativeClass
+@NativeClass()
 @ObjCClass(STPAuthenticationContext)
 class STPAuthenticationContextImp extends NSObject implements STPAuthenticationContext {
 	_vc: UIViewController;
@@ -536,7 +536,7 @@ export class CardParams implements ICardParams {
 	}
 }
 
-@NativeClass
+@NativeClass()
 class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPaymentCardTextFieldDelegate {
 	public static ObjCProtocols = [STPPaymentCardTextFieldDelegate];
 	_owner: WeakRef<CreditCardView>;

@@ -41,7 +41,6 @@
 			"@triniwiz/nativescript-image-cache-it/angular": ["packages/nativescript-image-cache-it/angular/index.ts"],
 			"@triniwiz/nativescript-image-zoom": ["packages/nativescript-image-zoom/index.d.ts"],
 			"@triniwiz/nativescript-imageoptimize": ["packages/nativescript-imageoptimize/index.d.ts"],
-			"@triniwiz/nativescript-kin": ["packages/nativescript-kin/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-core": ["packages/nativescript-mongo-stitch-core/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-sdk": ["packages/nativescript-mongo-stitch-sdk/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-services-mongodb-remote": ["packages/nativescript-mongo-stitch-services-mongodb-remote/index.d.ts"],

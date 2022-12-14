@@ -10,7 +10,7 @@ export function View(props: RNViewProps = {}) {
 
 	const styleResolved = style ? convertStyleRNToRNS(style) : void 0;
 
-	return <yoga flexDirection="column" flexShrink={0} alignContent="flex-start" {...mapEventHandlersRNToRNS(otherProps)} {...(styleResolved ? { style: styleResolved } : {})} />;
+	return <yoga flexDirection="column" flexShrink={0} alignContent="flex-start" {...mapEventHandlersRNToRNS(otherProps  as any)} {...(styleResolved ? { style: styleResolved } : {})} />;
 }
 
 /**

@@ -272,10 +272,10 @@ export class DemoSharedNativescriptImageCacheIt extends DemoSharedBase {
       console.log('started', args.url);
     });
     event.object.on('progress', function (args: any) {
-      console.log('progress', args.progress);
+     // console.log('progress', args.progress);
     });
     event.object.on('error', (args: any) => {
-      console.log('error', args.message, args.url);
+      //console.log('error', args.message, args.url);
     });
     event.object.on('loadEnd', (args: any) => {
       console.log('ended', args.url);

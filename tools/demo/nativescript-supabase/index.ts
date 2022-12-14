@@ -7,7 +7,7 @@ export class DemoSharedNativescriptSupabase extends DemoSharedBase {
 
 	constructor() {
 		super();
-		this.supabase = createClient('YOUR_SUPABASE_URL', 'YOUR_SUPABASE_KEY');
+		this.supabase = createClient('https://bozjtqdkfsjtnthmdsbi.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTYyMTg0MjY1MywiZXhwIjoxOTM3NDE4NjUzfQ.E3CgwVQ_L-ee4GnCdC5sLzBCucYIeEnCm1O0nvwZT30');
 		this.loginUser().then();
 	}
 
@@ -52,7 +52,7 @@ export class DemoSharedNativescriptSupabase extends DemoSharedBase {
 			const result = await this.supabase.storage.from('NativeScriptDemo').upload('big_buck_bunny.mp4', f);
 			console.log('result ?', result.error, f);
 		} catch (e) {
-			console.log(e);
+			console.error(e);
 		}
 	}
 }

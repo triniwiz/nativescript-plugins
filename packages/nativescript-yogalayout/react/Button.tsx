@@ -23,5 +23,6 @@ export function Button(props: RNButtonProps) {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const { onPress, title, ...otherProps } = props;
 
-	return <button color="black" text={title} {...mapEventHandlersRNToRNS(otherProps)} />;
+	//making ts happy :D
+	return <button color="black" text={title} {...mapEventHandlersRNToRNS(otherProps as any)} />;
 }

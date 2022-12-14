@@ -965,15 +965,15 @@ export class PaymentMethod implements IPaymentMethod {
 	}
 
 	get id(): string {
-		return this.native.component1();
+		return this.native.id;
 	}
 
 	get created(): Date {
-		return new Date(this.native.component2().longValue() * 1000);
+		return new Date(this.native.created.longValue() * 1000);
 	}
 
 	get type(): PaymentMethodType {
-		switch (this.native.component4()) {
+		switch (this.native.type) {
 			case com.stripe.android.model.PaymentMethod.Type.Alipay:
 				return PaymentMethodType.Alipay;
 			case com.stripe.android.model.PaymentMethod.Type.AuBecsDebit:
@@ -1010,15 +1010,15 @@ export class PaymentMethod implements IPaymentMethod {
 	}
 
 	get billingDetails(): object {
-		return this.native.component5();
+		return this.native.billingDetails;
 	}
 
 	get card(): PaymentMethodCard {
-		return PaymentMethodCard.fromNative(this.native.component7());
+		return PaymentMethodCard.fromNative(this.native.card);
 	}
 
 	get customerId(): string {
-		return this.native.component6();
+		return this.native.customerId;
 	}
 }
 

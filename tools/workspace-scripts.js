@@ -398,13 +398,6 @@ module.exports = {
 					description: '@triniwiz/nativescript-yogalayout: Build',
 				},
 			},
-			// @triniwiz/nativescript-kin
-			'nativescript-kin': {
-				build: {
-					script: 'nx run nativescript-kin:build.all',
-					description: '@triniwiz/nativescript-kin: Build',
-				},
-			},
 			// @triniwiz/nativescript-parsesdk
 			'nativescript-parsesdk': {
 				build: {
@@ -635,10 +628,6 @@ module.exports = {
 			'nativescript-yogalayout': {
 				script: 'nx run nativescript-yogalayout:focus',
 				description: 'Focus on @triniwiz/nativescript-yogalayout',
-			},
-			'nativescript-kin': {
-				script: 'nx run nativescript-kin:focus',
-				description: 'Focus on @triniwiz/nativescript-kin',
 			},
 			'nativescript-parsesdk': {
 				script: 'nx run nativescript-parsesdk:focus',

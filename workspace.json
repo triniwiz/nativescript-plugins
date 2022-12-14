@@ -19,7 +19,6 @@
     "nativescript-image-cache-it": "packages/nativescript-image-cache-it",
     "nativescript-image-zoom": "packages/nativescript-image-zoom",
     "nativescript-imageoptimize": "packages/nativescript-imageoptimize",
-    "nativescript-kin": "packages/nativescript-kin",
     "nativescript-nested-scrollview": "packages/nativescript-nested-scrollview",
     "nativescript-opentok": "packages/nativescript-opentok",
     "nativescript-pager": "packages/nativescript-pager",

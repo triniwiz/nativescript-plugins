@@ -157,8 +157,8 @@ export class StripeStandardPaymentSession {
 			const data = this._data;
 			const shippingMethod = data?.getShippingMethod();
 			const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-			const component1 = data.getPaymentMethod()?.component1();
-			if (!component1) {
+			const id = data.getPaymentMethod()?.id;
+			if (!id) {
 				console.warn('Payment method undefined!');
 				this.listener.onError(500, 'Payment method undefined!');
 				this.paymentInProgress = false;
@@ -166,7 +166,7 @@ export class StripeStandardPaymentSession {
 			}
 			StripeStandardConfig.shared.backendAPI
 				.capturePayment(
-					component1, // id
+					id,
 					data.getCartTotal() + shippingCost,
 					createShippingMethod(shippingMethod),
 					createAddress(data?.getShippingInformation())
@@ -323,21 +323,21 @@ function createPaymentSessionListener(parent: StripeStandardPaymentSession, list
 
 function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMethod): StripeStandardPaymentMethod {
 	if (!paymentMethod) return undefined;
-	const type = paymentMethod.component4();
+	const type = paymentMethod.type;
 	if (type === com.stripe.android.model.PaymentMethod.Type.Fpx) {
-		const fpx = paymentMethod.component9(); // fpx
-		const pmId = paymentMethod.component1(); // id
+		const fpx = paymentMethod.fpx; // fpx
+		const pmId = paymentMethod.id; // id
 		if (fpx) return createPaymentMethodFromFpx(fpx, pmId);
 	} else if (type === com.stripe.android.model.PaymentMethod.Type.Card) {
-		const pmCard = paymentMethod.component7(); // card
-		const pmId = paymentMethod.component1(); // id
+		const pmCard = paymentMethod.card; // card
+		const pmId = paymentMethod.id; // id
 		if (pmCard) return createPaymentMethodFromCard(pmCard, pmId);
 	}
 	return { label: 'Error (103)', image: undefined, templateImage: undefined };
 }
 
 function createPaymentMethodFromFpx(fpx: com.stripe.android.model.PaymentMethod.Fpx, stripeID: string): StripeStandardPaymentMethod {
-	const bank = (com as any).stripe.android.view.FpxBank.get(fpx.component1());
+	const bank = (com as any).stripe.android.view.FpxBank.get(fpx.bank);
 	return {
 		label: bank.getDisplayName(),
 		image: getBitmapFromResource(bank.getBrandIconResId()),
@@ -349,8 +349,8 @@ function createPaymentMethodFromFpx(fpx: com.stripe.android.model.PaymentMethod.
 }
 
 function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMethod.Card, stripeID: string): StripeStandardPaymentMethod {
-	const brand = card.component1(); // brand
-	const last4 = card.component7(); // last4
+	const brand = card.brand; // brand
+	const last4 = card.last4; // last4
 	return {
 		label: `${GetBrand(brand)} ...${last4}`,
 		image: getBitmapFromResource(brand.getIcon()),

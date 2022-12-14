@@ -10,7 +10,7 @@ import Timer from './lib/timer'
 import RealtimeSubscription from './RealtimeSubscription'
 //import {w3cwebsocket as WebSocket} from 'websocket'
 import Serializer from './lib/serializer'
-import { URLSearchParams } from 'whatwg-url-without-unicode';
+import { URLSearchParams } from 'whatwg-url';
 type Options = {
   transport?: WebSocket
   timeout?: number
@@ -103,9 +103,9 @@ export default class RealtimeClient {
       : (payload: JSON, callback: Function) => {
         return callback(JSON.stringify(payload))
       }
-    this.decode = options?.decode
-      ? options.decode
-      : this.serializer.decode.bind(this.serializer)
+
+
+    this.decode = options?.decode ??  this.serializer.decode.bind(this.serializer)
     this.reconnectTimer = new Timer(async () => {
       await this.disconnect()
       this.connect()

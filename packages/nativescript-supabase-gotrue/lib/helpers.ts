@@ -14,7 +14,7 @@ export function uuid() {
 export const isBrowser = () => true
 
 export function getParameterByName(name: string, url?: string) {
-  if (!url) url = window.location.href
+  if (!url) url = window?.location?.href ?? '';
   name = name.replace(/[\[\]]/g, '\\$&')
   var regex = new RegExp('[?&#]' + name + '(=([^&#]*)|&|#|$)'),
     results = regex.exec(url)
@@ -28,12 +28,11 @@ import {ApplicationSettings} from '@nativescript/core';
 export class LocalStorage {
 
   item(index: string) {
-    console.log('here')
     return this[index];
   }
 
   get length() {
-    return ApplicationSettings.getAllKeys.length;
+    return ApplicationSettings.getAllKeys().length;
   }
 
   constructor(localStorage: Storage) {
@@ -44,7 +43,7 @@ export class LocalStorage {
   }
 
   key(index: number): string | null {
-    return ApplicationSettings.getAllKeys[index]
+    return ApplicationSettings.getAllKeys()[index]
   }
 
   setItem(key: string, value: any): void {

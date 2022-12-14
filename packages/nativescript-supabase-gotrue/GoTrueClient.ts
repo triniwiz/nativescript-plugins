@@ -69,17 +69,18 @@ export default class GoTrueClient {
       url: settings.url,
       headers: settings.headers,
       cookieOptions: settings.cookieOptions,
-    })
-    this._recoverSession()
-    this._recoverAndRefresh()
+    });
+
+    this._recoverSession();
+    this._recoverAndRefresh();
 
     // Handle the OAuth redirect
     try {
-      if (settings.detectSessionInUrl && isBrowser() && !!getParameterByName('access_token')) {
+      if (settings.detectSessionInUrl && isBrowser() && !!getParameterByName('access_token', settings.url)) {
         this.getSessionFromUrl({storeSession: true})
       }
     } catch (error) {
-      console.log('Error getting session from URL.')
+      console.error('Error getting session from URL.')
     }
   }
 
@@ -480,14 +481,14 @@ export default class GoTrueClient {
         if (this.autoRefreshToken && currentSession.refresh_token) {
           const {error} = await this._callRefreshToken(currentSession.refresh_token)
           if (error) {
-            console.log(error.message)
+            console.error(error.message)
             await this._removeSession()
           }
         } else {
           this._removeSession()
         }
       } else if (!currentSession || !currentSession.user) {
-        console.log('Current session is missing data.')
+        console.error('Current session is missing data.')
         this._removeSession()
       } else {
         // should be handled on _recoverSession method already
