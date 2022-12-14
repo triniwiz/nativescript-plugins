@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-supabase-storage",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A Nativescript client library to interact with Supabase Storage",
   "main": "index",
   "typings": "index.d.ts",

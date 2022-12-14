@@ -1,4 +1,4 @@
-require('./vendor/nativescript-websockets');
+require('@valor/nativescript-websockets');
 
 import * as Transformers from './lib/transformers'
 import RealtimeClient from './RealtimeClient'

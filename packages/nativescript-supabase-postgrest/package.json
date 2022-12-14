@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-supabase-postgrest",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A NativeScript client for PostgREST",
   "main": "index",
   "typings": "index.d.ts",
