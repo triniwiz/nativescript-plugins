@@ -1,4 +1,5 @@
 {
+	"name": "nativescript-supabase-gotrue",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-supabase-gotrue",
 	"projectType": "library",
@@ -30,12 +31,12 @@
 			]
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-supabase-gotrue"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-supabase-gotrue"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-supabase-gotrue"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -52,7 +53,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-gotrue"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",
