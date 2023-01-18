@@ -3,6 +3,7 @@ import { Color, FontWeight } from '@nativescript/core';
 
 import { OptionalStyleAllowingStringWithFlexExceptions } from './index';
 import { RNSStyle } from 'react-nativescript';
+import { FontWeightType } from '@nativescript/core/ui/styling/font-interfaces';
 
 // I can't figure out the ideal generic typing for this, sorry!
 export function mapEventHandlersRNToRNS<T extends Record<string, unknown>>(handlers: T): T {
@@ -70,7 +71,7 @@ export function mapStyleRNToRNS(name: string, value: unknown): Record<string, an
 			/**
 			 * FIXME: Migrate to FontWeight enum once monorepo is using NativeScript 8 for this package.
 			 */
-			let fontWeight: FontWeight;
+			let fontWeight: FontWeightType;
 			switch (value) {
 				case '100':
 				case 'thin':
