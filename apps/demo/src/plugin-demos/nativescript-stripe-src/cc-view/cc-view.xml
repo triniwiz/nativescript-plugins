@@ -7,8 +7,10 @@
     <Button text="Create Token" tap="{{ccViewCreateToken}}" class="btn btn-primary"/>
     <Button text="Create Source" tap="{{ccViewCreateSource}}" class="btn btn-primary"/>
     <Button text="Create PaymentMethod" tap="{{ccViewCreatePaymentMethod}}" class="btn btn-primary"/>
+    <Button text="Confirm SetupIntent" tap="{{confirmSetupIntent}}" class="btn btn-primary"/>
     <Label text="{{ token }}" textWrap="true"/>
     <Label text="{{ source }}" textWrap="true"/>
-     <Label text="{{ payment }}" textWrap="true"/>
+    <Label text="{{ payment }}" textWrap="true"/>
+    <Label text="{{ confirm }}" textWrap="true"/>
   </StackLayout>
 </Page>
