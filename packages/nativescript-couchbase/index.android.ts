@@ -136,13 +136,16 @@ export class CouchBase extends Common {
 	}
 
 	deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
+		let success = false;
 		try {
 			const doc = this.android.getDocument(documentId);
-			return this.android.delete(doc, concurrencyMode === ConcurrencyMode.FailOnConflict ? com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT : com.couchbase.lite.ConcurrencyControl.LAST_WRITE_WINS);
+			if (doc != null) {
+				success = this.android.delete(doc, concurrencyMode === ConcurrencyMode.FailOnConflict ? com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT : com.couchbase.lite.ConcurrencyControl.LAST_WRITE_WINS);
+			}
 		} catch (e) {
 			console.error(e.message);
-			return false;
 		}
+		return success;
 	}
 
 	destroyDatabase() {

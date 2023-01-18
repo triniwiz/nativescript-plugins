@@ -398,8 +398,16 @@ export class CouchBase extends Common {
 	}
 
 	deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = 1) {
-		const doc = this.ios.documentWithID(documentId);
-		return this.ios.deleteDocumentConcurrencyControlError(doc, concurrencyMode === 1 ? CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict : CBLConcurrencyControl.kCBLConcurrencyControlLastWriteWins);
+		let success = false;
+		try {
+			const doc = this.ios.documentWithID(documentId);
+			if (doc != null) {
+				success = this.ios.deleteDocumentConcurrencyControlError(doc, concurrencyMode === 1 ? CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict : CBLConcurrencyControl.kCBLConcurrencyControlLastWriteWins);
+			}
+		} catch (e) {
+			console.error(e.message);
+		}
+		return success;
 	}
 
 	destroyDatabase() {
