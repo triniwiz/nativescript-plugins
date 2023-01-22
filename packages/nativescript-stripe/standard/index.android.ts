@@ -157,7 +157,7 @@ export class StripeStandardPaymentSession {
 			const data = this._data;
 			const shippingMethod = data?.getShippingMethod();
 			const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-			const id = data.getPaymentMethod()?.id;
+			const id = data?.getPaymentMethod()?.id;
 			if (!id) {
 				console.warn('Payment method undefined!');
 				this.listener.onError(500, 'Payment method undefined!');
