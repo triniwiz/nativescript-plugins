@@ -1,7 +1,7 @@
 # NativeScript Accordion
 
 ## Install
-`ns plugin add nativescript-accordion`
+`npm install nativescript-accordion`
 
 ## Usage
 

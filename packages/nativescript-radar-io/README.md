@@ -2,7 +2,7 @@
 ## Installation
 
 ```bash
-ns plugin add @triniwiz/nativescript-radar-io
+npm install @triniwiz/nativescript-radar-io
 ```
 
 To get a Radar publishable API key, [sign up for a Radar account](https://radar.io).

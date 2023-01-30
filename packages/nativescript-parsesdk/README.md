@@ -1,7 +1,7 @@
 # Nativescript nativescript-parsesdk
 
 ```javascript
-ns plugin add @triniwiz/nativescript-parsesdk
+npm install @triniwiz/nativescript-parsesdk
 ```
 
 ## Usage

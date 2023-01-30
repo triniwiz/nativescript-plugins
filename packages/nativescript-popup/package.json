@@ -1,7 +1,7 @@
 {
 	"name": "@triniwiz/nativescript-popup",
-	"version": "1.0.0",
-	"description": "Add a plugin description",
+	"version": "2.0.0",
+	"description": "Popups for NativeScript",
 	"main": "index",
 	"typings": "index.d.ts",
 	"nativescript": {
@@ -22,9 +22,21 @@
 		"Android"
 	],
 	"author": {
-		"name": "NativeScript",
-		"email": "oss@nativescript.org"
+		"name": "Osei Fortune",
+		"email": "fortune.osei@yahoo.com"
 	},
+	"contributors": [
+		{
+			"name": "Shiv19",
+			"url": "https://shiv19.com",
+			"email": "sp@shiv19.com"
+		},
+		{
+			"name": "Brad Martin",
+			"url": "https://github.com/bradmartin",
+			"email": "bmartin@nstudio.io"
+		}
+	],
 	"bugs": {
 		"url": "https://github.com/NativeScript/plugins/issues"
 	},

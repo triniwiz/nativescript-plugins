@@ -1,7 +1,7 @@
 # Nativescript AWS SDK
 
 ```javascript
-ns plugin add @triniwiz/nativescript-aws-sdk
+npm install @triniwiz/nativescript-aws-sdk
 ```
 
 ## Usage

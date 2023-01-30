@@ -39,13 +39,13 @@
 ## NativeScript Version Support
 | NS Version | nativescript-http version | Install command | Docs |
 | ---        | ---                       | ---             | --- |
-| ^7.0.0 | ^2.0.0 | ns plugin add @klippa/nativescript-http | This page |
-| ^6.0.0 | ^1.0.0 | tns plugin add @klippa/nativescript-http@^1.0.0 | [Here](https://github.com/klippa-app/nativescript-http/blob/ns-version/6/README.md) |
+| ^7.0.0 | ^2.0.0 | npm install @klippa/nativescript-http | This page |
+| ^6.0.0 | ^1.0.0 | tnpm install @klippa/nativescript-http@^1.0.0 | [Here](https://github.com/klippa-app/nativescript-http/blob/ns-version/6/README.md) |
 
 ## Installation (NS 7)
 
 ```
-ns plugin add @klippa/nativescript-http
+npm install @klippa/nativescript-http
 ```
 
 ## Usage (NS 7)

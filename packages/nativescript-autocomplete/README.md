@@ -1,7 +1,7 @@
 # Nativescript nativescript-autocomplete
 
 ```javascript
-ns plugin add @triniwiz/nativescript-autocomplete
+npm install @triniwiz/nativescript-autocomplete
 ```
 
 ## Usage

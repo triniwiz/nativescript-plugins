@@ -1,7 +1,7 @@
 # Nativescript nativescript-webrtc
 
 ```javascript
-ns plugin add @triniwiz/nativescript-webrtc
+npm install @triniwiz/nativescript-webrtc
 ```
 
 ## Usage

@@ -1,7 +1,7 @@
 # Nativescript nativescript-twitter
 
 ```javascript
-ns plugin add @triniwiz/nativescript-twitter
+npm install @triniwiz/nativescript-twitter
 ```
 
 ## Usage

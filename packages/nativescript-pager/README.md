@@ -1,7 +1,7 @@
 # Nativescript nativescript-pager
 
 ```javascript
-ns plugin add @triniwiz/nativescript-pager
+npm install @triniwiz/nativescript-pager
 ```
 
 ## API documentation

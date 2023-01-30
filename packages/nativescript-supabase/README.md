@@ -1,7 +1,7 @@
 # Nativescript Supabase
 
 ```javascript
-ns plugin add @triniwiz/nativescript-supabase
+npm install @triniwiz/nativescript-supabase
 ```
 
 ## Usage
