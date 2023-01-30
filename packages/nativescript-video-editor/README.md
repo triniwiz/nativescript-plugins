@@ -1,7 +1,7 @@
 # Nativescript nativescript-video-editor
 
 ```javascript
-ns plugin add @triniwiz/nativescript-video-editor
+npm install @triniwiz/nativescript-video-editor
 ```
 
 ## Usage

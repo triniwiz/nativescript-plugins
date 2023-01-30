@@ -28,7 +28,7 @@
 		"demo-angular.ios": "npm i && ts-patch install && cd ../demo-angular && ns run ios",
 		"demo-angular.android": "npm i && ts-patch install && cd ../demo-angular && ns run android",
 		"demo-angular.reset": "cd ../demo-angular && npx rimraf -- hooks node_modules platforms package-lock.json",
-		"plugin.prepare": "npm run build && cd ../demo && ns plugin remove @klippa/nativescript-http && ns plugin add ../src && cd ../demo-angular && ns plugin remove @klippa/nativescript-http && ns plugin add ../src",
+		"plugin.prepare": "npm run build && cd ../demo && ns plugin remove @klippa/nativescript-http && npm install ../src && cd ../demo-angular && ns plugin remove @klippa/nativescript-http && npm install ../src",
 		"clean": "npm run demo.reset && npm run demo-angular.reset && npx rimraf -- node_modules package-lock.json && npm i",
 		"ngcc": "node --max-old-space-size=8192 ./node_modules/.bin/ngcc -p es2015",
 		"ngc": "node --max-old-space-size=8192 ./node_modules/.bin/ngc"

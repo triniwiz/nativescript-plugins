@@ -1,7 +1,7 @@
 # Nativescript nativescript-tooltip
 
 ```javascript
-ns plugin add @triniwiz/nativescript-tooltip
+npm install @triniwiz/nativescript-tooltip
 ```
 
 ## API documentation

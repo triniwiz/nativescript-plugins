@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-tns plugin add @triniwiz/nativescript-couchbase
+tnpm install @triniwiz/nativescript-couchbase
 ```
 
 ## API documentation

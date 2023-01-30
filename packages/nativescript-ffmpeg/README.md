@@ -1,7 +1,7 @@
 # Nativescript nativescript-ffmpeg
 
 ```javascript
-ns plugin add @triniwiz/nativescript-ffmpeg
+npm install @triniwiz/nativescript-ffmpeg
 ```
 
 ## API documentation

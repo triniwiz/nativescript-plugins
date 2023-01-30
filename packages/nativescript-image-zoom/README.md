@@ -1,7 +1,7 @@
 # Nativescript nativescript-image-zoom
 
 ```javascript
-ns plugin add @triniwiz/nativescript-image-zoom
+npm install @triniwiz/nativescript-image-zoom
 ```
 
 ## API documentation

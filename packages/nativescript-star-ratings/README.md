@@ -1,7 +1,7 @@
 # Nativescript nativescript-star-ratings
 
 ```javascript
-ns plugin add @triniwiz/nativescript-star-ratings
+npm install @triniwiz/nativescript-star-ratings
 ```
 
 

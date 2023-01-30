@@ -1,7 +1,7 @@
 # Nativescript Supabase GoTrue Client
 
 ```javascript
-ns plugin add @triniwiz/nativescript-supabase-gotrue
+npm install @triniwiz/nativescript-supabase-gotrue
 ```
 
 ## Usage

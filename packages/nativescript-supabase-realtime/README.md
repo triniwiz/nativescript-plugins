@@ -1,7 +1,7 @@
 # Nativescript Supabase Realtime Client
 
 ```javascript
-ns plugin add @triniwiz/nativescript-supabase-realtime
+npm install @triniwiz/nativescript-supabase-realtime
 ```
 
 ## Usage

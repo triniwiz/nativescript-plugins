@@ -1,7 +1,7 @@
 # Nativescript nativescript-pubnub
 
 ```javascript
-ns plugin add @triniwiz/nativescript-pubnub
+npm install @triniwiz/nativescript-pubnub
 ```
 
 ## Usage

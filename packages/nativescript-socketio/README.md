@@ -1,7 +1,7 @@
 # Nativescript nativescript-socketio
 
 ```javascript
-ns plugin add @triniwiz/nativescript-socketio
+npm install @triniwiz/nativescript-socketio
 ```
 
 ## API documentation
