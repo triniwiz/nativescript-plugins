@@ -1,47 +1,47 @@
 {
-	"name": "@triniwiz/nativescript-popup",
-	"version": "2.0.0",
-	"description": "Popups for NativeScript",
-	"main": "index",
-	"typings": "index.d.ts",
-	"nativescript": {
-		"platforms": {
-			"ios": "6.0.0",
-			"android": "6.0.0"
-		}
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/NativeScript/plugins.git"
-	},
-	"keywords": [
-		"NativeScript",
-		"JavaScript",
-		"TypeScript",
-		"iOS",
-		"Android"
-	],
-	"author": {
-		"name": "Osei Fortune",
-		"email": "fortune.osei@yahoo.com"
-	},
-	"contributors": [
-		{
-			"name": "Shiv19",
-			"url": "https://shiv19.com",
-			"email": "sp@shiv19.com"
-		},
-		{
-			"name": "Brad Martin",
-			"url": "https://github.com/bradmartin",
-			"email": "bmartin@nstudio.io"
-		}
-	],
-	"bugs": {
-		"url": "https://github.com/NativeScript/plugins/issues"
-	},
-	"license": "Apache-2.0",
-	"homepage": "https://github.com/NativeScript/plugins",
-	"readmeFilename": "README.md",
-	"bootstrapper": "@nativescript/plugin-seed"
+  "name": "@triniwiz/nativescript-popup",
+  "version": "2.0.0",
+  "description": "Popups for NativeScript",
+  "main": "index",
+  "typings": "index.d.ts",
+  "nativescript": {
+    "platforms": {
+      "ios": "6.0.0",
+      "android": "6.0.0"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/triniwiz/plugins.git"
+  },
+  "keywords": [
+    "NativeScript",
+    "JavaScript",
+    "TypeScript",
+    "iOS",
+    "Android"
+  ],
+  "author": {
+    "name": "Osei Fortune",
+    "email": "fortune.osei@yahoo.com"
+  },
+  "contributors": [
+    {
+      "name": "Shiv19",
+      "url": "https://shiv19.com",
+      "email": "sp@shiv19.com"
+    },
+    {
+      "name": "Brad Martin",
+      "url": "https://github.com/bradmartin",
+      "email": "bmartin@nstudio.io"
+    }
+  ],
+  "bugs": {
+    "url": "https://github.com/triniwiz/plugins/issues"
+  },
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/triniwiz/plugins",
+  "readmeFilename": "README.md",
+  "bootstrapper": "@nativescript/plugin-seed"
 }
