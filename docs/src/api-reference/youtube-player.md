@@ -129,8 +129,8 @@ import '@triniwiz/nativescript-youtubeplayer/svelte';
 | play();                                                                     | void |
 | playById(id: string);                                                       | void |
 | playByUrl(url: string);                                                     | void |
-| cueVideoById(id: string);                                                   | void |
-| cueVideoByUrl(url: string);                                                 | void |
+| cueVideoById(id: string, startSeconds?: number, endSeconds?: number);                                                   | void |
+| cueVideoByUrl(url: string, startSeconds?: number, endSeconds?: number);                                                 | void |
 | pause();                                                                    | void |
 | next();                                                                     | void |
 | previous();                                                                 | void |
