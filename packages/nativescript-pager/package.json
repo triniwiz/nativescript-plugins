@@ -37,10 +37,10 @@
     "email": "fortune.osei@yahoo.com"
   },
   "bugs": {
-    "url": "https://github.com/NativeScript/plugins/issues"
+    "url": "https://github.com/triniwiz/nativescript-plugins/issues"
   },
   "license": "Apache-2.0",
-  "homepage": "https://github.com/NativeScript/plugins",
+  "homepage": "https://github.com/triniwiz/nativescript-plugins",
   "readmeFilename": "README.md",
   "bootstrapper": "@nativescript/plugin-seed"
 }

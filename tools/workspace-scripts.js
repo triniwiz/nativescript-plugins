@@ -447,6 +447,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-opentok: Build',
 				},
 			},
+			// @triniwiz/nativescript-messenger
+			'nativescript-messenger': {
+				build: {
+					script: 'nx run nativescript-messenger:build.all',
+					description: '@triniwiz/nativescript-messenger: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -656,6 +663,10 @@ module.exports = {
 			'nativescript-opentok': {
 				script: 'nx run nativescript-opentok:focus',
 				description: 'Focus on @triniwiz/nativescript-opentok',
+			},
+			'nativescript-messenger': {
+				script: 'nx run nativescript-messenger:focus',
+				description: 'Focus on @triniwiz/nativescript-messenger',
 			},
 			reset: {
 				script: 'nx g @nativescript/plugin-tools:focus-packages',

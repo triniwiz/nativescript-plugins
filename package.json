@@ -67,7 +67,7 @@
 		"ts-jest": "28.0.8",
 		"tslib": "^2.0.0",
 		"typescript": "~4.8.0",
-		"vuepress": "^1.5.3",
+		"vuepress": "^1.9.8",
 		"whatwg-url": "11.0.0",
 		"zone.js": "~0.11.1"
 	},

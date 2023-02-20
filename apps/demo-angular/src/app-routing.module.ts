@@ -19,6 +19,7 @@ const routes: Routes = [
 	{ path: 'nativescript-image-cache-it', loadChildren: () => import('./plugin-demos/nativescript-image-cache-it.module').then(m => m.NativescriptImageCacheItModule) },
 	{ path: 'nativescript-image-zoom', loadChildren: () => import('./plugin-demos/nativescript-image-zoom.module').then(m => m.NativescriptImageZoomModule) },
 	{ path: 'nativescript-imageoptimize', loadChildren: () => import('./plugin-demos/nativescript-imageoptimize.module').then(m => m.NativescriptImageoptimizeModule) },
+	{ path: 'nativescript-messenger', loadChildren: () => import('./plugin-demos/nativescript-messenger.module').then(m => m.NativescriptMessengerModule) },
 	{ path: 'nativescript-nested-scrollview', loadChildren: () => import('./plugin-demos/nativescript-nested-scrollview.module').then(m => m.NativescriptNestedScrollviewModule) },
 	{ path: 'nativescript-opentok', loadChildren: () => import('./plugin-demos/nativescript-opentok.module').then(m => m.NativescriptOpentokModule) },
 	{ path: 'nativescript-pager', loadChildren: () => import('./plugin-demos/nativescript-pager.module').then(m => m.NativescriptPagerModule) },

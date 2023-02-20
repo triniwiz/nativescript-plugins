@@ -48,6 +48,7 @@
     "nativescript-webrtc": "packages/nativescript-webrtc",
     "nativescript-yogalayout": "packages/nativescript-yogalayout",
     "nativescript-youtubeplayer": "packages/nativescript-youtubeplayer",
-    "server-demo": "apps/server-demo"
+    "server-demo": "apps/server-demo",
+    "nativescript-messenger": "packages/nativescript-messenger"
   }
 }

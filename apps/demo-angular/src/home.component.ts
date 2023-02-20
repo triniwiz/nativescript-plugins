@@ -43,6 +43,9 @@ export class HomeComponent {
 		name: 'nativescript-imageoptimize'
 	},
 	{
+		name: 'nativescript-messenger'
+	},
+	{
 		name: 'nativescript-nested-scrollview'
 	},
 	{
