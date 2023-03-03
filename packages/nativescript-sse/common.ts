@@ -7,9 +7,9 @@ export abstract class BaseSSE {
     this.events = fromObject({});
   }
 
-  public abstract addEventListener(event: string): void;
+  public abstract addEventListener(event: string, handler: any): void;
 
-  public abstract removeEventListener(event: string): void;
+  public abstract removeEventListener(event: string, handler: any): void;
 
   public abstract connect(): void;
 
