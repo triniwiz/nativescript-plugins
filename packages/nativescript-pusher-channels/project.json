@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-pusher-channels",
+	"name": "nativescript-pusher-channels",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-pusher-channels",
 	"projectType": "library",
 	"generators": {},

@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-twitter",
+	"name": "nativescript-twitter",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-twitter",
 	"projectType": "library",
 	"generators": {},

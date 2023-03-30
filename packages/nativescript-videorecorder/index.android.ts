@@ -1,5 +1,4 @@
 import { AndroidActivityResultEventData, AndroidApplication, Application, Device, Utils } from '@nativescript/core';
-import { isNullOrUndefined } from '@nativescript/core/utils/types';
 import * as permissions from 'nativescript-permissions';
 
 import { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType, VideoRecorderBase } from './common';
@@ -11,7 +10,7 @@ const REQUEST_VIDEO_CAPTURE = 999;
 
 export class VideoRecorder extends VideoRecorderBase {
 	public requestPermissions(explanation?: string): Promise<void> {
-		return permissions.requestPermissions([android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO], isNullOrUndefined(explanation) ? '' : explanation);
+		return permissions.requestPermissions([android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO], Utils.isNullOrUndefined(explanation) ? '' : explanation);
 	}
 
 	public hasCameraPermission(): boolean {
@@ -27,7 +26,7 @@ export class VideoRecorder extends VideoRecorderBase {
 	}
 
 	public requestStoragePermission(explanation?: string): Promise<any> {
-		return permissions.requestPermissions([android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE], isNullOrUndefined(explanation) ? '' : explanation);
+		return permissions.requestPermissions([android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE], Utils.isNullOrUndefined(explanation) ? '' : explanation);
 	}
 
 	public static isAvailable() {

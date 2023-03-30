@@ -31,5 +31,10 @@
 	"cli": {
 		"defaultCollection": "@nrwl/node"
 	},
-	"defaultProject": "server-demo"
+	"defaultProject": "server-demo",
+	"targetDefaults": {
+		"lint": {
+			"inputs": ["default", "{workspaceRoot}/.eslintrc.json"]
+		}
+	}
 }

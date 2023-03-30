@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-sse",
+	"name": "nativescript-sse",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-sse",
 	"projectType": "library",
 	"generators": {},

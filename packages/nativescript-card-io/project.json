@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-card-io",
+	"name": "nativescript-card-io",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-card-io",
 	"projectType": "library",
 	"generators": {},

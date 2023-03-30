@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-opentok",
+	"name": "nativescript-opentok",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-opentok",
 	"projectType": "library",
 	"generators": {},

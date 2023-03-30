@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-mongo-stitch-core",
+	"name": "nativescript-mongo-stitch-core",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-mongo-stitch-core",
 	"projectType": "library",
 	"generators": {},

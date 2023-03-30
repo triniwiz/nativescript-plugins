@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-ddp-login",
+	"name": "nativescript-ddp-login",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-ddp-login",
 	"projectType": "library",
 	"generators": {},

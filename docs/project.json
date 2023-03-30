@@ -1,5 +1,6 @@
 {
-	"root": "docs/",
+	"name": "docs",
+	"$schema": "../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "socs/src",
 	"projectType": "application",
 	"prefix": "docs",

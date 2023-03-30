@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-kin",
+	"name": "nativescript-kin",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-kin",
 	"projectType": "library",
 	"generators": {},

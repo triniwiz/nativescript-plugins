@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-supabase-postgrest",
+	"name": "nativescript-supabase-postgrest",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-supabase-postgrest",
 	"projectType": "library",
 	"generators": {},

@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-autocomplete",
+	"name": "nativescript-autocomplete",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-autocomplete",
 	"projectType": "library",
 	"generators": {},

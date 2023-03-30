@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-supabase-storage",
+	"name": "nativescript-supabase-storage",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-supabase-storage",
 	"projectType": "library",
 	"generators": {},

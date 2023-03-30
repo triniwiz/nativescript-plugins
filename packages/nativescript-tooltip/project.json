@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-tooltip",
+	"name": "nativescript-tooltip",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-tooltip",
 	"projectType": "library",
 	"generators": {},

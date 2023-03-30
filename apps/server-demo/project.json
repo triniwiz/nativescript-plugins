@@ -1,5 +1,6 @@
 {
-	"root": "apps/server-demo",
+	"name": "server-demo",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "apps/server-demo/src",
 	"projectType": "application",
 	"prefix": "server-demo",

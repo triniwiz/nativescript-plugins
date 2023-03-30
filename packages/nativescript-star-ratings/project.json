@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-star-ratings",
+	"name": "nativescript-star-ratings",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-star-ratings",
 	"projectType": "library",
 	"generators": {},

@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-stripe",
+	"name": "nativescript-stripe",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-stripe",
 	"projectType": "library",
 	"generators": {},

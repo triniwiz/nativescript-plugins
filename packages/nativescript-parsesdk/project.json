@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-parsesdk",
+	"name": "nativescript-parsesdk",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-parsesdk",
 	"projectType": "library",
 	"generators": {},

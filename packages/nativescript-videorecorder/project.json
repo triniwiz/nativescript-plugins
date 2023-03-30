@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-videorecorder",
+	"name": "nativescript-videorecorder",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-videorecorder",
 	"projectType": "library",
 	"generators": {},

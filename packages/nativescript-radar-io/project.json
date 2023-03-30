@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-radar-io",
+	"name": "nativescript-radar-io",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-radar-io",
 	"projectType": "library",
 	"generators": {},

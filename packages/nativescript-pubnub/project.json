@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-pubnub",
+	"name": "nativescript-pubnub",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-pubnub",
 	"projectType": "library",
 	"generators": {},

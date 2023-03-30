@@ -1,5 +1,6 @@
 {
-	"root": "packages/nativescript-textdrawable",
+	"name": "nativescript-textdrawable",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-textdrawable",
 	"projectType": "library",
 	"generators": {},
