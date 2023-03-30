@@ -46,15 +46,15 @@
 				"commands": ["tsc ../../references.d.ts react/index.tsx --noEmitHelpers true --target es2017 --module commonjs --lib es2015,dom,es2017 --outDir \"../../dist/packages/nativescript-pager\" --jsx \"react\" --skipLibCheck true --experimentalDecorators true --declaration true"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-pager"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-pager"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-pager"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -75,7 +75,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-pager"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",

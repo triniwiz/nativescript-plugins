@@ -6,9 +6,9 @@ export class PaymentMethodCardChecks implements IPaymentMethodCardChecks {
 	readonly cvcCheck: PaymentMethodCardCheckResult;
 
 	constructor(checks: com.stripe.android.model.PaymentMethod.Card.Checks) {
-		this.addressLine1Check = toPaymentMethodCardChecks(checks.component1());
-		this.addressPostalCodeCheck = toPaymentMethodCardChecks(checks.component2());
-		this.cvcCheck = toPaymentMethodCardChecks(checks.component3());
+		this.addressLine1Check = toPaymentMethodCardChecks(checks.addressLine1Check);
+		this.addressPostalCodeCheck = toPaymentMethodCardChecks(checks.addressPostalCodeCheck);
+		this.cvcCheck = toPaymentMethodCardChecks(checks.cvcCheck);
 	}
 
 	public static fromNative(checks: com.stripe.android.model.PaymentMethod.Card.Checks) {
@@ -218,16 +218,17 @@ export class PaymentMethodCard implements IPaymentMethodCard {
 	readonly wallet: PaymentMethodCardWallet;
 
 	private constructor(paymentCard: com.stripe.android.model.PaymentMethod.Card) {
-		this.brand = GetBrand(paymentCard.component1());
-		this.checks = PaymentMethodCardChecks.fromNative(paymentCard.component2());
-		this.country = paymentCard.component3();
-		this.expMonth = paymentCard.component4().intValue();
-		this.expYear = paymentCard.component5().intValue();
-		this.fingerprint = paymentCard.component6();
-		this.funding = paymentCard.component7();
-		this.last4 = paymentCard.component7();
-		this.threeDSecureUsage = PaymentMethodThreeDSecureUsage.fromNative(paymentCard.component9());
-		this.wallet = PaymentMethodCardWallet.fromNative(paymentCard.component10());
+		console.log(paymentCard.brand);
+		this.brand = GetBrand(paymentCard.brand);
+		this.checks = PaymentMethodCardChecks.fromNative(paymentCard.checks);
+		this.country = paymentCard.country;
+		this.expMonth = paymentCard.expiryMonth.intValue();
+		this.expYear = paymentCard.expiryYear.intValue();
+		this.fingerprint = paymentCard.fingerprint;
+		this.funding = paymentCard.funding;
+		this.last4 = paymentCard.last4;
+		this.threeDSecureUsage = PaymentMethodThreeDSecureUsage.fromNative(paymentCard.threeDSecureUsage);
+		this.wallet = PaymentMethodCardWallet.fromNative(paymentCard.wallet);
 	}
 
 	public static fromNative(paymentCard: com.stripe.android.model.PaymentMethod.Card): PaymentMethodCard {

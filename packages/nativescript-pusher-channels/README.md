@@ -1,7 +1,7 @@
 # Nativescript nativescript-pusher-channels
 
 ```javascript
-ns plugin add @triniwiz/nativescript-pusher-channels
+npm install @triniwiz/nativescript-pusher-channels
 ```
 
 ## API documentation

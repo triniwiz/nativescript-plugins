@@ -1,7 +1,7 @@
 # Nativescript nativescript-textdrawable
 
 ```javascript
-ns plugin add @triniwiz/nativescript-textdrawable
+npm install @triniwiz/nativescript-textdrawable
 ```
 
 ## Usage

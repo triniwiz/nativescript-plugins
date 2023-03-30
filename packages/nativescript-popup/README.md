@@ -1,7 +1,7 @@
 # Nativescript nativescript-popup
 
 ```javascript
-ns plugin add @triniwiz/nativescript-popup
+npm install @triniwiz/nativescript-popup
 ```
 
 ## Usage

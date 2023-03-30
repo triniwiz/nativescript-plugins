@@ -5,8 +5,7 @@
   "author": "Jamie Birch <14055146+shirakaba@users.noreply.github.com>",
   "main": "src/app.ts",
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "type-check:watch": "npm run type-check -- --watch"
+    "type-check": "tsc --noEmit"
   },
   "license": "SEE LICENSE IN <your-license-filename>",
   "repository": "<fill-your-repository-here>",
@@ -37,10 +36,11 @@
     "template"
   ],
   "dependencies": {
-    "@nativescript/core": "^8.0.0",
-    "@nativescript/theme": "3.0.0",
-    "react": "~16.13.1",
-    "react-nativescript": "^3.0.0-beta.3",
+    "@nativescript/android": "^8.3.1",
+    "@nativescript/core": "file:../../node_modules/@nativescript/core",
+    "@nativescript/ios": "^8.3.3",
+    "react": "^16.14.0",
+    "react-nativescript": "^4.0.0",
     "@triniwiz/nativescript-image-cache-it": "file:../../packages/nativescript-image-cache-it",
     "@triniwiz/nativescript-accelerometer": "file:../../packages/nativescript-accelerometer",
     "@triniwiz/nativescript-accordion": "file:../../packages/nativescript-accordion",
@@ -59,7 +59,6 @@
     "@triniwiz/nativescript-here": "file:../../packages/nativescript-here",
     "@triniwiz/nativescript-image-zoom": "file:../../packages/nativescript-image-zoom",
     "@triniwiz/nativescript-imageoptimize": "file:../../packages/nativescript-imageoptimize",
-    "@triniwiz/nativescript-kin": "file:../../packages/nativescript-kin",
     "@triniwiz/nativescript-mongo-stitch-core": "file:../../packages/nativescript-mongo-stitch-core",
     "@triniwiz/nativescript-mongo-stitch-sdk": "file:../../packages/nativescript-mongo-stitch-sdk",
     "@triniwiz/nativescript-mongo-stitch-services-mongodb-remote": "file:../../packages/nativescript-mongo-stitch-services-mongodb-remote",
@@ -91,16 +90,14 @@
     "@triniwiz/nativescript-videorecorder": "file:../../packages/nativescript-videorecorder",
     "@triniwiz/nativescript-webrtc": "file:../../packages/nativescript-webrtc",
     "@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout",
-    "@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer"
+    "@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer",
+    "@triniwiz/nativescript-messenger": "file:../../packages/nativescript-messenger"
   },
   "devDependencies": {
-    "@nativescript/android": "~8.1.1",
-    "@nativescript/ios": "~8.1.0",
-    "@nativescript/types": "^8.0.0",
-    "@nativescript/webpack": "beta",
-    "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
-    "react-refresh": "0.9.0",
-    "typescript": "~4.0.0"
+    "@nativescript/types": "^8.3.1",
+    "@nativescript/webpack": "~5.0.8",
+    "@types/react": "npm:types-react-without-jsx-intrinsics@^16.14.30",
+    "typescript": "^4.8.4"
   },
   "gitHead": "1350d382fb4b0ed4c6e9685df909518b2688e004",
   "readme": "NativeScript Application",

@@ -1,3 +1,10 @@
-import { Observable } from '@nativescript/core';
-
-export class NativescriptPopupCommon extends Observable {}
+export class PopupOptions {
+    height?: number;
+    width?: number;
+    unit?: 'dp' | 'px' | '%' = 'dp';
+    backgroundColor?: string = '#fff';
+    hideArrow?: boolean = false;
+    elevation?: number;
+    borderRadius?: number;
+    outsideTouchble?: boolean = true;
+}

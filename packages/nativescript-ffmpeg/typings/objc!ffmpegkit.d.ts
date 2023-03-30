@@ -5,7 +5,7 @@ declare class AbstractSession extends NSObject implements Session {
 
 	static new(): AbstractSession; // inherited from NSObject
 
-	constructor(o: { withExecuteCallback: NSArray<any> | any[]; withLogCallback: (p1: Session) => void; withLogRedirectionStrategy: (p1: Log) => void; });
+	constructor(o: { withLogCallback: NSArray<any> | any[]; withLogRedirectionStrategy: (p1: Log) => void; });
 
 	addLog(log: Log): void;
 
@@ -33,8 +33,6 @@ declare class AbstractSession extends NSObject implements Session {
 
 	getEndTime(): Date;
 
-	getExecuteCallback(): (p1: Session) => void;
-
 	getFailStackTrace(): string;
 
 	getLogCallback(): (p1: Log) => void;
@@ -55,11 +53,13 @@ declare class AbstractSession extends NSObject implements Session {
 
 	getState(): SessionState;
 
-	initWithExecuteCallbackWithLogCallbackWithLogRedirectionStrategy(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, logRedirectionStrategy: LogRedirectionStrategy): this;
+	initWithLogCallbackWithLogRedirectionStrategy(_arguments: NSArray<any> | any[], logCallback: (p1: Log) => void, logRedirectionStrategy: LogRedirectionStrategy): this;
 
 	isFFmpeg(): boolean;
 
 	isFFprobe(): boolean;
+
+	isMediaInformation(): boolean;
 
 	startRunning(): void;
 
@@ -96,44 +96,89 @@ declare class AtomicLong extends NSObject {
 	initWithValue(value: number): this;
 }
 
+declare class Chapter extends NSObject {
+
+	static alloc(): Chapter; // inherited from NSObject
+
+	static new(): Chapter; // inherited from NSObject
+
+	constructor();
+
+	getAllProperties(): NSDictionary<any, any>;
+
+	getEnd(): number;
+
+	getEndTime(): string;
+
+	getId(): number;
+
+	getNumberProperty(key: string): number;
+
+	getProperties(key: string): NSDictionary<any, any>;
+
+	getStart(): number;
+
+	getStartTime(): string;
+
+	getStringProperty(key: string): string;
+
+	getTags(): NSDictionary<any, any>;
+
+	getTimeBase(): string;
+
+	init(chapterDictionary: NSDictionary<any, any>): this;
+}
+
+declare var ChapterKeyEnd: string;
+
+declare var ChapterKeyEndTime: string;
+
+declare var ChapterKeyId: string;
+
+declare var ChapterKeyStart: string;
+
+declare var ChapterKeyStartTime: string;
+
+declare var ChapterKeyTags: string;
+
+declare var ChapterKeyTimeBase: string;
+
 declare class FFmpegKit extends NSObject {
 
 	static alloc(): FFmpegKit; // inherited from NSObject
-
-	static argumentsToString(_arguments: NSArray<any> | any[]): string;
 
 	static cancel(): void;
 
 	static execute(command: string): FFmpegSession;
 
-	static executeAsyncWithExecuteCallback(command: string, executeCallback: (p1: Session) => void): FFmpegSession;
+	static executeAsyncWithCompleteCallback(command: string, completeCallback: (p1: FFmpegSession) => void): FFmpegSession;
 
-	static executeAsyncWithExecuteCallbackOnDispatchQueue(command: string, executeCallback: (p1: Session) => void, queue: NSObject): FFmpegSession;
+	static executeAsyncWithCompleteCallbackOnDispatchQueue(command: string, completeCallback: (p1: FFmpegSession) => void, queue: NSObject): FFmpegSession;
 
-	static executeAsyncWithExecuteCallbackWithLogCallbackWithStatisticsCallback(command: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void): FFmpegSession;
+	static executeAsyncWithCompleteCallbackWithLogCallbackWithStatisticsCallback(command: string, completeCallback: (p1: FFmpegSession) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void): FFmpegSession;
 
-	static executeAsyncWithExecuteCallbackWithLogCallbackWithStatisticsCallbackOnDispatchQueue(command: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void, queue: NSObject): FFmpegSession;
+	static executeAsyncWithCompleteCallbackWithLogCallbackWithStatisticsCallbackOnDispatchQueue(command: string, completeCallback: (p1: FFmpegSession) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void, queue: NSObject): FFmpegSession;
 
 	static executeWithArguments(_arguments: NSArray<any> | any[]): FFmpegSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void): FFmpegSession;
+	static executeWithArgumentsAsyncWithCompleteCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void): FFmpegSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, queue: NSObject): FFmpegSession;
+	static executeWithArgumentsAsyncWithCompleteCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void, queue: NSObject): FFmpegSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallbackWithLogCallbackWithStatisticsCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void): FFmpegSession;
+	static executeWithArgumentsAsyncWithCompleteCallbackWithLogCallbackWithStatisticsCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void): FFmpegSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallbackWithLogCallbackWithStatisticsCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void, queue: NSObject): FFmpegSession;
+	static executeWithArgumentsAsyncWithCompleteCallbackWithLogCallbackWithStatisticsCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void, queue: NSObject): FFmpegSession;
 
 	static listSessions(): NSArray<any>;
 
 	static new(): FFmpegKit; // inherited from NSObject
-
-	static parseArguments(command: string): NSArray<any>;
 }
 
 declare class FFmpegKitConfig extends NSObject {
 
 	static alloc(): FFmpegKitConfig; // inherited from NSObject
+
+	static argumentsToString(_arguments: NSArray<any> | any[]): string;
 
 	static asyncFFmpegExecute(ffmpegSession: FFmpegSession): void;
 
@@ -147,13 +192,19 @@ declare class FFmpegKitConfig extends NSObject {
 
 	static asyncGetMediaInformationExecuteWithTimeout(mediaInformationSession: MediaInformationSession, waitTimeout: number): void;
 
+	static clearSessions(): void;
+
 	static closeFFmpegPipe(ffmpegPipePath: string): void;
 
 	static disableRedirection(): void;
 
-	static enableExecuteCallback(executeCallback: (p1: Session) => void): void;
+	static enableFFmpegSessionCompleteCallback(ffmpegSessionCompleteCallback: (p1: FFmpegSession) => void): void;
+
+	static enableFFprobeSessionCompleteCallback(ffprobeSessionCompleteCallback: (p1: FFprobeSession) => void): void;
 
 	static enableLogCallback(logCallback: (p1: Log) => void): void;
+
+	static enableMediaInformationSessionCompleteCallback(mediaInformationSessionCompleteCallback: (p1: MediaInformationSession) => void): void;
 
 	static enableRedirection(): void;
 
@@ -165,11 +216,13 @@ declare class FFmpegKitConfig extends NSObject {
 
 	static getBuildDate(): string;
 
-	static getExecuteCallback(): (p1: Session) => void;
+	static getFFmpegSessionCompleteCallback(): (p1: FFmpegSession) => void;
 
 	static getFFmpegSessions(): NSArray<any>;
 
 	static getFFmpegVersion(): string;
+
+	static getFFprobeSessionCompleteCallback(): (p1: FFprobeSession) => void;
 
 	static getFFprobeSessions(): NSArray<any>;
 
@@ -182,6 +235,10 @@ declare class FFmpegKitConfig extends NSObject {
 	static getLogRedirectionStrategy(): LogRedirectionStrategy;
 
 	static getMediaInformationExecuteWithTimeout(mediaInformationSession: MediaInformationSession, waitTimeout: number): void;
+
+	static getMediaInformationSessionCompleteCallback(): (p1: MediaInformationSession) => void;
+
+	static getMediaInformationSessions(): NSArray<any>;
 
 	static getSession(sessionId: number): Session;
 
@@ -202,6 +259,8 @@ declare class FFmpegKitConfig extends NSObject {
 	static messagesInTransmit(sessionId: number): number;
 
 	static new(): FFmpegKitConfig; // inherited from NSObject
+
+	static parseArguments(command: string): NSArray<any>;
 
 	static registerNewFFmpegPipe(): string;
 
@@ -232,17 +291,19 @@ declare class FFmpegSession extends AbstractSession {
 
 	constructor();
 
-	constructor(o: { withExecuteCallback: NSArray<any> | any[]; });
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; });
 
-	constructor(o: { withExecuteCallback: NSArray<any> | any[]; withLogCallback: (p1: Session) => void; withStatisticsCallback: (p1: Log) => void; });
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; withLogCallback: (p1: FFmpegSession) => void; withStatisticsCallback: (p1: Log) => void; });
 
-	constructor(o: { withExecuteCallback: NSArray<any> | any[]; withLogCallback: (p1: Session) => void; withStatisticsCallback: (p1: Log) => void; withLogRedirectionStrategy: (p1: Statistics) => void; });
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; withLogCallback: (p1: FFmpegSession) => void; withStatisticsCallback: (p1: Log) => void; withLogRedirectionStrategy: (p1: Statistics) => void; });
 
 	addStatistics(statistics: Statistics): void;
 
 	getAllStatistics(): NSArray<any>;
 
 	getAllStatisticsWithTimeout(waitTimeout: number): NSArray<any>;
+
+	getCompleteCallback(): (p1: FFmpegSession) => void;
 
 	getLastReceivedStatistics(): Statistics;
 
@@ -252,11 +313,11 @@ declare class FFmpegSession extends AbstractSession {
 
 	init(_arguments: NSArray<any> | any[]): this;
 
-	initWithExecuteCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void): this;
+	initWithCompleteCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void): this;
 
-	initWithExecuteCallbackWithLogCallbackWithStatisticsCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void): this;
+	initWithCompleteCallbackWithLogCallbackWithStatisticsCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void): this;
 
-	initWithExecuteCallbackWithLogCallbackWithStatisticsCallbackWithLogRedirectionStrategy(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void, logRedirectionStrategy: LogRedirectionStrategy): this;
+	initWithCompleteCallbackWithLogCallbackWithStatisticsCallbackWithLogRedirectionStrategy(_arguments: NSArray<any> | any[], completeCallback: (p1: FFmpegSession) => void, logCallback: (p1: Log) => void, statisticsCallback: (p1: Statistics) => void, logRedirectionStrategy: LogRedirectionStrategy): this;
 }
 
 declare class FFprobeKit extends NSObject {
@@ -265,41 +326,45 @@ declare class FFprobeKit extends NSObject {
 
 	static execute(command: string): FFprobeSession;
 
-	static executeAsyncWithExecuteCallback(command: string, executeCallback: (p1: Session) => void): FFprobeSession;
+	static executeAsyncWithCompleteCallback(command: string, completeCallback: (p1: FFprobeSession) => void): FFprobeSession;
 
-	static executeAsyncWithExecuteCallbackOnDispatchQueue(command: string, executeCallback: (p1: Session) => void, queue: NSObject): FFprobeSession;
+	static executeAsyncWithCompleteCallbackOnDispatchQueue(command: string, completeCallback: (p1: FFprobeSession) => void, queue: NSObject): FFprobeSession;
 
-	static executeAsyncWithExecuteCallbackWithLogCallback(command: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void): FFprobeSession;
+	static executeAsyncWithCompleteCallbackWithLogCallback(command: string, completeCallback: (p1: FFprobeSession) => void, logCallback: (p1: Log) => void): FFprobeSession;
 
-	static executeAsyncWithExecuteCallbackWithLogCallbackOnDispatchQueue(command: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, queue: NSObject): FFprobeSession;
+	static executeAsyncWithCompleteCallbackWithLogCallbackOnDispatchQueue(command: string, completeCallback: (p1: FFprobeSession) => void, logCallback: (p1: Log) => void, queue: NSObject): FFprobeSession;
 
 	static executeWithArguments(_arguments: NSArray<any> | any[]): FFprobeSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void): FFprobeSession;
+	static executeWithArgumentsAsyncWithCompleteCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void): FFprobeSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, queue: NSObject): FFprobeSession;
+	static executeWithArgumentsAsyncWithCompleteCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void, queue: NSObject): FFprobeSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallbackWithLogCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void): FFprobeSession;
+	static executeWithArgumentsAsyncWithCompleteCallbackWithLogCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void, logCallback: (p1: Log) => void): FFprobeSession;
 
-	static executeWithArgumentsAsyncWithExecuteCallbackWithLogCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, queue: NSObject): FFprobeSession;
+	static executeWithArgumentsAsyncWithCompleteCallbackWithLogCallbackOnDispatchQueue(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void, logCallback: (p1: Log) => void, queue: NSObject): FFprobeSession;
 
 	static getMediaInformation(path: string): MediaInformationSession;
 
-	static getMediaInformationAsyncWithExecuteCallback(path: string, executeCallback: (p1: Session) => void): MediaInformationSession;
+	static getMediaInformationAsyncWithCompleteCallback(path: string, completeCallback: (p1: MediaInformationSession) => void): MediaInformationSession;
 
-	static getMediaInformationAsyncWithExecuteCallbackOnDispatchQueue(path: string, executeCallback: (p1: Session) => void, queue: NSObject): MediaInformationSession;
+	static getMediaInformationAsyncWithCompleteCallbackOnDispatchQueue(path: string, completeCallback: (p1: MediaInformationSession) => void, queue: NSObject): MediaInformationSession;
 
-	static getMediaInformationAsyncWithExecuteCallbackWithLogCallbackOnDispatchQueueWithTimeout(path: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, queue: NSObject, waitTimeout: number): MediaInformationSession;
+	static getMediaInformationAsyncWithCompleteCallbackWithLogCallbackOnDispatchQueueWithTimeout(path: string, completeCallback: (p1: MediaInformationSession) => void, logCallback: (p1: Log) => void, queue: NSObject, waitTimeout: number): MediaInformationSession;
 
-	static getMediaInformationAsyncWithExecuteCallbackWithLogCallbackWithTimeout(path: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, waitTimeout: number): MediaInformationSession;
+	static getMediaInformationAsyncWithCompleteCallbackWithLogCallbackWithTimeout(path: string, completeCallback: (p1: MediaInformationSession) => void, logCallback: (p1: Log) => void, waitTimeout: number): MediaInformationSession;
 
 	static getMediaInformationFromCommand(command: string): MediaInformationSession;
 
-	static getMediaInformationFromCommandAsyncWithExecuteCallbackWithLogCallbackOnDispatchQueueWithTimeout(command: string, executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void, queue: NSObject, waitTimeout: number): MediaInformationSession;
+	static getMediaInformationFromCommandArgumentsAsyncWithCompleteCallbackWithLogCallbackOnDispatchQueueWithTimeout(_arguments: NSArray<any> | any[], completeCallback: (p1: MediaInformationSession) => void, logCallback: (p1: Log) => void, queue: NSObject, waitTimeout: number): MediaInformationSession;
+
+	static getMediaInformationFromCommandAsyncWithCompleteCallbackWithLogCallbackOnDispatchQueueWithTimeout(command: string, completeCallback: (p1: MediaInformationSession) => void, logCallback: (p1: Log) => void, queue: NSObject, waitTimeout: number): MediaInformationSession;
 
 	static getMediaInformationWithTimeout(path: string, waitTimeout: number): MediaInformationSession;
 
-	static listSessions(): NSArray<any>;
+	static listFFprobeSessions(): NSArray<any>;
+
+	static listMediaInformationSessions(): NSArray<any>;
 
 	static new(): FFprobeKit; // inherited from NSObject
 }
@@ -312,15 +377,21 @@ declare class FFprobeSession extends AbstractSession {
 
 	constructor();
 
-	constructor(o: { withExecuteCallback: NSArray<any> | any[]; });
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; });
 
-	constructor(o: { withExecuteCallback: NSArray<any> | any[]; withLogCallback: (p1: Session) => void; });
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; withLogCallback: (p1: FFprobeSession) => void; });
+
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; withLogCallback: (p1: FFprobeSession) => void; withLogRedirectionStrategy: (p1: Log) => void; });
+
+	getCompleteCallback(): (p1: FFprobeSession) => void;
 
 	init(_arguments: NSArray<any> | any[]): this;
 
-	initWithExecuteCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void): this;
+	initWithCompleteCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void): this;
 
-	initWithExecuteCallbackWithLogCallback(_arguments: NSArray<any> | any[], executeCallback: (p1: Session) => void, logCallback: (p1: Log) => void): this;
+	initWithCompleteCallbackWithLogCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void, logCallback: (p1: Log) => void): this;
+
+	initWithCompleteCallbackWithLogCallbackWithLogRedirectionStrategy(_arguments: NSArray<any> | any[], completeCallback: (p1: FFprobeSession) => void, logCallback: (p1: Log) => void, logRedirectionStrategy: LogRedirectionStrategy): this;
 }
 
 declare const enum Level {
@@ -382,11 +453,13 @@ declare class MediaInformation extends NSObject {
 
 	static new(): MediaInformation; // inherited from NSObject
 
-	constructor(o: { withStreams: NSDictionary<any, any>; });
+	constructor(o: { withStreams: NSDictionary<any, any>; withChapters: NSArray<any> | any[]; });
 
 	getAllProperties(): NSDictionary<any, any>;
 
 	getBitrate(): string;
+
+	getChapters(): NSArray<any>;
 
 	getDuration(): string;
 
@@ -412,7 +485,7 @@ declare class MediaInformation extends NSObject {
 
 	getTags(): NSDictionary<any, any>;
 
-	initWithStreams(mediaDictionary: NSDictionary<any, any>, streams: NSArray<any> | any[]): this;
+	initWithStreamsWithChapters(mediaDictionary: NSDictionary<any, any>, streams: NSArray<any> | any[], chapters: NSArray<any> | any[]): this;
 }
 
 declare class MediaInformationJsonParser extends NSObject {
@@ -426,13 +499,27 @@ declare class MediaInformationJsonParser extends NSObject {
 	static new(): MediaInformationJsonParser; // inherited from NSObject
 }
 
-declare class MediaInformationSession extends FFprobeSession {
+declare class MediaInformationSession extends AbstractSession {
 
 	static alloc(): MediaInformationSession; // inherited from NSObject
 
 	static new(): MediaInformationSession; // inherited from NSObject
 
+	constructor();
+
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; });
+
+	constructor(o: { withCompleteCallback: NSArray<any> | any[]; withLogCallback: (p1: MediaInformationSession) => void; });
+
+	getCompleteCallback(): (p1: MediaInformationSession) => void;
+
 	getMediaInformation(): MediaInformation;
+
+	init(_arguments: NSArray<any> | any[]): this;
+
+	initWithCompleteCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: MediaInformationSession) => void): this;
+
+	initWithCompleteCallbackWithLogCallback(_arguments: NSArray<any> | any[], completeCallback: (p1: MediaInformationSession) => void, logCallback: (p1: Log) => void): this;
 
 	setMediaInformation(mediaInformation: MediaInformation): void;
 }
@@ -482,11 +569,11 @@ declare class ReturnCode extends NSObject {
 
 	init(value: number): this;
 
-	isCancel(): boolean;
+	isValueCancel(): boolean;
 
-	isError(): boolean;
+	isValueError(): boolean;
 
-	isSuccess(): boolean;
+	isValueSuccess(): boolean;
 }
 
 declare const enum ReturnCodeEnum {
@@ -524,8 +611,6 @@ interface Session {
 
 	getEndTime(): Date;
 
-	getExecuteCallback(): (p1: Session) => void;
-
 	getFailStackTrace(): string;
 
 	getLogCallback(): (p1: Log) => void;
@@ -549,6 +634,8 @@ interface Session {
 	isFFmpeg(): boolean;
 
 	isFFprobe(): boolean;
+
+	isMediaInformation(): boolean;
 
 	startRunning(): void;
 
@@ -628,13 +715,13 @@ declare class StreamInformation extends NSObject {
 
 	getCodec(): string;
 
+	getCodecLong(): string;
+
 	getCodecTimeBase(): string;
 
 	getDisplayAspectRatio(): string;
 
 	getFormat(): string;
-
-	getFullCodec(): string;
 
 	getHeight(): number;
 

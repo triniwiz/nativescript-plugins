@@ -1,7 +1,7 @@
 # Nativescript YoutubePlayer
 
 ```javascript
-ns plugin add @triniwiz/nativescript-youtubeplayer
+npm install @triniwiz/nativescript-youtubeplayer
 ```
 
 ## API documentation

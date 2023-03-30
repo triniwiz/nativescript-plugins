@@ -1,10 +1,9 @@
 import { PostgrestBuilder } from './types';
 import PostgrestFilterBuilder from './PostgrestFilterBuilder';
-import { URL } from 'whatwg-url-without-unicode';
+import { URL } from 'whatwg-url';
 export default class PostgrestQueryBuilder extends PostgrestBuilder {
     constructor(url, { headers = {}, schema } = {}) {
         super({});
-        console.log('1');
         this.url = new URL(url);
         this.headers = { ...headers };
         this.schema = schema;

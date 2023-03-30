@@ -1,7 +1,5 @@
 import { fallbackProperty, filterProperty, headersProperty, ImageCacheItBase, imageSourceProperty, overlayColorProperty, Priority, priorityProperty, srcProperty, stretchProperty, tintColorProperty } from './common';
-import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Application, Screen } from '@nativescript/core';
-import { isNullOrUndefined } from '@nativescript/core/utils/types';
-import { isDataURI, isFileOrResourcePath, isFontIconURI, layout, RESOURCE_PREFIX } from '@nativescript/core/utils/utils';
+import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Application, Screen, Utils } from '@nativescript/core';
 
 const main_queue = dispatch_get_current_queue();
 let concurrentQueue;
@@ -13,6 +11,42 @@ interface CacheItem {
 
 interface CacheHeaders {
 	[header: string]: CacheItem;
+}
+
+export class ImageCacheItError extends Error {
+	_native: NSError;
+	static fromNative(native: NSError, message: string = undefined) {
+		const error = new ImageCacheItError(message);
+		error._native = native;
+		return error;
+	}
+
+	get native() {
+		return this._native;
+	}
+
+	_message: string;
+	get message() {
+		if (!this._message) {
+			this._message = this.native?.localizedDescription;
+		}
+		return this._message;
+	}
+
+	intoNative() {
+		if (!this._native) {
+			const exception = NSException.exceptionWithNameReasonUserInfo(NSGenericException, this.message, null);
+			const info = {};
+			info['ExceptionName'] = exception.name;
+			info['ExceptionReason'] = exception.reason;
+			info['ExceptionCallStackReturnAddresses'] = exception.callStackReturnAddresses;
+			info['ExceptionCallStackSymbols'] = exception.callStackSymbols;
+			info['ExceptionUserInfo'] = exception.userInfo;
+			const error = NSError.alloc().initWithDomainCodeUserInfo('NativeScript', 1000, info as any);
+			return error;
+		}
+		return this._native;
+	}
 }
 
 export class ImageCacheIt extends ImageCacheItBase {
@@ -52,29 +86,31 @@ export class ImageCacheIt extends ImageCacheItBase {
 		SDImageCache.sharedImageCache.config.maxDiskAge = age;
 	}
 
+	private static setModifier() {
+		if (!ImageCacheIt.hasModifier) {
+			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock((request: NSURLRequest): NSURLRequest => {
+				if (request && request.URL && (request as any).URL.uuid && ImageCacheIt.cacheHeaders[(request as any).URL.uuid]) {
+					const cachedHeader = ImageCacheIt.cacheHeaders[(request as any).URL.uuid];
+					if (cachedHeader.url === request.URL.absoluteString) {
+						const newRequest = request.mutableCopy() as NSMutableURLRequest;
+						if (cachedHeader.headers) {
+							cachedHeader.headers.forEach((value, key) => {
+								newRequest.addValueForHTTPHeaderField(value, key);
+							});
+						}
+						return newRequest.copy();
+					}
+				}
+				return request;
+			});
+			ImageCacheIt.hasModifier = true;
+		}
+	}
+
 	public createNativeView() {
 		this.uuid = NSUUID.UUID().UUIDString;
 		this.filterQueue = ImageCacheItUtils.createConcurrentQueue('TNSImageOptimizeQueue');
-		if (!ImageCacheIt.hasModifier) {
-			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock(
-				(request: NSURLRequest): NSURLRequest => {
-					if (request && request.URL && (request as any).URL.uuid && ImageCacheIt.cacheHeaders[(request as any).URL.uuid]) {
-						const cachedHeader = ImageCacheIt.cacheHeaders[(request as any).URL.uuid];
-						if (cachedHeader.url === request.URL.absoluteString) {
-							const newRequest = request.mutableCopy() as NSMutableURLRequest;
-							if (cachedHeader.headers) {
-								cachedHeader.headers.forEach((value, key) => {
-									newRequest.addValueForHTTPHeaderField(value, key);
-								});
-							}
-							return newRequest.copy();
-						}
-					}
-					return request;
-				}
-			);
-			ImageCacheIt.hasModifier = true;
-		}
+		ImageCacheIt.setModifier();
 		const nativeView = SDAnimatedImageView.new();
 		nativeView.contentMode = UIViewContentMode.ScaleAspectFit;
 		nativeView.userInteractionEnabled = true;
@@ -108,21 +144,21 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-		const width = layout.getMeasureSpecSize(widthMeasureSpec);
-		const widthMode = layout.getMeasureSpecMode(widthMeasureSpec);
-		const height = layout.getMeasureSpecSize(heightMeasureSpec);
-		const heightMode = layout.getMeasureSpecMode(heightMeasureSpec);
+		const width = Utils.layout.getMeasureSpecSize(widthMeasureSpec);
+		const widthMode = Utils.layout.getMeasureSpecMode(widthMeasureSpec);
+		const height = Utils.layout.getMeasureSpecSize(heightMeasureSpec);
+		const heightMode = Utils.layout.getMeasureSpecMode(heightMeasureSpec);
 
-		const nativeWidth = this.imageSource ? layout.toDevicePixels(this.imageSource.width) : 0;
-		const nativeHeight = this.imageSource ? layout.toDevicePixels(this.imageSource.height) : 0;
+		const nativeWidth = this.imageSource ? Utils.layout.toDevicePixels(this.imageSource.width) : 0;
+		const nativeHeight = this.imageSource ? Utils.layout.toDevicePixels(this.imageSource.height) : 0;
 
 		let measureWidth = Math.max(nativeWidth, this.effectiveMinWidth);
 		let measureHeight = Math.max(nativeHeight, this.effectiveMinHeight);
 
-		const finiteWidth: boolean = widthMode !== layout.UNSPECIFIED;
-		const finiteHeight: boolean = heightMode !== layout.UNSPECIFIED;
+		const finiteWidth: boolean = widthMode !== Utils.layout.UNSPECIFIED;
+		const finiteHeight: boolean = heightMode !== Utils.layout.UNSPECIFIED;
 
-		this._imageSourceAffectsLayout = widthMode !== layout.EXACTLY || heightMode !== layout.EXACTLY;
+		this._imageSourceAffectsLayout = widthMode !== Utils.layout.EXACTLY || heightMode !== Utils.layout.EXACTLY;
 
 		if (nativeWidth !== 0 && nativeHeight !== 0 && (finiteWidth || finiteHeight)) {
 			const scale = ImageCacheIt.computeScaleFactor(width, height, finiteWidth, finiteHeight, nativeWidth, nativeHeight, this.stretch);
@@ -191,19 +227,19 @@ export class ImageCacheIt extends ImageCacheItBase {
 		let placeHolder = null;
 		if (typeof src === 'string') {
 			try {
-				if (isFileOrResourcePath(src)) {
-					if (src.indexOf(RESOURCE_PREFIX) === 0) {
-						const resPath = src.substr(RESOURCE_PREFIX.length);
+				if (Utils.isFileOrResourcePath(src)) {
+					if (src.indexOf(Utils.RESOURCE_PREFIX) === 0) {
+						const resPath = src.substring(Utils.RESOURCE_PREFIX.length);
 						placeHolder = ImageSource.fromResourceSync(resPath);
 					} else {
 						placeHolder = ImageSource.fromFileSync(src);
 					}
-				} else if (isDataURI(src)) {
+				} else if (Utils.isDataURI(src)) {
 					const base64Data = src.split(',')[1];
 					if (base64Data !== undefined) {
 						placeHolder = ImageSource.fromBase64Sync(base64Data);
 					}
-				} else if (isFontIconURI(src)) {
+				} else if (Utils.isFontIconURI(src)) {
 					const fontIconCode = src.split('//')[1];
 					if (fontIconCode !== undefined) {
 						// support sync mode only
@@ -267,7 +303,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 					progress = Math.max(Math.min(progress, 1), 0) * 100;
 					dispatch_async(main_queue, () => {
 						if (!owner._loadStarted) {
-							owner._emitLoadStartEvent(p3?.absoluteString ? p3.absoluteString : (url?.absoluteString ? url.absoluteString : src));
+							owner._emitLoadStartEvent(p3?.absoluteString ? p3.absoluteString : url?.absoluteString ? url.absoluteString : src);
 							owner._loadStarted = true;
 						}
 						owner.progress = progress;
@@ -280,8 +316,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 				if (owner) {
 					owner.isLoading = false;
 					if (p2) {
-						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : (url?.absoluteString ? url.absoluteString : src));
-						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : (url?.absoluteString ? url.absoluteString : src));
+						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
+						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
 						if (owner.errorHolder) {
 							const errorHolder = this._handlePlaceholder(this.errorHolder);
 							owner.imageSource = new ImageSource(errorHolder);
@@ -299,7 +335,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 								owner.nativeView.alpha = 0;
 								UIView.animateWithDurationAnimations(1, () => {
 									owner.nativeView.alpha = 1;
-									owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : (url && url.absoluteString ? url.absoluteString : src));
+									owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
 								});
 								break;
 							default:
@@ -362,15 +398,15 @@ export class ImageCacheIt extends ImageCacheItBase {
 			ImageCacheIt.cacheHeaders[this.uuid] = data;
 			this._loadImage(src);
 		} else {
-			if (isNullOrUndefined(src)) {
+			if (Utils.isNullOrUndefined(src)) {
 				this._handleFallbackImage();
 				return;
 			}
 			const sync = this.loadMode === 'sync';
 			try {
-				if (isFileOrResourcePath(src)) {
-					if (src.indexOf(RESOURCE_PREFIX) === 0) {
-						const resPath = src.substr(RESOURCE_PREFIX.length);
+				if (Utils.isFileOrResourcePath(src)) {
+					if (src.indexOf(Utils.RESOURCE_PREFIX) === 0) {
+						const resPath = src.substr(Utils.RESOURCE_PREFIX.length);
 						const loadResImage = () => {
 							const url = NSBundle.mainBundle.URLForResourceWithExtension(resPath, 'gif');
 							let image;
@@ -601,9 +637,15 @@ export class ImageCacheIt extends ImageCacheItBase {
 			if (!overlayColor) {
 				delete options.overlayColor;
 			}
-			ImageCacheItUtils.applyProcessing(this.ctx, nativeImage, <any>options, (image) => {
-				setImage(image);
-			}, null);
+			ImageCacheItUtils.applyProcessing(
+				this.ctx,
+				nativeImage,
+				<any>options,
+				(image) => {
+					setImage(image);
+				},
+				null
+			);
 			/*dispatch_async(this.filterQueue, () => {
           nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
           nativeImage = this._setupFilter(nativeImage);
@@ -622,7 +664,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 						},
 						(image) => {
 							setImage(image);
-						}, null
+						},
+						null
 					);
 					/* dispatch_async(this.filterQueue, () => {
                nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
@@ -643,7 +686,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 						},
 						(image) => {
 							setImage(image);
-						}, null
+						},
+						null
 					);
 				} else {
 					dispatch_async(main_queue, () => {
@@ -665,7 +709,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 	private static ciFilterMap = {};
 
 	private _setupFilter(image) {
-		if (isNullOrUndefined(image)) {
+		if (Utils.isNullOrUndefined(image)) {
 			return image;
 		}
 		const getValue = (value: string) => {
@@ -857,19 +901,30 @@ export class ImageCacheIt extends ImageCacheItBase {
 		});
 	}
 
-	public static getItem(src: string): Promise<any> {
+	public static getItem(src: string, headers: Map<string, string>): Promise<any> {
+		ImageCacheIt.setModifier();
 		return new Promise<any>((resolve, reject) => {
 			const manager = SDWebImageManager.sharedManager;
 			if (manager) {
 				if (src && src.indexOf('http') > -1) {
 					const nativeSrc = NSURL.URLWithString(src);
+
+					if (headers) {
+						const uuid = NSUUID.UUID().UUIDString;
+						(<any>nativeSrc).uuid = uuid;
+						const data = ImageCacheIt.cacheHeaders[uuid] || { url: undefined, headers: undefined };
+						data.headers = headers;
+						data.url = src;
+						ImageCacheIt.cacheHeaders[uuid] = data;
+					}
+
 					manager.loadImageWithURLOptionsProgressCompleted(
 						nativeSrc,
 						SDWebImageOptions.ScaleDownLargeImages,
 						(receivedSize: number, expectedSize: number, path: NSURL) => {},
 						(image, data, error, type, finished, completedUrl) => {
 							if (image === null && error !== null && data === null) {
-								reject(error.localizedDescription);
+								reject(ImageCacheItError.fromNative(error));
 							} else if (finished && completedUrl != null) {
 								if (type === SDImageCacheType.Disk) {
 									const key = manager.cacheKeyForURL(completedUrl);

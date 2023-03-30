@@ -1,7 +1,7 @@
 # Nativescript nativescript-splashscreen
 
 ```javascript
-ns plugin add @triniwiz/nativescript-splashscreen
+npm install @triniwiz/nativescript-splashscreen
 ```
 
 ## Usage

@@ -7,7 +7,7 @@ android {
   }
 }
 dependencies {
-  implementation('com.stripe:stripe-android:19.0.0'){
+  implementation('com.stripe:stripe-android:20.17.0'){
     transitive = true
   }
   implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'

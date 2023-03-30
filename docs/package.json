@@ -1,6 +1,6 @@
 {
   "name": "triniwiz-n-plugins",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "All the docs for the any of my {N} plugins",
   "main": "index.js",
   "authors": {
@@ -14,7 +14,8 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@vuepress/plugin-google-analytics": "^1.7.1",
-    "vuepress": "^1.5.3"
+    "@vuepress/plugin-google-analytics": "^1.9.8",
+    "vuepress": "^1.9.8",
+    "webpack": "^4.0.0"
   }
 }

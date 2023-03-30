@@ -2,7 +2,7 @@
 
 ## Installation
 
-`ns plugin add @triniwiz/nativescript-downloader`
+`npm install @triniwiz/nativescript-downloader`
 
 ## Usage
 

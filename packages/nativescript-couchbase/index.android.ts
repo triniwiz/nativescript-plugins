@@ -9,8 +9,8 @@ let didInit = false;
 
 export class CouchBase extends Common {
 	readonly ios: any;
-	readonly #config: com.couchbase.lite.DatabaseConfiguration;
-	readonly #couchbase: com.couchbase.lite.Database;
+	readonly _config: com.couchbase.lite.DatabaseConfiguration;
+	readonly _couchbase: com.couchbase.lite.Database;
 
 	constructor(name: string) {
 		super();
@@ -18,12 +18,12 @@ export class CouchBase extends Common {
 			didInit = true;
 			com.couchbase.lite.CouchbaseLite.init(Utils.ad.getApplicationContext());
 		}
-		this.#config = new com.couchbase.lite.DatabaseConfiguration();
-		this.#couchbase = new com.couchbase.lite.Database(name, this.#config);
+		this._config = new com.couchbase.lite.DatabaseConfiguration();
+		this._couchbase = new com.couchbase.lite.Database(name, this._config);
 	}
 
 	get android(): any {
-		return this.#couchbase;
+		return this._couchbase;
 	}
 
 	close() {
@@ -136,13 +136,16 @@ export class CouchBase extends Common {
 	}
 
 	deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins) {
+		let success = false;
 		try {
 			const doc = this.android.getDocument(documentId);
-			return this.android.delete(doc, concurrencyMode === ConcurrencyMode.FailOnConflict ? com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT : com.couchbase.lite.ConcurrencyControl.LAST_WRITE_WINS);
+			if (doc != null) {
+				success = this.android.delete(doc, concurrencyMode === ConcurrencyMode.FailOnConflict ? com.couchbase.lite.ConcurrencyControl.FAIL_ON_CONFLICT : com.couchbase.lite.ConcurrencyControl.LAST_WRITE_WINS);
+			}
 		} catch (e) {
 			console.error(e.message);
-			return false;
 		}
+		return success;
 	}
 
 	destroyDatabase() {
@@ -242,7 +245,8 @@ export class CouchBase extends Common {
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).isNot(this.serializeExpression(item.value));
 				break;
 			case 'isNullOrMissing':
-				nativeQuery = com.couchbase.lite.Expression.property(item.property).isNullOrMissing();
+			case 'isNotValued':
+				nativeQuery = com.couchbase.lite.Expression.property(item.property).isNotValued();
 				break;
 			case 'lessThan':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).lessThan(this.serializeExpression(item.value));
@@ -263,7 +267,8 @@ export class CouchBase extends Common {
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).notEqualTo(this.serializeExpression(item.value));
 				break;
 			case 'notNullOrMissing':
-				nativeQuery = com.couchbase.lite.Expression.property(item.property).notNullOrMissing();
+			case 'isValued':
+				nativeQuery = com.couchbase.lite.Expression.property(item.property).isValued();
 				break;
 			case 'regex':
 				nativeQuery = com.couchbase.lite.Expression.property(item.property).regex(this.serializeExpression(item.value));
@@ -361,11 +366,11 @@ export class CouchBase extends Common {
 		const uri = new com.couchbase.lite.URLEndpoint(new java.net.URI(remoteUrl));
 		const repConfig = new com.couchbase.lite.ReplicatorConfiguration(this.android, uri);
 		if (direction === 'pull') {
-			com.github.triniwiz.couchbase.TNSReplicatorConfiguration.setReplicatorType('pull', repConfig);
+			repConfig.setType(com.couchbase.lite.ReplicatorType.PULL);
 		} else if (direction === 'push') {
-			com.github.triniwiz.couchbase.TNSReplicatorConfiguration.setReplicatorType('push', repConfig);
+			repConfig.setType(com.couchbase.lite.ReplicatorType.PUSH);
 		} else {
-			com.github.triniwiz.couchbase.TNSReplicatorConfiguration.setReplicatorType('push_and_pull', repConfig);
+			repConfig.setType(com.couchbase.lite.ReplicatorType.PUSH_AND_PULL);
 		}
 
 		const replicator = new com.couchbase.lite.Replicator(repConfig);
@@ -487,15 +492,15 @@ export class Replicator extends ReplicatorBase {
 
 export class Blob extends BlobBase {
 	readonly ios: any;
-	readonly #blob: any;
+	readonly _blob: any;
 
 	constructor(blob: any) {
 		super();
-		this.#blob = blob;
+		this._blob = blob;
 	}
 
 	get android() {
-		return this.#blob;
+		return this._blob;
 	}
 
 	get content(): any {

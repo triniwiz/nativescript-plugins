@@ -1,6 +1,14 @@
 import { ImageCacheItBase } from './common';
 
+declare class ImageCacheItError extends Error {
+	static fromNative(native: any, message?: string);
+	readonly native;
+}
+
 export declare class ImageCacheIt extends ImageCacheItBase {
+	
+	public static getItem(src: string, headers: Map<string, string>): Promise<string>;
+
 	public static getItem(src: string): Promise<string>;
 
 	public static deleteItem(src: string): Promise<any>;

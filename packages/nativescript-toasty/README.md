@@ -4,11 +4,11 @@
 
 ### NativeScript 7.0+
 
-`tns plugin add @triniwiz/nativescript-toasty`
+`tnpm install @triniwiz/nativescript-toasty`
 
 ### NativeScript < 7.0
 
-`tns plugin add nativescript-toasty@3.0.0-alpha.2`
+`tnpm install nativescript-toasty@3.0.0-alpha.2`
 
 ## Usage
 

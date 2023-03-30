@@ -21,17 +21,17 @@ export { Query, QueryMeta, QueryArrayOperator, QueryComparisonOperator, QueryLog
 
 export class CouchBase extends Common {
 	readonly android: any;
-	#couchbase: CBLDatabase;
-	#listenerMap = {};
-	#docChangeListenerMap = {};
+	_couchbase: CBLDatabase;
+	_listenerMap = {};
+	_docChangeListenerMap = {};
 
 	get ios() {
-		return this.#couchbase;
+		return this._couchbase;
 	}
 
 	constructor(databaseName: string) {
 		super();
-		this.#couchbase = CBLDatabase.alloc().initWithNameError(databaseName);
+		this._couchbase = CBLDatabase.alloc().initWithNameError(databaseName);
 	}
 
 	close() {
@@ -398,8 +398,16 @@ export class CouchBase extends Common {
 	}
 
 	deleteDocument(documentId: string, concurrencyMode: ConcurrencyMode = 1) {
-		const doc = this.ios.documentWithID(documentId);
-		return this.ios.deleteDocumentConcurrencyControlError(doc, concurrencyMode === 1 ? CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict : CBLConcurrencyControl.kCBLConcurrencyControlLastWriteWins);
+		let success = false;
+		try {
+			const doc = this.ios.documentWithID(documentId);
+			if (doc != null) {
+				success = this.ios.deleteDocumentConcurrencyControlError(doc, concurrencyMode === 1 ? CBLConcurrencyControl.kCBLConcurrencyControlFailOnConflict : CBLConcurrencyControl.kCBLConcurrencyControlLastWriteWins);
+			}
+		} catch (e) {
+			console.error(e.message);
+		}
+		return success;
 	}
 
 	destroyDatabase() {
@@ -438,15 +446,15 @@ export class CouchBase extends Common {
 			}
 		});
 		if (!isNullOrUndefined(token)) {
-			this.#docChangeListenerMap[callback as any] = token;
+			this._docChangeListenerMap[callback as any] = token;
 		}
 	}
 
 	removeDocumentChangeListener(callback: (id: string) => void) {
-		const token = this.#docChangeListenerMap[callback as any];
+		const token = this._docChangeListenerMap[callback as any];
 		if (!isNullOrUndefined(token)) {
 			this.ios.removeChangeListenerWithToken(token);
-			delete this.#docChangeListenerMap[callback as any];
+			delete this._docChangeListenerMap[callback as any];
 		}
 	}
 
@@ -464,15 +472,15 @@ export class CouchBase extends Common {
 			}
 		});
 		if (!isNullOrUndefined(token)) {
-			this.#listenerMap[callback as any] = token;
+			this._listenerMap[callback as any] = token;
 		}
 	}
 
 	removeDatabaseChangeListener(callback: (ids: string[]) => void) {
-		const token = this.#listenerMap[callback as any];
+		const token = this._listenerMap[callback as any];
 		if (!isNullOrUndefined(token)) {
 			this.ios.removeChangeListenerWithToken(token);
-			delete this.#listenerMap[callback as any];
+			delete this._listenerMap[callback as any];
 		}
 	}
 
@@ -558,7 +566,8 @@ export class CouchBase extends Common {
 				nativeQuery = CBLQueryExpression.property(item.property).isNot(this.serializeExpression(item.value));
 				break;
 			case 'isNullOrMissing':
-				nativeQuery = CBLQueryExpression.property(item.property).isNullOrMissing();
+			case 'isNotValued':
+				nativeQuery = CBLQueryExpression.property(item.property).isNotValued();
 				break;
 			case 'lessThan':
 				nativeQuery = CBLQueryExpression.property(item.property).lessThan(this.serializeExpression(item.value));
@@ -579,7 +588,8 @@ export class CouchBase extends Common {
 				nativeQuery = CBLQueryExpression.property(item.property).notEqualTo(this.serializeExpression(item.value));
 				break;
 			case 'notNullOrMissing':
-				nativeQuery = CBLQueryExpression.property(item.property).notNullOrMissing();
+			case 'isValued':
+				nativeQuery = CBLQueryExpression.property(item.property).isValued();
 				break;
 			case 'regex':
 				nativeQuery = CBLQueryExpression.property(item.property).regex(this.serializeExpression(item.value));
@@ -765,7 +775,7 @@ export class Replicator extends ReplicatorBase {
 }
 
 export class Blob extends BlobBase {
-	#blob: any;
+	_blob: any;
 	readonly android: any;
 
 	constructor(blob: any) {
@@ -773,7 +783,7 @@ export class Blob extends BlobBase {
 	}
 
 	get ios() {
-		return this.#blob;
+		return this._blob;
 	}
 
 	get content(): any {

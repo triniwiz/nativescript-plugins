@@ -31,12 +31,12 @@
 			]
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-splashscreen"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-splashscreen"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-splashscreen"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -53,7 +53,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-splashscreen"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",

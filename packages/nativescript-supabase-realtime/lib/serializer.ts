@@ -2,48 +2,46 @@
 // License: https://github.com/phoenixframework/phoenix/blob/master/LICENSE.md
 
 export default class Serializer {
-  HEADER_LENGTH = 1
+	HEADER_LENGTH = 1;
 
-  decode(rawPayload: ArrayBuffer | string, callback: Function) {
-    if (rawPayload.constructor === ArrayBuffer) {
-      return callback(this._binaryDecode(rawPayload))
-    }
+	decode(rawPayload: ArrayBuffer | string, callback: Function) {
+		if (rawPayload.constructor === ArrayBuffer) {
+			return callback(this._binaryDecode(rawPayload));
+		}
 
-    if (typeof rawPayload === 'string') {
-      return callback(JSON.parse(rawPayload))
-    }
+		if (typeof rawPayload === 'string') {
+			return callback(JSON.parse(rawPayload));
+		}
 
-    return callback({})
-  }
+		return callback({});
+	}
 
-  private _binaryDecode(buffer: ArrayBuffer) {
-    const view = new DataView(buffer)
-    const decoder = new TextDecoder()
+	private _binaryDecode(buffer: ArrayBuffer) {
+		const view = new DataView(buffer);
+		const decoder = new TextDecoder();
 
-    return this._decodeBroadcast(buffer, view, decoder)
-  }
+		return this._decodeBroadcast(buffer, view, decoder);
+	}
 
-  private _decodeBroadcast(
-    buffer: ArrayBuffer,
-    view: DataView,
-    decoder: TextDecoder
-  ): {
-    ref: null
-    topic: string
-    event: string
-    payload: object
-  } {
-    const topicSize = view.getUint8(1)
-    const eventSize = view.getUint8(2)
-    let offset = this.HEADER_LENGTH + 2
-    const topic = decoder.decode(buffer.slice(offset, offset + topicSize))
-    offset = offset + topicSize
-    const event = decoder.decode(buffer.slice(offset, offset + eventSize))
-    offset = offset + eventSize
-    const data = JSON.parse(
-      decoder.decode(buffer.slice(offset, buffer.byteLength))
-    )
+	private _decodeBroadcast(
+		buffer: ArrayBuffer,
+		view: DataView,
+		decoder: TextDecoder
+	): {
+		ref: null;
+		topic: string;
+		event: string;
+		payload: object;
+	} {
+		const topicSize = view.getUint8(1);
+		const eventSize = view.getUint8(2);
+		let offset = this.HEADER_LENGTH + 2;
+		const topic = decoder.decode(buffer.slice(offset, offset + topicSize));
+		offset = offset + topicSize;
+		const event = decoder.decode(buffer.slice(offset, offset + eventSize));
+		offset = offset + eventSize;
+		const data = JSON.parse(decoder.decode(buffer.slice(offset, buffer.byteLength)));
 
-    return { ref: null, topic: topic, event: event, payload: data }
-  }
+		return { ref: null, topic: topic, event: event, payload: data };
+	}
 }

@@ -3,7 +3,7 @@ import Timer from './lib/timer';
 import RealtimeSubscription from './RealtimeSubscription';
 //import {w3cwebsocket as WebSocket} from 'websocket'
 import Serializer from './lib/serializer';
-import { URLSearchParams } from 'whatwg-url-without-unicode';
+import { URLSearchParams } from 'whatwg-url';
 const noop = () => {
 };
 export default class RealtimeClient {
@@ -23,6 +23,7 @@ export default class RealtimeClient {
      * @param options.reconnectAfterMs he optional function that returns the millsec reconnect interval. Defaults to stepped backoff off.
      */
     constructor(endPoint, options) {
+        var _a;
         this.channels = [];
         this.endPoint = '';
         this.headers = {};
@@ -69,9 +70,7 @@ export default class RealtimeClient {
             : (payload, callback) => {
                 return callback(JSON.stringify(payload));
             };
-        this.decode = (options === null || options === void 0 ? void 0 : options.decode)
-            ? options.decode
-            : this.serializer.decode.bind(this.serializer);
+        this.decode = (_a = options === null || options === void 0 ? void 0 : options.decode) !== null && _a !== void 0 ? _a : this.serializer.decode.bind(this.serializer);
         this.reconnectTimer = new Timer(async () => {
             await this.disconnect();
             this.connect();

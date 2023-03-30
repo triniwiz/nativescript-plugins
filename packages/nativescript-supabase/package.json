@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-supabase",
-	"version": "0.1.0",
+	"version": "0.3.0",
 	"description": "A NativeScript client for Supabase",
 	"main": "index",
 	"typings": "index.d.ts",
@@ -32,5 +32,10 @@
 	"homepage": "https://github.com/triniwiz/nativeScript-plugins",
 	"readmeFilename": "README.md",
 	"bootstrapper": "@nativescript/plugin-seed",
-	"dependencies": {}
+	"dependencies": {
+		"@triniwiz/nativescript-supabase-gotrue": "*",
+		"@triniwiz/nativescript-supabase-postgrest": "*",
+		"@triniwiz/nativescript-supabase-realtime": "*",
+		"@triniwiz/nativescript-supabase-storage": "*"
+	}
 }

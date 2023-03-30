@@ -7,9 +7,8 @@ import {
   Style,
   View,
   Color,
-  ImageAsset, ImageSource, isIOS, Trace, CoreTypes
+  ImageAsset, ImageSource, isIOS, Trace, CoreTypes, Utils
 } from '@nativescript/core';
-import { isDataURI, isFileOrResourcePath, isFontIconURI, RESOURCE_PREFIX } from "@nativescript/core/utils/utils";
 
 export enum Transition {
   Fade = 'fade',
@@ -184,7 +183,7 @@ export class ImageCacheItBase extends View {
         this._setImageSource(source);
       };
 
-      if (isFontIconURI(value)) {
+      if (Utils.isFontIconURI(value)) {
         const fontIconCode = value.split('//')[1];
         if (fontIconCode !== undefined) {
           // support sync mode only
@@ -192,7 +191,7 @@ export class ImageCacheItBase extends View {
           const color = this.style.color;
           imageLoaded(ImageSource.fromFontIconCodeSync(fontIconCode, font, color));
         }
-      } else if (isDataURI(value)) {
+      } else if (Utils.isDataURI(value)) {
         const base64Data = value.split(',')[1];
         if (base64Data !== undefined) {
           if (sync) {
@@ -201,9 +200,9 @@ export class ImageCacheItBase extends View {
             ImageSource.fromBase64(base64Data).then(imageLoaded);
           }
         }
-      } else if (isFileOrResourcePath(value)) {
-        if (value.indexOf(RESOURCE_PREFIX) === 0) {
-          const resPath = value.substr(RESOURCE_PREFIX.length);
+      } else if (Utils.isFileOrResourcePath(value)) {
+        if (value.indexOf(Utils.RESOURCE_PREFIX) === 0) {
+          const resPath = value.substring(Utils.RESOURCE_PREFIX.length);
           if (sync) {
             imageLoaded(ImageSource.fromResourceSync(resPath));
           } else {

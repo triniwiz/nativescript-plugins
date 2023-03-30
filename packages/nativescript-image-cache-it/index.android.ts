@@ -35,6 +35,34 @@ function initializeImageLoadedListener() {
 	ImageLoadedListener = ImageLoadedListenerImpl;
 }
 
+export class ImageCacheItError extends Error {
+	_native: java.lang.Exception;
+	static fromNative(native: java.lang.Exception, message: string = undefined) {
+		const error = new ImageCacheItError(message);
+		error._native = native;
+		return error;
+	}
+
+	_message: string;
+	get message() {
+		if (!this._message) {
+			this._message = this.native?.getMessage?.();
+		}
+		return this._message;
+	}
+
+	get native() {
+		return this._native;
+	}
+
+	intoNative() {
+		if (!this._native) {
+			return new java.lang.Exception(this.message);
+		}
+		return this._native;
+	}
+}
+
 export class ImageCacheIt extends ImageCacheItBase {
 	private emptyBackground;
 
@@ -417,21 +445,41 @@ export class ImageCacheIt extends ImageCacheItBase {
 		this.lastActivity = new WeakRef(activity);
 		com.github.triniwiz.imagecacheit.ImageCache.init(activity);
 	}
-	public static getItem(src: string): Promise<any> {
+	public static getItem(src: string, headers: Map<string, string> = undefined): Promise<any> {
 		this._init();
+
 		return new Promise<any>((resolve, reject) => {
-			com.github.triniwiz.imagecacheit.ImageCache.getItem(
-				src,
-				null,
-				new com.github.triniwiz.imagecacheit.ImageCache.Callback({
-					onSuccess(value) {
-						resolve(value);
-					},
-					onError(error) {
-						reject(error.getMessage());
-					},
-				})
-			);
+			if (headers) {
+				const map = new java.util.HashMap<string, string>();
+				headers.forEach((value, key) => {
+					map.put(key, value);
+				});
+				com.github.triniwiz.imagecacheit.ImageCache.getItemWithHeaders(
+					src,
+					map,
+					new com.github.triniwiz.imagecacheit.ImageCache.Callback({
+						onSuccess(value) {
+							resolve(value);
+						},
+						onError(error) {
+							reject(ImageCacheItError.fromNative(error));
+						},
+					})
+				);
+			} else {
+				com.github.triniwiz.imagecacheit.ImageCache.getItem(
+					src,
+					null,
+					new com.github.triniwiz.imagecacheit.ImageCache.Callback({
+						onSuccess(value) {
+							resolve(value);
+						},
+						onError(error) {
+							reject(ImageCacheItError.fromNative(error));
+						},
+					})
+				);
+			}
 		});
 	}
 
@@ -452,7 +500,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						resolve(undefined);
 					},
 					onError(error) {
-						reject(error.getMessage());
+						reject(ImageCacheItError.fromNative(error));
 					},
 				})
 			);

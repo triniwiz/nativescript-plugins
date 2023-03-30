@@ -30,7 +30,6 @@ function getNativeDelay(options?: AccelerometerOptions): number {
 
 export function startAccelerometerUpdates(callback: (data: AccelerometerData) => void, options?: AccelerometerOptions) {
 	if (isListening()) {
-		console.log(startButNotStopped);
 		stopAccelerometerUpdates();
 	}
 

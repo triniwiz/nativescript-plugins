@@ -1,7 +1,7 @@
 # Nativescript nativescript-sinch
 
 ```javascript
-ns plugin add @triniwiz/nativescript-sinch
+npm install @triniwiz/nativescript-sinch
 ```
 
 ## Usage

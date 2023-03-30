@@ -1,7 +1,7 @@
 # Nativescript nativescript-pusher-beams
 
 ```javascript
-ns plugin add @triniwiz/nativescript-pusher-beams
+npm install @triniwiz/nativescript-pusher-beams
 ```
 
 ## Usage

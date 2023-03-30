@@ -1,7 +1,7 @@
 # Nativescript nativescript-accelerometer
 
 ```bash
-ns plugin add @triniwiz/nativescript-accelerometer
+npm install @triniwiz/nativescript-accelerometer
 ```
 
 ## API documentation

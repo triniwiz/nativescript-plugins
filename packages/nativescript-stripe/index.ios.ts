@@ -1,4 +1,4 @@
-import { Frame, Utils, View } from '@nativescript/core';
+import { Frame, Utils, View, Application } from '@nativescript/core';
 import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, GetBrand, IAddress, IBankAccount, ICard, ICardParams, IPaymentMethod, IStripePaymentIntent, isUSZipRequiredProperty, IToken, PaymentMethodType, showPostalCodeProperty, StripePaymentIntentStatus } from './common';
 import { PaymentMethodCard } from './paymentMethod';
 import { Source } from './source';
@@ -123,7 +123,7 @@ export class BankAccount implements IBankAccount {
 	readonly currency: string;
 	readonly fingerprint: string;
 	readonly last4: string;
-	readonly metadata: Readonly<{}>;
+	readonly metadata: Readonly<any>;
 	readonly routingNumber: string;
 	readonly status: BankAccountStatus;
 
@@ -183,6 +183,7 @@ export function handleContinueUserActivity(userActivity: NSUserActivity): boolea
 }
 
 export class StripeThreeDSUICustomization {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
 	public static init() {}
 }
 
@@ -305,31 +306,35 @@ export class Stripe {
 	}
 
 	private findTopViewController(root: UIViewController): UIViewController | undefined {
-		const presented = root.presentedViewController;
-		if (presented != null) {
-			return this.findTopViewController(presented);
-		}
-		if (root instanceof UISplitViewController) {
-			const last = root.viewControllers.lastObject;
-			if (last == null) {
-				return root;
-			}
-			return this.findTopViewController(last);
-		} else if (root instanceof UINavigationController) {
-			const top = root.topViewController;
-			if (top == null) {
-				return root;
-			}
-			return this.findTopViewController(top);
-		} else if (root instanceof UITabBarController) {
-			const selected = root.selectedViewController;
-			if (selected == null) {
-				return root;
-			}
-			return this.findTopViewController(selected);
-		} else {
-			return root;
-		}
+    const presented = root.presentedViewController;
+    if (presented !== null) {
+      return this.findTopViewController(presented);
+    }
+    if (root instanceof UISplitViewController) {
+      const last = root.viewControllers.lastObject;
+      if (last == null) {
+        return root;
+      }
+      return this.findTopViewController(last);
+    } else if (root instanceof UINavigationController) {
+      const top = root.topViewController;
+      if (top == null) {
+        return root;
+      }
+      return this.findTopViewController(top);
+    } else if (root instanceof UITabBarController) {
+      const selected = root.selectedViewController;
+      if (selected == null) {
+        return root;
+      }
+      return this.findTopViewController(selected);
+    } else {
+      if (presented === root.presentedViewController) {
+        return presented;
+      } else {
+        return root;
+      }
+    }
 	}
 
 	_ctxImpl: STPAuthenticationContextImp;
@@ -348,7 +353,7 @@ export class Stripe {
 	}
 }
 
-@NativeClass
+@NativeClass()
 @ObjCClass(STPAuthenticationContext)
 class STPAuthenticationContextImp extends NSObject implements STPAuthenticationContext {
 	_vc: UIViewController;
@@ -531,7 +536,7 @@ export class CardParams implements ICardParams {
 	}
 }
 
-@NativeClass
+@NativeClass()
 class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPaymentCardTextFieldDelegate {
 	public static ObjCProtocols = [STPPaymentCardTextFieldDelegate];
 	_owner: WeakRef<CreditCardView>;
@@ -824,7 +829,7 @@ class StripeIntent {
 
 export class StripePaymentIntent extends StripeIntent implements IStripePaymentIntent {
 	// @ts-ignore
-	native: STPPaymentIntent;
+  native: STPPaymentIntent;
 
 	static fromNative(native: STPPaymentIntent): StripePaymentIntent {
 		const pi = new StripePaymentIntent();
@@ -940,3 +945,38 @@ export class StripeRedirectSession {
 		return keyWindow != null ? keyWindow.rootViewController : undefined;
 	}
 }
+
+@NativeClass()
+class CustomUIApplicationDelegate extends UIResponder implements UIApplicationDelegate {
+    public static ObjCProtocols = [UIApplicationDelegate];
+}
+
+// setup app delegate
+let delegate = Application.ios.delegate;
+if (!delegate) {
+    delegate = Application.ios.delegate = CustomUIApplicationDelegate;
+}
+
+/**
+ * Add delegate method handler, but also preserve any existing one.
+ */
+function addDelegateHandler(classRef: Function, methodName: string, handler: Function) {
+    const crtHandler = classRef.prototype[methodName];
+    classRef.prototype[methodName] = function () {
+        const args = Array.from(arguments);
+        if (crtHandler) {
+            const result = crtHandler.apply(this, args);
+            args.push(result);
+        }
+
+        return handler.apply(this, args);
+    };
+}
+
+addDelegateHandler(delegate, 'applicationContinueUserActivityRestorationHandler', (_application: UIApplication, userActivity: NSUserActivity) => {
+    return handleContinueUserActivity(userActivity);
+});
+
+addDelegateHandler(delegate, 'applicationOpenURLOptions', (_app, url, _options) => {
+    return handleOpenURL(url);
+});
