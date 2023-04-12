@@ -1,5 +1,7 @@
-import GoTrueApi from './GoTrueApi'
-import GoTrueClient from './GoTrueClient'
-
-export {GoTrueApi, GoTrueClient}
-export * from './lib/types'
+import 'core-js/actual/url';
+import 'core-js/actual/url-search-params';
+import GoTrueAdminApi from './GoTrueAdminApi';
+import GoTrueClient from './GoTrueClient';
+export { GoTrueAdminApi, GoTrueClient };
+export * from './lib/types';
+export * from './lib/errors';

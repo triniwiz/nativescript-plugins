@@ -1,35 +1,68 @@
-import { PostgrestBuilder } from './types';
+import PostgrestBuilder from './PostgrestBuilder';
 import PostgrestFilterBuilder from './PostgrestFilterBuilder';
-import { URL } from 'whatwg-url';
-export default class PostgrestQueryBuilder<T> extends PostgrestBuilder<T> {
-	constructor(url: string, { headers = {}, schema }: { headers?: { [key: string]: string }; schema?: string } = {}) {
-		super({} as PostgrestBuilder<T>);
-		this.url = new URL(url);
-		this.headers = { ...headers };
+import { GetResult } from './select-query-parser';
+import { Fetch, GenericSchema, GenericTable, GenericView } from './types';
+
+export default class PostgrestQueryBuilder<Schema extends GenericSchema, Relation extends GenericTable | GenericView> {
+	url: URL;
+	headers: Record<string, string>;
+	schema?: string;
+	signal?: AbortSignal;
+	fetch?: Fetch;
+
+	constructor(
+		url: URL,
+		{
+			headers = {},
+			schema,
+			fetch,
+		}: {
+			headers?: Record<string, string>;
+			schema?: string;
+			fetch?: Fetch;
+		}
+	) {
+		this.url = url;
+		this.headers = headers;
 		this.schema = schema;
+		this.fetch = fetch;
 	}
 
 	/**
-	 * Performs vertical filtering with SELECT.
+	 * Perform a SELECT query on the table or view.
 	 *
-	 * @param columns  The columns to retrieve, separated by commas.
-	 * @param head  When set to true, select will void data.
-	 * @param count  Count algorithm to use to count rows in a table.
+	 * @param columns - The columns to retrieve, separated by commas. Columns can be renamed when returned with `customName:columnName`
+	 *
+	 * @param options - Named parameters
+	 *
+	 * @param options.head - When set to `true`, `data` will not be returned.
+	 * Useful if you only need the count.
+	 *
+	 * @param options.count - Count algorithm to use to count rows in the table or view.
+	 *
+	 * `"exact"`: Exact but slow count algorithm. Performs a `COUNT(*)` under the
+	 * hood.
+	 *
+	 * `"planned"`: Approximated but fast count algorithm. Uses the Postgres
+	 * statistics under the hood.
+	 *
+	 * `"estimated"`: Uses exact count for low numbers and planned count for high
+	 * numbers.
 	 */
-	select(
-		columns = '*',
+	select<Query extends string = '*', ResultOne = GetResult<Schema, Relation['Row'], Query>>(
+		columns?: Query,
 		{
 			head = false,
-			count = null,
+			count,
 		}: {
 			head?: boolean;
-			count?: null | 'exact' | 'planned' | 'estimated';
+			count?: 'exact' | 'planned' | 'estimated';
 		} = {}
-	): PostgrestFilterBuilder<T> {
-		this.method = 'GET';
+	): PostgrestFilterBuilder<Schema, Relation['Row'], ResultOne[]> {
+		const method = head ? 'HEAD' : 'GET';
 		// Remove whitespaces except when quoted
 		let quoted = false;
-		const cleanedColumns = columns
+		const cleanedColumns = (columns ?? '*')
 			.split('')
 			.map((c) => {
 				if (/\s/.test(c) && !quoted) {
@@ -45,157 +78,240 @@ export default class PostgrestQueryBuilder<T> extends PostgrestBuilder<T> {
 		if (count) {
 			this.headers['Prefer'] = `count=${count}`;
 		}
-		if (head) {
-			this.method = 'HEAD';
-		}
-		return new PostgrestFilterBuilder(this);
+
+		return new PostgrestFilterBuilder({
+			method,
+			url: this.url,
+			headers: this.headers,
+			schema: this.schema,
+			fetch: this.fetch,
+			allowEmpty: false,
+		} as unknown as PostgrestBuilder<ResultOne[]>);
 	}
 
 	/**
-	 * Performs an INSERT into the table.
+	 * Perform an INSERT into the table or view.
 	 *
-	 * @param values  The values to insert.
-	 * @param returning  By default the new record is returned. Set this to 'minimal' if you don't need this value.
-	 * @param count  Count algorithm to use to count rows in a table.
+	 * By default, inserted rows are not returned. To return it, chain the call
+	 * with `.select()`.
+	 *
+	 * @param values - The values to insert. Pass an object to insert a single row
+	 * or an array to insert multiple rows.
+	 *
+	 * @param options - Named parameters
+	 *
+	 * @param options.count - Count algorithm to use to count inserted rows.
+	 *
+	 * `"exact"`: Exact but slow count algorithm. Performs a `COUNT(*)` under the
+	 * hood.
+	 *
+	 * `"planned"`: Approximated but fast count algorithm. Uses the Postgres
+	 * statistics under the hood.
+	 *
+	 * `"estimated"`: Uses exact count for low numbers and planned count for high
+	 * numbers.
 	 */
-	insert(
-		values: Partial<T> | Partial<T>[],
-		options?: {
-			returning?: 'minimal' | 'representation';
-			count?: null | 'exact' | 'planned' | 'estimated';
-		}
-	): PostgrestFilterBuilder<T>;
-	/**
-	 * @deprecated Use `upsert()` instead.
-	 */
-	insert(
-		values: Partial<T> | Partial<T>[],
-		options?: {
-			upsert?: boolean;
-			onConflict?: string;
-			returning?: 'minimal' | 'representation';
-			count?: null | 'exact' | 'planned' | 'estimated';
-		}
-	): PostgrestFilterBuilder<T>;
-	insert(
-		values: Partial<T> | Partial<T>[],
+	insert<Row extends Relation extends { Insert: unknown } ? Relation['Insert'] : never>(
+		values: Row | Row[],
 		{
-			upsert = false,
-			onConflict,
-			returning = 'representation',
-			count = null,
+			count,
 		}: {
-			upsert?: boolean;
-			onConflict?: string;
-			returning?: 'minimal' | 'representation';
-			count?: null | 'exact' | 'planned' | 'estimated';
+			count?: 'exact' | 'planned' | 'estimated';
 		} = {}
-	): PostgrestFilterBuilder<T> {
-		this.method = 'POST';
+	): PostgrestFilterBuilder<Schema, Relation['Row'], null> {
+		const method = 'POST';
 
-		const prefersHeaders = [`return=${returning}`];
-		if (upsert) prefersHeaders.push('resolution=merge-duplicates');
-
-		if (upsert && onConflict !== undefined) this.url.searchParams.set('on_conflict', onConflict);
-		this.body = values;
+		const prefersHeaders = [];
+		const body = values;
 		if (count) {
 			prefersHeaders.push(`count=${count}`);
 		}
-
+		if (this.headers['Prefer']) {
+			prefersHeaders.unshift(this.headers['Prefer']);
+		}
 		this.headers['Prefer'] = prefersHeaders.join(',');
 
 		if (Array.isArray(values)) {
 			const columns = values.reduce((acc, x) => acc.concat(Object.keys(x)), [] as string[]);
 			if (columns.length > 0) {
-				const uniqueColumns = [...new Set(columns)];
+				const uniqueColumns = [...new Set(columns)].map((column) => `"${column}"`);
 				this.url.searchParams.set('columns', uniqueColumns.join(','));
 			}
 		}
 
-		return new PostgrestFilterBuilder(this);
+		return new PostgrestFilterBuilder({
+			method,
+			url: this.url,
+			headers: this.headers,
+			schema: this.schema,
+			body,
+			fetch: this.fetch,
+			allowEmpty: false,
+		} as unknown as PostgrestBuilder<null>);
 	}
 
 	/**
-	 * Performs an UPSERT into the table.
+	 * Perform an UPSERT on the table or view. Depending on the column(s) passed
+	 * to `onConflict`, `.upsert()` allows you to perform the equivalent of
+	 * `.insert()` if a row with the corresponding `onConflict` columns doesn't
+	 * exist, or if it does exist, perform an alternative action depending on
+	 * `ignoreDuplicates`.
 	 *
-	 * @param values  The values to insert.
-	 * @param onConflict  By specifying the `on_conflict` query parameter, you can make UPSERT work on a column(s) that has a UNIQUE constraint.
-	 * @param returning  By default the new record is returned. Set this to 'minimal' if you don't need this value.
-	 * @param count  Count algorithm to use to count rows in a table.
+	 * By default, upserted rows are not returned. To return it, chain the call
+	 * with `.select()`.
+	 *
+	 * @param values - The values to upsert with. Pass an object to upsert a
+	 * single row or an array to upsert multiple rows.
+	 *
+	 * @param options - Named parameters
+	 *
+	 * @param options.onConflict - Comma-separated UNIQUE column(s) to specify how
+	 * duplicate rows are determined. Two rows are duplicates if all the
+	 * `onConflict` columns are equal.
+	 *
+	 * @param options.ignoreDuplicates - If `true`, duplicate rows are ignored. If
+	 * `false`, duplicate rows are merged with existing rows.
+	 *
+	 * @param options.count - Count algorithm to use to count upserted rows.
+	 *
+	 * `"exact"`: Exact but slow count algorithm. Performs a `COUNT(*)` under the
+	 * hood.
+	 *
+	 * `"planned"`: Approximated but fast count algorithm. Uses the Postgres
+	 * statistics under the hood.
+	 *
+	 * `"estimated"`: Uses exact count for low numbers and planned count for high
+	 * numbers.
 	 */
-	upsert(
-		values: Partial<T> | Partial<T>[],
+	upsert<Row extends Relation extends { Insert: unknown } ? Relation['Insert'] : never>(
+		values: Row | Row[],
 		{
 			onConflict,
-			returning = 'representation',
-			count = null,
+			ignoreDuplicates = false,
+			count,
 		}: {
 			onConflict?: string;
-			returning?: 'minimal' | 'representation';
-			count?: null | 'exact' | 'planned' | 'estimated';
+			ignoreDuplicates?: boolean;
+			count?: 'exact' | 'planned' | 'estimated';
 		} = {}
-	): PostgrestFilterBuilder<T> {
-		this.method = 'POST';
+	): PostgrestFilterBuilder<Schema, Relation['Row'], null> {
+		const method = 'POST';
 
-		const prefersHeaders = ['resolution=merge-duplicates', `return=${returning}`];
+		const prefersHeaders = [`resolution=${ignoreDuplicates ? 'ignore' : 'merge'}-duplicates`];
 
 		if (onConflict !== undefined) this.url.searchParams.set('on_conflict', onConflict);
-		this.body = values;
+		const body = values;
 		if (count) {
 			prefersHeaders.push(`count=${count}`);
 		}
-
+		if (this.headers['Prefer']) {
+			prefersHeaders.unshift(this.headers['Prefer']);
+		}
 		this.headers['Prefer'] = prefersHeaders.join(',');
 
-		return new PostgrestFilterBuilder(this);
+		return new PostgrestFilterBuilder({
+			method,
+			url: this.url,
+			headers: this.headers,
+			schema: this.schema,
+			body,
+			fetch: this.fetch,
+			allowEmpty: false,
+		} as unknown as PostgrestBuilder<null>);
 	}
 
 	/**
-	 * Performs an UPDATE on the table.
+	 * Perform an UPDATE on the table or view.
 	 *
-	 * @param values  The values to update.
-	 * @param returning  By default the updated record is returned. Set this to 'minimal' if you don't need this value.
-	 * @param count  Count algorithm to use to count rows in a table.
+	 * By default, updated rows are not returned. To return it, chain the call
+	 * with `.select()` after filters.
+	 *
+	 * @param values - The values to update with
+	 *
+	 * @param options - Named parameters
+	 *
+	 * @param options.count - Count algorithm to use to count updated rows.
+	 *
+	 * `"exact"`: Exact but slow count algorithm. Performs a `COUNT(*)` under the
+	 * hood.
+	 *
+	 * `"planned"`: Approximated but fast count algorithm. Uses the Postgres
+	 * statistics under the hood.
+	 *
+	 * `"estimated"`: Uses exact count for low numbers and planned count for high
+	 * numbers.
 	 */
-	update(
-		values: Partial<T>,
+	update<Row extends Relation extends { Update: unknown } ? Relation['Update'] : never>(
+		values: Row,
 		{
-			returning = 'representation',
-			count = null,
+			count,
 		}: {
-			returning?: 'minimal' | 'representation';
-			count?: null | 'exact' | 'planned' | 'estimated';
+			count?: 'exact' | 'planned' | 'estimated';
 		} = {}
-	): PostgrestFilterBuilder<T> {
-		this.method = 'PATCH';
-		const prefersHeaders = [`return=${returning}`];
-		this.body = values;
+	): PostgrestFilterBuilder<Schema, Relation['Row'], null> {
+		const method = 'PATCH';
+		const prefersHeaders = [];
+		const body = values;
 		if (count) {
 			prefersHeaders.push(`count=${count}`);
 		}
+		if (this.headers['Prefer']) {
+			prefersHeaders.unshift(this.headers['Prefer']);
+		}
 		this.headers['Prefer'] = prefersHeaders.join(',');
-		return new PostgrestFilterBuilder(this);
+
+		return new PostgrestFilterBuilder({
+			method,
+			url: this.url,
+			headers: this.headers,
+			schema: this.schema,
+			body,
+			fetch: this.fetch,
+			allowEmpty: false,
+		} as unknown as PostgrestBuilder<null>);
 	}
 
 	/**
-	 * Performs a DELETE on the table.
+	 * Perform a DELETE on the table or view.
 	 *
-	 * @param returning  If `true`, return the deleted row(s) in the response.
-	 * @param count  Count algorithm to use to count rows in a table.
+	 * By default, deleted rows are not returned. To return it, chain the call
+	 * with `.select()` after filters.
+	 *
+	 * @param options - Named parameters
+	 *
+	 * @param options.count - Count algorithm to use to count deleted rows.
+	 *
+	 * `"exact"`: Exact but slow count algorithm. Performs a `COUNT(*)` under the
+	 * hood.
+	 *
+	 * `"planned"`: Approximated but fast count algorithm. Uses the Postgres
+	 * statistics under the hood.
+	 *
+	 * `"estimated"`: Uses exact count for low numbers and planned count for high
+	 * numbers.
 	 */
 	delete({
-		returning = 'representation',
-		count = null,
+		count,
 	}: {
-		returning?: 'minimal' | 'representation';
-		count?: null | 'exact' | 'planned' | 'estimated';
-	} = {}): PostgrestFilterBuilder<T> {
-		this.method = 'DELETE';
-		const prefersHeaders = [`return=${returning}`];
+		count?: 'exact' | 'planned' | 'estimated';
+	} = {}): PostgrestFilterBuilder<Schema, Relation['Row'], null> {
+		const method = 'DELETE';
+		const prefersHeaders = [];
 		if (count) {
 			prefersHeaders.push(`count=${count}`);
 		}
+		if (this.headers['Prefer']) {
+			prefersHeaders.unshift(this.headers['Prefer']);
+		}
 		this.headers['Prefer'] = prefersHeaders.join(',');
-		return new PostgrestFilterBuilder(this);
+
+		return new PostgrestFilterBuilder({
+			method,
+			url: this.url,
+			headers: this.headers,
+			schema: this.schema,
+			fetch: this.fetch,
+			allowEmpty: false,
+		} as unknown as PostgrestBuilder<null>);
 	}
 }

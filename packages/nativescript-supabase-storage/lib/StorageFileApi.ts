@@ -1,6 +1,7 @@
-import { FetchParameters, get, post, remove } from './fetch';
-import { isBrowser } from './helpers';
-import { FileObject, FileOptions, SearchOptions } from './types';
+import { isStorageError, StorageError } from '../lib/errors';
+import { Fetch, get, post, remove } from '../lib/fetch';
+import { resolveFetch } from '../lib/helpers';
+import { FileObject, FileOptions, SearchOptions, FetchParameters, TransformOptions } from '../lib/types';
 import { Http, HTTPFormData, HTTPFormDataEntry } from '../vendor/nativescript-http';
 
 const DEFAULT_SEARCH_OPTIONS = {
@@ -14,55 +15,173 @@ const DEFAULT_SEARCH_OPTIONS = {
 
 const DEFAULT_FILE_OPTIONS: FileOptions = {
 	cacheControl: '3600',
+	contentType: 'text/plain;charset=UTF-8',
+	upsert: false,
 };
 
-export class StorageFileApi {
+type FileBody = ArrayBuffer | ArrayBufferView | Blob | Buffer | File | FormData | NodeJS.ReadableStream | ReadableStream<Uint8Array> | URLSearchParams | string;
+
+export default class StorageFileApi {
 	protected url: string;
 	protected headers: { [key: string]: string };
 	protected bucketId?: string;
+	protected fetch: Fetch;
 
-	constructor(url: string, headers: { [key: string]: string } = {}, bucketId?: string) {
+	constructor(url: string, headers: { [key: string]: string } = {}, bucketId?: string, fetch?: Fetch) {
 		this.url = url;
 		this.headers = headers;
 		this.bucketId = bucketId;
+		this.fetch = resolveFetch(fetch);
+	}
+
+	/**
+	 * Uploads a file to an existing bucket or replaces an existing file at the specified path with a new one.
+	 *
+	 * @param method HTTP method.
+	 * @param path The relative file path. Should be of the format `folder/subfolder/filename.png`. The bucket must already exist before attempting to upload.
+	 * @param fileBody The body of the file to be stored in the bucket.
+	 */
+	private async uploadOrUpdate(
+		method: 'POST' | 'PUT',
+		path: string,
+		fileBody: FileBody,
+		fileOptions?: FileOptions
+	): Promise<
+		| {
+				data: { path: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
+		try {
+			const body = new HTTPFormData();
+			const options = { ...DEFAULT_FILE_OPTIONS, ...fileOptions };
+			const headers: Record<string, string> = {
+				...this.headers,
+				...(method === 'POST' && { 'x-upsert': String(options.upsert as boolean) }),
+			};
+
+			body.append('cacheControl', options.cacheControl);
+
+			let fileData;
+			if (typeof fileBody === 'string') {
+				if (global.isAndroid) {
+					fileData = new HTTPFormDataEntry(new java.io.File(fileBody));
+				} else if (global.isIOS) {
+					fileData = new HTTPFormDataEntry(NSData.dataWithContentsOfURL(NSURL.URLWithString(fileBody)));
+				}
+			} else if (fileBody instanceof File) {
+				fileData = new HTTPFormDataEntry(fileBody, fileBody.name, fileBody.type);
+			} else {
+				fileData = new HTTPFormDataEntry(fileBody);
+				headers['cache-control'] = `max-age=${options.cacheControl}`;
+				headers['content-type'] = options.contentType as string;
+			}
+			body.append('', fileData);
+
+			const cleanPath = this._removeEmptyFolders(path);
+			const _path = this._getFinalPath(cleanPath);
+			const res = await Http.request({
+				method: 'POST',
+				url: `${this.url}/object/${_path}`,
+				content: body,
+				headers: { ...this.headers },
+				//   ...(options?.duplex ? { duplex: options.duplex } : {}),
+			});
+
+			if (res.statusCode >= 200 && res.statusCode <= 299) {
+				// @ts-ignore
+				res.ok = true;
+			}
+
+			// @ts-ignore
+			if (res.ok) {
+				return {
+					data: { path: cleanPath },
+					error: null,
+				};
+			} else {
+				const error = await res.content?.toJSON?.();
+				return { data: null, error };
+			}
+		} catch (error) {
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
+		}
 	}
 
 	/**
 	 * Uploads a file to an existing bucket.
 	 *
-	 * @param path The relative file path. Should be of the format `folder/subfolder/filename.png`. The bucket must already exist before attempting to upload.
-	 * @param file The File object to be stored in the bucket.
-	 * @param fileOptions HTTP headers. For example `cacheControl`
+	 * @param path The file path, including the file name. Should be of the format `folder/subfolder/filename.png`. The bucket must already exist before attempting to upload.
+	 * @param fileBody The body of the file to be stored in the bucket.
 	 */
-	async upload(path: string, file: File | string, fileOptions?: FileOptions): Promise<{ data: { Key: string } | null; error: Error | null }> {
+	async upload(
+		path: string,
+		fileBody: FileBody,
+		fileOptions?: FileOptions
+	): Promise<
+		| {
+				data: { path: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
+		return this.uploadOrUpdate('POST', path, fileBody, fileOptions);
+	}
+
+	/**
+	 * Upload a file with a token generated from `createSignedUploadUrl`.
+	 * @param path The file path, including the file name. Should be of the format `folder/subfolder/filename.png`. The bucket must already exist before attempting to upload.
+	 * @param token The token generated from `createSignedUploadUrl`
+	 * @param fileBody The body of the file to be stored in the bucket.
+	 */
+	async uploadToSignedUrl(path: string, token: string, fileBody: FileBody, fileOptions?: FileOptions) {
+		const cleanPath = this._removeEmptyFolders(path);
+		const _path = this._getFinalPath(cleanPath);
+
+		const url = new URL(this.url + `/object/upload/sign/${_path}`);
+		url.searchParams.set('token', token);
+
 		try {
-			if (!isBrowser()) throw new Error('No browser detected.');
+			const body = new HTTPFormData();
+			const options = { upsert: DEFAULT_FILE_OPTIONS.upsert, ...fileOptions };
+			const headers: Record<string, string> = {
+				...this.headers,
+				...{ 'x-upsert': String(options.upsert as boolean) },
+			};
 
-			const formData = new HTTPFormData();
-
-			const options = { ...DEFAULT_FILE_OPTIONS, ...fileOptions };
-			formData.append('cacheControl', options.cacheControl);
+			body.append('cacheControl', options.cacheControl);
 
 			let fileData;
-			if (typeof file === 'string') {
+			if (typeof fileBody === 'string') {
 				if (global.isAndroid) {
-					fileData = new HTTPFormDataEntry(new java.io.File(file));
+					fileData = new HTTPFormDataEntry(new java.io.File(fileBody));
 				} else if (global.isIOS) {
-					fileData = new HTTPFormDataEntry(NSData.dataWithContentsOfURL(NSURL.URLWithString(file)));
+					fileData = new HTTPFormDataEntry(NSData.dataWithContentsOfURL(NSURL.URLWithString(fileBody)));
 				}
-			} else if (file instanceof File) {
-				fileData = new HTTPFormDataEntry(file, file.name, file.type);
+			} else if (fileBody instanceof File) {
+				fileData = new HTTPFormDataEntry(fileBody, fileBody.name, fileBody.type);
 			} else {
-				fileData = new HTTPFormDataEntry(file);
+				fileData = new HTTPFormDataEntry(fileBody);
+				headers['cache-control'] = `max-age=${options.cacheControl}`;
+				headers['content-type'] = options.contentType as string;
 			}
-			formData.append('', fileData);
-
-			const _path = this._getFinalPath(path);
+			body.append('', fileData);
 
 			const res = await Http.request({
-				method: 'POST',
-				url: `${this.url}/object/${_path}`,
-				content: formData,
+				method: 'PUT',
+				url: url.toString(),
+				content: body,
 				headers: { ...this.headers },
 			});
 
@@ -73,145 +192,328 @@ export class StorageFileApi {
 
 			// @ts-ignore
 			if (res.ok) {
-				// const data = await res.json()
-				// temporary fix till backend is updated to the latest storage-api version
-				return { data: { Key: _path }, error: null };
+				return {
+					data: { path: cleanPath },
+					error: null,
+				};
 			} else {
 				const error = await res.content?.toJSON?.();
 				return { data: null, error };
 			}
 		} catch (error) {
-			return { data: null, error };
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Creates a signed upload URL.
+	 * Signed upload URLs can be used to upload files to the bucket without further authentication.
+	 * They are valid for one minute.
+	 * @param path The file path, including the current file name. For example `folder/image.png`.
+	 */
+	async createSignedUploadUrl(path: string): Promise<
+		| {
+				data: { signedUrl: string; token: string; path: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
+		try {
+			const _path = this._getFinalPath(path);
+
+			const data = await post(this.fetch, `${this.url}/object/upload/sign/${_path}`, {}, { headers: this.headers });
+
+			const url = new URL(this.url + data.url);
+
+			const token = url.searchParams.get('token');
+
+			if (!token) {
+				throw new StorageError('No token returned by API');
+			}
+
+			return { data: { signedUrl: url.toString(), path, token }, error: null };
+		} catch (error) {
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
 		}
 	}
 
 	/**
 	 * Replaces an existing file at the specified path with a new one.
 	 *
-	 * @param path The relative file path. Should be of the format `folder/subfolder`. The bucket already exist before attempting to upload.
-	 * @param file The file object to be stored in the bucket.
-	 * @param fileOptions HTTP headers. For example `cacheControl`
+	 * @param path The relative file path. Should be of the format `folder/subfolder/filename.png`. The bucket must already exist before attempting to update.
+	 * @param fileBody The body of the file to be stored in the bucket.
 	 */
-	async update(path: string, file: File | string, fileOptions?: FileOptions): Promise<{ data: { Key: string } | null; error: Error | null }> {
+	async update(
+		path: string,
+		fileBody: ArrayBuffer | ArrayBufferView | Blob | Buffer | File | FormData | NodeJS.ReadableStream | ReadableStream<Uint8Array> | URLSearchParams | string,
+		fileOptions?: FileOptions
+	): Promise<
+		| {
+				data: { path: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
+		return this.uploadOrUpdate('PUT', path, fileBody, fileOptions);
+	}
+
+	/**
+	 * Moves an existing file to a new path in the same bucket.
+	 *
+	 * @param fromPath The original file path, including the current file name. For example `folder/image.png`.
+	 * @param toPath The new file path, including the new file name. For example `folder/image-new.png`.
+	 */
+	async move(
+		fromPath: string,
+		toPath: string
+	): Promise<
+		| {
+				data: { message: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
 		try {
-			if (!isBrowser()) throw new Error('No browser detected.');
-
-			const formData = new HTTPFormData();
-
-			const options = { ...DEFAULT_FILE_OPTIONS, ...fileOptions };
-			formData.append('cacheControl', options.cacheControl);
-
-			let fileData;
-			if (typeof file === 'string') {
-				if (global.isAndroid) {
-					fileData = new HTTPFormDataEntry(new java.io.File(file));
-				} else if (global.isIOS) {
-					fileData = new HTTPFormDataEntry(NSURL.URLWithString(file));
-				}
-			} else if (file instanceof File) {
-				fileData = new HTTPFormDataEntry(file, file.name, file.type);
-			} else {
-				fileData = new HTTPFormDataEntry(file);
-			}
-			formData.append('', fileData);
-
-			const _path = this._getFinalPath(path);
-			const res = await Http.request({
-				method: 'PUT',
-				url: `${this.url}/object/${_path}`,
-				content: formData,
-				headers: { ...this.headers },
-			});
-
-			if (res.statusCode >= 200 && res.statusCode <= 299) {
-				// @ts-ignore
-				res.ok = true;
-			}
-
-			// @ts-ignore
-			if (res.ok) {
-				// const data = await res.json()
-				// temporary fix till backend is updated to the latest storage-api version
-				return { data: { Key: _path }, error: null };
-			} else {
-				const error = await res.content?.toJSON?.();
+			const data = await post(this.fetch, `${this.url}/object/move`, { bucketId: this.bucketId, sourceKey: fromPath, destinationKey: toPath }, { headers: this.headers });
+			return { data, error: null };
+		} catch (error) {
+			if (isStorageError(error)) {
 				return { data: null, error };
 			}
-		} catch (error) {
-			return { data: null, error };
+
+			throw error;
 		}
 	}
 
 	/**
-	 * Moves an existing file, optionally renaming it at the same time.
+	 * Copies an existing file to a new path in the same bucket.
 	 *
 	 * @param fromPath The original file path, including the current file name. For example `folder/image.png`.
 	 * @param toPath The new file path, including the new file name. For example `folder/image-copy.png`.
 	 */
-	async move(fromPath: string, toPath: string): Promise<{ data: { message: string } | null; error: Error | null }> {
+	async copy(
+		fromPath: string,
+		toPath: string
+	): Promise<
+		| {
+				data: { path: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
 		try {
-			const data = await post(`${this.url}/object/move`, { bucketId: this.bucketId, sourceKey: fromPath, destinationKey: toPath }, { headers: this.headers });
-			return { data, error: null };
+			const data = await post(this.fetch, `${this.url}/object/copy`, { bucketId: this.bucketId, sourceKey: fromPath, destinationKey: toPath }, { headers: this.headers });
+			return { data: { path: data.Key }, error: null };
 		} catch (error) {
-			return { data: null, error };
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
 		}
 	}
 
 	/**
-	 * Create signed url to download file without requiring permissions. This URL can be valid for a set number of seconds.
+	 * Creates a signed URL. Use a signed URL to share a file for a fixed amount of time.
 	 *
-	 * @param path The file path to be downloaded, including the current file name. For example `folder/image.png`.
+	 * @param path The file path, including the current file name. For example `folder/image.png`.
 	 * @param expiresIn The number of seconds until the signed URL expires. For example, `60` for a URL which is valid for one minute.
+	 * @param options.download triggers the file as a download if set to true. Set this parameter as the name of the file if you want to trigger the download with a different filename.
+	 * @param options.transform Transform the asset before serving it to the client.
 	 */
 	async createSignedUrl(
 		path: string,
-		expiresIn: number
-	): Promise<{
-		data: { signedURL: string } | null;
-		error: Error | null;
-		signedURL: string | null;
-	}> {
+		expiresIn: number,
+		options?: { download?: string | boolean; transform?: TransformOptions }
+	): Promise<
+		| {
+				data: { signedUrl: string };
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
 		try {
 			const _path = this._getFinalPath(path);
-			let data = await post(`${this.url}/object/sign/${_path}`, { expiresIn }, { headers: this.headers });
-			const signedURL = `${this.url}${data.signedURL}`;
-			data = { signedURL };
-			return { data, error: null, signedURL };
+
+			let data = await post(this.fetch, `${this.url}/object/sign/${_path}`, { expiresIn, ...(options?.transform ? { transform: options.transform } : {}) }, { headers: this.headers });
+			const downloadQueryParam = options?.download ? `&download=${options.download === true ? '' : options.download}` : '';
+			const signedUrl = encodeURI(`${this.url}${data.signedURL}${downloadQueryParam}`);
+			data = { signedUrl };
+			return { data, error: null };
 		} catch (error) {
-			return { data: null, error, signedURL: null };
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
 		}
 	}
 
 	/**
-	 * Downloads a file.
+	 * Creates multiple signed URLs. Use a signed URL to share a file for a fixed amount of time.
 	 *
-	 * @param path The file path to be downloaded, including the path and file name. For example `folder/image.png`.
+	 * @param paths The file paths to be downloaded, including the current file names. For example `['folder/image.png', 'folder2/image2.png']`.
+	 * @param expiresIn The number of seconds until the signed URLs expire. For example, `60` for URLs which are valid for one minute.
+	 * @param options.download triggers the file as a download if set to true. Set this parameter as the name of the file if you want to trigger the download with a different filename.
 	 */
-	async download(path: string): Promise<{ data: Blob | null; error: Error | null }> {
+	async createSignedUrls(
+		paths: string[],
+		expiresIn: number,
+		options?: { download: string | boolean }
+	): Promise<
+		| {
+				data: { error: string | null; path: string | null; signedUrl: string }[];
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
+		try {
+			const data = await post(this.fetch, `${this.url}/object/sign/${this.bucketId}`, { expiresIn, paths }, { headers: this.headers });
+
+			const downloadQueryParam = options?.download ? `&download=${options.download === true ? '' : options.download}` : '';
+			return {
+				data: data.map((datum: { signedURL: string }) => ({
+					...datum,
+					signedUrl: datum.signedURL ? encodeURI(`${this.url}${datum.signedURL}${downloadQueryParam}`) : null,
+				})),
+				error: null,
+			};
+		} catch (error) {
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Downloads a file from a private bucket. For public buckets, make a request to the URL returned from `getPublicUrl` instead.
+	 *
+	 * @param path The full path and file name of the file to be downloaded. For example `folder/image.png`.
+	 * @param options.transform Transform the asset before serving it to the client.
+	 */
+	async download(
+		path: string,
+		options?: { transform?: TransformOptions }
+	): Promise<
+		| {
+				data: Blob;
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
+		const wantsTransformation = typeof options?.transform !== 'undefined';
+		const renderPath = wantsTransformation ? 'render/image/authenticated' : 'object';
+		const transformationQuery = this.transformOptsToQueryString(options?.transform || {});
+		const queryString = transformationQuery ? `?${transformationQuery}` : '';
+
 		try {
 			const _path = this._getFinalPath(path);
-			const res = await get(`${this.url}/object/${_path}`, {
+			const res = await get(this.fetch, `${this.url}/${renderPath}/${_path}${queryString}`, {
 				headers: this.headers,
 				noResolveJson: true,
 			});
 			const data = await res.blob();
 			return { data, error: null };
 		} catch (error) {
-			return { data: null, error };
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
 		}
+	}
+
+	/**
+	 * A simple convenience function to get the URL for an asset in a public bucket. If you do not want to use this function, you can construct the public URL by concatenating the bucket URL with the path to the asset.
+	 * This function does not verify if the bucket is public. If a public URL is created for a bucket which is not public, you will not be able to download the asset.
+	 *
+	 * @param path The path and name of the file to generate the public URL for. For example `folder/image.png`.
+	 * @param options.download Triggers the file as a download if set to true. Set this parameter as the name of the file if you want to trigger the download with a different filename.
+	 * @param options.transform Transform the asset before serving it to the client.
+	 */
+	getPublicUrl(path: string, options?: { download?: string | boolean; transform?: TransformOptions }): { data: { publicUrl: string } } {
+		const _path = this._getFinalPath(path);
+		const _queryString = [];
+
+		const downloadQueryParam = options?.download ? `download=${options.download === true ? '' : options.download}` : '';
+
+		if (downloadQueryParam !== '') {
+			_queryString.push(downloadQueryParam);
+		}
+
+		const wantsTransformation = typeof options?.transform !== 'undefined';
+		const renderPath = wantsTransformation ? 'render/image' : 'object';
+		const transformationQuery = this.transformOptsToQueryString(options?.transform || {});
+
+		if (transformationQuery !== '') {
+			_queryString.push(transformationQuery);
+		}
+
+		let queryString = _queryString.join('&');
+		if (queryString !== '') {
+			queryString = `?${queryString}`;
+		}
+
+		return {
+			data: { publicUrl: encodeURI(`${this.url}/${renderPath}/public/${_path}${queryString}`) },
+		};
 	}
 
 	/**
 	 * Deletes files within the same bucket
 	 *
-	 * @param paths An array of files to be deletes, including the path and file name. For example [`folder/image.png`].
+	 * @param paths An array of files to delete, including the path and file name. For example [`'folder/image.png'`].
 	 */
-	async remove(paths: string[]): Promise<{ data: FileObject[] | null; error: Error | null }> {
+	async remove(paths: string[]): Promise<
+		| {
+				data: FileObject[];
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
 		try {
-			const data = await remove(`${this.url}/object/${this.bucketId}`, { prefixes: paths }, { headers: this.headers });
+			const data = await remove(this.fetch, `${this.url}/object/${this.bucketId}`, { prefixes: paths }, { headers: this.headers });
 			return { data, error: null };
 		} catch (error) {
-			return { data: null, error };
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
 		}
 	}
 
@@ -219,12 +521,27 @@ export class StorageFileApi {
 	 * Get file metadata
 	 * @param id the file id to retrieve metadata
 	 */
-	// async getMetadata(id: string): Promise<{ data: Metadata | null; error: Error | null }> {
+	// async getMetadata(
+	//   id: string
+	// ): Promise<
+	//   | {
+	//       data: Metadata
+	//       error: null
+	//     }
+	//   | {
+	//       data: null
+	//       error: StorageError
+	//     }
+	// > {
 	//   try {
-	//     const data = await get(`${this.url}/metadata/${id}`, { headers: this.headers })
+	//     const data = await get(this.fetch, `${this.url}/metadata/${id}`, { headers: this.headers })
 	//     return { data, error: null }
 	//   } catch (error) {
-	//     return { data: null, error }
+	//     if (isStorageError(error)) {
+	//       return { data: null, error }
+	//     }
+
+	//     throw error
 	//   }
 	// }
 
@@ -236,32 +553,94 @@ export class StorageFileApi {
 	// async updateMetadata(
 	//   id: string,
 	//   meta: Metadata
-	// ): Promise<{ data: Metadata | null; error: Error | null }> {
+	// ): Promise<
+	//   | {
+	//       data: Metadata
+	//       error: null
+	//     }
+	//   | {
+	//       data: null
+	//       error: StorageError
+	//     }
+	// > {
 	//   try {
-	//     const data = await post(`${this.url}/metadata/${id}`, { ...meta }, { headers: this.headers })
+	//     const data = await post(
+	//       this.fetch,
+	//       `${this.url}/metadata/${id}`,
+	//       { ...meta },
+	//       { headers: this.headers }
+	//     )
 	//     return { data, error: null }
 	//   } catch (error) {
-	//     return { data: null, error }
+	//     if (isStorageError(error)) {
+	//       return { data: null, error }
+	//     }
+
+	//     throw error
 	//   }
 	// }
 
 	/**
 	 * Lists all the files within a bucket.
 	 * @param path The folder path.
-	 * @param options Search options, including `limit`, `offset`, and `sortBy`.
-	 * @param parameters Fetch parameters, currently only supports `signal`, which is an AbortController's signal
 	 */
-	async list(path?: string, options?: SearchOptions, parameters?: FetchParameters): Promise<{ data: FileObject[] | null; error: Error | null }> {
+	async list(
+		path?: string,
+		options?: SearchOptions,
+		parameters?: FetchParameters
+	): Promise<
+		| {
+				data: FileObject[];
+				error: null;
+		  }
+		| {
+				data: null;
+				error: StorageError;
+		  }
+	> {
 		try {
 			const body = { ...DEFAULT_SEARCH_OPTIONS, ...options, prefix: path || '' };
-			const data = await post(`${this.url}/object/list/${this.bucketId}`, body, { headers: this.headers }, parameters);
+			const data = await post(this.fetch, `${this.url}/object/list/${this.bucketId}`, body, { headers: this.headers }, parameters);
 			return { data, error: null };
 		} catch (error) {
-			return { data: null, error };
+			if (isStorageError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
 		}
 	}
 
-	_getFinalPath(path: string) {
+	private _getFinalPath(path: string) {
 		return `${this.bucketId}/${path}`;
+	}
+
+	private _removeEmptyFolders(path: string) {
+		return path.replace(/^\/|\/$/g, '').replace(/\/+/g, '/');
+	}
+
+	private transformOptsToQueryString(transform: TransformOptions) {
+		const params = [];
+		if (transform.width) {
+			params.push(`width=${transform.width}`);
+		}
+
+		if (transform.height) {
+			params.push(`height=${transform.height}`);
+		}
+
+		if (transform.resize) {
+			params.push(`resize=${transform.resize}`);
+		}
+
+		if (transform.format) {
+			params.push(`format=${transform.format}`);
+		}
+
+		if (transform.quality) {
+			params.push(`quality=${transform.quality}`);
+		}
+
+		return params.join('&');
 	}
 }

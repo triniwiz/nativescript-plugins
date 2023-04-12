@@ -1,39 +1,87 @@
-export type SupabaseClientOptions = {
+import { GoTrueClient } from '@triniwiz/nativescript-supabase-gotrue';
+import { RealtimeClientOptions } from '@triniwiz/nativescript-supabase-realtime';
+
+type GoTrueClientOptions = ConstructorParameters<typeof GoTrueClient>[0];
+
+export type SupabaseAuthClientOptions = GoTrueClientOptions;
+
+export type Fetch = typeof fetch;
+
+export type SupabaseClientOptions<SchemaName> = {
 	/**
-	 * The Postgres schema which your tables belong to. Must be on the list of exposed schemas in Supabase. Defaults to 'public'.
+	 * The Postgres schema which your tables belong to. Must be on the list of exposed schemas in Supabase. Defaults to `public`.
 	 */
-	schema?: string;
+	db?: {
+		schema?: SchemaName;
+	};
+
+	auth?: {
+		/**
+		 * Automatically refreshes the token for logged-in users. Defaults to true.
+		 */
+		autoRefreshToken?: boolean;
+		/**
+		 * Optional key name used for storing tokens in local storage.
+		 */
+		storageKey?: string;
+		/**
+		 * Whether to persist a logged-in session to storage. Defaults to true.
+		 */
+		persistSession?: boolean;
+		/**
+		 * Detect a session from the URL. Used for OAuth login callbacks. Defaults to true.
+		 */
+		detectSessionInUrl?: boolean;
+		/**
+		 * A storage provider. Used to store the logged-in session.
+		 */
+		storage?: SupabaseAuthClientOptions['storage'];
+		/**
+		 * OAuth flow to use - defaults to implicit flow. PKCE is recommended for mobile and server-side applications.
+		 */
+		flowType?: SupabaseAuthClientOptions['flowType'];
+	};
 	/**
-	 * Optional headers for initializing the client.
+	 * Options passed to the realtime-js instance
 	 */
-	headers?: { [key: string]: string };
-	/**
-	 * Automatically refreshes the token for logged in users.
-	 */
-	autoRefreshToken?: boolean;
-	/**
-	 * Whether to persist a logged in session to storage.
-	 */
-	persistSession?: boolean;
-	/**
-	 * Detect a session from the URL. Used for OAuth login callbacks.
-	 */
-	detectSessionInUrl?: boolean;
-	/**
-	 * A storage provider. Used to store the logged in session.
-	 */
-	localStorage?: Storage;
+	realtime?: RealtimeClientOptions;
+	global?: {
+		/**
+		 * A custom `fetch` implementation.
+		 */
+		fetch?: Fetch;
+		/**
+		 * Optional headers for initializing the client.
+		 */
+		headers?: Record<string, string>;
+	};
 };
 
-export type SupabaseRealtimePayload<T> = {
-	commit_timestamp: string;
-	eventType: 'INSERT' | 'UPDATE' | 'DELETE';
-	schema: string;
-	table: string;
-	/** The new record. Present for 'INSERT' and 'UPDATE' events. */
-	new: T;
-	/** The previous record. Present for 'UPDATE' and 'DELETE' events. */
-	old: T;
+export type GenericTable = {
+	Row: Record<string, unknown>;
+	Insert: Record<string, unknown>;
+	Update: Record<string, unknown>;
 };
 
-export type SupabaseEventTypes = 'INSERT' | 'UPDATE' | 'DELETE' | '*';
+export type GenericUpdatableView = {
+	Row: Record<string, unknown>;
+	Insert: Record<string, unknown>;
+	Update: Record<string, unknown>;
+};
+
+export type GenericNonUpdatableView = {
+	Row: Record<string, unknown>;
+};
+
+export type GenericView = GenericUpdatableView | GenericNonUpdatableView;
+
+export type GenericFunction = {
+	Args: Record<string, unknown>;
+	Returns: unknown;
+};
+
+export type GenericSchema = {
+	Tables: Record<string, GenericTable>;
+	Views: Record<string, GenericView>;
+	Functions: Record<string, GenericFunction>;
+};

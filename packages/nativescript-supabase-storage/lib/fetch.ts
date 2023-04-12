@@ -1,3 +1,9 @@
+import { StorageApiError, StorageUnknownError } from './errors';
+import { resolveResponse } from './helpers';
+import { FetchParameters } from './types';
+
+export type Fetch = typeof fetch;
+
 export interface FetchOptions {
 	headers?: {
 		[key: string]: string;
@@ -5,24 +11,25 @@ export interface FetchOptions {
 	noResolveJson?: boolean;
 }
 
-export interface FetchParameters {
-	signal?: AbortSignal;
-}
-
 export type RequestMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 const _getErrorMessage = (err: any): string => err.msg || err.message || err.error_description || err.error || JSON.stringify(err);
 
-const handleError = (error: any, reject: any) => {
-	if (typeof error.json !== 'function') {
-		return reject(error);
+const handleError = async (error: unknown, reject: (reason?: any) => void) => {
+	const Res = await resolveResponse();
+
+	if (error instanceof Res) {
+		error
+			.json()
+			.then((err) => {
+				reject(new StorageApiError(_getErrorMessage(err), error.status || 500));
+			})
+			.catch((err) => {
+				reject(new StorageUnknownError(_getErrorMessage(err), err));
+			});
+	} else {
+		reject(new StorageUnknownError(_getErrorMessage(error), error));
 	}
-	error.json().then((err: any) => {
-		return reject({
-			message: _getErrorMessage(err),
-			status: error?.status || 500,
-		});
-	});
 };
 
 const _getRequestParams = (method: RequestMethodType, options?: FetchOptions, parameters?: FetchParameters, body?: object) => {
@@ -37,12 +44,12 @@ const _getRequestParams = (method: RequestMethodType, options?: FetchOptions, pa
 	return { ...params, ...parameters };
 };
 
-async function _handleRequest(method: RequestMethodType, url: string, options?: FetchOptions, parameters?: FetchParameters, body?: object): Promise<any> {
+async function _handleRequest(fetcher: Fetch, method: RequestMethodType, url: string, options?: FetchOptions, parameters?: FetchParameters, body?: object): Promise<any> {
 	return new Promise((resolve, reject) => {
-		fetch(url, _getRequestParams(method, options, parameters, body))
+		fetcher(url, _getRequestParams(method, options, parameters, body))
 			.then((result) => {
 				if (!result.ok) throw result;
-				if (options?.noResolveJson) return resolve(result);
+				if (options?.noResolveJson) return result;
 				return result.json();
 			})
 			.then((data) => resolve(data))
@@ -50,18 +57,18 @@ async function _handleRequest(method: RequestMethodType, url: string, options?: 
 	});
 }
 
-export async function get(url: string, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
-	return _handleRequest('GET', url, options, parameters);
+export async function get(fetcher: Fetch, url: string, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
+	return _handleRequest(fetcher, 'GET', url, options, parameters);
 }
 
-export async function post(url: string, body: object, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
-	return _handleRequest('POST', url, options, parameters, body);
+export async function post(fetcher: Fetch, url: string, body: object, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
+	return _handleRequest(fetcher, 'POST', url, options, parameters, body);
 }
 
-export async function put(url: string, body: object, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
-	return _handleRequest('PUT', url, options, parameters, body);
+export async function put(fetcher: Fetch, url: string, body: object, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
+	return _handleRequest(fetcher, 'PUT', url, options, parameters, body);
 }
 
-export async function remove(url: string, body: object, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
-	return _handleRequest('DELETE', url, options, parameters, body);
+export async function remove(fetcher: Fetch, url: string, body: object, options?: FetchOptions, parameters?: FetchParameters): Promise<any> {
+	return _handleRequest(fetcher, 'DELETE', url, options, parameters, body);
 }
