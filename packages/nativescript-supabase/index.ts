@@ -6,6 +6,7 @@ import type { GenericSchema, SupabaseClientOptions } from './lib/types';
 export * from '@triniwiz/nativescript-supabase-gotrue';
 export type { User as AuthUser, Session as AuthSession } from '@triniwiz/nativescript-supabase-gotrue';
 export type { PostgrestResponse, PostgrestSingleResponse, PostgrestMaybeSingleResponse, PostgrestError } from '@triniwiz/nativescript-supabase-postgrest';
+export { FunctionsHttpError, FunctionsFetchError, FunctionsRelayError, FunctionsError } from '@triniwiz/nativescript-supabase-functions';
 export * from '@triniwiz/nativescript-supabase-realtime';
 export { default as SupabaseClient } from './SupabaseClient';
 export type { SupabaseClientOptions } from './lib/types';

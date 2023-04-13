@@ -47,7 +47,8 @@
 		"@triniwiz/nativescript-videorecorder": "file:../../packages/nativescript-videorecorder",
 		"@triniwiz/nativescript-webrtc": "file:../../packages/nativescript-webrtc",
 		"@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout",
-		"@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer"
+		"@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer",
+		"@triniwiz/nativescript-supabase-functions": "file:../../packages/nativescript-supabase-functions"
 	},
 	"devDependencies": {
 		"@nativescript/android": "~8.4.0",

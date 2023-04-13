@@ -454,6 +454,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-messenger: Build',
 				},
 			},
+			// @triniwiz/nativescript-supabase-functions
+			'nativescript-supabase-functions': {
+				build: {
+					script: 'nx run nativescript-supabase-functions:build.all',
+					description: '@triniwiz/nativescript-supabase-functions: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -667,6 +674,10 @@ module.exports = {
 			'nativescript-messenger': {
 				script: 'nx run nativescript-messenger:focus',
 				description: 'Focus on @triniwiz/nativescript-messenger',
+			},
+			'nativescript-supabase-functions': {
+				script: 'nx run nativescript-supabase-functions:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-functions',
 			},
 			reset: {
 				script: 'nx g @nativescript/plugin-tools:focus-packages',

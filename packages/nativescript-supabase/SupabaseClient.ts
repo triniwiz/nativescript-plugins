@@ -1,4 +1,4 @@
-// import { FunctionsClient } from '@triniwiz/nativescript-supabase-functions'
+import { FunctionsClient } from '@triniwiz/nativescript-supabase-functions';
 import { AuthChangeEvent } from '@triniwiz/nativescript-supabase-gotrue';
 import { PostgrestClient, PostgrestFilterBuilder, PostgrestQueryBuilder } from '@triniwiz/nativescript-supabase-postgrest';
 import { RealtimeChannel, RealtimeChannelOptions, RealtimeClient, RealtimeClientOptions } from '@triniwiz/nativescript-supabase-realtime';
@@ -111,11 +111,10 @@ export default class SupabaseClient<Database = any, SchemaName extends string & 
 	 * Supabase Functions allows you to deploy and invoke edge functions.
 	 */
 	get functions() {
-		return null as any; // TODO: Add functions package.
-		// return new FunctionsClient(this.functionsUrl, {
-		//   headers: this.headers,
-		//   customFetch: this.fetch,
-		// })
+		return new FunctionsClient(this.functionsUrl, {
+			headers: this.headers,
+			customFetch: this.fetch,
+		});
 	}
 
 	/**

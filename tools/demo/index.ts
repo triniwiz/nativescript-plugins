@@ -28,6 +28,7 @@ export * from './nativescript-sse';
 export * from './nativescript-star-ratings';
 export * from './nativescript-stripe';
 export * from './nativescript-supabase';
+export * from './nativescript-supabase-functions';
 export * from './nativescript-supabase-gotrue';
 export * from './nativescript-supabase-postgrest';
 export * from './nativescript-supabase-realtime';

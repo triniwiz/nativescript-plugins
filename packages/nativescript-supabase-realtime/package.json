@@ -34,7 +34,6 @@
 	"bootstrapper": "@nativescript/plugin-seed",
 	"dependencies": {
 		"@valor/nativescript-websockets": "^1.0.3",
-		"core-js": "^3.30.0",
-		"whatwg-url": "^12.0.1"
+		"core-js": "^3.30.0"
 	}
 }

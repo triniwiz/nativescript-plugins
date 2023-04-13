@@ -27,6 +27,7 @@
 - [@triniwiz/nativescript-star-ratings](packages/nativescript-star-ratings/README.md)
 - [@triniwiz/nativescript-stripe](packages/nativescript-stripe/README.md)
 - [@triniwiz/nativescript-supabase](packages/nativescript-supabase/README.md)
+- [@triniwiz/nativescript-supabase-functions](packages/nativescript-supabase-functions/README.md)
 - [@triniwiz/nativescript-supabase-gotrue](packages/nativescript-supabase-gotrue/README.md)
 - [@triniwiz/nativescript-supabase-postgrest](packages/nativescript-supabase-postgrest/README.md)
 - [@triniwiz/nativescript-supabase-realtime](packages/nativescript-supabase-realtime/README.md)
