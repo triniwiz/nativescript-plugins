@@ -31,13 +31,13 @@ export class CouchBase extends Common {
 	}
 
 	inBatch(batch: () => void) {
-		const runnable = new java.lang.Runnable({
+		const unitOfWork = new com.couchbase.lite.UnitOfWork({
 			run: () => {
 				batch();
 			},
 		});
 
-		this.android.inBatch(runnable);
+    this.android.inBatch(unitOfWork);
 	}
 
 	createDocument(data: Object, documentId?: string, concurrencyMode: ConcurrencyMode = ConcurrencyMode.LastWriteWins): string | null {
