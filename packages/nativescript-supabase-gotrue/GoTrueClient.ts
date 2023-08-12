@@ -1,95 +1,494 @@
-import GoTrueApi from './GoTrueApi';
-import { isBrowser, getParameterByName, uuid, LocalStorage } from './lib/helpers';
-import { GOTRUE_URL, DEFAULT_HEADERS, STORAGE_KEY } from './lib/constants';
-import { Session, User, UserAttributes, Provider, Subscription, AuthChangeEvent, CookieOptions, UserCredentials } from './lib/types';
+import GoTrueAdminApi from './GoTrueAdminApi';
+import { DEFAULT_HEADERS, EXPIRY_MARGIN, GOTRUE_URL, STORAGE_KEY } from './lib/constants';
+import { AuthError, AuthImplicitGrantRedirectError, AuthPKCEGrantCodeExchangeError, AuthInvalidCredentialsError, AuthRetryableFetchError, AuthSessionMissingError, AuthUnknownError, isAuthApiError, isAuthError } from './lib/errors';
+import { Fetch, _request, _sessionResponse, _userResponse, _ssoResponse } from './lib/fetch';
+import { decodeJWTPayload, Deferred, getItemAsync, getParameterByName, isBrowser, removeItemAsync, resolveFetch, setItemAsync, uuid, retryable, sleep, generatePKCEVerifier, generatePKCEChallenge } from './lib/helpers';
+import localStorageAdapter from './lib/local-storage';
 
-const DEFAULT_OPTIONS = {
+import type {
+	AuthChangeEvent,
+	AuthResponse,
+	CallRefreshTokenResult,
+	GoTrueClientOptions,
+	InitializeResult,
+	OAuthResponse,
+	SSOResponse,
+	Provider,
+	Session,
+	SignInWithIdTokenCredentials,
+	SignInWithOAuthCredentials,
+	SignInWithPasswordCredentials,
+	SignInWithPasswordlessCredentials,
+	SignUpWithPasswordCredentials,
+	SignInWithSSO,
+	Subscription,
+	SupportedStorage,
+	User,
+	UserAttributes,
+	UserResponse,
+	VerifyOtpParams,
+	GoTrueMFAApi,
+	MFAEnrollParams,
+	AuthMFAEnrollResponse,
+	MFAChallengeParams,
+	AuthMFAChallengeResponse,
+	MFAUnenrollParams,
+	AuthMFAUnenrollResponse,
+	MFAVerifyParams,
+	AuthMFAVerifyResponse,
+	AuthMFAListFactorsResponse,
+	AMREntry,
+	AuthMFAGetAuthenticatorAssuranceLevelResponse,
+	AuthenticatorAssuranceLevels,
+	Factor,
+	MFAChallengeAndVerifyParams,
+	AuthFlowType,
+} from './lib/types';
+
+const DEFAULT_OPTIONS: Omit<Required<GoTrueClientOptions>, 'fetch' | 'storage'> = {
 	url: GOTRUE_URL,
+	storageKey: STORAGE_KEY,
 	autoRefreshToken: true,
 	persistSession: true,
-	localStorage: globalThis.localStorage,
 	detectSessionInUrl: true,
 	headers: DEFAULT_HEADERS,
+	flowType: 'implicit',
 };
+
+/** Current session will be checked for refresh at this interval. */
+const AUTO_REFRESH_TICK_DURATION = 10 * 1000;
+
+/**
+ * A token refresh will be attempted this many ticks before the current session expires. */
+const AUTO_REFRESH_TICK_THRESHOLD = 3;
+
 export default class GoTrueClient {
 	/**
-	 * Namespace for the GoTrue API methods.
-	 * These can be used for example to get a user from a JWT in a server environment or reset a user's password.
+	 * Namespace for the GoTrue admin methods.
+	 * These methods should only be used in a trusted server-side environment.
 	 */
-	api: GoTrueApi;
+	admin: GoTrueAdminApi;
 	/**
-	 * The currently logged in user or null.
+	 * Namespace for the MFA methods.
 	 */
-	protected currentUser: User | null;
+	mfa: GoTrueMFAApi;
 	/**
-	 * The session object for the currently logged in user or null.
+	 * The storage key used to identify the values saved in localStorage
 	 */
-	protected currentSession: Session | null;
+	protected storageKey: string;
+
+	/**
+	 * The session object for the currently logged in user. If null, it means there isn't a logged-in user.
+	 * Only used if persistSession is false.
+	 */
+	protected inMemorySession: Session | null;
+
+	protected flowType: AuthFlowType;
 
 	protected autoRefreshToken: boolean;
 	protected persistSession: boolean;
-	protected localStorage: Storage;
+	protected storage: SupportedStorage;
 	protected stateChangeEmitters: Map<string, Subscription> = new Map();
-	protected refreshTokenTimer?: ReturnType<typeof setTimeout>;
+	protected autoRefreshTicker: ReturnType<typeof setInterval> | null = null;
+	protected visibilityChangedCallback: (() => Promise<any>) | null = null;
+	protected refreshingDeferred: Deferred<CallRefreshTokenResult> | null = null;
+	/**
+	 * Keeps track of the async client initialization.
+	 * When null or not yet resolved the auth state is `unknown`
+	 * Once resolved the the auth state is known and it's save to call any further client methods.
+	 * Keep extra care to never reject or throw uncaught errors
+	 */
+	protected initializePromise: Promise<InitializeResult> | null = null;
+	protected detectSessionInUrl = true;
+	protected url: string;
+	protected headers: {
+		[key: string]: string;
+	};
+	protected fetch: Fetch;
+
+	/**
+	 * Used to broadcast state change events to other tabs listening.
+	 * @deprecated Unused in Nativescript.
+	 */
+	protected broadcastChannel: BroadcastChannel | null = null;
 
 	/**
 	 * Create a new client for use in the browser.
-	 * @param options.url The URL of the GoTrue server.
-	 * @param options.headers Any additional headers to send to the GoTrue server.
-	 * @param options.detectSessionInUrl Set to "true" if you want to automatically detects OAuth grants in the URL and signs in the user.
-	 * @param options.autoRefreshToken Set to "true" if you want to automatically refresh the token before expiring.
-	 * @param options.persistSession Set to "true" if you want to automatically save the user session into local storage.
-	 * @param options.localStorage
 	 */
-	constructor(options: { url?: string; headers?: { [key: string]: string }; detectSessionInUrl?: boolean; autoRefreshToken?: boolean; persistSession?: boolean; localStorage?: Storage; cookieOptions?: CookieOptions }) {
+	constructor(options: GoTrueClientOptions) {
 		const settings = { ...DEFAULT_OPTIONS, ...options };
-		this.currentUser = null;
-		this.currentSession = null;
+		this.inMemorySession = null;
+		this.storageKey = settings.storageKey;
 		this.autoRefreshToken = settings.autoRefreshToken;
 		this.persistSession = settings.persistSession;
-		this.localStorage = new LocalStorage(settings.localStorage);
-		this.api = new GoTrueApi({
+		this.storage = settings.storage || localStorageAdapter;
+		this.admin = new GoTrueAdminApi({
 			url: settings.url,
 			headers: settings.headers,
-			cookieOptions: settings.cookieOptions,
+			fetch: settings.fetch,
 		});
 
-		this._recoverSession();
-		this._recoverAndRefresh();
+		this.url = settings.url;
+		this.headers = settings.headers;
+		this.fetch = resolveFetch(settings.fetch);
+		this.detectSessionInUrl = settings.detectSessionInUrl;
+		this.flowType = settings.flowType;
 
-		// Handle the OAuth redirect
+		this.mfa = {
+			verify: this._verify.bind(this),
+			enroll: this._enroll.bind(this),
+			unenroll: this._unenroll.bind(this),
+			challenge: this._challenge.bind(this),
+			listFactors: this._listFactors.bind(this),
+			challengeAndVerify: this._challengeAndVerify.bind(this),
+			getAuthenticatorAssuranceLevel: this._getAuthenticatorAssuranceLevel.bind(this),
+		};
+
+		this.initialize();
+	}
+
+	/**
+	 * Initializes the client session either from the url or from storage.
+	 * This method is automatically called when instantiating the client, but should also be called
+	 * manually when checking for an error from an auth redirect (oauth, magiclink, password recovery, etc).
+	 */
+	initialize(): Promise<InitializeResult> {
+		if (!this.initializePromise) {
+			this.initializePromise = this._initialize();
+		}
+
+		return this.initializePromise;
+	}
+
+	/**
+	 * IMPORTANT:
+	 * 1. Never throw in this method, as it is called from the constructor
+	 * 2. Never return a session from this method as it would be cached over
+	 *    the whole lifetime of the client
+	 */
+	private async _initialize(): Promise<InitializeResult> {
+		if (this.initializePromise) {
+			return this.initializePromise;
+		}
+
 		try {
-			if (settings.detectSessionInUrl && isBrowser() && !!getParameterByName('access_token', settings.url)) {
-				this.getSessionFromUrl({ storeSession: true });
+			const isPKCEFlow = await this._isPKCEFlow();
+			if ((this.detectSessionInUrl && this._isImplicitGrantFlow()) || isPKCEFlow) {
+				const { data, error } = await this._getSessionFromUrl(isPKCEFlow);
+				if (error) {
+					// failed login attempt via url,
+					// remove old session as in verifyOtp, signUp and signInWith*
+					await this._removeSession();
+
+					return { error };
+				}
+
+				const { session, redirectType } = data;
+
+				await this._saveSession(session);
+
+				setTimeout(() => {
+					if (redirectType === 'recovery') {
+						this._notifyAllSubscribers('PASSWORD_RECOVERY', session);
+					} else {
+						this._notifyAllSubscribers('SIGNED_IN', session);
+					}
+				}, 0);
+
+				return { error: null };
 			}
+
+			// no login attempt via callback url try to recover session from storage
+			await this._recoverAndRefresh();
+			return { error: null };
 		} catch (error) {
-			console.error('Error getting session from URL.');
+			if (isAuthError(error)) {
+				return { error };
+			}
+
+			return {
+				error: new AuthUnknownError('Unexpected error during initialization', error),
+			};
+		} finally {
+			await this._handleVisibilityChange();
 		}
 	}
 
 	/**
 	 * Creates a new user.
-	 * @type UserCredentials
-	 * @param email The user's email address.
-	 * @param password The user's password.
-	 * @param redirectTo A URL or mobile address to send the user to after they are confirmed.
+	 *
+	 * Be aware that if a user account exists in the system you may get back an
+	 * error message that attempts to hide this information from the user.
+	 *
+	 * @returns A logged-in session if the server has "autoconfirm" ON
+	 * @returns A user if the server has "autoconfirm" OFF
 	 */
-	async signUp(
-		{ email, password }: UserCredentials,
-		options: {
-			redirectTo?: string;
-		} = {}
-	): Promise<{
-		user: User | null;
-		session: Session | null;
-		error: Error | null;
-		data: Session | User | null; // Deprecated
-	}> {
+	async signUp(credentials: SignUpWithPasswordCredentials): Promise<AuthResponse> {
 		try {
-			this._removeSession();
+			await this._removeSession();
 
-			const { data, error } = await this.api.signUpWithEmail(email!, password!, {
-				redirectTo: options.redirectTo,
+			let res: AuthResponse;
+			if ('email' in credentials) {
+				const { email, password, options } = credentials;
+				res = await _request(this.fetch, 'POST', `${this.url}/signup`, {
+					headers: this.headers,
+					redirectTo: options?.emailRedirectTo,
+					body: {
+						email,
+						password,
+						data: options?.data ?? {},
+						gotrue_meta_security: { captcha_token: options?.captchaToken },
+					},
+					xform: _sessionResponse,
+				});
+			} else if ('phone' in credentials) {
+				const { phone, password, options } = credentials;
+				res = await _request(this.fetch, 'POST', `${this.url}/signup`, {
+					headers: this.headers,
+					body: {
+						phone,
+						password,
+						data: options?.data ?? {},
+						channel: options?.channel ?? 'sms',
+						gotrue_meta_security: { captcha_token: options?.captchaToken },
+					},
+					xform: _sessionResponse,
+				});
+			} else {
+				throw new AuthInvalidCredentialsError('You must provide either an email or phone number and a password');
+			}
+
+			const { data, error } = res;
+
+			if (error || !data) {
+				return { data: { user: null, session: null }, error: error };
+			}
+
+			const session: Session | null = data.session;
+			const user: User | null = data.user;
+
+			if (data.session) {
+				await this._saveSession(data.session);
+				this._notifyAllSubscribers('SIGNED_IN', session);
+			}
+
+			return { data: { user, session }, error: null };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { user: null, session: null }, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Log in an existing user with an email and password or phone and password.
+	 *
+	 * Be aware that you may get back an error message that will not distinguish
+	 * between the cases where the account does not exist or that the
+	 * email/phone and password combination is wrong or that the account can only
+	 * be accessed via social login.
+	 */
+	async signInWithPassword(credentials: SignInWithPasswordCredentials): Promise<AuthResponse> {
+		try {
+			await this._removeSession();
+
+			let res: AuthResponse;
+			if ('email' in credentials) {
+				const { email, password, options } = credentials;
+				res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=password`, {
+					headers: this.headers,
+					body: {
+						email,
+						password,
+						gotrue_meta_security: { captcha_token: options?.captchaToken },
+					},
+					xform: _sessionResponse,
+				});
+			} else if ('phone' in credentials) {
+				const { phone, password, options } = credentials;
+				res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=password`, {
+					headers: this.headers,
+					body: {
+						phone,
+						password,
+						gotrue_meta_security: { captcha_token: options?.captchaToken },
+					},
+					xform: _sessionResponse,
+				});
+			} else {
+				throw new AuthInvalidCredentialsError('You must provide either an email or phone number and a password');
+			}
+			const { data, error } = res;
+			if (error || !data) return { data: { user: null, session: null }, error };
+			if (data.session) {
+				await this._saveSession(data.session);
+				this._notifyAllSubscribers('SIGNED_IN', data.session);
+			}
+			return { data, error } as any;
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { user: null, session: null }, error };
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * Log in an existing user via a third-party provider.
+	 */
+	async signInWithOAuth(credentials: SignInWithOAuthCredentials): Promise<OAuthResponse> {
+		await this._removeSession();
+
+		return await this._handleProviderSignIn(credentials.provider, {
+			redirectTo: credentials.options?.redirectTo,
+			scopes: credentials.options?.scopes,
+			queryParams: credentials.options?.queryParams,
+			skipBrowserRedirect: credentials.options?.skipBrowserRedirect,
+		});
+	}
+
+	/**
+	 * Log in an existing user via a third-party provider.
+	 */
+	async exchangeCodeForSession(authCode: string): Promise<AuthResponse> {
+		const codeVerifier = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+		const { data, error } = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=pkce`, {
+			headers: this.headers,
+			body: {
+				auth_code: authCode,
+				code_verifier: codeVerifier,
+			},
+			xform: _sessionResponse,
+		});
+		await removeItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+		if (error || !data) return { data: { user: null, session: null }, error };
+		if (data.session) {
+			await this._saveSession(data.session);
+			this._notifyAllSubscribers('SIGNED_IN', data.session);
+		}
+		return { data, error };
+	}
+
+	/**
+	 * Allows signing in with an ID token issued by certain supported providers.
+	 * The ID token is verified for validity and a new session is established.
+	 *
+	 * @experimental
+	 */
+	async signInWithIdToken(credentials: SignInWithIdTokenCredentials): Promise<AuthResponse> {
+		await this._removeSession();
+
+		try {
+			const { options, provider, token, nonce } = credentials;
+
+			const res = await _request(this.fetch, 'POST', `${this.url}/token?grant_type=id_token`, {
+				headers: this.headers,
+				body: {
+					provider,
+					id_token: token,
+					nonce,
+					gotrue_meta_security: { captcha_token: options?.captchaToken },
+				},
+				xform: _sessionResponse,
+			});
+
+			const { data, error } = res;
+			if (error || !data) return { data: { user: null, session: null }, error };
+			if (data.session) {
+				await this._saveSession(data.session);
+				this._notifyAllSubscribers('SIGNED_IN', data.session);
+			}
+			return { data, error };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { user: null, session: null }, error };
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * Log in a user using magiclink or a one-time password (OTP).
+	 *
+	 * If the `{{ .ConfirmationURL }}` variable is specified in the email template, a magiclink will be sent.
+	 * If the `{{ .Token }}` variable is specified in the email template, an OTP will be sent.
+	 * If you're using phone sign-ins, only an OTP will be sent. You won't be able to send a magiclink for phone sign-ins.
+	 *
+	 * Be aware that you may get back an error message that will not distinguish
+	 * between the cases where the account does not exist or, that the account
+	 * can only be accessed via social login.
+	 *
+	 * Do note that you will need to configure a Whatsapp sender on Twilio
+	 * if you are using phone sign in with the 'whatsapp' channel. The whatsapp
+	 * channel is not supported on other providers
+	 * at this time.
+	 */
+	async signInWithOtp(credentials: SignInWithPasswordlessCredentials): Promise<AuthResponse> {
+		try {
+			await this._removeSession();
+
+			if ('email' in credentials) {
+				const { email, options } = credentials;
+				let codeChallenge: string | null = null;
+				if (this.flowType === 'pkce') {
+					const codeVerifier = generatePKCEVerifier();
+					await setItemAsync(this.storage, `${this.storageKey}-code-verifier`, codeVerifier);
+					codeChallenge = await generatePKCEChallenge(codeVerifier);
+				}
+				const { error } = await _request(this.fetch, 'POST', `${this.url}/otp`, {
+					headers: this.headers,
+					body: {
+						email,
+						data: options?.data ?? {},
+						create_user: options?.shouldCreateUser ?? true,
+						gotrue_meta_security: { captcha_token: options?.captchaToken },
+						code_challenge: codeChallenge,
+						code_challenge_method: codeChallenge ? 's256' : null,
+					},
+					redirectTo: options?.emailRedirectTo,
+				});
+				return { data: { user: null, session: null }, error };
+			}
+			if ('phone' in credentials) {
+				const { phone, options } = credentials;
+				const { error } = await _request(this.fetch, 'POST', `${this.url}/otp`, {
+					headers: this.headers,
+					body: {
+						phone,
+						data: options?.data ?? {},
+						create_user: options?.shouldCreateUser ?? true,
+						gotrue_meta_security: { captcha_token: options?.captchaToken },
+						channel: options?.channel ?? 'sms',
+					},
+				});
+				return { data: { user: null, session: null }, error };
+			}
+			throw new AuthInvalidCredentialsError('You must provide either an email or phone number.');
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { user: null, session: null }, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Log in a user given a User supplied OTP received via mobile.
+	 */
+	async verifyOtp(params: VerifyOtpParams): Promise<AuthResponse> {
+		try {
+			await this._removeSession();
+			const { data, error } = await _request(this.fetch, 'POST', `${this.url}/verify`, {
+				headers: this.headers,
+				body: {
+					...params,
+					gotrue_meta_security: { captcha_token: params.options?.captchaToken },
+				},
+				redirectTo: params.options?.redirectTo,
+				xform: _sessionResponse,
 			});
 
 			if (error) {
@@ -97,341 +496,565 @@ export default class GoTrueClient {
 			}
 
 			if (!data) {
-				throw 'An error occurred on sign up.';
+				throw new Error('An error occurred on token verification.');
 			}
 
-			let session: Session | null = null;
-			let user: User | null = null;
+			const session: Session | null = data.session;
+			const user: User = data.user;
 
-			if ((data as Session).access_token) {
-				session = data as Session;
-				user = session.user as User;
-				this._saveSession(session);
-				this._notifyAllSubscribers('SIGNED_IN');
+			if (session?.access_token) {
+				await this._saveSession(session as Session);
+				this._notifyAllSubscribers('SIGNED_IN', session);
 			}
 
-			if ((data as User).id) {
-				user = data as User;
-			}
-
-			return { data, user, session, error: null };
+			return { data: { user, session }, error: null };
 		} catch (error) {
-			return { data: null, user: null, session: null, error };
+			if (isAuthError(error)) {
+				return { data: { user: null, session: null }, error };
+			}
+
+			throw error;
 		}
 	}
 
 	/**
-	 * Log in an existing user, or login via a third-party provider.
-	 * @type UserCredentials
-	 * @param email The user's email address.
-	 * @param password The user's password.
-	 * @param provider One of the providers supported by GoTrue.
-	 * @param redirectTo A URL or mobile address to send the user to after they are confirmed.
-	 * @param scopes A space-separated list of scopes granted to the OAuth application.
-	 */
-	async signIn(
-		{ email, password, provider }: UserCredentials,
-		options: {
-			redirectTo?: string;
-			scopes?: string;
-		} = {}
-	): Promise<{
-		session: Session | null;
-		user: User | null;
-		provider?: Provider;
-		url?: string | null;
-		error: Error | null;
-		data: Session | null; // Deprecated
-	}> {
-		try {
-			this._removeSession();
-
-			if (email && !password) {
-				const { error } = await this.api.sendMagicLinkEmail(email, {
-					redirectTo: options.redirectTo,
-				});
-				return { data: null, user: null, session: null, error };
-			}
-			if (email && password) {
-				return this._handleEmailSignIn(email, password, {
-					redirectTo: options.redirectTo,
-				});
-			}
-			if (provider) {
-				return this._handleProviderSignIn(provider, {
-					redirectTo: options.redirectTo,
-					scopes: options.scopes,
-				});
-			}
-			throw new Error(`You must provide either an email or a third-party provider.`);
-		} catch (error) {
-			return { data: null, user: null, session: null, error };
-		}
-	}
-
-	/**
-	 * Inside a browser context, `user()` will return the user data, if there is a logged in user.
+	 * Attempts a single-sign on using an enterprise Identity Provider. A
+	 * successful SSO attempt will redirect the current page to the identity
+	 * provider authorization page. The redirect URL is implementation and SSO
+	 * protocol specific.
 	 *
-	 * For server-side management, you can get a user through `auth.api.getUserByCookie()`
+	 * You can use it by providing a SSO domain. Typically you can extract this
+	 * domain by asking users for their email address. If this domain is
+	 * registered on the Auth instance the redirect will use that organization's
+	 * currently active SSO Identity Provider for the login.
+	 *
+	 * If you have built an organization-specific login page, you can use the
+	 * organization's SSO Identity Provider UUID directly instead.
 	 */
-	user(): User | null {
-		return this.currentUser;
-	}
-
-	/**
-	 * Returns the session data, if there is an active session.
-	 */
-	session(): Session | null {
-		return this.currentSession;
-	}
-
-	/**
-	 * Force refreshes the session including the user data in case it was updated in a different session.
-	 */
-	async refreshSession(): Promise<{
-		data: Session | null;
-		user: User | null;
-		error: Error | null;
-	}> {
+	async signInWithSSO(params: SignInWithSSO): Promise<SSOResponse> {
 		try {
-			if (!this.currentSession?.access_token) throw new Error('Not logged in.');
+			await this._removeSession();
 
-			// currentSession and currentUser will be updated to latest on _callRefreshToken
-			const { error } = await this._callRefreshToken();
-			if (error) throw error;
-
-			return { data: this.currentSession, user: this.currentUser, error: null };
+			return await _request(this.fetch, 'POST', `${this.url}/sso`, {
+				body: {
+					...('providerId' in params ? { provider_id: params.providerId } : null),
+					...('domain' in params ? { domain: params.domain } : null),
+					redirect_to: params.options?.redirectTo ?? undefined,
+					...(params?.options?.captchaToken ? { gotrue_meta_security: { captcha_token: params.options.captchaToken } } : null),
+					skip_http_redirect: true, // fetch does not handle redirects
+				},
+				headers: this.headers,
+				xform: _ssoResponse,
+			});
 		} catch (error) {
-			return { data: null, user: null, error };
+			if (isAuthError(error)) {
+				return { data: null, error };
+			}
+			throw error;
 		}
 	}
 
 	/**
-	 * Updates user data, if there is a logged in user.
+	 * Returns the session, refreshing it if necessary.
+	 * The session returned can be null if the session is not detected which can happen in the event a user is not signed-in or has logged out.
 	 */
-	async update(attributes: UserAttributes): Promise<{ data: User | null; user: User | null; error: Error | null }> {
-		try {
-			if (!this.currentSession?.access_token) throw new Error('Not logged in.');
-
-			const { user, error } = await this.api.updateUser(this.currentSession.access_token, attributes);
-			if (error) throw error;
-			if (!user) throw Error('Invalid user data.');
-
-			const session = { ...this.currentSession, user };
-			this._saveSession(session);
-			this._notifyAllSubscribers('USER_UPDATED');
-
-			return { data: user, user, error: null };
-		} catch (error) {
-			return { data: null, user: null, error };
-		}
-	}
-
-	/**
-	 * Sets the session data from refresh_token and returns current Session and Error
-	 * @param refresh_token a JWT token
-	 */
-	async setSession(refresh_token: string): Promise<{ session: Session | null; error: Error | null }> {
-		try {
-			if (!refresh_token) {
-				throw new Error('No current session.');
-			}
-			const { data, error } = await this.api.refreshAccessToken(refresh_token);
-			if (error) {
-				return { session: null, error: error };
-			}
-			if (!data) {
-				return {
-					session: null,
-					error: { name: 'Invalid refresh_token', message: 'JWT token provided is Invalid' },
+	async getSession(): Promise<
+		| {
+				data: {
+					session: Session;
 				};
+				error: null;
+		  }
+		| {
+				data: {
+					session: null;
+				};
+				error: AuthError;
+		  }
+		| {
+				data: {
+					session: null;
+				};
+				error: null;
+		  }
+	> {
+		// make sure we've read the session from the url if there is one
+		// save to just await, as long we make sure _initialize() never throws
+		await this.initializePromise;
+
+		let currentSession: Session | null = null;
+
+		if (this.persistSession) {
+			const maybeSession = await getItemAsync(this.storage, this.storageKey);
+
+			if (maybeSession !== null) {
+				if (this._isValidSession(maybeSession)) {
+					currentSession = maybeSession;
+				} else {
+					await this._removeSession();
+				}
+			}
+		} else {
+			currentSession = this.inMemorySession;
+		}
+
+		if (!currentSession) {
+			return { data: { session: null }, error: null };
+		}
+
+		const hasExpired = currentSession.expires_at ? currentSession.expires_at <= Date.now() / 1000 : false;
+		if (!hasExpired) {
+			return { data: { session: currentSession }, error: null };
+		}
+
+		const { session, error } = await this._callRefreshToken(currentSession.refresh_token);
+		if (error) {
+			return { data: { session: null }, error };
+		}
+
+		return { data: { session }, error: null };
+	}
+
+	/**
+	 * Gets the current user details if there is an existing session.
+	 * @param jwt Takes in an optional access token jwt. If no jwt is provided, getUser() will attempt to get the jwt from the current session.
+	 */
+	async getUser(jwt?: string): Promise<UserResponse> {
+		try {
+			if (!jwt) {
+				const { data, error } = await this.getSession();
+				if (error) {
+					throw error;
+				}
+
+				// Default to Authorization header if there is no existing session
+				jwt = data.session?.access_token ?? undefined;
 			}
 
-			this._saveSession(data);
-			this._notifyAllSubscribers('SIGNED_IN');
-			return { session: data, error: null };
+			return await _request(this.fetch, 'GET', `${this.url}/user`, {
+				headers: this.headers,
+				jwt: jwt,
+				xform: _userResponse,
+			});
 		} catch (error) {
-			return { error, session: null };
+			if (isAuthError(error)) {
+				return { data: { user: null }, error };
+			}
+
+			throw error;
 		}
 	}
 
 	/**
-	 * Overrides the JWT on the current client. The JWT will then be sent in all subsequent network requests.
-	 * @param access_token a jwt access token
+	 * Updates user data for a logged in user.
 	 */
-	setAuth(access_token: string): Session {
-		this.currentSession = {
-			...this.currentSession,
-			access_token,
-			token_type: 'bearer',
-			user: null,
-		};
+	async updateUser(
+		attributes: UserAttributes,
+		options: {
+			emailRedirectTo?: string | undefined;
+		} = {}
+	): Promise<UserResponse> {
+		try {
+			const { data: sessionData, error: sessionError } = await this.getSession();
+			if (sessionError) {
+				throw sessionError;
+			}
+			if (!sessionData.session) {
+				throw new AuthSessionMissingError();
+			}
+			const session: Session = sessionData.session;
+			const { data, error: userError } = await _request(this.fetch, 'PUT', `${this.url}/user`, {
+				headers: this.headers,
+				redirectTo: options?.emailRedirectTo,
+				body: attributes,
+				jwt: session.access_token,
+				xform: _userResponse,
+			});
+			if (userError) throw userError;
+			session.user = data.user as User;
+			await this._saveSession(session);
+			this._notifyAllSubscribers('USER_UPDATED', session);
 
-		return this.currentSession;
+			return { data: { user: session.user }, error: null };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { user: null }, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Decodes a JWT (without performing any validation).
+	 */
+	private _decodeJWT(jwt: string): {
+		exp?: number;
+		aal?: AuthenticatorAssuranceLevels | null;
+		amr?: AMREntry[] | null;
+	} {
+		return decodeJWTPayload(jwt);
+	}
+
+	/**
+	 * Sets the session data from the current session. If the current session is expired, setSession will take care of refreshing it to obtain a new session.
+	 * If the refresh token or access token in the current session is invalid, an error will be thrown.
+	 * @param currentSession The current session that minimally contains an access token and refresh token.
+	 */
+	async setSession(currentSession: { access_token: string; refresh_token: string }): Promise<AuthResponse> {
+		try {
+			if (!currentSession.access_token || !currentSession.refresh_token) {
+				throw new AuthSessionMissingError();
+			}
+
+			const timeNow = Date.now() / 1000;
+			let expiresAt = timeNow;
+			let hasExpired = true;
+			let session: Session | null = null;
+			const payload = decodeJWTPayload(currentSession.access_token);
+			if (payload.exp) {
+				expiresAt = payload.exp;
+				hasExpired = expiresAt <= timeNow;
+			}
+
+			if (hasExpired) {
+				const { session: refreshedSession, error } = await this._callRefreshToken(currentSession.refresh_token);
+				if (error) {
+					return { data: { user: null, session: null }, error: error };
+				}
+
+				if (!refreshedSession) {
+					return { data: { user: null, session: null }, error: null };
+				}
+				session = refreshedSession;
+			} else {
+				const { data, error } = await this.getUser(currentSession.access_token);
+				if (error) {
+					throw error;
+				}
+				session = {
+					access_token: currentSession.access_token,
+					refresh_token: currentSession.refresh_token,
+					user: data.user,
+					token_type: 'bearer',
+					expires_in: expiresAt - timeNow,
+					expires_at: expiresAt,
+				};
+				await this._saveSession(session);
+				this._notifyAllSubscribers('SIGNED_IN', session);
+			}
+
+			return { data: { user: session.user, session }, error: null };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { session: null, user: null }, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Returns a new session, regardless of expiry status.
+	 * Takes in an optional current session. If not passed in, then refreshSession() will attempt to retrieve it from getSession().
+	 * If the current session's refresh token is invalid, an error will be thrown.
+	 * @param currentSession The current session. If passed in, it must contain a refresh token.
+	 */
+	async refreshSession(currentSession?: { refresh_token: string }): Promise<AuthResponse> {
+		try {
+			if (!currentSession) {
+				const { data, error } = await this.getSession();
+				if (error) {
+					throw error;
+				}
+
+				currentSession = data.session ?? undefined;
+			}
+
+			if (!currentSession?.refresh_token) {
+				throw new AuthSessionMissingError();
+			}
+
+			const { session, error } = await this._callRefreshToken(currentSession.refresh_token);
+			if (error) {
+				return { data: { user: null, session: null }, error: error };
+			}
+
+			if (!session) {
+				return { data: { user: null, session: null }, error: null };
+			}
+
+			return { data: { user: session.user, session }, error: null };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { user: null, session: null }, error };
+			}
+
+			throw error;
+		}
 	}
 
 	/**
 	 * Gets the session data from a URL string
-	 * @param options.storeSession Optionally store the session in the browser
 	 */
-	async getSessionFromUrl(options?: { storeSession?: boolean }): Promise<{ data: Session | null; error: Error | null }> {
+	private async _getSessionFromUrl(isPKCEFlow: boolean): Promise<
+		| {
+				data: { session: Session; redirectType: string | null };
+				error: null;
+		  }
+		| { data: { session: null; redirectType: null }; error: AuthError }
+	> {
 		try {
-			if (!isBrowser()) throw new Error('No browser detected.');
+			if (!isBrowser()) throw new AuthImplicitGrantRedirectError('No browser detected.');
+			if (this.flowType === 'implicit' && !this._isImplicitGrantFlow()) {
+				throw new AuthImplicitGrantRedirectError('Not a valid implicit grant flow url.');
+			} else if (this.flowType == 'pkce' && !isPKCEFlow) {
+				throw new AuthPKCEGrantCodeExchangeError('Not a valid PKCE flow url.');
+			}
+			if (isPKCEFlow) {
+				const authCode = getParameterByName('code');
+				if (!authCode) throw new AuthPKCEGrantCodeExchangeError('No code detected.');
+				const { data, error } = await this.exchangeCodeForSession(authCode);
+				if (error) throw error;
+				if (!data.session) throw new AuthPKCEGrantCodeExchangeError('No session detected.');
+				return { data: { session: data.session, redirectType: null }, error: null };
+			}
 
 			const error_description = getParameterByName('error_description');
-			if (error_description) throw new Error(error_description);
+			if (error_description) {
+				const error_code = getParameterByName('error_code');
+				if (!error_code) throw new AuthImplicitGrantRedirectError('No error_code detected.');
+				const error = getParameterByName('error');
+				if (!error) throw new AuthImplicitGrantRedirectError('No error detected.');
+
+				throw new AuthImplicitGrantRedirectError(error_description, { error, code: error_code });
+			}
 
 			const provider_token = getParameterByName('provider_token');
+			const provider_refresh_token = getParameterByName('provider_refresh_token');
 			const access_token = getParameterByName('access_token');
-			if (!access_token) throw new Error('No access_token detected.');
+			if (!access_token) throw new AuthImplicitGrantRedirectError('No access_token detected.');
 			const expires_in = getParameterByName('expires_in');
-			if (!expires_in) throw new Error('No expires_in detected.');
+			if (!expires_in) throw new AuthImplicitGrantRedirectError('No expires_in detected.');
 			const refresh_token = getParameterByName('refresh_token');
-			if (!refresh_token) throw new Error('No refresh_token detected.');
+			if (!refresh_token) throw new AuthImplicitGrantRedirectError('No refresh_token detected.');
 			const token_type = getParameterByName('token_type');
-			if (!token_type) throw new Error('No token_type detected.');
+			if (!token_type) throw new AuthImplicitGrantRedirectError('No token_type detected.');
 
 			const timeNow = Math.round(Date.now() / 1000);
 			const expires_at = timeNow + parseInt(expires_in);
 
-			const { user, error } = await this.api.getUser(access_token);
+			const { data, error } = await this.getUser(access_token);
 			if (error) throw error;
-
+			const user: User = data.user;
 			const session: Session = {
 				provider_token,
+				provider_refresh_token,
 				access_token,
 				expires_in: parseInt(expires_in),
 				expires_at,
 				refresh_token,
 				token_type,
-				user: user!,
+				user,
 			};
-			if (options?.storeSession) {
-				this._saveSession(session);
-				this._notifyAllSubscribers('SIGNED_IN');
-				if (getParameterByName('type') === 'recovery') {
-					this._notifyAllSubscribers('PASSWORD_RECOVERY');
-				}
-			}
-			// Remove tokens from URL
-			window.location.hash = '';
+			const redirectType = getParameterByName('type');
 
-			return { data: session, error: null };
+			return { data: { session, redirectType }, error: null };
 		} catch (error) {
-			return { data: null, error };
+			if (isAuthError(error)) {
+				return { data: { session: null, redirectType: null }, error };
+			}
+
+			throw error;
 		}
 	}
 
 	/**
-	 * Inside a browser context, `signOut()` will remove extract the logged in user from the browser session
-	 * and log them out - removing all items from localstorage and then trigger a "SIGNED_OUT" event.
-	 *
-	 * For server-side management, you can disable sessions by passing a JWT through to `auth.api.signOut(JWT: string)`
+	 * Checks if the current URL contains parameters given by an implicit oauth grant flow (https://www.rfc-editor.org/rfc/rfc6749.html#section-4.2)
 	 */
-	async signOut(): Promise<{ error: Error | null }> {
-		const accessToken = this.currentSession?.access_token;
-		this._removeSession();
-		this._notifyAllSubscribers('SIGNED_OUT');
-		if (accessToken) {
-			const { error } = await this.api.signOut(accessToken);
-			if (error) return { error };
+	private _isImplicitGrantFlow(): boolean {
+		return isBrowser() && (Boolean(getParameterByName('access_token')) || Boolean(getParameterByName('error_description')));
+	}
+	/**
+	 * Checks if the current URL and backing storage contain parameters given by a PKCE flow
+	 */
+	private async _isPKCEFlow(): Promise<boolean> {
+		const currentStorageContent = await getItemAsync(this.storage, `${this.storageKey}-code-verifier`);
+		return isBrowser() && Boolean(getParameterByName('code')) && Boolean(currentStorageContent);
+	}
+
+	/**
+	 * Inside a browser context, `signOut()` will remove the logged in user from the browser session
+	 * and log them out - removing all items from localstorage and then trigger a `"SIGNED_OUT"` event.
+	 *
+	 * For server-side management, you can revoke all refresh tokens for a user by passing a user's JWT through to `auth.api.signOut(JWT: string)`.
+	 * There is no way to revoke a user's access token jwt until it expires. It is recommended to set a shorter expiry on the jwt for this reason.
+	 */
+	async signOut(): Promise<{ error: AuthError | null }> {
+		const { data, error: sessionError } = await this.getSession();
+		if (sessionError) {
+			return { error: sessionError };
 		}
+		const accessToken = data.session?.access_token;
+		if (accessToken) {
+			const { error } = await this.admin.signOut(accessToken);
+			if (error) {
+				// ignore 404s since user might not exist anymore
+				// ignore 401s since an invalid or expired JWT should sign out the current session
+				if (!(isAuthApiError(error) && (error.status === 404 || error.status === 401))) {
+					return { error };
+				}
+			}
+		}
+		await this._removeSession();
+		this._notifyAllSubscribers('SIGNED_OUT', null);
 		return { error: null };
 	}
 
 	/**
 	 * Receive a notification every time an auth event happens.
-	 * @returns {Subscription} A subscription object which can be used to unsubscribe itself.
+	 * @param callback A callback function to be invoked when an auth event happens.
 	 */
-	onAuthStateChange(callback: (event: AuthChangeEvent, session: Session | null) => void): { data: Subscription | null; error: Error | null } {
-		try {
-			const id: string = uuid();
-			const self = this;
-			const subscription: Subscription = {
-				id,
-				callback,
-				unsubscribe: () => {
-					self.stateChangeEmitters.delete(id);
-				},
-			};
-			this.stateChangeEmitters.set(id, subscription);
-			return { data: subscription, error: null };
-		} catch (error) {
-			return { data: null, error };
-		}
+	onAuthStateChange(callback: (event: AuthChangeEvent, session: Session | null) => void): {
+		data: { subscription: Subscription };
+	} {
+		const id: string = uuid();
+		const subscription: Subscription = {
+			id,
+			callback,
+			unsubscribe: () => {
+				this.stateChangeEmitters.delete(id);
+			},
+		};
+
+		this.stateChangeEmitters.set(id, subscription);
+
+		this.emitInitialSession(id);
+
+		return { data: { subscription } };
 	}
 
-	private async _handleEmailSignIn(
-		email: string,
-		password: string,
-		options: {
-			redirectTo?: string;
-		} = {}
-	) {
+	private async emitInitialSession(id: string): Promise<void> {
 		try {
-			const { data, error } = await this.api.signInWithEmail(email, password, {
-				redirectTo: options.redirectTo,
-			});
-			if (error || !data) return { data: null, user: null, session: null, error };
+			const {
+				data: { session },
+				error,
+			} = await this.getSession();
+			if (error) throw error;
 
-			if (data?.user?.confirmed_at) {
-				this._saveSession(data);
-				this._notifyAllSubscribers('SIGNED_IN');
-			}
-
-			return { data, user: data.user, session: data, error: null };
-		} catch (error) {
-			return { data: null, user: null, session: null, error };
-		}
-	}
-
-	private _handleProviderSignIn(
-		provider: Provider,
-		options: {
-			redirectTo?: string;
-			scopes?: string;
-		} = {}
-	) {
-		const url: string = this.api.getUrlForProvider(provider, {
-			redirectTo: options.redirectTo,
-			scopes: options.scopes,
-		});
-
-		try {
-			// try to open on the browser
-			if (isBrowser()) {
-				window.location.href = url;
-			}
-			return { provider, url, data: null, session: null, user: null, error: null };
-		} catch (error) {
-			// fallback to returning the URL
-			if (!!url) return { provider, url, data: null, session: null, user: null, error: null };
-			return { data: null, user: null, session: null, error };
+			this.stateChangeEmitters.get(id)?.callback('INITIAL_SESSION', session);
+		} catch (err) {
+			this.stateChangeEmitters.get(id)?.callback('INITIAL_SESSION', null);
+			console.error(err);
 		}
 	}
 
 	/**
-	 * Attempts to get the session from LocalStorage
-	 * Note: this should never be async (even for React Native), as we need it to return immediately in the constructor.
+	 * Sends a password reset request to an email address.
+	 * @param email The email address of the user.
+	 * @param options.redirectTo The URL to send the user to after they click the password reset link.
+	 * @param options.captchaToken Verification token received when the user completes the captcha on the site.
 	 */
-	private _recoverSession() {
-		try {
-			const json = isBrowser() && this.localStorage?.getItem(STORAGE_KEY);
-			if (!json || typeof json !== 'string') {
-				return null;
-			}
-
-			const data = JSON.parse(json);
-			const { currentSession, expiresAt } = data;
-			const timeNow = Math.round(Date.now() / 1000);
-
-			if (expiresAt >= timeNow && currentSession?.user) {
-				this._saveSession(currentSession);
-				this._notifyAllSubscribers('SIGNED_IN');
-			}
-		} catch (error) {
-			console.log('error', error);
+	async resetPasswordForEmail(
+		email: string,
+		options: {
+			redirectTo?: string;
+			captchaToken?: string;
+		} = {}
+	): Promise<
+		| {
+				// eslint-disable-next-line @typescript-eslint/ban-types
+				data: {};
+				error: null;
+		  }
+		| { data: null; error: AuthError }
+	> {
+		let codeChallenge = null;
+		if (this.flowType === 'pkce') {
+			const codeVerifier = generatePKCEVerifier();
+			await setItemAsync(this.storage, `${this.storageKey}-code-verifier`, codeVerifier);
+			codeChallenge = await generatePKCEChallenge(codeVerifier);
 		}
+		try {
+			return await _request(this.fetch, 'POST', `${this.url}/recover`, {
+				body: {
+					email,
+					code_challenge: codeChallenge,
+					code_challenge_method: codeChallenge ? 's256' : null,
+					gotrue_meta_security: { captcha_token: options.captchaToken },
+				},
+				headers: this.headers,
+				redirectTo: options.redirectTo,
+			});
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: null, error };
+			}
+
+			throw error;
+		}
+	}
+
+	/**
+	 * Generates a new JWT.
+	 * @param refreshToken A valid refresh token that was returned on login.
+	 */
+	private async _refreshAccessToken(refreshToken: string): Promise<AuthResponse> {
+		try {
+			const startedAt = Date.now();
+
+			// will attempt to refresh the token with exponential backoff
+			return await retryable(
+				async (attempt) => {
+					await sleep(attempt * 200); // 0, 200, 400, 800, ...
+
+					return await _request(this.fetch, 'POST', `${this.url}/token?grant_type=refresh_token`, {
+						body: { refresh_token: refreshToken },
+						headers: this.headers,
+						xform: _sessionResponse,
+					});
+				},
+				(attempt, _, result) =>
+					result &&
+					result.error &&
+					result.error instanceof AuthRetryableFetchError &&
+					// retryable only if the request can be sent before the backoff overflows the tick duration
+					Date.now() + (attempt + 1) * 200 - startedAt < AUTO_REFRESH_TICK_DURATION
+			);
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: { session: null, user: null }, error };
+			}
+			throw error;
+		}
+	}
+
+	private _isValidSession(maybeSession: unknown): maybeSession is Session {
+		const isValidSession = typeof maybeSession === 'object' && maybeSession !== null && 'access_token' in maybeSession && 'refresh_token' in maybeSession && 'expires_at' in maybeSession;
+
+		return isValidSession;
+	}
+
+	private async _handleProviderSignIn(
+		provider: Provider,
+		options: {
+			redirectTo?: string;
+			scopes?: string;
+			queryParams?: { [key: string]: string };
+			skipBrowserRedirect?: boolean;
+		}
+	) {
+		const url: string = await this._getUrlForProvider(provider, {
+			redirectTo: options.redirectTo,
+			scopes: options.scopes,
+			queryParams: options.queryParams,
+		});
+		// try to open on the browser
+		// if (isBrowser() && !options.skipBrowserRedirect) {
+		//   window.location.assign(url)
+		// }
+
+		return { data: { provider, url }, error: null };
 	}
 
 	/**
@@ -440,101 +1063,499 @@ export default class GoTrueClient {
 	 */
 	private async _recoverAndRefresh() {
 		try {
-			const json = isBrowser() && (await this.localStorage.getItem(STORAGE_KEY));
-			if (!json) {
-				return null;
+			const currentSession = await getItemAsync(this.storage, this.storageKey);
+			if (!this._isValidSession(currentSession)) {
+				if (currentSession !== null) {
+					await this._removeSession();
+				}
+
+				return;
 			}
 
-			const data = JSON.parse(json);
-			const { currentSession, expiresAt } = data;
 			const timeNow = Math.round(Date.now() / 1000);
 
-			if (expiresAt < timeNow) {
+			if ((currentSession.expires_at ?? Infinity) < timeNow + EXPIRY_MARGIN) {
 				if (this.autoRefreshToken && currentSession.refresh_token) {
 					const { error } = await this._callRefreshToken(currentSession.refresh_token);
+
 					if (error) {
-						console.error(error.message);
+						console.log(error.message);
 						await this._removeSession();
 					}
 				} else {
-					this._removeSession();
+					await this._removeSession();
 				}
-			} else if (!currentSession || !currentSession.user) {
-				console.error('Current session is missing data.');
-				this._removeSession();
 			} else {
-				// should be handled on _recoverSession method already
-				// But we still need the code here to accommodate for AsyncStorage e.g. in React native
-				this._saveSession(currentSession);
-				this._notifyAllSubscribers('SIGNED_IN');
+				if (this.persistSession) {
+					await this._saveSession(currentSession);
+				}
+				this._notifyAllSubscribers('SIGNED_IN', currentSession);
 			}
 		} catch (err) {
 			console.error(err);
-			return null;
+			return;
 		}
 	}
 
-	private async _callRefreshToken(refresh_token = this.currentSession?.refresh_token) {
+	private async _callRefreshToken(refreshToken: string): Promise<CallRefreshTokenResult> {
+		// refreshing is already in progress
+		if (this.refreshingDeferred) {
+			return this.refreshingDeferred.promise;
+		}
+
 		try {
-			if (!refresh_token) {
-				throw new Error('No current session.');
+			this.refreshingDeferred = new Deferred<CallRefreshTokenResult>();
+
+			if (!refreshToken) {
+				throw new AuthSessionMissingError();
 			}
-			const { data, error } = await this.api.refreshAccessToken(refresh_token);
+			const { data, error } = await this._refreshAccessToken(refreshToken);
 			if (error) throw error;
-			if (!data) throw Error('Invalid session data.');
+			if (!data.session) throw new AuthSessionMissingError();
 
-			this._saveSession(data);
-			this._notifyAllSubscribers('SIGNED_IN');
+			await this._saveSession(data.session);
+			this._notifyAllSubscribers('TOKEN_REFRESHED', data.session);
 
-			return { data, error: null };
+			const result = { session: data.session, error: null };
+
+			this.refreshingDeferred.resolve(result);
+
+			return result;
 		} catch (error) {
-			return { data: null, error };
+			if (isAuthError(error)) {
+				const result = { session: null, error };
+
+				this.refreshingDeferred?.resolve(result);
+
+				return result;
+			}
+
+			this.refreshingDeferred?.reject(error);
+			throw error;
+		} finally {
+			this.refreshingDeferred = null;
 		}
 	}
 
-	private _notifyAllSubscribers(event: AuthChangeEvent) {
-		this.stateChangeEmitters.forEach((x) => x.callback(event, this.currentSession));
+	private _notifyAllSubscribers(event: AuthChangeEvent, session: Session | null, _broadcast = true) {
+		this.stateChangeEmitters.forEach((x) => x.callback(event, session));
 	}
 
 	/**
 	 * set currentSession and currentUser
 	 * process to _startAutoRefreshToken if possible
 	 */
-	private _saveSession(session: Session) {
-		this.currentSession = session;
-		this.currentUser = session.user;
+	private async _saveSession(session: Session) {
+		if (!this.persistSession) {
+			this.inMemorySession = session;
+		}
 
-		const expiresAt = session.expires_at;
-		const timeNow = Math.round(Date.now() / 1000);
-		if (expiresAt) this._startAutoRefreshToken((expiresAt - timeNow - 60) * 1000);
-
-		// Do we need any extra check before persist session
-		// access_token or user ?
 		if (this.persistSession && session.expires_at) {
-			this._persistSession(this.currentSession);
+			await this._persistSession(session);
 		}
 	}
 
 	private _persistSession(currentSession: Session) {
-		const data = { currentSession, expiresAt: currentSession.expires_at };
-		isBrowser() && this.localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+		return setItemAsync(this.storage, this.storageKey, currentSession);
 	}
 
 	private async _removeSession() {
-		this.currentSession = null;
-		this.currentUser = null;
-		if (this.refreshTokenTimer) clearTimeout(this.refreshTokenTimer);
-		isBrowser() && (await this.localStorage.removeItem(STORAGE_KEY));
+		if (this.persistSession) {
+			await removeItemAsync(this.storage, this.storageKey);
+		} else {
+			this.inMemorySession = null;
+		}
 	}
 
 	/**
-	 * Clear and re-create refresh token timer
-	 * @param value time intervals in milliseconds
+	 * Removes any registered visibilitychange callback.
+	 *
+	 * {@see #startAutoRefresh}
+	 * {@see #stopAutoRefresh}
 	 */
-	private _startAutoRefreshToken(value: number) {
-		if (this.refreshTokenTimer) clearTimeout(this.refreshTokenTimer);
-		if (!value || !this.autoRefreshToken) return;
+	// private _removeVisibilityChangedCallback() {
+	// 	return;
 
-		this.refreshTokenTimer = setTimeout(() => this._callRefreshToken(), value);
+	// 	const callback = this.visibilityChangedCallback;
+	// 	this.visibilityChangedCallback = null;
+
+	// 	try {
+	// 		if (callback && isBrowser() && window?.removeEventListener) {
+	// 			window.removeEventListener('visibilitychange', callback);
+	// 		}
+	// 	} catch (e) {
+	// 		console.error('removing visibilitychange callback failed', e);
+	// 	}
+	// }
+
+	/**
+	 * This is the private implementation of {@link #startAutoRefresh}. Use this
+	 * within the library.
+	 */
+	private async _startAutoRefresh() {
+		await this._stopAutoRefresh();
+
+		const ticker = setInterval(() => this._autoRefreshTokenTick(), AUTO_REFRESH_TICK_DURATION);
+		this.autoRefreshTicker = ticker;
+
+		if (ticker && typeof ticker === 'object' && typeof ticker.unref === 'function') {
+			// ticker is a NodeJS Timeout object that has an `unref` method
+			// https://nodejs.org/api/timers.html#timeoutunref
+			// When auto refresh is used in NodeJS (like for testing) the
+			// `setInterval` is preventing the process from being marked as
+			// finished and tests run endlessly. This can be prevented by calling
+			// `unref()` on the returned object.
+			ticker.unref();
+		}
+
+		// run the tick immediately
+		await this._autoRefreshTokenTick();
+	}
+
+	/**
+	 * This is the private implementation of {@link #stopAutoRefresh}. Use this
+	 * within the library.
+	 */
+	private async _stopAutoRefresh() {
+		const ticker = this.autoRefreshTicker;
+		this.autoRefreshTicker = null;
+
+		if (ticker) {
+			clearInterval(ticker);
+		}
+	}
+
+	/**
+	 * Starts an auto-refresh process in the background. The session is checked
+	 * every few seconds. Close to the time of expiration a process is started to
+	 * refresh the session. If refreshing fails it will be retried for as long as
+	 * necessary.
+	 *
+	 * If you set the {@link GoTrueClientOptions#autoRefreshToken} you don't need
+	 * to call this function, it will be called for you.
+	 *
+	 * On browsers the refresh process works only when the tab/window is in the
+	 * foreground to conserve resources as well as prevent race conditions and
+	 * flooding auth with requests. If you call this method any managed
+	 * visibility change callback will be removed and you must manage visibility
+	 * changes on your own.
+	 *
+	 * On non-browser platforms the refresh process works *continuously* in the
+	 * background, which may not be desireable. You should hook into your
+	 * platform's foreground indication mechanism and call these methods
+	 * appropriately to conserve resources.
+	 *
+	 * {@see #stopAutoRefresh}
+	 */
+	async startAutoRefresh() {
+		// this._removeVisibilityChangedCallback();
+		await this._startAutoRefresh();
+	}
+
+	/**
+	 * Stops an active auto refresh process running in the background (if any).
+	 *
+	 * If you call this method any managed visibility change callback will be
+	 * removed and you must manage visibility changes on your own.
+	 *
+	 * See {@link #startAutoRefresh} for more details.
+	 */
+	async stopAutoRefresh() {
+		// this._removeVisibilityChangedCallback();
+		await this._stopAutoRefresh();
+	}
+
+	/**
+	 * Runs the auto refresh token tick.
+	 */
+	private async _autoRefreshTokenTick() {
+		const now = Date.now();
+
+		try {
+			const {
+				data: { session },
+			} = await this.getSession();
+
+			if (!session || !session.refresh_token || !session.expires_at) {
+				return;
+			}
+
+			// session will expire in this many ticks (or has already expired if <= 0)
+			const expiresInTicks = Math.floor((session.expires_at * 1000 - now) / AUTO_REFRESH_TICK_DURATION);
+
+			if (expiresInTicks < AUTO_REFRESH_TICK_THRESHOLD) {
+				await this._callRefreshToken(session.refresh_token);
+			}
+		} catch (e: any) {
+			console.error('Auto refresh tick failed with error. This is likely a transient error.', e);
+		}
+	}
+
+	/**
+	 * Registers callbacks on the browser / platform, which in-turn run
+	 * algorithms when the browser window/tab are in foreground. On non-browser
+	 * platforms it assumes always foreground.
+	 */
+	private async _handleVisibilityChange() {
+		if (this.autoRefreshToken) {
+			// in non-browser environments the refresh token ticker runs always
+			this.startAutoRefresh();
+		}
+
+		return false;
+	}
+
+	/**
+	 * Callback registered with `window.addEventListener('visibilitychange')`.
+	 */
+	private async _onVisibilityChanged(isInitial: boolean) {
+		if (document.visibilityState === 'visible') {
+			if (!isInitial) {
+				// initial visibility change setup is handled in another flow under #initialize()
+				await this.initializePromise;
+				await this._recoverAndRefresh();
+			}
+
+			if (this.autoRefreshToken) {
+				// in browser environments the refresh token ticker runs only on focused tabs
+				// which prevents race conditions
+				this._startAutoRefresh();
+			}
+		} else if (document.visibilityState === 'hidden') {
+			if (this.autoRefreshToken) {
+				this._stopAutoRefresh();
+			}
+		}
+	}
+
+	/**
+	 * Generates the relevant login URL for a third-party provider.
+	 * @param options.redirectTo A URL or mobile address to send the user to after they are confirmed.
+	 * @param options.scopes A space-separated list of scopes granted to the OAuth application.
+	 * @param options.queryParams An object of key-value pairs containing query parameters granted to the OAuth application.
+	 */
+	private async _getUrlForProvider(
+		provider: Provider,
+		options: {
+			redirectTo?: string;
+			scopes?: string;
+			queryParams?: { [key: string]: string };
+		}
+	) {
+		const urlParams: string[] = [`provider=${encodeURIComponent(provider)}`];
+		if (options?.redirectTo) {
+			urlParams.push(`redirect_to=${encodeURIComponent(options.redirectTo)}`);
+		}
+		if (options?.scopes) {
+			urlParams.push(`scopes=${encodeURIComponent(options.scopes)}`);
+		}
+		if (this.flowType === 'pkce') {
+			const codeVerifier = generatePKCEVerifier();
+			await setItemAsync(this.storage, `${this.storageKey}-code-verifier`, codeVerifier);
+			const codeChallenge = await generatePKCEChallenge(codeVerifier);
+			const flowParams = new URLSearchParams({
+				code_challenge: `${encodeURIComponent(codeChallenge)}`,
+				code_challenge_method: `${encodeURIComponent('s256')}`,
+			});
+			urlParams.push(flowParams.toString());
+		}
+		if (options?.queryParams) {
+			const query = new URLSearchParams(options.queryParams);
+			urlParams.push(query.toString());
+		}
+
+		return `${this.url}/authorize?${urlParams.join('&')}`;
+	}
+
+	private async _unenroll(params: MFAUnenrollParams): Promise<AuthMFAUnenrollResponse> {
+		try {
+			const { data: sessionData, error: sessionError } = await this.getSession();
+			if (sessionError) {
+				return { data: null, error: sessionError };
+			}
+
+			return await _request(this.fetch, 'DELETE', `${this.url}/factors/${params.factorId}`, {
+				headers: this.headers,
+				jwt: sessionData?.session?.access_token,
+			});
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: null, error };
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * {@see GoTrueMFAApi#enroll}
+	 */
+	private async _enroll(params: MFAEnrollParams): Promise<AuthMFAEnrollResponse> {
+		try {
+			const { data: sessionData, error: sessionError } = await this.getSession();
+			if (sessionError) {
+				return { data: null, error: sessionError };
+			}
+
+			const { data, error } = await _request(this.fetch, 'POST', `${this.url}/factors`, {
+				body: {
+					friendly_name: params.friendlyName,
+					factor_type: params.factorType,
+					issuer: params.issuer,
+				},
+				headers: this.headers,
+				jwt: sessionData?.session?.access_token,
+			});
+
+			if (error) {
+				return { data: null, error };
+			}
+
+			if (data?.totp?.qr_code) {
+				data.totp.qr_code = `data:image/svg+xml;utf-8,${data.totp.qr_code}`;
+			}
+
+			return { data, error: null };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: null, error };
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * {@see GoTrueMFAApi#verify}
+	 */
+	private async _verify(params: MFAVerifyParams): Promise<AuthMFAVerifyResponse> {
+		try {
+			const { data: sessionData, error: sessionError } = await this.getSession();
+			if (sessionError) {
+				return { data: null, error: sessionError };
+			}
+
+			const { data, error } = await _request(this.fetch, 'POST', `${this.url}/factors/${params.factorId}/verify`, {
+				body: { code: params.code, challenge_id: params.challengeId },
+				headers: this.headers,
+				jwt: sessionData?.session?.access_token,
+			});
+			if (error) {
+				return { data: null, error };
+			}
+
+			await this._saveSession({
+				expires_at: Math.round(Date.now() / 1000) + data.expires_in,
+				...data,
+			});
+			this._notifyAllSubscribers('MFA_CHALLENGE_VERIFIED', data);
+
+			return { data, error };
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: null, error };
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * {@see GoTrueMFAApi#challenge}
+	 */
+	private async _challenge(params: MFAChallengeParams): Promise<AuthMFAChallengeResponse> {
+		try {
+			const { data: sessionData, error: sessionError } = await this.getSession();
+			if (sessionError) {
+				return { data: null, error: sessionError };
+			}
+
+			return await _request(this.fetch, 'POST', `${this.url}/factors/${params.factorId}/challenge`, {
+				headers: this.headers,
+				jwt: sessionData?.session?.access_token,
+			});
+		} catch (error) {
+			if (isAuthError(error)) {
+				return { data: null, error };
+			}
+			throw error;
+		}
+	}
+
+	/**
+	 * {@see GoTrueMFAApi#challengeAndVerify}
+	 */
+	private async _challengeAndVerify(params: MFAChallengeAndVerifyParams): Promise<AuthMFAVerifyResponse> {
+		const { data: challengeData, error: challengeError } = await this._challenge({
+			factorId: params.factorId,
+		});
+		if (challengeError) {
+			return { data: null, error: challengeError };
+		}
+		return await this._verify({
+			factorId: params.factorId,
+			challengeId: challengeData.id,
+			code: params.code,
+		});
+	}
+
+	/**
+	 * {@see GoTrueMFAApi#listFactors}
+	 */
+	private async _listFactors(): Promise<AuthMFAListFactorsResponse> {
+		const {
+			data: { user },
+			error: userError,
+		} = await this.getUser();
+		if (userError) {
+			return { data: null, error: userError };
+		}
+
+		const factors = user?.factors || [];
+		const totp = factors.filter((factor) => factor.factor_type === 'totp' && factor.status === 'verified');
+
+		return {
+			data: {
+				all: factors,
+				totp,
+			},
+			error: null,
+		};
+	}
+
+	/**
+	 * {@see GoTrueMFAApi#getAuthenticatorAssuranceLevel}
+	 */
+	private async _getAuthenticatorAssuranceLevel(): Promise<AuthMFAGetAuthenticatorAssuranceLevelResponse> {
+		const {
+			data: { session },
+			error: sessionError,
+		} = await this.getSession();
+		if (sessionError) {
+			return { data: null, error: sessionError };
+		}
+		if (!session) {
+			return {
+				data: { currentLevel: null, nextLevel: null, currentAuthenticationMethods: [] },
+				error: null,
+			};
+		}
+
+		const payload = this._decodeJWT(session.access_token);
+
+		let currentLevel: AuthenticatorAssuranceLevels | null = null;
+
+		if (payload.aal) {
+			currentLevel = payload.aal;
+		}
+
+		let nextLevel: AuthenticatorAssuranceLevels | null = currentLevel;
+
+		const verifiedFactors = session.user.factors?.filter((factor: Factor) => factor.status === 'verified') ?? [];
+
+		if (verifiedFactors.length > 0) {
+			nextLevel = 'aal2';
+		}
+
+		const currentAuthenticationMethods = payload.amr || [];
+
+		return { data: { currentLevel, nextLevel, currentAuthenticationMethods }, error: null };
 	}
 }

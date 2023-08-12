@@ -1,3 +1,3 @@
 // constants.ts
-
-export const DEFAULT_HEADERS = {}
+import { version } from './version';
+export const DEFAULT_HEADERS = { 'X-Client-Info': `supabase-js/${version}` };

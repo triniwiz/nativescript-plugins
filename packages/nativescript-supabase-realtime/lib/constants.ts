@@ -1,4 +1,8 @@
-export const VSN: string = '1.0.0';
+import { version } from './version';
+
+export const DEFAULT_HEADERS = { 'X-Client-Info': `realtime-js/${version}` };
+
+export const VSN = '1.0.0';
 
 export const DEFAULT_TIMEOUT = 10000;
 
@@ -25,8 +29,16 @@ export enum CHANNEL_EVENTS {
 	join = 'phx_join',
 	reply = 'phx_reply',
 	leave = 'phx_leave',
+	access_token = 'access_token',
 }
 
 export enum TRANSPORTS {
 	websocket = 'websocket',
+}
+
+export enum CONNECTION_STATE {
+	Connecting = 'connecting',
+	Open = 'open',
+	Closing = 'closing',
+	Closed = 'closed',
 }

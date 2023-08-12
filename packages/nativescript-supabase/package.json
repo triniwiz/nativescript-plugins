@@ -36,6 +36,8 @@
 		"@triniwiz/nativescript-supabase-gotrue": "*",
 		"@triniwiz/nativescript-supabase-postgrest": "*",
 		"@triniwiz/nativescript-supabase-realtime": "*",
-		"@triniwiz/nativescript-supabase-storage": "*"
+		"@triniwiz/nativescript-supabase-storage": "*",
+		"@triniwiz/nativescript-supabase-functions": "*",
+		"core-js": "^3.30.0"
 	}
 }
