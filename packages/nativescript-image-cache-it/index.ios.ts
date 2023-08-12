@@ -319,9 +319,11 @@ export class ImageCacheIt extends ImageCacheItBase {
 						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
 						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
 						if (owner.errorHolder) {
-							const errorHolder = this._handlePlaceholder(this.errorHolder);
-							owner.imageSource = new ImageSource(errorHolder);
-							owner.nativeView.image = errorHolder;
+              if (owner.nativeView) {
+  							const errorHolder = this._handlePlaceholder(this.errorHolder);
+	  						owner.imageSource = new ImageSource(errorHolder);
+		  					owner.nativeView.image = errorHolder;
+              }
 							owner.setTintColor(owner.style.tintColor);
 							// Fade ?
 							// this.nativeView.alpha = 0;
@@ -332,11 +334,13 @@ export class ImageCacheIt extends ImageCacheItBase {
 					} else if (p3 !== SDImageCacheType.Memory && owner.transition) {
 						switch (owner.transition) {
 							case 'fade':
-								owner.nativeView.alpha = 0;
-								UIView.animateWithDurationAnimations(1, () => {
-									owner.nativeView.alpha = 1;
-									owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
-								});
+								if (owner.nativeView) {
+                  owner.nativeView.alpha = 0;
+	  							UIView.animateWithDurationAnimations(1, () => {
+		  							owner.nativeView.alpha = 1;
+			  						owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
+				  				});
+                }
 								break;
 							default:
 								break;
