@@ -40,8 +40,8 @@ class AspectTransformer(private val decodeWidth: Int, private val decodeHeight: 
       + keepAspectRatio + ")")
   }
 
-  override fun equals(o: Any?): Boolean {
-    return o is AspectTransformer && o.decodeWidth == decodeWidth && o.decodeHeight == decodeHeight && o.keepAspectRatio == keepAspectRatio
+  override fun equals(other: Any?): Boolean {
+    return other is AspectTransformer && other.decodeWidth == decodeWidth && other.decodeHeight == decodeHeight && other.keepAspectRatio == keepAspectRatio
   }
 
   override fun hashCode(): Int {
