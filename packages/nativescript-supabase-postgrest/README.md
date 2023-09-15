@@ -1,7 +1,7 @@
 # Nativescript Supabase PostgREST Client
 
 ```javascript
-ns plugin add @triniwiz/nativescript-supabase-postgrest
+npm install @triniwiz/nativescript-supabase-postgrest
 ```
 
 ## Usage

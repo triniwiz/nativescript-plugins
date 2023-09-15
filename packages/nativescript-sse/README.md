@@ -1,7 +1,7 @@
 # Nativescript nativescript-sse
 
 ```javascript
-ns plugin add @triniwiz/nativescript-sse
+npm install @triniwiz/nativescript-sse
 ```
 
 ## API documentation

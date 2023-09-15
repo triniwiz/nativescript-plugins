@@ -1,4 +1,3 @@
-import { SupabaseStorageClient } from './SupabaseStorageClient'
-
-export { SupabaseStorageClient }
-export * from './lib/types'
+export { StorageClient as StorageClient } from './StorageClient';
+export * from './lib/types';
+export * from './lib/errors';

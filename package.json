@@ -30,8 +30,8 @@
 		"@angular/platform-browser-dynamic": "^15.0.0",
 		"@angular/router": "^15.0.0",
 		"@nativescript/angular": "^15.0.0",
-		"@nativescript/core": "~8.4.0",
-		"@nativescript/plugin-tools": "5.0.3",
+		"@nativescript/core": "~8.5.0",
+		"@nativescript/plugin-tools": "5.1.0",
 		"@nativescript/types": "~8.4.0",
 		"@nativescript/webpack": "~5.0.5",
 		"@nestjs/common": "^9.0.0",
@@ -41,7 +41,7 @@
 		"@nestjs/testing": "^9.0.0",
 		"@nestjs/websockets": "^9.0.0",
 		"@ngtools/webpack": "^15.0.0",
-		"@types/jest": "28.1.8",
+		"@types/jest": "29.5.0",
 		"@types/react": "npm:types-react-without-jsx-intrinsics@^16.14.30",
 		"@types/socket.io": "^3.0.2",
 		"@valor/nativescript-websockets": "^1.0.3",
@@ -67,9 +67,9 @@
 		"ts-jest": "28.0.8",
 		"tslib": "^2.0.0",
 		"typescript": "~4.8.0",
-		"vuepress": "^1.5.3",
+		"vuepress": "^1.9.8",
 		"whatwg-url": "11.0.0",
-		"zone.js": "~0.11.1"
+		"zone.js": "~0.13.0"
 	},
 	"lint-staged": {
 		"**/*.{js,ts,scss,json,html}": [

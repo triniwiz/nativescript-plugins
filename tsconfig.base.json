@@ -77,7 +77,9 @@
 			"@triniwiz/nativescript-yogalayout": ["packages/nativescript-yogalayout/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout/angular": ["packages/nativescript-yogalayout/angular/index.ts"],
 			"@triniwiz/nativescript-youtubeplayer": ["packages/nativescript-youtubeplayer/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"]
+			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"],
+			"@triniwiz/nativescript-messenger": ["packages/nativescript-messenger/index.d.ts"],
+			"@triniwiz/nativescript-supabase-functions": ["packages/nativescript-supabase-functions/index.d.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

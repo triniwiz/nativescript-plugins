@@ -107,7 +107,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
             'autoplay': ${this.autoPlay ? 1 : 0},
             'controls': ${this.controls ? 1 : 0},
             'modestbranding' : ${this.showYoutubeLogo ? 1 : 0},
-			'rel': ${this.showRelatedVideos ? 1: 0}
+			'rel': ${this.showRelatedVideos ? 1 : 0}
         }`;
 
 		this.#webView.loadHTMLStringBaseURL(getPlayerData(input, this.videoId), NSURL.URLWithString(this.#origin));
@@ -247,16 +247,16 @@ export class YoutubePlayer extends YoutubePlayerBase {
 		}
 	}
 
-	cueVideoById(id: string) {
-		this.#webView.evaluateJavaScriptCompletionHandler(`player.cueVideoById('${id}');`, (value, error) => {
+	cueVideoById(id: string, start: number = undefined, end: number = undefined) {
+		this.#webView.evaluateJavaScriptCompletionHandler(`player.cueVideoById('${id},${typeof start === 'number' ? start : undefined},${typeof end === 'number' ? end : undefined}');`, (value, error) => {
 			if (error) {
 			}
 		});
 	}
 
-	cueVideoByUrl(url: string) {
+	cueVideoByUrl(url: string, start: number = undefined, end: number = undefined) {
 		if (this.#webView) {
-			this.#webView.evaluateJavaScriptCompletionHandler(`player.cueVideoByUrl('${url}');`, (value, error) => {
+			this.#webView.evaluateJavaScriptCompletionHandler(`player.cueVideoByUrl('${url},${typeof start === 'number' ? start : undefined},${typeof end === 'number' ? end : undefined}');`, (value, error) => {
 				if (error) {
 				}
 			});

@@ -8,25 +8,16 @@
         <Button text="nativescript-accelerometer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-accordion" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-autocomplete" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        
         <Button text="nativescript-aws-sdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-aws-sdk-s3" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        
         <Button text="nativescript-couchbase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        
         <Button text="nativescript-downloader" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        
-        
         <Button text="nativescript-ffmpeg" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        
         <Button text="nativescript-here" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-image-cache-it" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-image-zoom" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-imageoptimize" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        
-        
-        
-        
+        <Button text="nativescript-messenger" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-nested-scrollview" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-opentok" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-pager" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
@@ -56,6 +47,7 @@
         <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-supabase-functions" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
       </StackLayout>
     </ScrollView>
   </StackLayout>

@@ -1,7 +1,7 @@
 # Nativescript nativescript-here
 
 ```javascript
-ns plugin add @triniwiz/nativescript-here
+npm install @triniwiz/nativescript-here
 ```
 
 ## Usage

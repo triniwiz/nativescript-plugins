@@ -1,14 +1,16 @@
+export type Fetch = typeof fetch;
+
 /**
  * Error format
  *
  * {@link https://postgrest.org/en/stable/api.html?highlight=options#errors-and-http-status-codes}
  */
-type PostgrestError = {
-  message: string
-  details: string
-  hint: string
-  code: string
-}
+export type PostgrestError = {
+	message: string;
+	details: string;
+	hint: string;
+	code: string;
+};
 
 /**
  * Response format
@@ -16,104 +18,56 @@ type PostgrestError = {
  * {@link https://github.com/supabase/supabase-js/issues/32}
  */
 interface PostgrestResponseBase {
-  status: number
-  statusText: string
+	status: number;
+	statusText: string;
+}
+export interface PostgrestResponseSuccess<T> extends PostgrestResponseBase {
+	error: null;
+	data: T;
+	count: number | null;
+}
+export interface PostgrestResponseFailure extends PostgrestResponseBase {
+	error: PostgrestError;
+	data: null;
+	count: null;
 }
 
-interface PostgrestResponseSuccess<T> extends PostgrestResponseBase {
-  error: null
-  data: T[]
-  body: T[]
-  count: number | null
-}
+// TODO: in v3:
+// - remove PostgrestResponse and PostgrestMaybeSingleResponse
+// - rename PostgrestSingleResponse to PostgrestResponse
+export type PostgrestSingleResponse<T> = PostgrestResponseSuccess<T> | PostgrestResponseFailure;
+export type PostgrestMaybeSingleResponse<T> = PostgrestSingleResponse<T | null>;
+export type PostgrestResponse<T> = PostgrestSingleResponse<T[]>;
 
-interface PostgrestResponseFailure extends PostgrestResponseBase {
-  error: PostgrestError
-  data: null
-  // For backward compatibility: body === data
-  body: null
-  count: null
-}
+export type GenericTable = {
+	Row: Record<string, unknown>;
+	Insert: Record<string, unknown>;
+	Update: Record<string, unknown>;
+};
 
-export type PostgrestResponse<T> = PostgrestResponseSuccess<T> | PostgrestResponseFailure
+export type GenericUpdatableView = {
+	Row: Record<string, unknown>;
+	Insert: Record<string, unknown>;
+	Update: Record<string, unknown>;
+};
 
-interface PostgrestSingleResponseSuccess<T> extends PostgrestResponseBase {
-  error: null
-  data: T
-  // For backward compatibility: body === data
-  body: T
-}
+export type GenericNonUpdatableView = {
+	Row: Record<string, unknown>;
+};
 
-export type PostgrestSingleResponse<T> =
-  | PostgrestSingleResponseSuccess<T>
-  | PostgrestResponseFailure
+export type GenericView = GenericUpdatableView | GenericNonUpdatableView;
 
-export abstract class PostgrestBuilder<T> implements PromiseLike<PostgrestResponse<T>> {
-  protected method!: 'GET' | 'HEAD' | 'POST' | 'PATCH' | 'DELETE'
-  protected url!: URL
-  protected headers!: { [key: string]: string }
-  protected schema?: string
-  protected body?: Partial<T> | Partial<T>[]
+export type GenericFunction = {
+	Args: Record<string, unknown>;
+	Returns: unknown;
+};
 
-  constructor(builder: PostgrestBuilder<T>) {
-    Object.assign(this, builder)
-  }
+export type GenericSchema = {
+	Tables: Record<string, GenericTable>;
+	Views: Record<string, GenericView>;
+	Functions: Record<string, GenericFunction>;
+};
 
-  then<TResult1 = PostgrestResponse<T>, TResult2 = never>(
-    onfulfilled?:
-      | ((value: PostgrestResponse<T>) => TResult1 | PromiseLike<TResult1>)
-      | undefined
-      | null,
-    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null
-  ): PromiseLike<TResult1 | TResult2> {
-    // https://postgrest.org/en/stable/api.html#switching-schemas
-    if (typeof this.schema === 'undefined') {
-      // skip
-    } else if (['GET', 'HEAD'].includes(this.method)) {
-      this.headers['Accept-Profile'] = this.schema
-    } else {
-      this.headers['Content-Profile'] = this.schema
-    }
-    if (this.method !== 'GET' && this.method !== 'HEAD') {
-      this.headers['Content-Type'] = 'application/json'
-    }
-
-    return fetch(this.url.toString(), {
-      method: this.method,
-      headers: this.headers,
-      body: JSON.stringify(this.body),
-    })
-      .then(async (res) => {
-        let error = null
-        let data = null
-        let count = null
-
-        if (res.ok) {
-          const isReturnMinimal = this.headers['Prefer']?.split(',').includes('return=minimal')
-          if (this.method !== 'HEAD' && !isReturnMinimal) {
-            const text = await res.text()
-            if (text && text !== '') data = JSON.parse(text)
-          }
-
-          const countHeader = this.headers['Prefer']?.match(/count=(exact|planned|estimated)/)
-          const contentRange = res.headers.get('content-range')?.split('/')
-          if (countHeader && contentRange && contentRange.length > 1) {
-            count = parseInt(contentRange[1])
-          }
-        } else {
-          error = await res.json()
-        }
-
-        const postgrestResponse: PostgrestResponse<T> = {
-          error,
-          data,
-          count,
-          status: res.status,
-          statusText: res.statusText,
-          body: data,
-        }
-        return postgrestResponse
-      })
-      .then(onfulfilled, onrejected)
-  }
-}
+// https://twitter.com/mattpocockuk/status/1622730173446557697
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type Prettify<T> = { [K in keyof T]: T[K] } & {};

@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-tns plugin add @triniwiz/nativescript-image-cache-it
+tnpm install @triniwiz/nativescript-image-cache-it
 ```
 
 ## API documentation

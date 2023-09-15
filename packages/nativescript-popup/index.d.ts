@@ -1,3 +1,9 @@
-import { NativescriptPopupCommon } from './common';
+import { PopupOptions } from './common';
 
-export declare class NativescriptPopup extends NativescriptPopupCommon {}
+export * from './common';
+
+export declare class Popup {
+    constructor(options?: PopupOptions);
+	showPopup(source: any, view: any): Promise<boolean>;
+	hidePopup(data?: any): void;
+}

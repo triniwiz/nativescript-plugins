@@ -81,7 +81,9 @@ export class Accordion extends AccordionBase {
   _isDataDirty: boolean;
 
   public updateNativeItems(oldItems: any, newItems: any) {
-    this._ios.reloadData();
+    if (this._ios) {
+      this._ios.reloadData();
+    }
   }
 
   _expandedViews: Map<any, any>;

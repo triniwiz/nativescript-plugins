@@ -143,7 +143,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
 	#isReady: boolean = false;
 	#isFullScreen: boolean = false;
 	private static INIT: boolean = false;
-	constructor(){
+	constructor() {
 		super();
 		// check if app is debuggable
 		if (!YoutubePlayer.INIT) {
@@ -190,7 +190,7 @@ export class YoutubePlayer extends YoutubePlayerBase {
             'autoplay': ${this.autoPlay ? 1 : 0},
             'controls': ${this.controls ? 1 : 0},
             'modestbranding' : ${this.showYoutubeLogo ? 1 : 0},
-			'rel': ${this.showRelatedVideos ? 1: 0}
+			'rel': ${this.showRelatedVideos ? 1 : 0}
         }`;
 		const playerData = getPlayerData(input, this.videoId);
 		this.#webView.loadDataWithBaseURL(this.#origin, playerData, 'text/html', 'utf-8', null);
@@ -326,18 +326,18 @@ export class YoutubePlayer extends YoutubePlayerBase {
 		);
 	}
 
-	cueVideoById(id: string) {
+	cueVideoById(id: string, start: number = undefined, end: number = undefined) {
 		this.#webView.evaluateJavascript(
-			`player.cueVideoById('${id}');`,
+			`player.cueVideoById('${id},${typeof start === 'number' ? start : undefined},${typeof end === 'number' ? end : undefined}');`,
 			new android.webkit.ValueCallback({
 				onReceiveValue: function (value) {},
 			})
 		);
 	}
 
-	cueVideoByUrl(url: string) {
+	cueVideoByUrl(url: string, start: number = undefined, end: number = undefined) {
 		this.#webView.evaluateJavascript(
-			`player.cueVideoByUrl('${url}');`,
+			`player.cueVideoByUrl('${url},${typeof start === 'number' ? start : undefined},${typeof end === 'number' ? end : undefined}');`,
 			new android.webkit.ValueCallback({
 				onReceiveValue: function (value) {},
 			})

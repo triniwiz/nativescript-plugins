@@ -37,8 +37,12 @@ export declare class YoutubePlayer extends YoutubePlayerBase {
 	playByUrl(url: string): void;
 
 	cueVideoById(id: string): void;
+	cueVideoById(id: string, start: number): void;
+	cueVideoById(id: string, start: number, end: number): void;
 
 	cueVideoByUrl(url: string): void;
+	cueVideoByUrl(url: string, start: number): void;
+	cueVideoByUrl(url: string, start: number, end: number): void;
 
 	pause(): void;
 
