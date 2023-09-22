@@ -38,7 +38,7 @@ export function startAccelerometerUpdates(callback: (data: AccelerometerData) =>
 	accManager.accelerometerUpdateInterval = getNativeDelay(options);
 
 	if (accManager.accelerometerAvailable) {
-		var queue = NSOperationQueue.alloc().init();
+		const queue = NSOperationQueue.alloc().init();
 		accManager.startAccelerometerUpdatesToQueueWithHandler(queue, (data, error) => {
 			dispatch_async(main_queue, () => {
 				wrappedCallback({
