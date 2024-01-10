@@ -601,7 +601,9 @@ class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPayment
 }
 
 export class CreditCardView extends CreditCardViewBase {
-	nativeView: STPPaymentCardTextField;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+  nativeView: STPPaymentCardTextField;
 	private delegate: STPPaymentCardTextFieldDelegateImpl;
 
 	public createNativeView(): STPPaymentCardTextField {
@@ -828,7 +830,8 @@ class StripeIntent {
 }
 
 export class StripePaymentIntent extends StripeIntent implements IStripePaymentIntent {
-	// @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   native: STPPaymentIntent;
 
 	static fromNative(native: STPPaymentIntent): StripePaymentIntent {
@@ -885,7 +888,8 @@ export class StripePaymentIntentParams {
 }
 
 export class StripeSetupIntent extends StripeIntent {
-	// @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
 	native: STPSetupIntent;
 
 	static fromNative(native: STPSetupIntent): StripeSetupIntent {
@@ -954,15 +958,16 @@ class CustomUIApplicationDelegate extends UIResponder implements UIApplicationDe
 // setup app delegate
 let delegate = Application.ios.delegate;
 if (!delegate) {
-    delegate = Application.ios.delegate = CustomUIApplicationDelegate;
+    delegate = Application.ios.delegate = CustomUIApplicationDelegate as any;
 }
 
 /**
  * Add delegate method handler, but also preserve any existing one.
  */
-function addDelegateHandler(classRef: Function, methodName: string, handler: Function) {
+function addDelegateHandler(classRef: any, methodName: string, handler: (...args: any) => void) {
     const crtHandler = classRef.prototype[methodName];
     classRef.prototype[methodName] = function () {
+      // eslint-disable-next-line prefer-rest-params
         const args = Array.from(arguments);
         if (crtHandler) {
             const result = crtHandler.apply(this, args);

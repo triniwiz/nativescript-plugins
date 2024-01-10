@@ -34,6 +34,7 @@
         <Button text="nativescript-star-ratings" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-stripe" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-supabase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-supabase-functions" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-supabase-gotrue" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-supabase-postgrest" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-supabase-realtime" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
@@ -47,7 +48,6 @@
         <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-<Button text="nativescript-supabase-functions" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
       </StackLayout>
     </ScrollView>
   </StackLayout>

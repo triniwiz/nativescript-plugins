@@ -284,7 +284,7 @@ class ColoredRoundedCornerBorders @JvmOverloads constructor(private val radius: 
 
   companion object {
     private const val VERSION = 1
-    private const val ID = "com.github.triniwiz.imagedemo.ColoredRoundedCornerBorders." + VERSION
+    private const val ID = "com.github.triniwiz.imagedemo.ColoredRoundedCornerBorders.$VERSION"
   }
 
   init {
