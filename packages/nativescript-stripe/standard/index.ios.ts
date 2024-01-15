@@ -80,7 +80,7 @@ class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvi
 
 	createCustomerKeyWithAPIVersionCompletion(apiVersion: string, completion: (p1: NSDictionary<any, any>, p2: NSError) => void): void {
 		StripeStandardConfig.shared.backendAPI
-			.createCustomerKey(apiVersion)
+			.createCustomerKey()
 			.then((key) => {
 				completion(key, null);
 			})
