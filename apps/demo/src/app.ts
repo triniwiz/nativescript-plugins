@@ -1,5 +1,5 @@
 import { Application, Folder, knownFolders } from '@nativescript/core';
-import { handleContinueUserActivity, handleOpenURL, init } from '@triniwiz/nativescript-stripe';
+//import { handleContinueUserActivity, handleOpenURL, init } from '@triniwiz/nativescript-stripe';
 import { File } from '@triniwiz/nativescript-file-manager';
 import * as dateFns from 'date-fns';
 import { publishableKey } from './plugin-demos/nativescript-stripe-src/std-view/stripe.service';
@@ -8,11 +8,11 @@ resources['timeFromNow'] = (date) => dateFns.formatRelative(date, new Date());
 Application.setResources(resources);
 declare const io;
 
-init(publishableKey);
+//init(publishableKey);
 
 
 if (global.isIOS) {
-  @NativeClass()
+ /* @NativeClass()
   @ObjCClass(UIApplicationDelegate)
   class UIApplicationDelegateImpl extends UIResponder implements UIApplicationDelegate {
     applicationContinueUserActivityRestorationHandler(application: UIApplication, userActivity: NSUserActivity, restorationHandler: (p1: NSArray<UIUserActivityRestoring>) => void): boolean {
@@ -26,7 +26,7 @@ if (global.isIOS) {
     }
   }
 
-  Application.ios.delegate = UIApplicationDelegateImpl;
+  Application.ios.delegate = UIApplicationDelegateImpl;*/
 } else {
   /*Folder.fromPath(knownFolders.currentApp().path  + `/assets`).getEntities().then(items =>{
     console.log(items);

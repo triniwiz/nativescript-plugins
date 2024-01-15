@@ -8,9 +8,19 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.Executor
 
 class Couchbase {
   companion object {
+
+
+    @JvmStatic
+    fun asyncNext(executor: Executor, result: ResultSet, callback: (Result?) -> Unit) {
+      executor.execute {
+        val next = result.next()
+        callback(next)
+      }
+    }
 
     @JvmStatic
     fun getDocument(database: Database, id: String?): String? {
@@ -280,7 +290,8 @@ class Couchbase {
       }
     }
 
-    private fun fromISO8601UTC(date: String): Date? {
+    @JvmStatic
+    fun fromISO8601UTC(date: String): Date? {
       return try {
         dateFormat.parse(date)
       } catch (e: java.lang.Exception) {

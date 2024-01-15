@@ -295,9 +295,9 @@ export class ImageCacheIt extends ImageCacheItBase {
 
 	private static _setSrc(context: any, src: any, nativeView?: any, base?: ImageCacheIt) {
 		if (nativeView) {
-			let decodeWidth = 0;
-			let decodeHeight = 0;
-			let keepAspectRatio = base._calculateKeepAspectRatio();
+			const decodeWidth = base?.decodeWidth ?? 0;
+      const decodeHeight = base?.decodeHeight  ?? 0;
+      const keepAspectRatio = base._calculateKeepAspectRatio();
 			if (isNullOrUndefined(src)) {
 				nativeView.setSource(null, decodeWidth, decodeHeight, keepAspectRatio, false, true);
 			} else {

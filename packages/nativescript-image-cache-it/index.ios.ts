@@ -9,10 +9,6 @@ interface CacheItem {
 	url: string;
 }
 
-interface CacheHeaders {
-	[header: string]: CacheItem;
-}
-
 export class ImageCacheItError extends Error {
 	_native: NSError;
 	static fromNative(native: NSError, message: string = undefined) {
@@ -52,10 +48,10 @@ export class ImageCacheItError extends Error {
 export class ImageCacheIt extends ImageCacheItBase {
 	nativeViewProtected: SDAnimatedImageView;
 	private ctx;
-	private static cacheHeaders: CacheHeaders = {};
-	private static hasModifier: boolean = false;
+	private static cacheHeaders = new Map<string, CacheItem>();
+	private static hasModifier = false;
 	private uuid: string;
-	private _imageSourceAffectsLayout: boolean = true;
+	private _imageSourceAffectsLayout = true;
 	private filterQueue;
 
 	constructor() {
@@ -89,8 +85,9 @@ export class ImageCacheIt extends ImageCacheItBase {
 	private static setModifier() {
 		if (!ImageCacheIt.hasModifier) {
 			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock((request: NSURLRequest): NSURLRequest => {
-				if (request && request.URL && (request as any).URL.uuid && ImageCacheIt.cacheHeaders[(request as any).URL.uuid]) {
-					const cachedHeader = ImageCacheIt.cacheHeaders[(request as any).URL.uuid];
+				const uuid = (request as any)?.URL?.uuid;
+				if (ImageCacheIt.cacheHeaders.has(uuid)) {
+					const cachedHeader = ImageCacheIt.cacheHeaders.get(uuid);
 					if (cachedHeader.url === request.URL.absoluteString) {
 						const newRequest = request.mutableCopy() as NSMutableURLRequest;
 						if (cachedHeader.headers) {
@@ -115,21 +112,22 @@ export class ImageCacheIt extends ImageCacheItBase {
 		nativeView.contentMode = UIViewContentMode.ScaleAspectFit;
 		nativeView.userInteractionEnabled = true;
 		nativeView.clipsToBounds = true;
-		let metalDevice = MTLCreateSystemDefaultDevice() || null;
-		if (metalDevice) {
-			this.ctx = CIContext.contextWithMTLDevice(metalDevice);
-		} else {
-			// EAGLRenderingAPI.kEAGLRenderingAPIOpenGLES3
-			let context = EAGLContext.alloc().initWithAPI(3);
-			if (!context) {
-				context = EAGLContext.alloc().initWithAPI(2);
-			}
-			if (context) {
-				this.ctx = CIContext.contextWithEAGLContext(context);
-			} else {
-				this.ctx = new CIContext(null);
-			}
-		}
+		this.ctx = (ImageCacheItUtils as any).createContext();
+		// const metalDevice = MTLCreateSystemDefaultDevice() || null;
+		// if (metalDevice) {
+		// 	this.ctx = CIContext.contextWithMTLDevice(metalDevice);
+		// } else {
+		// 	// EAGLRenderingAPI.kEAGLRenderingAPIOpenGLES3
+		// 	let context = EAGLContext.alloc().initWithAPI(3);
+		// 	if (!context) {
+		// 		context = EAGLContext.alloc().initWithAPI(2);
+		// 	}
+		// 	if (context) {
+		// 		this.ctx = CIContext.contextWithEAGLContext(context);
+		// 	} else {
+		// 		this.ctx = new CIContext(null);
+		// 	}
+		// }
 		return nativeView;
 	}
 
@@ -215,13 +213,13 @@ export class ImageCacheIt extends ImageCacheItBase {
 
 	[headersProperty.setNative](value: Map<string, string>) {
 		if (this.uuid) {
-			const data = ImageCacheIt.cacheHeaders[this.uuid] || { url: undefined, headers: undefined };
+			const data = ImageCacheIt.cacheHeaders.get(this.uuid) || { url: undefined, headers: undefined };
 			data.headers = value;
-			ImageCacheIt.cacheHeaders[this.uuid] = data;
+			ImageCacheIt.cacheHeaders.set(this.uuid, data);
 		}
 	}
 
-	private _loadStarted: boolean = false;
+	private _loadStarted = false;
 
 	private _handlePlaceholder(src: any): UIImage | null {
 		let placeHolder = null;
@@ -268,7 +266,9 @@ export class ImageCacheIt extends ImageCacheItBase {
 
 	private async _loadImage(src: any) {
 		this._loadStarted = true;
-		this._emitLoadStartEvent(src);
+		if (this.hasListeners(ImageCacheItBase.onLoadStartEvent)) {
+			this._emitLoadStartEvent(src);
+		}
 		this.progress = 0;
 		const ref = new WeakRef(this);
 		if (this.nativeView && (<any>this.nativeView).sd_cancelCurrentImageLoad) {
@@ -280,6 +280,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 		const context = {};
 		const placeHolder = this._handlePlaceholder(this.placeHolder);
 		const url = NSURL.URLWithString(src);
+		const urlAbsoluteString = url.absoluteString;
 		if (!url) {
 			this._handleFallbackImage();
 			return;
@@ -302,12 +303,18 @@ export class ImageCacheIt extends ImageCacheItBase {
 					}
 					progress = Math.max(Math.min(progress, 1), 0) * 100;
 					dispatch_async(main_queue, () => {
+						const absoluteString = p3?.absoluteString;
+						const url = absoluteString ? absoluteString : urlAbsoluteString ? urlAbsoluteString : src;
 						if (!owner._loadStarted) {
-							owner._emitLoadStartEvent(p3?.absoluteString ? p3.absoluteString : url?.absoluteString ? url.absoluteString : src);
+							if (owner.hasListeners(ImageCacheItBase.onLoadStartEvent)) {
+								owner._emitLoadStartEvent(url);
+							}
 							owner._loadStarted = true;
 						}
 						owner.progress = progress;
-						owner._emitProgressEvent(p1, p2, progress, p3.absoluteString);
+						if (owner.hasListeners(ImageCacheItBase.onProgressEvent)) {
+							owner._emitProgressEvent(p1, p2, progress, url);
+						}
 					});
 				}
 			},
@@ -319,11 +326,14 @@ export class ImageCacheIt extends ImageCacheItBase {
 						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
 						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
 						if (owner.errorHolder) {
-              if (owner.nativeView) {
-  							const errorHolder = this._handlePlaceholder(this.errorHolder);
-	  						owner.imageSource = new ImageSource(errorHolder);
-		  					owner.nativeView.image = errorHolder;
-              }
+							if (owner.nativeView) {
+								const errorHolder = this._handlePlaceholder(this.errorHolder);
+								owner.imageSource = new ImageSource(errorHolder);
+								// extra guard ??
+								if (owner.nativeView) {
+									owner.nativeView.image = errorHolder;
+								}
+							}
 							owner.setTintColor(owner.style.tintColor);
 							// Fade ?
 							// this.nativeView.alpha = 0;
@@ -335,12 +345,12 @@ export class ImageCacheIt extends ImageCacheItBase {
 						switch (owner.transition) {
 							case 'fade':
 								if (owner.nativeView) {
-                  owner.nativeView.alpha = 0;
-	  							UIView.animateWithDurationAnimations(1, () => {
-		  							owner.nativeView.alpha = 1;
-			  						owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
-				  				});
-                }
+									owner.nativeView.alpha = 0;
+									UIView.animateWithDurationAnimations(1, () => {
+										owner.nativeView.alpha = 1;
+										owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
+									});
+								}
 								break;
 							default:
 								break;
@@ -348,8 +358,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 					}
 
 					if (p1) {
-						const source = new ImageSource();
-						source.ios = p1;
+						const source = new ImageSource(p1);
+						//source.ios = p1;
 						this._createImageSourceFromSrc(source);
 					}
 				}
@@ -397,9 +407,9 @@ export class ImageCacheIt extends ImageCacheItBase {
 
 	[srcProperty.setNative](src: any) {
 		if (typeof src === 'string' && src.startsWith('http')) {
-			const data = ImageCacheIt.cacheHeaders[this.uuid] || { url: undefined, headers: undefined };
+			const data = ImageCacheIt.cacheHeaders.get(this.uuid) || { url: undefined, headers: undefined };
 			data['url'] = src;
-			ImageCacheIt.cacheHeaders[this.uuid] = data;
+			ImageCacheIt.cacheHeaders.set(this.uuid, data);
 			this._loadImage(src);
 		} else {
 			if (Utils.isNullOrUndefined(src)) {
@@ -634,13 +644,22 @@ export class ImageCacheIt extends ImageCacheItBase {
 			overlayColor = null;
 		}
 		if (this.filter) {
-			const options = {
-				filter: this.filter,
-				overlayColor: overlayColor,
-			};
-			if (!overlayColor) {
-				delete options.overlayColor;
+			// const options = {
+			// 	filter: this.filter,
+			// 	overlayColor: overlayColor,
+			// };
+
+			// if (!overlayColor) {
+			// 	delete options.overlayColor;
+			// }
+
+			const options = NSMutableDictionary.new();
+			options.setObjectForKey(this.filter, 'filter');
+
+			if (overlayColor) {
+				options.setObjectForKey(overlayColor, 'overlayColor');
 			}
+
 			ImageCacheItUtils.applyProcessing(
 				this.ctx,
 				nativeImage,
@@ -650,44 +669,31 @@ export class ImageCacheIt extends ImageCacheItBase {
 				},
 				null
 			);
-			/*dispatch_async(this.filterQueue, () => {
-          nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
-          nativeImage = this._setupFilter(nativeImage);
-          dispatch_async(main_queue, () => {
-              setImage();
-          });
-      });*/
 		} else {
 			if (NSThread.isMainThread) {
 				if (this.overlayColor) {
+					const options = NSMutableDictionary.new<string, any>();
+					options.setObjectForKey(overlayColor, 'overlayColor');
 					ImageCacheItUtils.applyProcessing(
 						this.ctx,
 						nativeImage,
-						<any>{
-							overlayColor: overlayColor,
-						},
+						options,
 						(image) => {
 							setImage(image);
 						},
 						null
 					);
-					/* dispatch_async(this.filterQueue, () => {
-               nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
-               dispatch_async(main_queue, () => {
-                   setImage();
-               });
-           });*/
 				} else {
 					setImage();
 				}
 			} else {
 				if (this.overlayColor) {
+					const options = NSMutableDictionary.new<string, any>();
+					options.setObjectForKey(overlayColor, 'overlayColor');
 					ImageCacheItUtils.applyProcessing(
 						this.ctx,
 						nativeImage,
-						<any>{
-							overlayColor: overlayColor,
-						},
+						options,
 						(image) => {
 							setImage(image);
 						},
@@ -698,10 +704,6 @@ export class ImageCacheIt extends ImageCacheItBase {
 						setImage();
 					});
 				}
-				// nativeImage = this._setOverlayColor(this.overlayColor, nativeImage);
-				/*dispatch_async(main_queue, () => {
-            setImage();
-        });*/
 			}
 		}
 	}
@@ -916,10 +918,10 @@ export class ImageCacheIt extends ImageCacheItBase {
 					if (headers) {
 						const uuid = NSUUID.UUID().UUIDString;
 						(<any>nativeSrc).uuid = uuid;
-						const data = ImageCacheIt.cacheHeaders[uuid] || { url: undefined, headers: undefined };
+						const data = ImageCacheIt.cacheHeaders.get(uuid) || { url: undefined, headers: undefined };
 						data.headers = headers;
 						data.url = src;
-						ImageCacheIt.cacheHeaders[uuid] = data;
+						ImageCacheIt.cacheHeaders.set(uuid, data);
 					}
 
 					manager.loadImageWithURLOptionsProgressCompleted(
