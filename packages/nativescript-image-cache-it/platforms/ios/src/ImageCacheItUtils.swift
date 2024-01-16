@@ -21,6 +21,27 @@ public class ImageCacheItUtils: NSObject {
         ImageCacheItUtils.queueCount += 1
         return DispatchQueue(label: name)
     }
+    
+    @objc public static func createContext() -> CIContext {
+        let metalDevice = MTLCreateSystemDefaultDevice()
+        
+        if(metalDevice != nil){
+            return CIContext(mtlDevice: metalDevice!)
+        }
+        
+        if #available(iOS 12.0, *) {
+            return CIContext()
+        }else {
+            
+            let context = EAGLContext(api: .openGLES3) ?? EAGLContext(api: .openGLES2)
+            
+            if(context != nil){
+                return CIContext(eaglContext: context!)
+            }
+            
+            return CIContext()
+        }
+    }
 
 
     public static func resizeImage(_ image: UIImage? , _ width: CGFloat,_ height: CGFloat, _ scale: SDImageScaleMode, _ callback: @escaping (UIImage?)-> Void, _ queue: DispatchQueue?) -> DispatchQueue? {

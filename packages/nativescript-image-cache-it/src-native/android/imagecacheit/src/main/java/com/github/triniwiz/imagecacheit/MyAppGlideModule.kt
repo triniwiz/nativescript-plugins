@@ -21,7 +21,6 @@ import okio.*
 import java.io.IOException
 import java.io.InputStream
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 @GlideModule
 @Excludes(OkHttpLibraryGlideModule::class)

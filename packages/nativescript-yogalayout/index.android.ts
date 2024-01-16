@@ -39,9 +39,12 @@ export {
 
 @CSSType('View')
 export class View extends ViewBase {
-  nativeView: com.facebook.yoga.android.YogaLayout;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+	nativeView: com.facebook.yoga.android.YogaLayout;
   _yogaNode: com.facebook.yoga.YogaNode;
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get yogaNode(): com.facebook.yoga.YogaNode {
     if (!this._yogaNode) {
@@ -195,16 +198,19 @@ export class View extends ViewBase {
     });
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get android() {
     return this.nativeView;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get yoga() {
     return this.nativeView;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set width(value) {
     this.style.width = value;
@@ -222,6 +228,7 @@ export class View extends ViewBase {
     return this.yogaNode.getWidth().value;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set height(value) {
     this.style.height = value;
@@ -238,6 +245,7 @@ export class View extends ViewBase {
     return this.yogaNode.getHeight().value;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set left(value) {
     this.style.left = value;
@@ -251,6 +259,7 @@ export class View extends ViewBase {
     return this._getPositionValue("left");
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set top(value) {
     this.style.top = value;
@@ -264,6 +273,7 @@ export class View extends ViewBase {
     return this._getPositionValue("top");
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set right(value) {
     this.style.right = value;
@@ -277,6 +287,7 @@ export class View extends ViewBase {
     return this._getPositionValue("right");
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set bottom(value) {
     this.style.bottom = value;
@@ -290,6 +301,7 @@ export class View extends ViewBase {
     return this._getPositionValue("bottom");
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set minWidth(value) {
     this.style.minWidth = value;
@@ -301,6 +313,7 @@ export class View extends ViewBase {
     return this.style.minWidth;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set maxWidth(value) {
     this.style.maxWidth = value;
@@ -312,6 +325,7 @@ export class View extends ViewBase {
     return this.style.maxWidth;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set maxHeight(value) {
     this.style.maxHeight = value;
@@ -323,6 +337,7 @@ export class View extends ViewBase {
     return this.style.maxHeight;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set alignItems(value) {
     this.style.alignItems = value;
@@ -333,6 +348,7 @@ export class View extends ViewBase {
     return this.style.alignItems as FlexAlignItems;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set overflow(value) {
     this.style.overflow = value;
@@ -343,6 +359,7 @@ export class View extends ViewBase {
     return this.style.overflow;
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set position(value) {
     this.style.position = value;
@@ -373,6 +390,7 @@ export class View extends ViewBase {
     this._updatePaddingLeft(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   set margin(value) {
     this.style.margin = value;
@@ -432,6 +450,7 @@ export class View extends ViewBase {
     this._updateFlexBasis(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get flexDirection() {
     return this.style.flexDirection as any;
@@ -450,6 +469,7 @@ export class View extends ViewBase {
     this._updateAspectRatio(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get start() {
     return this.style.start;
@@ -460,6 +480,7 @@ export class View extends ViewBase {
     this._updateStart(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get end() {
     return this.style.end;
@@ -470,6 +491,7 @@ export class View extends ViewBase {
     this._updateEnd(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get direction() {
     if (!this.nativeView) {
@@ -483,6 +505,7 @@ export class View extends ViewBase {
     this._updateDirection(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get marginVertical(): any {
     return this.style.marginVertical;
@@ -493,6 +516,7 @@ export class View extends ViewBase {
     this._updateMarginVertical(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get marginHorizontal(): any {
     return this.style.marginHorizontal;
@@ -503,6 +527,7 @@ export class View extends ViewBase {
     this._updateMarginHorizontal(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get paddingHorizontal() {
     return this.style.paddingHorizontal;
@@ -513,6 +538,7 @@ export class View extends ViewBase {
     this._updatePaddingHorizontal(value);
   }
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   get paddingVertical() {
     return this.style.paddingVertical;
@@ -523,7 +549,7 @@ export class View extends ViewBase {
     this._updatePaddingVertical(value);
   }
 
-  private _addChild(child: NSView, addToChildren: boolean = false, batchingChildren: boolean = false) {
+  private _addChild(child: NSView, addToChildren = false, batchingChildren = false) {
     if (!child) {
       return;
     }
@@ -552,10 +578,13 @@ export class View extends ViewBase {
         position: child.style.position
       };
 
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       if (child.style.minWidth !== 'none') {
         json['minWidth'] = child.style.minWidth;
       }
+
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       if (child.style.minHeight !== 'none') {
         json['minHeight'] = child.style.minHeight;
@@ -571,6 +600,8 @@ export class View extends ViewBase {
         this._childrenBatchProperties.push(json);
         this._childrenBatchViews.push(child.nativeView);
       } else {
+
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         this.nativeView.addView(child.nativeView);
 

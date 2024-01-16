@@ -37,11 +37,11 @@ class ImageCache {
         manager = null
       }
       if (manager == null) {
-        manager = GlideApp.with(context!!)
+        manager = Glide.with(context!!)
         glide = null
       }
       if (glide == null) {
-        glide = GlideApp.get(context!!)
+        glide = Glide.get(context!!)
       }
       if (executorService == null) {
         executorService = Executors.newCachedThreadPool()
@@ -58,7 +58,7 @@ class ImageCache {
       manager?.asFile()?.load(url)?.apply(requestOptions)?.listener(object : RequestListener<File> {
         override fun onLoadFailed(
           e: GlideException?,
-          model: Any,
+          model: Any?,
           target: Target<File>,
           isFirstResource: Boolean
         ): Boolean {
@@ -104,7 +104,7 @@ class ImageCache {
         ?.listener(object : RequestListener<File> {
           override fun onLoadFailed(
             e: GlideException?,
-            model: Any,
+            model: Any?,
             target: Target<File>,
             isFirstResource: Boolean
           ): Boolean {
@@ -137,7 +137,7 @@ class ImageCache {
         ?.listener(object : RequestListener<File> {
           override fun onLoadFailed(
             e: GlideException?,
-            model: Any,
+            model: Any?,
             target: Target<File>,
             isFirstResource: Boolean
           ): Boolean {

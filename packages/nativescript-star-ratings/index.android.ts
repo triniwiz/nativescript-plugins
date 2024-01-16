@@ -6,6 +6,8 @@ export { FillMode };
 export class StarRating extends StarRatingBase {
 	emptyBorderColor: string | Color;
 	filledBorderColor: string | Color;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
 	nativeView: android.widget.LinearLayout;
 	private _ratingBar: android.widget.RatingBar;
 	private _stars: android.graphics.drawable.LayerDrawable;
@@ -62,6 +64,7 @@ export class StarRating extends StarRatingBase {
 		}
 	}
 
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
 	get emptyColor(): string | Color {
 		return this.style.emptyColor;
 	}
@@ -92,6 +95,7 @@ export class StarRating extends StarRatingBase {
 		}
 	}
 
+  // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
 	get filledColor(): string | Color {
 		return this.style.filledColor;
 	}

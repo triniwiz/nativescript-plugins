@@ -1,5 +1,5 @@
 import { DemoSharedBase } from '../utils';
-import { CouchBase, QueryLogicalOperator, Replicator } from '@triniwiz/nativescript-couchbase';
+import { Blob, CouchBase, MutableArray, MutableDocument, QueryBuilder, QueryLogicalOperator, Replicator } from '@triniwiz/nativescript-couchbase';
 import { ObservableArray } from '@nativescript/core';
 import { getFile, getJSON } from '@nativescript/core/http';
 
@@ -14,13 +14,58 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 		this.init();
 	}
 
-	init() {
+	async init() {
 		this.db = new CouchBase('tns-couchbase');
-		this.replicator = this.db.createReplication('ws://192.168.0.10:4984/tns-couchbase', 'both');
-		this.replicator.setContinuous(true);
-		this.db.addDatabaseChangeListener((changes) => {
-			for (let change of changes) {
-				const doc = this.db.getDocument(change);
+		const collection = this.db.defaultCollection;
+		let triniwiz = collection.getDocument('triniwiz');
+		if (!triniwiz) {
+			console.log('init');
+			const document = new MutableDocument('triniwiz').setString('first', 'Osei').setString('last', 'Fortune');
+			console.log('?');
+			collection.save(document);
+			triniwiz = collection.getDocument('triniwiz');
+		}
+
+		collection.addDocumentChangeListener('triniwiz', (id, collection) => {
+			const document = collection.getDocument('triniwiz');
+			if (document) {
+				console.log('changed', document.toJSON());
+			}
+		});
+
+		const mutDoc = collection.getDocument('triniwiz').toMutable();
+		mutDoc.setString('first', 'Osei').setString('dob', '04/10/1991');
+		collection.save(mutDoc);
+
+		const newDoc = new MutableDocument('asha').setString('first', 'Asha').setString('last', 'Paul').setString('dob', '12/05/1995');
+
+		console.log(newDoc.toJSON());
+
+		collection.save(newDoc);
+
+		console.log(collection.getDocument('asha')?.toJSON());
+
+		// console.time('query');
+		// const query = this.db.query();
+		// console.timeEnd('query');
+
+		//
+
+		const query = new QueryBuilder().setFrom(this.db.defaultCollection).build();
+		const result = query.execute();
+
+		console.time('allResults');
+		for (const item of result) {
+			console.log('iter', item);
+		}
+		console.timeEnd('allResults');
+
+		// this.replicator = new Replicator('ws://192.168.0.10:4984/tns-couchbase', 'both', this.db.defaultCollection);
+		// this.replicator.addCollection(this.db.defaultCollection);
+		// this.replicator.setContinuous(true);
+		this.db.defaultCollection.addChangeListener((collection, documentIDs) => {
+			for (let change of documentIDs) {
+				const doc = collection.getDocument(change);
 				if (doc) {
 					const length = this.items.length;
 					if (length === 0) {
@@ -45,20 +90,21 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 				}
 			}
 		});
-		this.replicator.start();
-		const query = this.db.query();
-		this.items.push(...query);
+		//this.replicator.start();
+		// const query = this.db.query();
+		// this.items.push(...query);
 	}
 
 	addLargeItem() {
 		getJSON('https://randomuser.me/api/?results=5000')
 			.then((json: any) => {
 				const results = json.results;
-				const id = this.db.createDocument({
-					title: this.input,
-					created_at: new Date().toJSON(),
-					large_array: results,
-				});
+				const collection = this.db.defaultCollection;
+				console.time('addLargeItem');
+				const document = new MutableDocument().setString('title', this.input).setDate('created_at', new Date()).setArray('large_array', new MutableArray(results));
+				console.timeEnd('addLargeItem');
+
+				collection.save(document);
 			})
 			.catch((e) => {
 				console.log('error getting ' + e);
@@ -66,7 +112,7 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 	}
 
 	nukeIt() {
-		this.replicator.stop();
+		//this.replicator.stop();
 		this.db.destroyDatabase();
 		this.db = null;
 		this.items.splice(0);
@@ -74,10 +120,6 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 	}
 
 	addItem() {
-		const id = this.db.createDocument({
-			title: this.input,
-			created_at: new Date().toJSON(),
-		});
 		getJSON('https://randomuser.me/api/')
 			.then((json: any) => {
 				const result = json.results;
@@ -85,7 +127,15 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 			})
 			.then((url) => {
 				return getFile(url).then((file) => {
-					this.db.setBlob(id, 'image', file.path, 'image/png');
+					console.log(' this.input', this.input);
+					const document = new MutableDocument({
+						title: this.input,
+						created_at: new Date().toJSON(),
+					});
+
+					document.setBlob('image', Blob.fromFile('image/png', file.path));
+
+					this.db.defaultCollection.save(document);
 				});
 			})
 			.catch((e) => {

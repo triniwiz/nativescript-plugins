@@ -20,15 +20,15 @@ import {
   TemplateRef,
   ViewChild,
   ViewContainerRef,
-  ɵisListLikeIterable as isListLikeIterable,
 } from "@angular/core";
 import { isIOS, KeyedTemplate, View } from "@nativescript/core";
 import { EventData, LayoutBase, Template, Trace, profile, ObservableArray, ItemEventData,ItemsSource } from "@nativescript/core";
 
 import {
-  getSingleViewRecursive,
+  extractSingleViewRecursive,
   isInvisibleNode,
   registerElement,
+  isListLikeIterable
 } from "@nativescript/angular";
 
 import {
@@ -408,7 +408,7 @@ export type RootLocator = (nodes: Array<any>, nestLevel: number) => View;
 
 export function getItemViewRoot(
   viewRef: ComponentView,
-  rootLocator: RootLocator = getSingleViewRecursive as any
+  rootLocator: RootLocator = extractSingleViewRecursive
 ): View {
   return rootLocator(viewRef.rootNodes, 0);
 }
