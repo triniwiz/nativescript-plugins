@@ -10,10 +10,9 @@
 				"outputPath": "dist/packages/nativescript-supabase-gotrue",
 				"tsConfig": "packages/nativescript-supabase-gotrue/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase-gotrue/package.json",
-				"main": "packages/nativescript-supabase-gotrue/index.d.ts",
+				"main": "packages/nativescript-supabase-gotrue/index.ts",
 				"assets": [
 					"packages/nativescript-supabase-gotrue/*.md",
-					"packages/nativescript-supabase-gotrue/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",

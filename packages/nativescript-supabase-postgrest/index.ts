@@ -1,5 +1,3 @@
-import 'core-js/actual/url';
-import 'core-js/actual/url-search-params';
 export { default as PostgrestClient } from './lib/PostgrestClient';
 export { default as PostgrestQueryBuilder } from './lib/PostgrestQueryBuilder';
 export { default as PostgrestFilterBuilder } from './lib/PostgrestFilterBuilder';

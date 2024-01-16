@@ -10,10 +10,9 @@
 				"outputPath": "dist/packages/nativescript-supabase-postgrest",
 				"tsConfig": "packages/nativescript-supabase-postgrest/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase-postgrest/package.json",
-				"main": "packages/nativescript-supabase-postgrest/index.d.ts",
+				"main": "packages/nativescript-supabase-postgrest/index.ts",
 				"assets": [
 					"packages/nativescript-supabase-postgrest/*.md",
-					"packages/nativescript-supabase-postgrest/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",
