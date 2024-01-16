@@ -34,6 +34,7 @@ export class VideoRecorder extends VideoRecorderBase {
 	}
 
 	protected _startRecording(options: Options = this.options): Promise<RecordResult> {
+    // eslint-disable-next-line no-async-promise-executor
 		return new Promise(async (resolve, reject) => {
 			try {
 				const pkgName = Utils.ad.getApplication().getPackageName();
@@ -129,13 +130,14 @@ export class VideoRecorder extends VideoRecorderBase {
 
 							const uri = Utils.android.getApplicationContext().getContentResolver().insert(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
-							const fos: java.io.FileOutputStream = Utils.android.getApplicationContext().getContentResolver().openOutputStream(uri);
+							const fos = Utils.android.getApplicationContext().getContentResolver().openOutputStream(uri);
 
 							const fis = new java.io.FileInputStream(nativeFile);
 							try {
 								(com as any).github.triniwiz.videorecorder.Utils.copy(fis, fos);
 								if (sdkVersionInt >= 29) {
 									values.clear();
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore
 									values.put(android.provider.MediaStore.Video.Media.IS_PENDING, java.lang.Integer.valueOf(0));
 									Utils.android.getApplicationContext().getContentResolver().update(uri, values, null, null);

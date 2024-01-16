@@ -90,6 +90,15 @@ export const isLoadingProperty = new Property<ImageCacheItBase, boolean>({
   valueConverter: booleanConverter,
 });
 
+export const decodeWidthProperty = new Property<ImageCacheItBase, number>({
+  name: 'decodeWidth'
+});
+
+
+export const decodeHeightProperty = new Property<ImageCacheItBase, number>({
+  name: 'decodeHeight',
+});
+
 export * from '@nativescript/core/ui/core/view';
 
 @CSSType('ImageCacheIt')
@@ -107,6 +116,9 @@ export class ImageCacheItBase extends View {
   public isLoading: boolean;
   public progress: number;
   public overlayColor: string | Color;
+  public decodeWidth: number;
+  public decodeHeight: number;
+
   get tintColor(): Color | string {
     return this.style.tintColor;
   }
@@ -271,6 +283,8 @@ priorityProperty.register(ImageCacheItBase);
 tintColorProperty.register(Style);
 headersProperty.register(ImageCacheItBase);
 overlayColorProperty.register(Style);
+decodeWidthProperty.register(ImageCacheItBase);
+decodeHeightProperty.register(ImageCacheItBase);
 
 declare module '@nativescript/core/ui/styling/style' {
   interface Style {
