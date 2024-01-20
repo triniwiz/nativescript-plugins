@@ -10,10 +10,9 @@
 				"outputPath": "dist/packages/nativescript-supabase-storage",
 				"tsConfig": "packages/nativescript-supabase-storage/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase-storage/package.json",
-				"main": "packages/nativescript-supabase-storage/index.d.ts",
+				"main": "packages/nativescript-supabase-storage/index.ts",
 				"assets": [
 					"packages/nativescript-supabase-storage/*.md",
-					"packages/nativescript-supabase-storage/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",

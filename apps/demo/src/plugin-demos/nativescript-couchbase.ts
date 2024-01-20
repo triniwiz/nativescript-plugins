@@ -30,7 +30,7 @@ export function nukeIt(args) {
 }
 
 export function goToSearch(args) {
-	Frame.topmost().navigate('~/plugin-demos/nativescript-couchbase-search/nativescript-couchbase-search');
+	Frame.topmost().navigate('~/plugin-demos/extras/nativescript-couchbase-search/nativescript-couchbase-search');
 }
 
 export class DemoModel extends DemoSharedNativescriptCouchbase {}
