@@ -36,10 +36,11 @@ export default class GoTrueAdminApi {
 	/**
 	 * Removes a logged-in session.
 	 * @param jwt A valid, logged-in JWT.
+	 * @param scope The logout sope.
 	 */
-	async signOut(jwt: string): Promise<{ data: null; error: AuthError | null }> {
+	async signOut(jwt: string, scope: 'global' | 'local' | 'others' = 'global'): Promise<{ data: null; error: AuthError | null }> {
 		try {
-			await _request(this.fetch, 'POST', `${this.url}/logout`, {
+			await _request(this.fetch, 'POST', `${this.url}/logout?scope=${scope}`, {
 				headers: this.headers,
 				jwt,
 				noResolveJson: true,
@@ -57,14 +58,16 @@ export default class GoTrueAdminApi {
 	/**
 	 * Sends an invite link to an email address.
 	 * @param email The email address of the user.
-	 * @param options.redirectTo A URL or mobile deeplink to send the user to after they are confirmed.
-	 * @param options.data Optional user metadata
+	 * @param options Additional options to be included when inviting.
 	 */
 	async inviteUserByEmail(
 		email: string,
 		options: {
-			redirectTo?: string;
+			/** A custom data object to store additional metadata about the user. This maps to the `auth.users.user_metadata` column. */
 			data?: object;
+
+			/** The URL which will be appended to the email link sent to the user's email address. Once clicked the user will end up on this URL. */
+			redirectTo?: string;
 		} = {}
 	): Promise<UserResponse> {
 		try {
@@ -230,7 +233,7 @@ export default class GoTrueAdminApi {
 	 * Delete a user. Requires a `service_role` key.
 	 *
 	 * @param id The user id you want to remove.
-	 * @param shouldSoftDelete If true, then the user will be soft-deleted from the auth schema.
+	 * @param shouldSoftDelete If true, then the user will be soft-deleted (setting `deleted_at` to the current timestamp and disabling their account while preserving their data) from the auth schema.
 	 * Defaults to false for backward compatibility.
 	 *
 	 * This function should only be called on a server. Never expose your `service_role` key in the browser.
