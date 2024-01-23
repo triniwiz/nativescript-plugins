@@ -199,7 +199,7 @@ export default class SupabaseClient<Database = any, SchemaName extends string & 
 		return data.session?.access_token ?? null;
 	}
 
-	private _initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, storageKey, flowType }: SupabaseAuthClientOptions, headers?: Record<string, string>, fetch?: Fetch) {
+	private _initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, storageKey, flowType, ...rest }: SupabaseAuthClientOptions, headers?: Record<string, string>, fetch?: Fetch) {
 		const authHeaders = {
 			Authorization: `Bearer ${this.supabaseKey}`,
 			apikey: `${this.supabaseKey}`,
@@ -214,6 +214,7 @@ export default class SupabaseClient<Database = any, SchemaName extends string & 
 			storage,
 			flowType,
 			fetch,
+			...rest,
 		});
 	}
 
