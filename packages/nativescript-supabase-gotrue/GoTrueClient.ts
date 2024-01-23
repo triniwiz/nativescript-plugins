@@ -68,6 +68,7 @@ const DEFAULT_OPTIONS: Omit<Required<GoTrueClientOptions>, 'fetch' | 'storage' |
 	headers: DEFAULT_HEADERS,
 	flowType: 'implicit',
 	debug: false,
+	allowExpiredSession: false,
 };
 
 /** Current session will be checked for refresh at this interval. */
@@ -104,6 +105,7 @@ export default class GoTrueClient {
 
 	protected autoRefreshToken: boolean;
 	protected persistSession: boolean;
+	protected allowExpiredSession: boolean;
 	protected storage: SupportedStorage;
 	protected memoryStorage: { [key: string]: string } | null = null;
 	protected stateChangeEmitters: Map<string, Subscription> = new Map();
@@ -155,6 +157,7 @@ export default class GoTrueClient {
 		}
 
 		this.persistSession = settings.persistSession;
+		this.allowExpiredSession = settings.allowExpiredSession;
 		this.storageKey = settings.storageKey;
 		this.autoRefreshToken = settings.autoRefreshToken;
 		this.admin = new GoTrueAdminApi({
@@ -990,7 +993,7 @@ export default class GoTrueClient {
 
 			const { session, error } = await this._callRefreshToken(currentSession.refresh_token);
 
-			if (isAuthRetryableFetchError(error)) {
+			if (isAuthRetryableFetchError(error) && this.allowExpiredSession) {
 				// custom: in case the refresh fails, we still want to keep the user session alive and retry refresh at a later point
 				// this is particularly useful when the device is offline, we don't want to log the user out.
 				return { data: { session: currentSession }, error: null };

@@ -52,6 +52,12 @@ export type GoTrueClientOptions = {
 	 * @experimental
 	 */
 	lock?: LockFunc;
+
+  // custom in NativeScript
+  /**
+   * Whether or not to allow an expired session to be used in case the initial refresh fails (ie. the user is offline).
+   */
+  allowExpiredSession?: boolean;
 };
 
 export type WeakPasswordReasons = 'length' | 'characters' | 'pwned' | string;
