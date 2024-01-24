@@ -60,32 +60,55 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 }
 
 export class StripeStandardCustomerSession {
-	readonly native: com.stripe.android.CustomerSession;
+	native: com.stripe.android.CustomerSession;
 
-	constructor(shouldPrefetchEphemeralKey: boolean = false) {
-		StripeStandardConfig.shared.initPaymentConfiguration();
-		com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, createKeyProvider(), shouldPrefetchEphemeralKey);
-		this.native = com.stripe.android.CustomerSession.getInstance();
-	}
+	constructor() {}
+
+    public async getInstance(shouldPrefetchEphemeralKey: boolean = false) {
+        try {
+
+            StripeStandardConfig.shared.initPaymentConfiguration();
+            const ephemeralKey = await createKeyProvider();
+            com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, ephemeralKey, true ?? false);
+            this.native = com.stripe.android.CustomerSession.getInstance();
+        }
+        catch(e) {
+            console.error("getInstance customer session", e);
+        }
+    }
 
 	private static get context(): android.content.Context {
 		return Utils.android.getApplicationContext();
 	}
 }
 
-function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
-	return new com.stripe.android.EphemeralKeyProvider({
-		createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
-			StripeStandardConfig.shared.backendAPI
-				.createCustomerKey(apiVersion)
-				.then((key) => {
-					keyUpdateListener.onKeyUpdate(JSON.stringify(key));
-				})
-				.catch((e) => {
-					keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(e));
-				});
-		},
-	});
+// async function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
+// 	return new com.stripe.android.EphemeralKeyProvider({
+// 		createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
+// 			StripeStandardConfig.shared.backendAPI
+// 				.createCustomerKey(apiVersion)
+// 				.then((key) => {
+// 					keyUpdateListener.onKeyUpdate(JSON.stringify(key));
+// 				})
+// 				.catch((e) => {
+// 					keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(e));
+// 				});
+// 		},
+// 	});
+// }
+async function createKeyProvider(): Promise<com.stripe.android.EphemeralKeyProvider> {
+    const ephemeralKey = await StripeStandardConfig.shared.backendAPI
+        .createCustomerKey();
+    return new com.stripe.android.EphemeralKeyProvider({
+        createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void  {
+            if(ephemeralKey.error) {
+                keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(ephemeralKey.error));
+            }
+            else {
+                keyUpdateListener.onKeyUpdate(JSON.stringify(ephemeralKey));
+            }
+        },
+    });
 }
 
 export class StripeStandardPaymentSession {
@@ -96,10 +119,27 @@ export class StripeStandardPaymentSession {
 	loading: boolean;
 	paymentInProgress: boolean;
 	_data: com.stripe.android.PaymentSessionData;
+    public customerSession: StripeStandardCustomerSession = new StripeStandardCustomerSession();
+    public listener: StripeStandardPaymentListener
+    public currency: string;
 	private _activityResultListener;
 	private _callback: any;
 
-	constructor(_page: Page, public customerSession: StripeStandardCustomerSession, amount: number, public currency: string, public listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+
+	constructor(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+        // show the loader while getting the ephemeralKey
+        let paymentData = { 
+            isReadyToCharge: false,
+            paymentMethod: null,
+            shippingInfo: null,
+            shippingAddress: null,
+        };
+        listener.onPaymentDataChanged(paymentData);
+        this.build(_page, amount, currency, listener, prefilledAddress)
+	}
+
+    private async build(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+        await this.customerSession.getInstance();
 		let builder = StripeStandardConfig.shared.nativeBuilder;
 		if (prefilledAddress) {
 			const address: com.stripe.android.model.Address.Builder = prefilledAddress.android;
@@ -127,8 +167,8 @@ export class StripeStandardPaymentSession {
 		this.native.init(createPaymentSessionListener(this, listener));
 		this.native.setCartTotal(amount);
 		this._activityResultListener = this._resultListener.bind(this);
-		Application.android.on(AndroidApplication.activityResultEvent, this._activityResultListener);
-	}
+		Application.android.on(Application.android.activityResultEvent, this._activityResultListener);
+    }
 
 	_resultListener(args: AndroidActivityResultEventData) {
 		if (args.intent) {

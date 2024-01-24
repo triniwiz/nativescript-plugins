@@ -34,12 +34,12 @@ export interface IStripeStandardBackendAPI {
 	 * Calls the client-implemented Stripe backend to retrieve a Customer Key
 	 * (ephemeral key) for this session.
 	 *
-	 * @param apiVersion The API Version to send to the backend.
+     * @param apiVersion The API Version to send to the backend.
 	 * @returns a Promise with a response containing the ephemeral key as
 	 *     returned by the Stripe backend. For example, response.content.toJSON().
 	 *     Any error should be reported as a string that can be displayed to the user.
 	 */
-	createCustomerKey(apiVersion: string): Promise<any>;
+	createCustomerKey(apiVersion?: string): Promise<any>;
 
 	/**
 	 * Calls the client-implemented Stripe backend to complete a charge.
