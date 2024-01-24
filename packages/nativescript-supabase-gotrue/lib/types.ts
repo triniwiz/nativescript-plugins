@@ -2,11 +2,28 @@ import { AuthError } from './errors';
 import { Fetch } from './fetch';
 
 /** One of the providers supported by GoTrue. */
-export type Provider = 'apple' | 'azure' | 'bitbucket' | 'discord' | 'facebook' | 'github' | 'gitlab' | 'google' | 'keycloak' | 'linkedin' | 'notion' | 'slack' | 'spotify' | 'twitch' | 'twitter' | 'workos';
+export type Provider = 'apple' | 'azure' | 'bitbucket' | 'discord' | 'facebook' | 'figma' | 'github' | 'gitlab' | 'google' | 'kakao' | 'keycloak' | 'linkedin' | 'linkedin_oidc' | 'notion' | 'slack' | 'spotify' | 'twitch' | 'twitter' | 'workos' | 'zoom' | 'fly';
 
 export type AuthChangeEventMFA = 'MFA_CHALLENGE_VERIFIED';
 
 export type AuthChangeEvent = 'INITIAL_SESSION' | 'PASSWORD_RECOVERY' | 'SIGNED_IN' | 'SIGNED_OUT' | 'TOKEN_REFRESHED' | 'USER_UPDATED' | AuthChangeEventMFA;
+
+/**
+ * Provide your own global lock implementation instead of the default
+ * implementation. The function should acquire a lock for the duration of the
+ * `fn` async function, such that no other client instances will be able to
+ * hold it at the same time.
+ *
+ * @experimental
+ *
+ * @param name Name of the lock to be acquired.
+ * @param acquireTimeout If negative, no timeout should occur. If positive it
+ *                       should throw an Error with an `isAcquireTimeout`
+ *                       property set to true if the operation fails to be
+ *                       acquired after this much time (ms).
+ * @param fn The operation to execute when the lock is acquired.
+ */
+export type LockFunc = <R>(name: string, acquireTimeout: number, fn: () => Promise<R>) => Promise<R>;
 
 export type GoTrueClientOptions = {
 	/* The URL of the GoTrue server. */
@@ -27,6 +44,26 @@ export type GoTrueClientOptions = {
 	fetch?: Fetch;
 	/* If set to 'pkce' PKCE flow. Defaults to the 'implicit' flow otherwise */
 	flowType?: AuthFlowType;
+	/* If debug messages are emitted. Can be used to inspect the behavior of the library. If set to a function, the provided function will be used instead of `console.log()` to perform the logging. */
+	debug?: boolean | ((message: string, ...args: any[]) => void);
+	/**
+	 * Provide your own locking mechanism based on the environment. By default no locking is done at this time.
+	 *
+	 * @experimental
+	 */
+	lock?: LockFunc;
+
+  // custom in NativeScript
+  /**
+   * Whether or not to allow an expired session to be used in case the initial refresh fails (ie. the user is offline).
+   */
+  allowExpiredSession?: boolean;
+};
+
+export type WeakPasswordReasons = 'length' | 'characters' | 'pwned' | string;
+export type WeakPassword = {
+	reasons: WeakPasswordReasons[];
+	message: string;
 };
 
 export type AuthResponse =
@@ -41,6 +78,72 @@ export type AuthResponse =
 			data: {
 				user: null;
 				session: null;
+			};
+			error: AuthError;
+	  };
+
+export type AuthResponsePassword =
+	| {
+			data: {
+				user: User | null;
+				session: Session | null;
+				weak_password?: WeakPassword | null;
+			};
+			error: null;
+	  }
+	| {
+			data: {
+				user: null;
+				session: null;
+			};
+			error: AuthError;
+	  };
+
+/**
+ * AuthOtpResponse is returned when OTP is used.
+ *
+ * {@see AuthRsponse}
+ */
+export type AuthOtpResponse =
+	| {
+			data: { user: null; session: null; messageId?: string | null };
+			error: null;
+	  }
+	| {
+			data: { user: null; session: null; messageId?: string | null };
+			error: AuthError;
+	  };
+
+export type AuthTokenResponse =
+	| {
+			data: {
+				user: User;
+				session: Session;
+			};
+			error: null;
+	  }
+	| {
+			data: {
+				user: null;
+				session: null;
+			};
+			error: AuthError;
+	  };
+
+export type AuthTokenResponsePassword =
+	| {
+			data: {
+				user: User;
+				session: Session;
+				weakPassword?: WeakPassword;
+			};
+			error: null;
+	  }
+	| {
+			data: {
+				user: null;
+				session: null;
+				weakPassword?: null;
 			};
 			error: AuthError;
 	  };
@@ -149,6 +252,7 @@ export interface UserIdentity {
 	identity_data?: {
 		[key: string]: any;
 	};
+	identity_id: string;
 	provider: string;
 	created_at?: string;
 	last_sign_in_at?: string;
@@ -233,6 +337,13 @@ export interface UserAttributes {
 	password?: string;
 
 	/**
+	 * The nonce sent for reauthentication if the user's password is to be updated.
+	 *
+	 * Call reauthenticate() to obtain the nonce first.
+	 */
+	nonce?: string;
+
+	/**
 	 * A custom data object to store the user's metadata. This maps to the `auth.users.user_metadata` column.
 	 *
 	 * The `data` should be a JSON object that includes user-specific info, such as their first and last name.
@@ -289,6 +400,15 @@ export interface AdminUserAttributes extends Omit<UserAttributes, 'data'> {
 	 * Setting the ban duration to 'none' lifts the ban on the user.
 	 */
 	ban_duration?: string | 'none';
+
+	/**
+	 * The `role` claim set in the user's access token JWT.
+	 *
+	 * When a user signs up, this role is set to `authenticated` by default. You should only modify the `role` if you need to provision several levels of admin access that have different permissions on individual columns in your database.
+	 *
+	 * Setting this role to `service_role` is not recommended as it grants the user admin privileges.
+	 */
+	role?: string;
 }
 
 export interface Subscription {
@@ -430,13 +550,13 @@ export type SignInWithOAuthCredentials = {
 };
 
 export type SignInWithIdTokenCredentials = {
-	/**
-	 * Only Apple and Google ID tokens are supported for use from within iOS or Android applications.
-	 */
-	provider: 'google' | 'apple';
-	/** ID token issued by Apple or Google. */
+	/** Provider name or OIDC `iss` value identifying which provider should be used to verify the provided token. Supported names: `google`, `apple`, `azure`, `facebook`, `keycloak` (deprecated). */
+	provider: 'google' | 'apple' | 'azure' | 'facebook' | string;
+	/** OIDC ID token issued by the specified provider. The `iss` claim in the ID token must match the supplied provider. Some ID tokens contain an `at_hash` which require that you provide an `access_token` value to be accepted properly. If the token contains a `nonce` claim you must supply the nonce used to obtain the ID token. */
 	token: string;
-	/** If the ID token contains a `nonce`, then the hash of this value is compared to the value in the ID token. */
+	/** If the ID token contains an `at_hash` claim, then the hash of this value is compared to the value in the ID token. */
+	access_token?: string;
+	/** If the ID token contains a `nonce` claim, then the hash of this value is compared to the value in the ID token. */
 	nonce?: string;
 	options?: {
 		/** Verification token received when the user completes the captcha on the site. */
@@ -444,7 +564,7 @@ export type SignInWithIdTokenCredentials = {
 	};
 };
 
-export type VerifyOtpParams = VerifyMobileOtpParams | VerifyEmailOtpParams;
+export type VerifyOtpParams = VerifyMobileOtpParams | VerifyEmailOtpParams | VerifyTokenHashParams;
 export interface VerifyMobileOtpParams {
 	/** The user's phone number. */
 	phone: string;
@@ -474,13 +594,45 @@ export interface VerifyEmailOtpParams {
 	options?: {
 		/** A URL to send the user to after they are confirmed. */
 		redirectTo?: string;
-		/** Verification token received when the user completes the captcha on the site. */
+
+		/** Verification token received when the user completes the captcha on the site.
+		 *
+		 * @deprecated
+		 */
 		captchaToken?: string;
 	};
 }
 
+export interface VerifyTokenHashParams {
+	/** The token hash used in an email link */
+	token_hash: string;
+
+	/** The user's verification type. */
+	type: EmailOtpType;
+}
+
 export type MobileOtpType = 'sms' | 'phone_change';
 export type EmailOtpType = 'signup' | 'invite' | 'magiclink' | 'recovery' | 'email_change' | 'email';
+
+export type ResendParams =
+	| {
+			type: Extract<EmailOtpType, 'signup' | 'email_change'>;
+			email: string;
+			options?: {
+				/** A URL to send the user to after they have signed-in. */
+				emailRedirectTo?: string;
+				/** Verification token received when the user completes the captcha on the site. */
+				captchaToken?: string;
+			};
+	  }
+	| {
+			type: Extract<MobileOtpType, 'sms' | 'phone_change'>;
+			phone: string;
+			options?: {
+				/** Verification token received when the user completes the captcha on the site. */
+				captchaToken?: string;
+			};
+	  };
 
 export type SignInWithSSO =
 	| {
@@ -678,6 +830,8 @@ export type AuthMFAEnrollResponse =
 					 * to use it. Avoid loggin this value to the console. */
 					uri: string;
 				};
+				/** Friendly name of the factor, useful for distinguishing between factors **/
+				friendly_name?: string;
 			};
 			error: null;
 	  }
@@ -917,4 +1071,18 @@ export type PageParams = {
 	page?: number;
 	/** Number of items returned per page */
 	perPage?: number;
+};
+
+export type SignOut = {
+	/**
+	 * Determines which sessions should be
+	 * logged out. Global means all
+	 * sessions by this account. Local
+	 * means only this session. Others
+	 * means all other sessions except the
+	 * current one. When using others,
+	 * there is no sign-out event fired on
+	 * the current session!
+	 */
+	scope?: 'global' | 'local' | 'others';
 };

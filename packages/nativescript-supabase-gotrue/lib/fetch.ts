@@ -1,6 +1,6 @@
 import { expiresAt, looksLikeFetchResponse } from './helpers';
-import { AuthResponse, SSOResponse, GenerateLinkProperties, GenerateLinkResponse, User, UserResponse } from './types';
-import { AuthApiError, AuthRetryableFetchError, AuthUnknownError } from './errors';
+import { AuthResponse, AuthResponsePassword, SSOResponse, GenerateLinkProperties, GenerateLinkResponse, User, UserResponse } from './types';
+import { AuthApiError, AuthRetryableFetchError, AuthWeakPasswordError, AuthUnknownError } from './errors';
 
 export type Fetch = typeof fetch;
 
@@ -19,26 +19,31 @@ export type RequestMethodType = 'GET' | 'POST' | 'PUT' | 'DELETE';
 
 const _getErrorMessage = (err: any): string => err.msg || err.message || err.error_description || err.error || JSON.stringify(err);
 
-const handleError = async (error: unknown, reject: (reason?: any) => void) => {
-	const NETWORK_ERROR_CODES = [502, 503, 504];
+const NETWORK_ERROR_CODES = [502, 503, 504];
+
+async function handleError(error: unknown) {
 	if (!looksLikeFetchResponse(error)) {
-		reject(new AuthRetryableFetchError(_getErrorMessage(error), 0));
-	} else if (NETWORK_ERROR_CODES.includes(error.status)) {
-		// status in 500...599 range - server had an error, request might be retryed.
-		reject(new AuthRetryableFetchError(_getErrorMessage(error), error.status));
-	} else {
-		// got a response from server that is not in the 500...599 range - should not retry
-		error
-			.json()
-			.then((err) => {
-				reject(new AuthApiError(_getErrorMessage(err), error.status || 500));
-			})
-			.catch((e) => {
-				// not a valid json response
-				reject(new AuthUnknownError(_getErrorMessage(e), e));
-			});
+		throw new AuthRetryableFetchError(_getErrorMessage(error), 0);
 	}
-};
+
+	if (NETWORK_ERROR_CODES.includes(error.status)) {
+		// status in 500...599 range - server had an error, request might be retryed.
+		throw new AuthRetryableFetchError(_getErrorMessage(error), error.status);
+	}
+
+	let data: any;
+	try {
+		data = await error.json();
+	} catch (e: any) {
+		throw new AuthUnknownError(_getErrorMessage(e), e);
+	}
+
+	if (typeof data === 'object' && data && typeof data.weak_password === 'object' && data.weak_password && Array.isArray(data.weak_password.reasons) && data.weak_password.reasons.length && data.weak_password.reasons.reduce((a: boolean, i: any) => a && typeof i === 'string', true)) {
+		throw new AuthWeakPasswordError(_getErrorMessage(data), error.status, data.weak_password.reasons);
+	}
+
+	throw new AuthApiError(_getErrorMessage(data), error.status || 500);
+}
 
 const _getRequestParams = (method: RequestMethodType, options?: FetchOptions, parameters?: FetchParameters, body?: object) => {
 	const params: { [k: string]: any } = { method, headers: options?.headers || {} };
@@ -78,26 +83,56 @@ export async function _request(fetcher: Fetch, method: RequestMethodType, url: s
 }
 
 async function _handleRequest(fetcher: Fetch, method: RequestMethodType, url: string, options?: FetchOptions, parameters?: FetchParameters, body?: object): Promise<any> {
-	return new Promise((resolve, reject) => {
-		fetcher(url, _getRequestParams(method, options, parameters, body))
-			.then((result) => {
-				if (!result.ok) throw result;
-				if (options?.noResolveJson) return result;
-				return result.json();
-			})
-			.then((data) => resolve(data))
-			.catch((error) => handleError(error, reject));
-	});
+	const requestParams = _getRequestParams(method, options, parameters, body);
+
+	let result: any;
+
+	try {
+		result = await fetcher(url, requestParams);
+	} catch (e) {
+		console.error(e);
+
+		// fetch failed, likely due to a network or CORS error
+		throw new AuthRetryableFetchError(_getErrorMessage(e), 0);
+	}
+
+	if (!result.ok) {
+		await handleError(result);
+	}
+
+	if (options?.noResolveJson) {
+		return result;
+	}
+
+	try {
+		return await result.json();
+	} catch (e: any) {
+		await handleError(e);
+	}
 }
 
 export function _sessionResponse(data: any): AuthResponse {
 	let session = null;
 	if (hasSession(data)) {
 		session = { ...data };
-		session.expires_at = expiresAt(data.expires_in);
+
+		if (!data.expires_at) {
+			session.expires_at = expiresAt(data.expires_in);
+		}
 	}
+
 	const user: User = data.user ?? (data as User);
 	return { data: { session, user }, error: null };
+}
+
+export function _sessionResponsePassword(data: any): AuthResponsePassword {
+	const response = _sessionResponse(data) as AuthResponsePassword;
+
+	if (!response.error && data.weak_password && typeof data.weak_password === 'object' && Array.isArray(data.weak_password.reasons) && data.weak_password.reasons.length && data.weak_password.message && typeof data.weak_password.message === 'string' && data.weak_password.reasons.reduce((a: boolean, i: any) => a && typeof i === 'string', true)) {
+    (response.data as any).weak_password = data.weak_password;
+	}
+
+	return response;
 }
 
 export function _userResponse(data: any): UserResponse {

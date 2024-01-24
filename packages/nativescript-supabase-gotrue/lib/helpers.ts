@@ -13,7 +13,16 @@ export function uuid() {
 	});
 }
 
+// custom: treat NativeScript as browser
 export const isBrowser = () => true;
+
+/**
+ * Checks whether localStorage is supported on this browser.
+ */
+export const supportsLocalStorage = () => {
+	// custom: always true in NativeScript.
+	return true;
+};
 
 export function getParameterByName(name: string, url?: string) {
 	if (!url) url = window?.location?.href ?? '';
@@ -26,16 +35,46 @@ export function getParameterByName(name: string, url?: string) {
 	return decodeURIComponent(results[2].replace(/\+/g, ' '));
 }
 
+/**
+ * Extracts parameters encoded in the URL both in the query and fragment.
+ */
+export function parseParametersFromURL(href: string) {
+	const result: { [parameter: string]: string } = {};
+
+	const url = new URL(href);
+
+	if (url.hash && url.hash[0] === '#') {
+		try {
+			const hashSearchParams = new URLSearchParams(url.hash.substring(1));
+			hashSearchParams.forEach((value, key) => {
+				result[key] = value;
+			});
+		} catch (e: any) {
+			// hash is not a query string
+		}
+	}
+
+	// search parameters take precedence over hash parameters
+	url.searchParams.forEach((value, key) => {
+		result[key] = value;
+	});
+
+	return result;
+}
+
 type Fetch = typeof fetch;
 
 export const resolveFetch = (customFetch?: Fetch): Fetch => {
 	let _fetch: Fetch;
 	if (customFetch) {
 		_fetch = customFetch;
+		// custom: don't use node-fetch in NativeScript, since we should always have a global.fetch available
+		// } else if (typeof fetch === 'undefined') {
+		// 	_fetch = (...args) => import('@supabase/node-fetch' as any).then(({ default: fetch }) => fetch(...args));
 	} else {
 		_fetch = fetch;
 	}
-	return _fetch;
+	return _fetch; // (...args) => _fetch(...args);
 };
 
 export const looksLikeFetchResponse = (maybeResponse: unknown): maybeResponse is Response => {
@@ -140,8 +179,8 @@ export function decodeJWTPayload(token: string) {
 /**
  * Creates a promise that resolves to null after some time.
  */
-export function sleep(time: number): Promise<null> {
-	return new Promise((accept) => {
+export async function sleep(time: number): Promise<null> {
+	return await new Promise((accept) => {
 		setTimeout(() => accept(null), time);
 	});
 }
@@ -185,7 +224,13 @@ export function generatePKCEVerifier() {
 	const verifierLength = 56;
 	const array = new Uint32Array(verifierLength);
 	if (typeof crypto === 'undefined') {
-		throw new Error('PKCE is not supported on devices without WebCrypto API support, please add polyfills');
+		const charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+		const charSetLen = charSet.length;
+		let verifier = '';
+		for (let i = 0; i < verifierLength; i++) {
+			verifier += charSet.charAt(Math.floor(Math.random() * charSetLen));
+		}
+		return verifier;
 	}
 	crypto.getRandomValues(array);
 	return Array.from(array, dec2hex).join('');
@@ -194,9 +239,6 @@ export function generatePKCEVerifier() {
 async function sha256(randomString: string) {
 	const encoder = new TextEncoder();
 	const encodedData = encoder.encode(randomString);
-	if (typeof crypto === 'undefined') {
-		throw new Error('PKCE is not supported on devices without WebCrypto API support, please add polyfills');
-	}
 	const hash = await crypto.subtle.digest('SHA-256', encodedData);
 	const bytes = new Uint8Array(hash);
 
@@ -210,6 +252,12 @@ function base64urlencode(str: string) {
 }
 
 export async function generatePKCEChallenge(verifier: string) {
+	const hasCryptoSupport = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined' && typeof TextEncoder !== 'undefined';
+
+	if (!hasCryptoSupport) {
+		console.warn('WebCrypto API is not supported. Code challenge method will default to use plain instead of sha256.');
+		return verifier;
+	}
 	const hashed = await sha256(verifier);
 	return base64urlencode(hashed);
 }
