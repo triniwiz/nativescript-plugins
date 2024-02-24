@@ -119,14 +119,16 @@ export class StripeStandardPaymentSession {
 	loading: boolean;
 	paymentInProgress: boolean;
 	_data: com.stripe.android.PaymentSessionData;
-    public customerSession: StripeStandardCustomerSession = new StripeStandardCustomerSession();
-    public listener: StripeStandardPaymentListener
-    public currency: string;
+  public customerSession: StripeStandardCustomerSession = new StripeStandardCustomerSession();
+  public listener: StripeStandardPaymentListener
+  public currency: string;
+  public listener: StripeStandardPaymentListener;
 	private _activityResultListener;
 	private _callback: any;
 
 
 	constructor(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+        this.listener = listener;
         // show the loader while getting the ephemeralKey
         let paymentData = { 
             isReadyToCharge: false,
