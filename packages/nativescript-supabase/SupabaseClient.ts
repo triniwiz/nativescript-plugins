@@ -1,8 +1,8 @@
-import { FunctionsClient } from '@triniwiz/nativescript-supabase-functions';
+// import { FunctionsClient } from '@triniwiz/nativescript-supabase-functions';
 import { AuthChangeEvent } from '@triniwiz/nativescript-supabase-gotrue';
 import { PostgrestClient, PostgrestFilterBuilder, PostgrestQueryBuilder } from '@triniwiz/nativescript-supabase-postgrest';
 import { RealtimeChannel, RealtimeChannelOptions, RealtimeClient, RealtimeClientOptions } from '@triniwiz/nativescript-supabase-realtime';
-import { StorageClient as SupabaseStorageClient } from '@triniwiz/nativescript-supabase-storage';
+// import { StorageClient as SupabaseStorageClient } from '@triniwiz/nativescript-supabase-storage';
 import { DEFAULT_HEADERS } from './lib/constants';
 import { fetchWithAuth } from './lib/fetch';
 import { stripTrailingSlash, applySettingDefaults } from './lib/helpers';
@@ -111,17 +111,19 @@ export default class SupabaseClient<Database = any, SchemaName extends string & 
 	 * Supabase Functions allows you to deploy and invoke edge functions.
 	 */
 	get functions() {
-		return new FunctionsClient(this.functionsUrl, {
-			headers: this.headers,
-			customFetch: this.fetch,
-		});
+		// return new FunctionsClient(this.functionsUrl, {
+		// 	headers: this.headers,
+		// 	customFetch: this.fetch,
+		// });
+		return null;
 	}
 
 	/**
 	 * Supabase Storage allows you to manage user-generated content, such as photos or videos.
 	 */
 	get storage() {
-		return new SupabaseStorageClient(this.storageUrl, this.headers, this.fetch);
+		// return new SupabaseStorageClient(this.storageUrl, this.headers, this.fetch);
+		return null;
 	}
 
 	/**
@@ -197,7 +199,7 @@ export default class SupabaseClient<Database = any, SchemaName extends string & 
 		return data.session?.access_token ?? null;
 	}
 
-	private _initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, storageKey, flowType }: SupabaseAuthClientOptions, headers?: Record<string, string>, fetch?: Fetch) {
+	private _initSupabaseAuthClient({ autoRefreshToken, persistSession, detectSessionInUrl, storage, storageKey, flowType, ...rest }: SupabaseAuthClientOptions, headers?: Record<string, string>, fetch?: Fetch) {
 		const authHeaders = {
 			Authorization: `Bearer ${this.supabaseKey}`,
 			apikey: `${this.supabaseKey}`,
@@ -212,6 +214,7 @@ export default class SupabaseClient<Database = any, SchemaName extends string & 
 			storage,
 			flowType,
 			fetch,
+			...rest,
 		});
 	}
 

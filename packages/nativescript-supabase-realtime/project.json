@@ -10,10 +10,9 @@
 				"outputPath": "dist/packages/nativescript-supabase-realtime",
 				"tsConfig": "packages/nativescript-supabase-realtime/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase-realtime/package.json",
-				"main": "packages/nativescript-supabase-realtime/index.d.ts",
+				"main": "packages/nativescript-supabase-realtime/index.ts",
 				"assets": [
 					"packages/nativescript-supabase-realtime/*.md",
-					"packages/nativescript-supabase-realtime/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",
