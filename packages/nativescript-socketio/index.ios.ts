@@ -1,13 +1,16 @@
 import { Common } from './common';
+import "./typings/objc!SocketIO";
 
-// declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
-//     NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
-//     NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
-//     NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
+declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
+    NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
+    NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
+    NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
 
 export class SocketIO extends Common {
     protected socket: SocketIOClient;
     manager: SocketManager;
+
+    auth_payload?: unknown;
 
     /**
      * Class Constructor
@@ -62,6 +65,8 @@ export class SocketIO extends Common {
                             Object.assign(connectParams, optionsQuery);
 
                         }
+                    } else if (key === 'auth') {
+                      this.auth_payload = obj[key];
                     } else if (key === 'debug' && obj[key]) {
                         opts['log'] = true;
                     } else if (key === 'cookie') {
@@ -108,7 +113,7 @@ export class SocketIO extends Common {
                                 }
                             }
                         });
-                        const props = NSDictionary.dictionaryWithDictionary<string, any>(properties as any);
+                        const props = NSDictionary.dictionaryWithDictionary(properties);
                         const native_cookie = NSHTTPCookie.cookieWithProperties(props);
                         if (native_cookie) {
                             opts['cookies'] = NSArray.arrayWithObject(native_cookie);
@@ -167,7 +172,7 @@ export class SocketIO extends Common {
 
     connect() {
         if (!this.connected) {
-            this.socket.connectWithPayload(null)
+            this.socket.connectWithPayload(this.auth_payload);
         }
     }
 
