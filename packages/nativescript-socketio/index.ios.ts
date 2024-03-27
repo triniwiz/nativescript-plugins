@@ -1,10 +1,10 @@
 import { Common } from './common';
 import "./typings/objc!SocketIO";
 
-declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
-    NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
-    NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
-    NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
+// declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
+//     NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
+//     NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
+//     NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
 
 export class SocketIO extends Common {
     protected socket: SocketIOClient;
