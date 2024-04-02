@@ -1,10 +1,11 @@
 import { Common } from './common';
 
-declare const co: any;
+declare const co: any, io: any, java: any, org: any, android: any;
 
 export class SocketIO extends Common {
 	protected socket: io.socket.client.Socket;
 
+  auth_payload: any;
 	/* io.socket.client.Socket; */
 
 	constructor(...args: any[]) {
@@ -44,10 +45,17 @@ export class SocketIO extends Common {
 							opts.setTransports(array);
 						}
 					} else if (key === 'auth') {
+            const authMap = new java.util.HashMap();
 						const cookies = options['cookie'];
 						const extraHeaders = options['extraHeaders'];
-						const headers = java.util.Collections.emptyMap();
-						if (cookies) {
+						const headers = java.util.HashMap();
+
+            for (const [auth_key, auth_value] of Object.entries(options[key])) {
+              authMap.put(auth_key, auth_value);
+              this.auth_payload[auth_key] = auth_value;
+            }
+
+            if (cookies) {
 							if (headers && headers.put) {
 								const list = new java.util.ArrayList(java.util.Arrays.asList(cookies));
 								headers.put('Cookie', list);
@@ -65,10 +73,10 @@ export class SocketIO extends Common {
 								});
 							}
 						}
-						if (!headers.isEmpty()) {
-							opts.setExtraHeaders(headers);
-						}
-					} else if (opts['set' + key[0].toUpperCase() + key.substring(1)]) {
+						if (!headers.isEmpty()) opts.setExtraHeaders(headers);
+            if (!authMap.isEmpty()) opts.setAuth(authMap);
+
+          } else if (opts['set' + key[0].toUpperCase() + key.substring(1)]) {
             opts['set' + key[0].toUpperCase() + key.substring(1)](options[key]); // for example transforms to setPath(options[path])
           }
 				}
