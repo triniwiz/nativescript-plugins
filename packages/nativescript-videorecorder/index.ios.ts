@@ -205,6 +205,7 @@ class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePic
 	}
 
 	imagePickerControllerDidCancel(picker: any /*UIImagePickerController*/) {
+    this._reject({ event: 'cancelled' });
 		picker.presentingViewController.dismissViewControllerAnimatedCompletion(true, null);
 		listener = null;
 	}
