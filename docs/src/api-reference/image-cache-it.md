@@ -122,7 +122,7 @@ ImageCacheIt.enableAutoMM();
 
 | Method    | Type  |    iOS  | Android |  Notes |
 | :---      |:---:  | :---:  | :---:  | :---: |
-| getItem(src: string)   | `Promise<string>` | :white_check_mark:  | :white_check_mark: | cache remote url then returns local path if url has not been cached before |
+| getItem(src: string, headers?: Map<string, string>)   | `Promise<string>` | :white_check_mark:  | :white_check_mark: | cache remote url then returns local path if url has not been cached before |
 | deleteItem(src: string)   | `Promise<any>` | :white_check_mark:  | :x: | deletes local item cached for the url supplied |
 | hasItem(src: string)   | `Promise<any>` | :white_check_mark:  | :white_check_mark: | resolves if an item is currently cached for remote url supplied. |
 | clear()   | `Promise<any>` | :white_check_mark:  | :white_check_mark: |  |

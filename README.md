@@ -1,63 +1,46 @@
-# @triniwiz/\* plugins
-
-```
-npm run setup
-npm start
-```
-
-- [@triniwiz/nativescript-accelerometer](https://github.com/triniwiz/nativescript-plugins/tree/master/packages/nativescript-accelerometer)
-  - [![npm](https://img.shields.io/npm/dm/@triniwiz/nativescript-accelerometer.svg)](https://www.npmjs.com/package/@triniwiz/nativescript-accelerometer)
-- @triniwiz/nativescript-accelerometer
-- @triniwiz/nativescript-accordion
-- @triniwiz/nativescript-autocomplete
-- @triniwiz/nativescript-awesome-loaders
-- @triniwiz/nativescript-aws-sdk
-- @triniwiz/nativescript-aws-sdk-s3
-- @triniwiz/nativescript-card-io
-- @triniwiz/nativescript-couchbase
-- @triniwiz/nativescript-ddp-login
-- @triniwiz/nativescript-downloader
-- @triniwiz/nativescript-fancy-camera
-- @triniwiz/nativescript-fancy-list-view
-- @triniwiz/nativescript-ffmpeg
-- @triniwiz/nativescript-file-manager
-- @triniwiz/nativescript-here
-- @triniwiz/nativescript-image-cache-it
-- @triniwiz/nativescript-image-zoom
-- @triniwiz/nativescript-imageoptimize
-- @triniwiz/nativescript-kin
-- @triniwiz/nativescript-mongo-stitch-core
-- @triniwiz/nativescript-mongo-stitch-sdk
-- @triniwiz/nativescript-mongo-stitch-services-mongodb-remote
-- @triniwiz/nativescript-nested-scrollview
-- @triniwiz/nativescript-opentok
-- @triniwiz/nativescript-pager
-- @triniwiz/nativescript-parsesdk
-- @triniwiz/nativescript-popup
-- @triniwiz/nativescript-pubnub
-- @triniwiz/nativescript-pusher-beams
-- @triniwiz/nativescript-pusher-channels
-- @triniwiz/nativescript-radar-io
-- @triniwiz/nativescript-sinch
-- @triniwiz/nativescript-socketio
-- @triniwiz/nativescript-splashscreen
-- @triniwiz/nativescript-sse
-- @triniwiz/nativescript-star-ratings
-- @triniwiz/nativescript-stripe
-- @triniwiz/nativescript-supabase
-- @triniwiz/nativescript-supabase-gotrue
-- @triniwiz/nativescript-supabase-postgrest
-- @triniwiz/nativescript-supabase-realtime
-- @triniwiz/nativescript-supabase-storage
-- @triniwiz/nativescript-textdrawable
-- @triniwiz/nativescript-toasty
-- @triniwiz/nativescript-tooltip
-- @triniwiz/nativescript-twitter
-- @triniwiz/nativescript-video-editor
-- @triniwiz/nativescript-videorecorder
-- @triniwiz/nativescript-webrtc
-- @triniwiz/nativescript-yogalayout
-- @triniwiz/nativescript-youtubeplayer
+- [@triniwiz/nativescript-accelerometer](packages/nativescript-accelerometer/README.md)
+- [@triniwiz/nativescript-accordion](packages/nativescript-accordion/README.md)
+- [@triniwiz/nativescript-autocomplete](packages/nativescript-autocomplete/README.md)
+- [@triniwiz/nativescript-aws-sdk](packages/nativescript-aws-sdk/README.md)
+- [@triniwiz/nativescript-aws-sdk-s3](packages/nativescript-aws-sdk-s3/README.md)
+- [@triniwiz/nativescript-couchbase](packages/nativescript-couchbase/README.md)
+- [@triniwiz/nativescript-downloader](packages/nativescript-downloader/README.md)
+- [@triniwiz/nativescript-ffmpeg](packages/nativescript-ffmpeg/README.md)
+- [@triniwiz/nativescript-here](packages/nativescript-here/README.md)
+- [@triniwiz/nativescript-image-cache-it](packages/nativescript-image-cache-it/README.md)
+- [@triniwiz/nativescript-image-zoom](packages/nativescript-image-zoom/README.md)
+- [@triniwiz/nativescript-imageoptimize](packages/nativescript-imageoptimize/README.md)
+- [@triniwiz/nativescript-messenger](packages/nativescript-messenger/README.md)
+- [@triniwiz/nativescript-nested-scrollview](packages/nativescript-nested-scrollview/README.md)
+- [@triniwiz/nativescript-opentok](packages/nativescript-opentok/README.md)
+- [@triniwiz/nativescript-pager](packages/nativescript-pager/README.md)
+- [@triniwiz/nativescript-parsesdk](packages/nativescript-parsesdk/README.md)
+- [@triniwiz/nativescript-popup](packages/nativescript-popup/README.md)
+- [@triniwiz/nativescript-pubnub](packages/nativescript-pubnub/README.md)
+- [@triniwiz/nativescript-pusher-beams](packages/nativescript-pusher-beams/README.md)
+- [@triniwiz/nativescript-pusher-channels](packages/nativescript-pusher-channels/README.md)
+- [@triniwiz/nativescript-radar-io](packages/nativescript-radar-io/README.md)
+- [@triniwiz/nativescript-sinch](packages/nativescript-sinch/README.md)
+- [@triniwiz/nativescript-socketio](packages/nativescript-socketio/README.md)
+- [@triniwiz/nativescript-splashscreen](packages/nativescript-splashscreen/README.md)
+- [@triniwiz/nativescript-sse](packages/nativescript-sse/README.md)
+- [@triniwiz/nativescript-star-ratings](packages/nativescript-star-ratings/README.md)
+- [@triniwiz/nativescript-stripe](packages/nativescript-stripe/README.md)
+- [@triniwiz/nativescript-supabase](packages/nativescript-supabase/README.md)
+- [@triniwiz/nativescript-supabase-functions](packages/nativescript-supabase-functions/README.md)
+- [@triniwiz/nativescript-supabase-gotrue](packages/nativescript-supabase-gotrue/README.md)
+- [@triniwiz/nativescript-supabase-postgrest](packages/nativescript-supabase-postgrest/README.md)
+- [@triniwiz/nativescript-supabase-realtime](packages/nativescript-supabase-realtime/README.md)
+- [@triniwiz/nativescript-supabase-storage](packages/nativescript-supabase-storage/README.md)
+- [@triniwiz/nativescript-textdrawable](packages/nativescript-textdrawable/README.md)
+- [@triniwiz/nativescript-toasty](packages/nativescript-toasty/README.md)
+- [@triniwiz/nativescript-tooltip](packages/nativescript-tooltip/README.md)
+- [@triniwiz/nativescript-twitter](packages/nativescript-twitter/README.md)
+- [@triniwiz/nativescript-video-editor](packages/nativescript-video-editor/README.md)
+- [@triniwiz/nativescript-videorecorder](packages/nativescript-videorecorder/README.md)
+- [@triniwiz/nativescript-webrtc](packages/nativescript-webrtc/README.md)
+- [@triniwiz/nativescript-yogalayout](packages/nativescript-yogalayout/README.md)
+- [@triniwiz/nativescript-youtubeplayer](packages/nativescript-youtubeplayer/README.md)
 
 # How to use?
 

@@ -1,4 +1,5 @@
 {
+	"name": "nativescript-imageoptimize",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-imageoptimize",
 	"projectType": "library",
@@ -30,12 +31,12 @@
 			]
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-imageoptimize"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-imageoptimize"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-imageoptimize"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -52,7 +53,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-imageoptimize"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",

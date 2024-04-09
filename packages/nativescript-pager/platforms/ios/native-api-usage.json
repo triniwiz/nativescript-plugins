@@ -3,6 +3,7 @@
       "CHIPageControl*:*",
       "Dispatch*:*",
       "Darwin*:*",
-      "nsswiftsupport:PagerUtils*"
+      "nsswiftsupport:PagerUtils*",
+      "CollectionViewPagingLayout*:*"
     ]
   }

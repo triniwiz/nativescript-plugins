@@ -1,7 +1,7 @@
 # Nativescript Nativescript Imageoptimize
 
 ```javascript
-ns plugin add @triniwiz/nativescript-imageoptimize
+npm install @triniwiz/nativescript-imageoptimize
 ```
 
 ## Usage

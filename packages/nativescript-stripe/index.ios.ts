@@ -1,4 +1,4 @@
-import { Frame, Utils, View } from '@nativescript/core';
+import { Frame, Utils, View, Application } from '@nativescript/core';
 import { BankAccountHolderType, BankAccountStatus, CardBrand, CardFunding, CreditCardViewBase, GetBrand, IAddress, IBankAccount, ICard, ICardParams, IPaymentMethod, IStripePaymentIntent, isUSZipRequiredProperty, IToken, PaymentMethodType, showPostalCodeProperty, StripePaymentIntentStatus } from './common';
 import { PaymentMethodCard } from './paymentMethod';
 import { Source } from './source';
@@ -353,7 +353,7 @@ export class Stripe {
 	}
 }
 
-@NativeClass
+@NativeClass()
 @ObjCClass(STPAuthenticationContext)
 class STPAuthenticationContextImp extends NSObject implements STPAuthenticationContext {
 	_vc: UIViewController;
@@ -536,7 +536,7 @@ export class CardParams implements ICardParams {
 	}
 }
 
-@NativeClass
+@NativeClass()
 class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPaymentCardTextFieldDelegate {
 	public static ObjCProtocols = [STPPaymentCardTextFieldDelegate];
 	_owner: WeakRef<CreditCardView>;
@@ -601,7 +601,9 @@ class STPPaymentCardTextFieldDelegateImpl extends NSObject implements STPPayment
 }
 
 export class CreditCardView extends CreditCardViewBase {
-	nativeView: STPPaymentCardTextField;
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+  nativeView: STPPaymentCardTextField;
 	private delegate: STPPaymentCardTextFieldDelegateImpl;
 
 	public createNativeView(): STPPaymentCardTextField {
@@ -828,7 +830,8 @@ class StripeIntent {
 }
 
 export class StripePaymentIntent extends StripeIntent implements IStripePaymentIntent {
-	// @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   native: STPPaymentIntent;
 
 	static fromNative(native: STPPaymentIntent): StripePaymentIntent {
@@ -885,7 +888,8 @@ export class StripePaymentIntentParams {
 }
 
 export class StripeSetupIntent extends StripeIntent {
-	// @ts-ignore
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
 	native: STPSetupIntent;
 
 	static fromNative(native: STPSetupIntent): StripeSetupIntent {
@@ -945,3 +949,39 @@ export class StripeRedirectSession {
 		return keyWindow != null ? keyWindow.rootViewController : undefined;
 	}
 }
+
+@NativeClass()
+class CustomUIApplicationDelegate extends UIResponder implements UIApplicationDelegate {
+    public static ObjCProtocols = [UIApplicationDelegate];
+}
+
+// setup app delegate
+let delegate = Application.ios.delegate;
+if (!delegate) {
+    delegate = Application.ios.delegate = CustomUIApplicationDelegate as any;
+}
+
+/**
+ * Add delegate method handler, but also preserve any existing one.
+ */
+function addDelegateHandler(classRef: any, methodName: string, handler: (...args: any) => void) {
+    const crtHandler = classRef.prototype[methodName];
+    classRef.prototype[methodName] = function () {
+      // eslint-disable-next-line prefer-rest-params
+        const args = Array.from(arguments);
+        if (crtHandler) {
+            const result = crtHandler.apply(this, args);
+            args.push(result);
+        }
+
+        return handler.apply(this, args);
+    };
+}
+
+addDelegateHandler(delegate, 'applicationContinueUserActivityRestorationHandler', (_application: UIApplication, userActivity: NSUserActivity) => {
+    return handleContinueUserActivity(userActivity);
+});
+
+addDelegateHandler(delegate, 'applicationOpenURLOptions', (_app, url, _options) => {
+    return handleOpenURL(url);
+});

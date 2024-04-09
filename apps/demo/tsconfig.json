@@ -56,7 +56,6 @@
 			"@triniwiz/nativescript-file-manager": ["../../packages/nativescript-file-manager/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout": ["../../packages/nativescript-yogalayout/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout/angular": ["../../packages/nativescript-yogalayout/angular/index.ts"],
-			"@triniwiz/nativescript-kin": ["../../packages/nativescript-kin/index.d.ts"],
 			"@triniwiz/nativescript-parsesdk": ["../../packages/nativescript-parsesdk/index.d.ts"],
 			"@triniwiz/nativescript-supabase": ["../../packages/nativescript-supabase/index.ts"],
 			"@triniwiz/nativescript-supabase-gotrue": ["../../packages/nativescript-supabase-gotrue/index.ts"],

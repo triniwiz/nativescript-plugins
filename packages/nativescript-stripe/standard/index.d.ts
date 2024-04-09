@@ -49,9 +49,11 @@ export declare class StripeStandardConfig implements IStripeStandardConfig {
 }
 
 export declare class StripeStandardCustomerSession {
-  readonly native: com.stripe.android.CustomerSession;
+  private native: com.stripe.android.CustomerSession;
 
   constructor();
+
+  public getInstance(shouldPrefetchEphemeralKey: boolean = false): void;
 
   private static get context();
 }
@@ -70,7 +72,7 @@ export declare class StripeStandardPaymentSession {
   private receiver;
   private _activityResultListener;
 
-  constructor(_page: Page, customerSession: StripeStandardCustomerSession, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address);
+  constructor(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address);
 
   _resultListener(args: AndroidActivityResultEventData): void;
 

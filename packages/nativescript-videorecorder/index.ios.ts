@@ -205,6 +205,7 @@ class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePic
 	}
 
 	imagePickerControllerDidCancel(picker: any /*UIImagePickerController*/) {
+    this._reject({ event: 'cancelled' });
 		picker.presentingViewController.dismissViewControllerAnimatedCompletion(true, null);
 		listener = null;
 	}
@@ -224,18 +225,18 @@ class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePic
 					let nativePath = NSURL.fileURLWithPath(path);
 					session.outputURL = nativePath;
 					session.exportAsynchronouslyWithCompletionHandler(() => {
-						let assetLibrary = ALAssetsLibrary.alloc().init();
+						const assetLibrary = ALAssetsLibrary.new();
 						assetLibrary.writeVideoAtPathToSavedPhotosAlbumCompletionBlock(nativePath, (file, error) => {
 							if (!error) {
 								this._resolve({ file: file.path });
 							} else {
-								File.fromPath(path).remove();
+								File.fromPath(path).removeSync();
 								this._reject(error.localizedDescription);
 							}
 						});
 					});
 				} else {
-					let assetLibrary = ALAssetsLibrary.alloc().init();
+					const assetLibrary = ALAssetsLibrary.new();
 					assetLibrary.writeVideoAtPathToSavedPhotosAlbumCompletionBlock(source, (file, error) => {
 						if (!error) {
 							this._resolve({ file: file.path });
@@ -245,20 +246,20 @@ class UIImagePickerControllerDelegateImpl extends NSObject implements UIImagePic
 					});
 				}
 			} else {
-				let source = info.objectForKey(UIImagePickerControllerMediaURL);
+				const source = info.objectForKey(UIImagePickerControllerMediaURL);
 				if (this._format === VideoFormat.MP4) {
-					let asset = AVAsset.assetWithURL(source);
-					let preset = this._hd ? AVAssetExportPresetHighestQuality : AVAssetExportPresetLowQuality;
-					let session = AVAssetExportSession.exportSessionWithAssetPresetName(asset, preset);
+					const asset = AVAsset.assetWithURL(source);
+					const preset = this._hd ? AVAssetExportPresetHighestQuality : AVAssetExportPresetLowQuality;
+					const session = AVAssetExportSession.exportSessionWithAssetPresetName(asset, preset);
 					session.outputFileType = AVFileTypeMPEG4;
-					let fileName = `VID_${+new Date()}.mp4`;
+					const fileName = `VID_${+new Date()}.mp4`;
 					const path = nsPath.join(knownFolders.documents().path, fileName);
 					session.outputURL = NSURL.fileURLWithPath(path);
 					session.exportAsynchronouslyWithCompletionHandler(() => {
 						if (session.error) {
 							this._reject(session.error.localizedDescription);
 						} else {
-							File.fromPath(source.path).remove();
+							File.fromPath(source.path).removeSync();
 							this._resolve({ file: path });
 						}
 					});

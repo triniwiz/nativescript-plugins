@@ -175,14 +175,14 @@ export class TNSReturnCode extends TNSReturnCodeBase {
 	}
 	android: any;
 	get isSuccess(): boolean {
-		return this.native.isSuccess();
+		return this.native.isValueSuccess();
 	}
 
 	get isCancel(): boolean {
-		return this.native.isCancel();
+		return this.native.isValueCancel();
 	}
 	get isError(): boolean {
-		return this.native.isError();
+		return this.native.isValueError();
 	}
 
 	get value(): number {
@@ -214,7 +214,7 @@ export class TNSMediaStream extends TNSMediaStreamBase {
 		return this.native.getCodec();
 	}
 	get fullCodec(): string {
-		return this.native.getFullCodec();
+		return this.native.getCodecLong();
 	}
 	get format(): string {
 		return this.native.getFormat();
@@ -337,7 +337,7 @@ export class FFmpeg {
 
 	public static executeWithArguments(args: string[], statisticsCallback: (session: TNSStatistics) => void = null, logCallback: (session: TNSLog) => void = null): Promise<TNSSession> {
 		return new Promise((resolve, reject) => {
-			FFmpegKit.executeWithArgumentsAsyncWithExecuteCallbackWithLogCallbackWithStatisticsCallback(
+			FFmpegKit.executeWithArgumentsAsyncWithCompleteCallbackWithLogCallbackWithStatisticsCallback(
 				args,
 				(session) => {
 					resolve(new TNSSession(session));

@@ -30,12 +30,11 @@ function getNativeDelay(options?: AccelerometerOptions): number {
 
 export function startAccelerometerUpdates(callback: (data: AccelerometerData) => void, options?: AccelerometerOptions) {
 	if (isListening()) {
-		console.log(startButNotStopped);
 		stopAccelerometerUpdates();
 	}
 
 	const wrappedCallback = zonedCallback(callback);
-	const context: android.content.Context = Utils.ad.getApplicationContext();
+	const context: android.content.Context = Utils.android.getApplicationContext();
 	if (!context) {
 		throw Error('Could not get Android application context.');
 	}
@@ -56,6 +55,7 @@ export function startAccelerometerUpdates(callback: (data: AccelerometerData) =>
 	}
 
 	sensorListener = new android.hardware.SensorEventListener({
+		// eslint-disable-next-line @typescript-eslint/no-empty-function
 		onAccuracyChanged: (sensor, accuracy) => {},
 		onSensorChanged: (event) => {
 			wrappedCallback({

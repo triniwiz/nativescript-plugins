@@ -1,7 +1,7 @@
 # Nativescript nativescript-yogalayout
 
 ```javascript
-ns plugin add @triniwiz/nativescript-yogalayout
+npm install @triniwiz/nativescript-yogalayout
 ```
 
 ## Usage

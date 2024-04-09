@@ -1,5 +1,4 @@
 import { AndroidActivityResultEventData, AndroidApplication, Application, Device, Utils } from '@nativescript/core';
-import { isNullOrUndefined } from '@nativescript/core/utils/types';
 import * as permissions from 'nativescript-permissions';
 
 import { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType, VideoRecorderBase } from './common';
@@ -11,7 +10,7 @@ const REQUEST_VIDEO_CAPTURE = 999;
 
 export class VideoRecorder extends VideoRecorderBase {
 	public requestPermissions(explanation?: string): Promise<void> {
-		return permissions.requestPermissions([android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO], isNullOrUndefined(explanation) ? '' : explanation);
+		return permissions.requestPermissions([android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO], Utils.isNullOrUndefined(explanation) ? '' : explanation);
 	}
 
 	public hasCameraPermission(): boolean {
@@ -27,7 +26,7 @@ export class VideoRecorder extends VideoRecorderBase {
 	}
 
 	public requestStoragePermission(explanation?: string): Promise<any> {
-		return permissions.requestPermissions([android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE], isNullOrUndefined(explanation) ? '' : explanation);
+		return permissions.requestPermissions([android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE], Utils.isNullOrUndefined(explanation) ? '' : explanation);
 	}
 
 	public static isAvailable() {
@@ -35,6 +34,7 @@ export class VideoRecorder extends VideoRecorderBase {
 	}
 
 	protected _startRecording(options: Options = this.options): Promise<RecordResult> {
+    // eslint-disable-next-line no-async-promise-executor
 		return new Promise(async (resolve, reject) => {
 			try {
 				const pkgName = Utils.ad.getApplication().getPackageName();
@@ -130,13 +130,14 @@ export class VideoRecorder extends VideoRecorderBase {
 
 							const uri = Utils.android.getApplicationContext().getContentResolver().insert(android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
 
-							const fos: java.io.FileOutputStream = Utils.android.getApplicationContext().getContentResolver().openOutputStream(uri);
+							const fos = Utils.android.getApplicationContext().getContentResolver().openOutputStream(uri);
 
 							const fis = new java.io.FileInputStream(nativeFile);
 							try {
 								(com as any).github.triniwiz.videorecorder.Utils.copy(fis, fos);
 								if (sdkVersionInt >= 29) {
 									values.clear();
+                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore
 									values.put(android.provider.MediaStore.Video.Media.IS_PENDING, java.lang.Integer.valueOf(0));
 									Utils.android.getApplicationContext().getContentResolver().update(uri, values, null, null);

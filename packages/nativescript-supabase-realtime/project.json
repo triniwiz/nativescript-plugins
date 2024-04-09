@@ -1,4 +1,5 @@
 {
+	"name": "nativescript-supabase-realtime",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-supabase-realtime",
 	"projectType": "library",
@@ -9,10 +10,9 @@
 				"outputPath": "dist/packages/nativescript-supabase-realtime",
 				"tsConfig": "packages/nativescript-supabase-realtime/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase-realtime/package.json",
-				"main": "packages/nativescript-supabase-realtime/index.d.ts",
+				"main": "packages/nativescript-supabase-realtime/index.ts",
 				"assets": [
 					"packages/nativescript-supabase-realtime/*.md",
-					"packages/nativescript-supabase-realtime/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",
@@ -35,12 +35,12 @@
 			]
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-supabase-realtime"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-supabase-realtime"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-supabase-realtime"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -57,7 +57,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-realtime"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",

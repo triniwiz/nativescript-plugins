@@ -1,26 +1,17 @@
-import SupabaseClient from './SupabaseClient'
-import {SupabaseClientOptions, SupabaseRealtimePayload} from './lib/types'
-import {User as AuthUser, Session as AuthSession} from '@triniwiz/nativescript-supabase-gotrue'
+import SupabaseClient from './SupabaseClient';
+import type { GenericSchema, SupabaseClientOptions } from './lib/types';
 
-export * from '@triniwiz/nativescript-supabase-gotrue'
-export * from '@triniwiz/nativescript-supabase-realtime'
+export * from '@triniwiz/nativescript-supabase-gotrue';
+export type { User as AuthUser, Session as AuthSession } from '@triniwiz/nativescript-supabase-gotrue';
+export type { PostgrestResponse, PostgrestSingleResponse, PostgrestMaybeSingleResponse, PostgrestError } from '@triniwiz/nativescript-supabase-postgrest';
+// export { FunctionsHttpError, FunctionsFetchError, FunctionsRelayError, FunctionsError } from '@triniwiz/nativescript-supabase-functions';
+export * from '@triniwiz/nativescript-supabase-realtime';
+export { default as SupabaseClient } from './SupabaseClient';
+export type { SupabaseClientOptions } from './lib/types';
 
 /**
  * Creates a new Supabase Client.
  */
-const createClient = (
-  supabaseUrl: string,
-  supabaseKey: string,
-  options?: SupabaseClientOptions
-) => {
-  return new SupabaseClient(supabaseUrl, supabaseKey, options)
-}
-
-export {
-  createClient,
-  SupabaseClient,
-  SupabaseClientOptions,
-  SupabaseRealtimePayload,
-  AuthUser,
-  AuthSession,
-}
+export const createClient = <Database = any, SchemaName extends string & keyof Database = 'public' extends keyof Database ? 'public' : string & keyof Database, Schema extends GenericSchema = Database[SchemaName] extends GenericSchema ? Database[SchemaName] : any>(supabaseUrl: string, supabaseKey: string, options?: SupabaseClientOptions<SchemaName>): SupabaseClient<Database, SchemaName, Schema> => {
+	return new SupabaseClient(supabaseUrl, supabaseKey, options);
+};

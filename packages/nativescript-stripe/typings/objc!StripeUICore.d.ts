@@ -6,6 +6,13 @@ declare class STPEmailAddressValidator extends NSObject {
 	static new(): STPEmailAddressValidator; // inherited from NSObject
 }
 
+declare class STPVPANumberValidator extends NSObject {
+
+	static alloc(): STPVPANumberValidator; // inherited from NSObject
+
+	static new(): STPVPANumberValidator; // inherited from NSObject
+}
+
 declare class STP_Internal_ActivityIndicator extends UIView {
 
 	static alloc(): STP_Internal_ActivityIndicator; // inherited from NSObject

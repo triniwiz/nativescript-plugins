@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-ns plugin add @triniwiz/nativescript-videorecorder
+npm install @triniwiz/nativescript-videorecorder
 ```
 
 ## API documentation

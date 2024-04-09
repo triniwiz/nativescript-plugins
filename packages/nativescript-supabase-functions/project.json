@@ -1,0 +1,64 @@
+{
+	"name": "nativescript-supabase-functions",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "packages/nativescript-supabase-functions",
+	"targets": {
+		"build": {
+			"executor": "@nrwl/js:tsc",
+			"options": {
+				"outputPath": "dist/packages/nativescript-supabase-functions",
+				"tsConfig": "packages/nativescript-supabase-functions/tsconfig.json",
+				"packageJson": "packages/nativescript-supabase-functions/package.json",
+				"main": "packages/nativescript-supabase-functions/index.ts",
+				"assets": [
+					"packages/nativescript-supabase-functions/*.md",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-supabase-functions/platforms/",
+						"output": "./platforms/"
+					}
+				],
+				"dependsOn": [
+					{
+						"target": "build.all",
+						"projects": "dependencies"
+					}
+				]
+			}
+		},
+		"build.all": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-supabase-functions"],
+				"parallel": false
+			},
+			"outputs": ["dist/packages/nativescript-supabase-functions"],
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-functions"],
+				"parallel": false
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-supabase-functions/**/*.ts"]
+			}
+		}
+	},
+	"tags": []
+}

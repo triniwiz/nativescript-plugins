@@ -1,4 +1,5 @@
 {
+	"name": "nativescript-supabase-storage",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-supabase-storage",
 	"projectType": "library",
@@ -9,10 +10,9 @@
 				"outputPath": "dist/packages/nativescript-supabase-storage",
 				"tsConfig": "packages/nativescript-supabase-storage/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase-storage/package.json",
-				"main": "packages/nativescript-supabase-storage/index.d.ts",
+				"main": "packages/nativescript-supabase-storage/index.ts",
 				"assets": [
 					"packages/nativescript-supabase-storage/*.md",
-					"packages/nativescript-supabase-storage/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",
@@ -35,12 +35,12 @@
 			]
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-supabase-storage"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-supabase-storage"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-supabase-storage"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -57,7 +57,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase-storage"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",

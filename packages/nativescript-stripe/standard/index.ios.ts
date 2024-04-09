@@ -5,7 +5,7 @@ import { IStripeStandardConfig, StripeStandardAddress, StripeStandardPaymentList
 export { IStripeStandardBackendAPI, StripeStandardAddress, StripeStandardBillingAddressFields, StripeStandardPaymentListener, StripeStandardPaymentMethod, StripeStandardShippingAddressField, StripeStandardShippingMethod, StripeStandardShippingMethods, StripeStandardPaymentData, StripeStandardPaymentMethodType };
 
 export class StripeStandardConfig implements IStripeStandardConfig {
-	enableCardScanning: boolean = false;
+	enableCardScanning = false;
 	appleMerchantID: string;
 	backendAPI: IStripeStandardBackendAPI;
 	companyName: string;
@@ -16,20 +16,21 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 	allowedPaymentMethodTypes: StripeStandardPaymentMethodType[] = [StripeStandardPaymentMethodType.Card, StripeStandardPaymentMethodType.ApplePay];
 	stripeAccountId: string;
 	private static _instance: StripeStandardConfig;
+
 	get native(): STPPaymentConfiguration {
 		// getter gives client a chance to set properties before using.
 		if (!this.publishableKey) throw new Error('publishableKey must be set');
-		let config = STPPaymentConfiguration.sharedConfiguration;
+		const config = STPPaymentConfiguration.sharedConfiguration;
 		STPAPIClient.sharedClient.publishableKey = this.publishableKey;
 		config.appleMerchantIdentifier = this.appleMerchantID;
-		config.requiredBillingAddressFields = this.requiredBillingAddressFields as any || STPBillingAddressFields.None;
+		config.requiredBillingAddressFields = (this.requiredBillingAddressFields as any) || STPBillingAddressFields.None;
 		config.cardScanningEnabled = this.enableCardScanning;
-		if (this.stripeAccountId){
+		if (this.stripeAccountId) {
 			STPAPIClient.sharedClient.stripeAccount = this.stripeAccountId;
 		}
 
 		if (this.requiredShippingAddressFields && this.requiredShippingAddressFields.length > 0) {
-			let fields = new NSMutableSet<STPContactField>({ capacity: 4 });
+			const fields = new NSMutableSet<STPContactField>({ capacity: 4 });
 			this.requiredShippingAddressFields.forEach((f) => {
 				switch (f) {
 					case StripeStandardShippingAddressField.Name:
@@ -79,7 +80,7 @@ class StripeKeyProvider extends NSObject implements STPCustomerEphemeralKeyProvi
 
 	createCustomerKeyWithAPIVersionCompletion(apiVersion: string, completion: (p1: NSDictionary<any, any>, p2: NSError) => void): void {
 		StripeStandardConfig.shared.backendAPI
-			.createCustomerKey(apiVersion)
+			.createCustomerKey()
 			.then((key) => {
 				completion(key, null);
 			})
@@ -187,9 +188,8 @@ export class StripeStandardPaymentSession {
 @NativeClass
 @ObjCClass(STPPaymentContextDelegate)
 class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegate {
-
 	static create(parent: StripeStandardPaymentSession, listener: StripeStandardPaymentListener): StripePaymentDelegate {
-		let self = <StripePaymentDelegate>super.new();
+		const self = <StripePaymentDelegate>super.new();
 		self.parent = parent;
 		self.listener = listener;
 		return self;
@@ -199,7 +199,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 	private listener: StripeStandardPaymentListener;
 
 	paymentContextDidChange(paymentContext: STPPaymentContext): void {
-		let data = {
+		const data = {
 			isReadyToCharge: paymentContext.selectedPaymentOption != null,
 			paymentMethod: createPaymentMethod(paymentContext),
 			shippingInfo: createShippingMethod(paymentContext),
@@ -212,11 +212,25 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		StripeStandardConfig.shared.backendAPI
 			.capturePayment(paymentResult.paymentMethod.stripeId, paymentContext.paymentAmount, createShippingMethod(paymentContext), createAddress(paymentContext.shippingAddress))
 			.then((value: any) => {
-                if(!value._native?.lastPaymentError || value._native?.lastPaymentError == "undefined") {
-                    completion(STPPaymentStatus.Success, null);
-                    return
-                }
-                completion(STPPaymentStatus.UserCancellation, null);
+				switch (value._native?.status) {
+					case STPPaymentIntentStatus.Unknown:
+					case STPPaymentIntentStatus.Canceled:
+					case STPPaymentIntentStatus.RequiresPaymentMethod:
+					case STPPaymentIntentStatus.RequiresSourceAction:
+						completion(STPPaymentStatus.UserCancellation, null);
+						break;
+					case STPPaymentIntentStatus.Succeeded:
+					case STPPaymentIntentStatus.RequiresSource:
+					case STPPaymentIntentStatus.RequiresConfirmation:
+					case STPPaymentIntentStatus.RequiresAction:
+					case STPPaymentIntentStatus.Processing:
+					case STPPaymentIntentStatus.RequiresCapture:
+						completion(STPPaymentStatus.Success, null);
+						break;
+					default:
+						completion(STPPaymentStatus.Error, createError('PaymentError', 100, value._native?.lastPaymentError?.message));
+						break;
+				}
 			})
 			.catch((e) => {
 				completion(STPPaymentStatus.Error, createError('PaymentError', 100, e));
@@ -252,7 +266,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		} else if (!isValid) {
 			completion(STPShippingStatus.Invalid, createError('ShippingError', 123, errorMessage), null, null);
 		} else {
-			let sh = <NSMutableArray<any>>NSMutableArray.alloc().init();
+			const sh = NSMutableArray.new();
 			methods.shippingMethods.forEach((m) => sh.addObject(createPKShippingMethod(m)));
 			completion(STPShippingStatus.Valid, null, sh, createPKShippingMethod(methods.selectedShippingMethod));
 		}
@@ -260,13 +274,9 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 }
 
 function createError(domain: string, code: number, error: string): NSError {
-	let userInfo = <NSMutableDictionary<string, any>>NSMutableDictionary.alloc().init();
+	const userInfo = NSMutableDictionary.new();
 	userInfo.setValueForKey(error, NSLocalizedDescriptionKey);
-	return new NSError({
-		domain: domain,
-		code: code,
-		userInfo: userInfo,
-	});
+	return NSError.alloc().initWithDomainCodeUserInfo(domain, code, userInfo as NSDictionary<string, unknown>);
 }
 
 function createPaymentMethod(paymentContext: STPPaymentContext): StripeStandardPaymentMethod {
@@ -302,7 +312,7 @@ function createPaymentMethodFromFpx(method: STPPaymentMethodParams): StripeStand
 	const code = STPFPXBank.bankCodeFrom(brand, false);
 
 	return {
-		label: method.label,
+		label: name,
 		image: STPImageLibrary.brandImageForFPXBankBrand(brand),
 		templateImage: undefined,
 		type: StripeStandardPaymentMethodType.Fpx,
@@ -312,7 +322,7 @@ function createPaymentMethodFromFpx(method: STPPaymentMethodParams): StripeStand
 }
 
 function createPaymentMethodFromCard(pmt: STPPaymentMethod): StripeStandardPaymentMethod {
-	let image = null;
+	let image: UIImage;
 	switch (GetBrand(pmt.card.brand)) {
 		case CardBrand.AmericanExpress:
 			image = STPImageLibrary.amexCardImage();
@@ -371,7 +381,7 @@ function createPKShippingMethod(method: StripeStandardShippingMethod) {
 		amount: NSDecimalNumber.alloc().initWithDouble(method.amount / 100),
 		detail: method.detail,
 		label: method.label,
-		identifier: method.identifier
+		identifier: method.identifier,
 	};
 }
 

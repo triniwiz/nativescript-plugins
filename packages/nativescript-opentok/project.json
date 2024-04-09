@@ -1,4 +1,5 @@
 {
+	"name": "nativescript-opentok",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "packages/nativescript-opentok",
 	"projectType": "library",
@@ -45,12 +46,12 @@
 			]
 		},
 		"build.all": {
-			"outputs": ["dist/packages/nativescript-opentok"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-opentok"],
 			"options": {
 				"commands": ["node tools/scripts/build-finish.ts nativescript-opentok"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands",
+			"executor": "nx:run-commands",
 			"dependsOn": [
 				{
 					"target": "build.all",
@@ -67,7 +68,7 @@
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-opentok"],
 				"parallel": false
 			},
-			"executor": "@nrwl/workspace:run-commands"
+			"executor": "nx:run-commands"
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",

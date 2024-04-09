@@ -3,7 +3,7 @@
 ## Installation
 
 ```bash
-ns plugin add @triniwiz/nativescript-stripe
+npm install @triniwiz/nativescript-stripe
 ```
 
 ## API documentation

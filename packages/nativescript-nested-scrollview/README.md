@@ -1,7 +1,7 @@
 # Nativescript nativescript-nested-scrollview
 
 ```javascript
-ns plugin add @triniwiz/nativescript-nested-scrollview
+npm install @triniwiz/nativescript-nested-scrollview
 ```
 
 ## API documentation

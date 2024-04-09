@@ -398,13 +398,6 @@ module.exports = {
 					description: '@triniwiz/nativescript-yogalayout: Build',
 				},
 			},
-			// @triniwiz/nativescript-kin
-			'nativescript-kin': {
-				build: {
-					script: 'nx run nativescript-kin:build.all',
-					description: '@triniwiz/nativescript-kin: Build',
-				},
-			},
 			// @triniwiz/nativescript-parsesdk
 			'nativescript-parsesdk': {
 				build: {
@@ -452,6 +445,20 @@ module.exports = {
 				build: {
 					script: 'nx run nativescript-opentok:build.all',
 					description: '@triniwiz/nativescript-opentok: Build',
+				},
+			},
+			// @triniwiz/nativescript-messenger
+			'nativescript-messenger': {
+				build: {
+					script: 'nx run nativescript-messenger:build.all',
+					description: '@triniwiz/nativescript-messenger: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase-functions
+			'nativescript-supabase-functions': {
+				build: {
+					script: 'nx run nativescript-supabase-functions:build.all',
+					description: '@triniwiz/nativescript-supabase-functions: Build',
 				},
 			},
 			'build-all': {
@@ -636,10 +643,6 @@ module.exports = {
 				script: 'nx run nativescript-yogalayout:focus',
 				description: 'Focus on @triniwiz/nativescript-yogalayout',
 			},
-			'nativescript-kin': {
-				script: 'nx run nativescript-kin:focus',
-				description: 'Focus on @triniwiz/nativescript-kin',
-			},
 			'nativescript-parsesdk': {
 				script: 'nx run nativescript-parsesdk:focus',
 				description: 'Focus on @triniwiz/nativescript-parsesdk',
@@ -667,6 +670,14 @@ module.exports = {
 			'nativescript-opentok': {
 				script: 'nx run nativescript-opentok:focus',
 				description: 'Focus on @triniwiz/nativescript-opentok',
+			},
+			'nativescript-messenger': {
+				script: 'nx run nativescript-messenger:focus',
+				description: 'Focus on @triniwiz/nativescript-messenger',
+			},
+			'nativescript-supabase-functions': {
+				script: 'nx run nativescript-supabase-functions:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-functions',
 			},
 			reset: {
 				script: 'nx g @nativescript/plugin-tools:focus-packages',

@@ -9,6 +9,8 @@ export class SocketIO extends Common {
     protected socket: SocketIOClient;
     manager: SocketManager;
 
+    auth_payload?: unknown;
+
     /**
      * Class Constructor
      * args[0]: Connection URL as String
@@ -62,6 +64,8 @@ export class SocketIO extends Common {
                             Object.assign(connectParams, optionsQuery);
 
                         }
+                    } else if (key === 'auth') {
+                      this.auth_payload = obj[key];
                     } else if (key === 'debug' && obj[key]) {
                         opts['log'] = true;
                     } else if (key === 'cookie') {
@@ -108,7 +112,7 @@ export class SocketIO extends Common {
                                 }
                             }
                         });
-                        const props = NSDictionary.dictionaryWithDictionary<string, any>(properties as any);
+                        const props = NSDictionary.dictionaryWithDictionary(properties);
                         const native_cookie = NSHTTPCookie.cookieWithProperties(props);
                         if (native_cookie) {
                             opts['cookies'] = NSArray.arrayWithObject(native_cookie);
@@ -167,7 +171,7 @@ export class SocketIO extends Common {
 
     connect() {
         if (!this.connected) {
-            this.socket.connectWithPayload(null)
+            this.socket.connectWithPayload(this.auth_payload);
         }
     }
 

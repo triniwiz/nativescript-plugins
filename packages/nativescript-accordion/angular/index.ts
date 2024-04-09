@@ -22,7 +22,6 @@ import {
   TemplateRef,
   ViewChild,
   ViewContainerRef,
-  ɵisListLikeIterable as isListLikeIterable
 } from '@angular/core';
 import {
   EventData,
@@ -37,7 +36,7 @@ import {
 } from '@nativescript/core';
 
 
-import {getSingleViewRecursive, registerElement} from '@nativescript/angular';
+import {extractSingleViewRecursive, isListLikeIterable, registerElement} from '@nativescript/angular';
 import {Accordion} from '@triniwiz/nativescript-accordion';
 
 registerElement('Accordion', () => Accordion);
@@ -523,7 +522,7 @@ export interface ComponentView {
 
 export type RootLocator = (nodes: Array<any>, nestLevel: number) => View;
 
-export function getItemViewRoot(viewRef: ComponentView, rootLocator: RootLocator = getSingleViewRecursive): View {
+export function getItemViewRoot(viewRef: ComponentView, rootLocator: RootLocator = extractSingleViewRecursive): View {
   return rootLocator(viewRef.rootNodes, 0);
 }
 

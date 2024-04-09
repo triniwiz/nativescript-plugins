@@ -2,6 +2,7 @@ import { AndroidActivityResultEventData, AndroidApplication, Application, Page, 
 import { IStripeStandardBackendAPI, IStripeStandardConfig, StripeStandardAddress, StripeStandardBillingAddressFields, StripeStandardPaymentListener, StripeStandardPaymentMethod, StripeStandardPaymentMethodType, StripeStandardShippingAddressField, StripeStandardShippingMethod, StripeStandardShippingMethods } from './common';
 import { Address } from '../';
 import { GetBrand } from '../common';
+
 export { IStripeStandardBackendAPI, StripeStandardAddress, StripeStandardBillingAddressFields, StripeStandardPaymentListener, StripeStandardPaymentMethod, StripeStandardShippingAddressField, StripeStandardShippingMethod, StripeStandardPaymentMethodType };
 
 export class StripeStandardConfig implements IStripeStandardConfig {
@@ -59,32 +60,55 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 }
 
 export class StripeStandardCustomerSession {
-	readonly native: com.stripe.android.CustomerSession;
+	native: com.stripe.android.CustomerSession;
 
-	constructor(shouldPrefetchEphemeralKey: boolean = false) {
-		StripeStandardConfig.shared.initPaymentConfiguration();
-		com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, createKeyProvider(), shouldPrefetchEphemeralKey);
-		this.native = com.stripe.android.CustomerSession.getInstance();
-	}
+	constructor() {}
+
+    public async getInstance(shouldPrefetchEphemeralKey: boolean = false) {
+        try {
+
+            StripeStandardConfig.shared.initPaymentConfiguration();
+            const ephemeralKey = await createKeyProvider();
+            com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, ephemeralKey, true ?? false);
+            this.native = com.stripe.android.CustomerSession.getInstance();
+        }
+        catch(e) {
+            console.error("getInstance customer session", e);
+        }
+    }
 
 	private static get context(): android.content.Context {
-        return Utils.android.getApplicationContext();
+		return Utils.android.getApplicationContext();
 	}
 }
 
-function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
-	return new com.stripe.android.EphemeralKeyProvider({
-		createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
-			StripeStandardConfig.shared.backendAPI
-				.createCustomerKey(apiVersion)
-				.then((key) => {
-					keyUpdateListener.onKeyUpdate(JSON.stringify(key));
-				})
-				.catch((e) => {
-					keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(e));
-				});
-		},
-	});
+// async function createKeyProvider(): com.stripe.android.EphemeralKeyProvider {
+// 	return new com.stripe.android.EphemeralKeyProvider({
+// 		createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void {
+// 			StripeStandardConfig.shared.backendAPI
+// 				.createCustomerKey(apiVersion)
+// 				.then((key) => {
+// 					keyUpdateListener.onKeyUpdate(JSON.stringify(key));
+// 				})
+// 				.catch((e) => {
+// 					keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(e));
+// 				});
+// 		},
+// 	});
+// }
+async function createKeyProvider(): Promise<com.stripe.android.EphemeralKeyProvider> {
+    const ephemeralKey = await StripeStandardConfig.shared.backendAPI
+        .createCustomerKey();
+    return new com.stripe.android.EphemeralKeyProvider({
+        createEphemeralKey(apiVersion: string, keyUpdateListener: com.stripe.android.EphemeralKeyUpdateListener): void  {
+            if(ephemeralKey.error) {
+                keyUpdateListener.onKeyUpdateFailure(500, JSON.stringify(ephemeralKey.error));
+            }
+            else {
+                keyUpdateListener.onKeyUpdate(JSON.stringify(ephemeralKey));
+            }
+        },
+    });
 }
 
 export class StripeStandardPaymentSession {
@@ -95,9 +119,29 @@ export class StripeStandardPaymentSession {
 	loading: boolean;
 	paymentInProgress: boolean;
 	_data: com.stripe.android.PaymentSessionData;
+  public customerSession: StripeStandardCustomerSession = new StripeStandardCustomerSession();
+  public listener: StripeStandardPaymentListener
+  public currency: string;
+  public listener: StripeStandardPaymentListener;
 	private _activityResultListener;
 	private _callback: any;
-	constructor(_page: Page, public customerSession: StripeStandardCustomerSession, amount: number, public currency: string, public listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+
+
+	constructor(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+        this.listener = listener;
+        // show the loader while getting the ephemeralKey
+        let paymentData = { 
+            isReadyToCharge: false,
+            paymentMethod: null,
+            shippingInfo: null,
+            shippingAddress: null,
+        };
+        listener.onPaymentDataChanged(paymentData);
+        this.build(_page, amount, currency, listener, prefilledAddress)
+	}
+
+    private async build(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
+        await this.customerSession.getInstance();
 		let builder = StripeStandardConfig.shared.nativeBuilder;
 		if (prefilledAddress) {
 			const address: com.stripe.android.model.Address.Builder = prefilledAddress.android;
@@ -125,8 +169,8 @@ export class StripeStandardPaymentSession {
 		this.native.init(createPaymentSessionListener(this, listener));
 		this.native.setCartTotal(amount);
 		this._activityResultListener = this._resultListener.bind(this);
-		Application.android.on(AndroidApplication.activityResultEvent, this._activityResultListener);
-	}
+		Application.android.on(Application.android.activityResultEvent, this._activityResultListener);
+    }
 
 	_resultListener(args: AndroidActivityResultEventData) {
 		if (args.intent) {
@@ -150,42 +194,42 @@ export class StripeStandardPaymentSession {
 	}
 
 	requestPayment() {
-		console.log('requestPayment')
-		this.paymentInProgress = true;
-		const data = this._data;
-		const shippingMethod = data.getShippingMethod();
-		const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
-        const component1 = data.getPaymentMethod()?.component1();
-        if(!component1) {
-            console.log('Payment method undefined!');
-            this.listener.onError(500, 'Payment method undefined!');
-            this.paymentInProgress = false;
-            return
-        }
-		StripeStandardConfig.shared.backendAPI
-			.capturePayment(
-				component1, // id
-				data.getCartTotal() + shippingCost,
-				createShippingMethod(shippingMethod),
-				createAddress(data?.getShippingInformation())
-			)
-			.then((res: any) => {
-                // 3DS Failed/Cancelled Authentication && if the use close the 3DS authentication window
-                if(res?.status == "canceled" || res?.native?.lastPaymentError != null) {
-                    this.paymentInProgress = false;
-                    this.listener.onUserCancelled();
-                    return;
-                }
+		setTimeout(() => {
+			this.paymentInProgress = true;
+			const data = this._data;
+			const shippingMethod = data?.getShippingMethod();
+			const shippingCost = shippingMethod ? shippingMethod.getAmount() : 0;
+			const id = data?.getPaymentMethod()?.id;
+			if (!id) {
+				console.warn('Payment method undefined!');
+				this.listener.onError(500, 'Payment method undefined!');
 				this.paymentInProgress = false;
-				this.listener.onPaymentSuccess();
-				this.native.onCompleted();
-			})
-			.catch((e) => {
-				this.listener.onError(100, e);
-				this.paymentInProgress = false;
-			});
+				return;
+			}
+			StripeStandardConfig.shared.backendAPI
+				.capturePayment(
+					id,
+					data.getCartTotal() + shippingCost,
+					createShippingMethod(shippingMethod),
+					createAddress(data?.getShippingInformation())
+				)
+				.then((res: any) => {
+					// 3DS Failed/Cancelled Authentication && if the use close the 3DS authentication window
+					if (res?.status == 'canceled' || res?.native?.lastPaymentError != null) {
+						this.paymentInProgress = false;
+						this.listener.onUserCancelled();
+						return;
+					}
+					this.paymentInProgress = false;
+					this.listener.onPaymentSuccess();
+					this.native.onCompleted();
+				})
+				.catch((e) => {
+					this.listener.onError(100, e);
+					this.paymentInProgress = false;
+				});
+		});
 	}
-
 	presentPaymentMethods(): void {
 		this.native.presentPaymentMethodSelection(null);
 	}
@@ -318,24 +362,24 @@ function createPaymentSessionListener(parent: StripeStandardPaymentSession, list
 		},
 	});
 }
+
 function createPaymentMethod(paymentMethod: com.stripe.android.model.PaymentMethod): StripeStandardPaymentMethod {
-	console.log('createPaymentMethod', paymentMethod);
 	if (!paymentMethod) return undefined;
-	const type = paymentMethod.component4();
+	const type = paymentMethod.type;
 	if (type === com.stripe.android.model.PaymentMethod.Type.Fpx) {
-		const fpx = paymentMethod.component9(); // fpx
-		const pmId = paymentMethod.component1(); // id
+		const fpx = paymentMethod.fpx; // fpx
+		const pmId = paymentMethod.id; // id
 		if (fpx) return createPaymentMethodFromFpx(fpx, pmId);
 	} else if (type === com.stripe.android.model.PaymentMethod.Type.Card) {
-		const pmCard = paymentMethod.component7(); // card
-		const pmId = paymentMethod.component1(); // id
+		const pmCard = paymentMethod.card; // card
+		const pmId = paymentMethod.id; // id
 		if (pmCard) return createPaymentMethodFromCard(pmCard, pmId);
 	}
 	return { label: 'Error (103)', image: undefined, templateImage: undefined };
 }
 
 function createPaymentMethodFromFpx(fpx: com.stripe.android.model.PaymentMethod.Fpx, stripeID: string): StripeStandardPaymentMethod {
-	const bank = (com as any).stripe.android.view.FpxBank.get(fpx.component1());
+	const bank = (com as any).stripe.android.view.FpxBank.get(fpx.bank);
 	return {
 		label: bank.getDisplayName(),
 		image: getBitmapFromResource(bank.getBrandIconResId()),
@@ -347,8 +391,8 @@ function createPaymentMethodFromFpx(fpx: com.stripe.android.model.PaymentMethod.
 }
 
 function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMethod.Card, stripeID: string): StripeStandardPaymentMethod {
-	const brand = card.component1(); // brand
-	const last4 = card.component7(); // last4
+	const brand = card.brand; // brand
+	const last4 = card.last4; // last4
 	return {
 		label: `${GetBrand(brand)} ...${last4}`,
 		image: getBitmapFromResource(brand.getIcon()),
@@ -360,12 +404,12 @@ function createPaymentMethodFromCard(card: com.stripe.android.model.PaymentMetho
 }
 
 function getBitmapFromResource(resID: number): android.graphics.Bitmap {
-	let image = Application.android.foregroundActivity.getResources().getDrawable(resID, null);
+	const image = Application.android.foregroundActivity.getResources().getDrawable(resID, null);
 	if (image instanceof android.graphics.Bitmap) {
 		return image;
 	}
-	let bitmap = android.graphics.Bitmap.createBitmap(image.getIntrinsicWidth(), image.getIntrinsicHeight(), android.graphics.Bitmap.Config.ARGB_8888);
-	let canvas = new android.graphics.Canvas(bitmap);
+	const bitmap = android.graphics.Bitmap.createBitmap(image.getIntrinsicWidth(), image.getIntrinsicHeight(), android.graphics.Bitmap.Config.ARGB_8888);
+	const canvas = new android.graphics.Canvas(bitmap);
 	image.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 	image.draw(canvas);
 	return bitmap;

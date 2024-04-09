@@ -1,447 +1,393 @@
-import PostgrestTransformBuilder from './PostgrestTransformBuilder'
+import PostgrestTransformBuilder from './PostgrestTransformBuilder';
+import { GenericSchema } from './types';
 
-/**
- * Filters
- */
+type FilterOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like' | 'ilike' | 'is' | 'in' | 'cs' | 'cd' | 'sl' | 'sr' | 'nxl' | 'nxr' | 'adj' | 'ov' | 'fts' | 'plfts' | 'phfts' | 'wfts';
 
-type FilterOperator =
-  | 'eq'
-  | 'neq'
-  | 'gt'
-  | 'gte'
-  | 'lt'
-  | 'lte'
-  | 'like'
-  | 'ilike'
-  | 'is'
-  | 'in'
-  | 'cs'
-  | 'cd'
-  | 'sl'
-  | 'sr'
-  | 'nxl'
-  | 'nxr'
-  | 'adj'
-  | 'ov'
-  | 'fts'
-  | 'plfts'
-  | 'phfts'
-  | 'wfts'
+export default class PostgrestFilterBuilder<Schema extends GenericSchema, Row extends Record<string, unknown>, Result> extends PostgrestTransformBuilder<Schema, Row, Result> {
+	eq<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName]): this;
+	eq(column: string, value: unknown): this;
+	/**
+	 * Match only rows where `column` is equal to `value`.
+	 *
+	 * To check if the value of `column` is NULL, you should use `.is()` instead.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	eq(column: string, value: unknown): this {
+		this.url.searchParams.append(column, `eq.${value}`);
+		return this;
+	}
 
-export default class PostgrestFilterBuilder<T> extends PostgrestTransformBuilder<T> {
-  /**
-   * Finds all rows which doesn't satisfy the filter.
-   *
-   * @param column  The column to filter on.
-   * @param operator  The operator to filter with.
-   * @param value  The value to filter with.
-   */
-  not(column: keyof T, operator: FilterOperator, value: any): this {
-    this.url.searchParams.append(`${String(column)}`, `not.${operator}.${value}`)
-    return this
-  }
+	neq<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName]): this;
+	neq(column: string, value: unknown): this;
+	/**
+	 * Match only rows where `column` is not equal to `value`.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	neq(column: string, value: unknown): this {
+		this.url.searchParams.append(column, `neq.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows satisfying at least one of the filters.
-   *
-   * @param filters  The filters to use, separated by commas.
-   * @param foreignTable  The foreign table to use (if `column` is a foreign column).
-   */
-  or(filters: string, {foreignTable}: { foreignTable?: string } = {}): this {
-    const key = typeof foreignTable === 'undefined' ? 'or' : `${foreignTable}.or`
-    this.url.searchParams.append(key, `(${filters})`)
-    return this
-  }
+	gt<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName]): this;
+	gt(column: string, value: unknown): this;
+	/**
+	 * Match only rows where `column` is greater than `value`.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	gt(column: string, value: unknown): this {
+		this.url.searchParams.append(column, `gt.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` exactly matches the
-   * specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  eq(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${String(column)}`, `eq.${value}`)
-    return this
-  }
+	gte<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName]): this;
+	gte(column: string, value: unknown): this;
+	/**
+	 * Match only rows where `column` is greater than or equal to `value`.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	gte(column: string, value: unknown): this {
+		this.url.searchParams.append(column, `gte.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` doesn't match the
-   * specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  neq(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${String(column)}`, `neq.${value}`)
-    return this
-  }
+	lt<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName]): this;
+	lt(column: string, value: unknown): this;
+	/**
+	 * Match only rows where `column` is less than `value`.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	lt(column: string, value: unknown): this {
+		this.url.searchParams.append(column, `lt.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` is greater than the
-   * specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  gt(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${String(column)}`, `gt.${value}`)
-    return this
-  }
+	lte<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName]): this;
+	lte(column: string, value: unknown): this;
+	/**
+	 * Match only rows where `column` is less than or equal to `value`.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	lte(column: string, value: unknown): this {
+		this.url.searchParams.append(column, `lte.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` is greater than or
-   * equal to the specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  gte(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${String(column)}`, `gte.${value}`)
-    return this
-  }
+	like<ColumnName extends string & keyof Row>(column: ColumnName, pattern: string): this;
+	like(column: string, pattern: string): this;
+	/**
+	 * Match only rows where `column` matches `pattern` case-sensitively.
+	 *
+	 * @param column - The column to filter on
+	 * @param pattern - The pattern to match with
+	 */
+	like(column: string, pattern: string): this {
+		this.url.searchParams.append(column, `like.${pattern}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` is less than the
-   * specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  lt(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${String(column)}`, `lt.${value}`)
-    return this
-  }
+	ilike<ColumnName extends string & keyof Row>(column: ColumnName, pattern: string): this;
+	ilike(column: string, pattern: string): this;
+	/**
+	 * Match only rows where `column` matches `pattern` case-insensitively.
+	 *
+	 * @param column - The column to filter on
+	 * @param pattern - The pattern to match with
+	 */
+	ilike(column: string, pattern: string): this {
+		this.url.searchParams.append(column, `ilike.${pattern}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` is less than or equal
-   * to the specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  lte(column: keyof T, value: T[keyof T]): this {
-    this.url.searchParams.append(`${String(column)}`, `lte.${value}`)
-    return this
-  }
+	is<ColumnName extends string & keyof Row>(column: ColumnName, value: Row[ColumnName] & (boolean | null)): this;
+	is(column: string, value: boolean | null): this;
+	/**
+	 * Match only rows where `column` IS `value`.
+	 *
+	 * For non-boolean columns, this is only relevant for checking if the value of
+	 * `column` is NULL by setting `value` to `null`.
+	 *
+	 * For boolean columns, you can also set `value` to `true` or `false` and it
+	 * will behave the same way as `.eq()`.
+	 *
+	 * @param column - The column to filter on
+	 * @param value - The value to filter with
+	 */
+	is(column: string, value: boolean | null): this {
+		this.url.searchParams.append(column, `is.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value in the stated `column` matches the supplied
-   * `pattern` (case sensitive).
-   *
-   * @param column  The column to filter on.
-   * @param pattern  The pattern to filter with.
-   */
-  like(column: keyof T, pattern: string): this {
-    this.url.searchParams.append(`${String(column)}`, `like.${pattern}`)
-    return this
-  }
+	in<ColumnName extends string & keyof Row>(column: ColumnName, values: Row[ColumnName][]): this;
+	in(column: string, values: unknown[]): this;
+	/**
+	 * Match only rows where `column` is included in the `values` array.
+	 *
+	 * @param column - The column to filter on
+	 * @param values - The values array to filter with
+	 */
+	in(column: string, values: unknown[]): this {
+		const cleanedValues = values
+			.map((s) => {
+				// handle postgrest reserved characters
+				// https://postgrest.org/en/v7.0.0/api.html#reserved-characters
+				if (typeof s === 'string' && new RegExp('[,()]').test(s)) return `"${s}"`;
+				else return `${s}`;
+			})
+			.join(',');
+		this.url.searchParams.append(column, `in.(${cleanedValues})`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value in the stated `column` matches the supplied
-   * `pattern` (case insensitive).
-   *
-   * @param column  The column to filter on.
-   * @param pattern  The pattern to filter with.
-   */
-  ilike(column: keyof T, pattern: string): this {
-    this.url.searchParams.append(`${String(column)}`, `ilike.${pattern}`)
-    return this
-  }
+	contains<ColumnName extends string & keyof Row>(column: ColumnName, value: string | Row[ColumnName][] | Record<string, unknown>): this;
+	contains(column: string, value: string | unknown[] | Record<string, unknown>): this;
+	/**
+	 * Only relevant for jsonb, array, and range columns. Match only rows where
+	 * `column` contains every element appearing in `value`.
+	 *
+	 * @param column - The jsonb, array, or range column to filter on
+	 * @param value - The jsonb, array, or range value to filter with
+	 */
+	contains(column: string, value: string | unknown[] | Record<string, unknown>): this {
+		if (typeof value === 'string') {
+			// range types can be inclusive '[', ']' or exclusive '(', ')' so just
+			// keep it simple and accept a string
+			this.url.searchParams.append(column, `cs.${value}`);
+		} else if (Array.isArray(value)) {
+			// array
+			this.url.searchParams.append(column, `cs.{${value.join(',')}}`);
+		} else {
+			// json
+			this.url.searchParams.append(column, `cs.${JSON.stringify(value)}`);
+		}
+		return this;
+	}
 
-  /**
-   * A check for exact equality (null, true, false), finds all rows whose
-   * value on the stated `column` exactly match the specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  is(column: keyof T, value: boolean | null): this {
-    this.url.searchParams.append(`${String(column)}`, `is.${value}`)
-    return this
-  }
+	containedBy<ColumnName extends string & keyof Row>(column: ColumnName, value: string | Row[ColumnName][] | Record<string, unknown>): this;
+	containedBy(column: string, value: string | unknown[] | Record<string, unknown>): this;
+	/**
+	 * Only relevant for jsonb, array, and range columns. Match only rows where
+	 * every element appearing in `column` is contained by `value`.
+	 *
+	 * @param column - The jsonb, array, or range column to filter on
+	 * @param value - The jsonb, array, or range value to filter with
+	 */
+	containedBy(column: string, value: string | unknown[] | Record<string, unknown>): this {
+		if (typeof value === 'string') {
+			// range
+			this.url.searchParams.append(column, `cd.${value}`);
+		} else if (Array.isArray(value)) {
+			// array
+			this.url.searchParams.append(column, `cd.{${value.join(',')}}`);
+		} else {
+			// json
+			this.url.searchParams.append(column, `cd.${JSON.stringify(value)}`);
+		}
+		return this;
+	}
 
-  /**
-   * Finds all rows whose value on the stated `column` is found on the
-   * specified `values`.
-   *
-   * @param column  The column to filter on.
-   * @param values  The values to filter with.
-   */
-  in(column: keyof T, values: T[keyof T][]): this {
-    const cleanedValues = values
-      .map((s) => {
-        // handle postgrest reserved characters
-        // https://postgrest.org/en/v7.0.0/api.html#reserved-characters
-        if (typeof s === 'string' && new RegExp('[,()]').test(s)) return `"${s}"`
-        else return `${s}`
-      })
-      .join(',')
-    this.url.searchParams.append(`${String(column)}`, `in.(${cleanedValues})`)
-    return this
-  }
+	rangeGt<ColumnName extends string & keyof Row>(column: ColumnName, range: string): this;
+	rangeGt(column: string, range: string): this;
+	/**
+	 * Only relevant for range columns. Match only rows where every element in
+	 * `column` is greater than any element in `range`.
+	 *
+	 * @param column - The range column to filter on
+	 * @param range - The range to filter with
+	 */
+	rangeGt(column: string, range: string): this {
+		this.url.searchParams.append(column, `sr.${range}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose json, array, or range value on the stated `column`
-   * contains the values specified in `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  contains(column: keyof T, value: string | T[keyof T][] | object): this {
-    if (typeof value === 'string') {
-      // range types can be inclusive '[', ']' or exclusive '(', ')' so just
-      // keep it simple and accept a string
-      this.url.searchParams.append(`${String(column)}`, `cs.${value}`)
-    } else if (Array.isArray(value)) {
-      // array
-      this.url.searchParams.append(`${String(column)}`, `cs.{${value.join(',')}}`)
-    } else {
-      // json
-      this.url.searchParams.append(`${String(column)}`, `cs.${JSON.stringify(value)}`)
-    }
-    return this
-  }
+	rangeGte<ColumnName extends string & keyof Row>(column: ColumnName, range: string): this;
+	rangeGte(column: string, range: string): this;
+	/**
+	 * Only relevant for range columns. Match only rows where every element in
+	 * `column` is either contained in `range` or greater than any element in
+	 * `range`.
+	 *
+	 * @param column - The range column to filter on
+	 * @param range - The range to filter with
+	 */
+	rangeGte(column: string, range: string): this {
+		this.url.searchParams.append(column, `nxl.${range}`);
+		return this;
+	}
 
-  /** @deprecated Use `contains()` instead. */
-  cs = this.contains
+	rangeLt<ColumnName extends string & keyof Row>(column: ColumnName, range: string): this;
+	rangeLt(column: string, range: string): this;
+	/**
+	 * Only relevant for range columns. Match only rows where every element in
+	 * `column` is less than any element in `range`.
+	 *
+	 * @param column - The range column to filter on
+	 * @param range - The range to filter with
+	 */
+	rangeLt(column: string, range: string): this {
+		this.url.searchParams.append(column, `sl.${range}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose json, array, or range value on the stated `column` is
-   * contained by the specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  containedBy(column: keyof T, value: string | T[keyof T][] | object): this {
-    if (typeof value === 'string') {
-      // range
-      this.url.searchParams.append(`${String(column)}`, `cd.${value}`)
-    } else if (Array.isArray(value)) {
-      // array
-      this.url.searchParams.append(`${String(column)}`, `cd.{${value.join(',')}}`)
-    } else {
-      // json
-      this.url.searchParams.append(`${String(column)}`, `cd.${JSON.stringify(value)}`)
-    }
-    return this
-  }
+	rangeLte<ColumnName extends string & keyof Row>(column: ColumnName, range: string): this;
+	rangeLte(column: string, range: string): this;
+	/**
+	 * Only relevant for range columns. Match only rows where every element in
+	 * `column` is either contained in `range` or less than any element in
+	 * `range`.
+	 *
+	 * @param column - The range column to filter on
+	 * @param range - The range to filter with
+	 */
+	rangeLte(column: string, range: string): this {
+		this.url.searchParams.append(column, `nxr.${range}`);
+		return this;
+	}
 
-  /** @deprecated Use `containedBy()` instead. */
-  cd = this.containedBy
+	rangeAdjacent<ColumnName extends string & keyof Row>(column: ColumnName, range: string): this;
+	rangeAdjacent(column: string, range: string): this;
+	/**
+	 * Only relevant for range columns. Match only rows where `column` is
+	 * mutually exclusive to `range` and there can be no element between the two
+	 * ranges.
+	 *
+	 * @param column - The range column to filter on
+	 * @param range - The range to filter with
+	 */
+	rangeAdjacent(column: string, range: string): this {
+		this.url.searchParams.append(column, `adj.${range}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose range value on the stated `column` is strictly to the
-   * left of the specified `range`.
-   *
-   * @param column  The column to filter on.
-   * @param range  The range to filter with.
-   */
-  rangeLt(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${String(column)}`, `sl.${range}`)
-    return this
-  }
+	overlaps<ColumnName extends string & keyof Row>(column: ColumnName, value: string | Row[ColumnName][]): this;
+	overlaps(column: string, value: string | unknown[]): this;
+	/**
+	 * Only relevant for array and range columns. Match only rows where
+	 * `column` and `value` have an element in common.
+	 *
+	 * @param column - The array or range column to filter on
+	 * @param value - The array or range value to filter with
+	 */
+	overlaps(column: string, value: string | unknown[]): this {
+		if (typeof value === 'string') {
+			// range
+			this.url.searchParams.append(column, `ov.${value}`);
+		} else {
+			// array
+			this.url.searchParams.append(column, `ov.{${value.join(',')}}`);
+		}
+		return this;
+	}
 
-  /** @deprecated Use `rangeLt()` instead. */
-  sl = this.rangeLt
+	textSearch<ColumnName extends string & keyof Row>(column: ColumnName, query: string, options?: { config?: string; type?: 'plain' | 'phrase' | 'websearch' }): this;
+	textSearch(column: string, query: string, options?: { config?: string; type?: 'plain' | 'phrase' | 'websearch' }): this;
+	/**
+	 * Only relevant for text and tsvector columns. Match only rows where
+	 * `column` matches the query string in `query`.
+	 *
+	 * @param column - The text or tsvector column to filter on
+	 * @param query - The query text to match with
+	 * @param options - Named parameters
+	 * @param options.config - The text search configuration to use
+	 * @param options.type - Change how the `query` text is interpreted
+	 */
+	textSearch(column: string, query: string, { config, type }: { config?: string; type?: 'plain' | 'phrase' | 'websearch' } = {}): this {
+		let typePart = '';
+		if (type === 'plain') {
+			typePart = 'pl';
+		} else if (type === 'phrase') {
+			typePart = 'ph';
+		} else if (type === 'websearch') {
+			typePart = 'w';
+		}
+		const configPart = config === undefined ? '' : `(${config})`;
+		this.url.searchParams.append(column, `${typePart}fts${configPart}.${query}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose range value on the stated `column` is strictly to
-   * the right of the specified `range`.
-   *
-   * @param column  The column to filter on.
-   * @param range  The range to filter with.
-   */
-  rangeGt(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${String(column)}`, `sr.${range}`)
-    return this
-  }
+	match<ColumnName extends string & keyof Row>(query: Record<ColumnName, Row[ColumnName]>): this;
+	match(query: Record<string, unknown>): this;
+	/**
+	 * Match only rows where each column in `query` keys is equal to its
+	 * associated value. Shorthand for multiple `.eq()`s.
+	 *
+	 * @param query - The object to filter with, with column names as keys mapped
+	 * to their filter values
+	 */
+	match(query: Record<string, unknown>): this {
+		Object.entries(query).forEach(([column, value]) => {
+			this.url.searchParams.append(column, `eq.${value}`);
+		});
+		return this;
+	}
 
-  /** @deprecated Use `rangeGt()` instead. */
-  sr = this.rangeGt
+	not<ColumnName extends string & keyof Row>(column: ColumnName, operator: FilterOperator, value: Row[ColumnName]): this;
+	not(column: string, operator: string, value: unknown): this;
+	/**
+	 * Match only rows which doesn't satisfy the filter.
+	 *
+	 * Unlike most filters, `opearator` and `value` are used as-is and need to
+	 * follow [PostgREST
+	 * syntax](https://postgrest.org/en/stable/api.html#operators). You also need
+	 * to make sure they are properly sanitized.
+	 *
+	 * @param column - The column to filter on
+	 * @param operator - The operator to be negated to filter with, following
+	 * PostgREST syntax
+	 * @param value - The value to filter with, following PostgREST syntax
+	 */
+	not(column: string, operator: string, value: unknown): this {
+		this.url.searchParams.append(column, `not.${operator}.${value}`);
+		return this;
+	}
 
-  /**
-   * Finds all rows whose range value on the stated `column` does not extend
-   * to the left of the specified `range`.
-   *
-   * @param column  The column to filter on.
-   * @param range  The range to filter with.
-   */
-  rangeGte(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${String(column)}`, `nxl.${range}`)
-    return this
-  }
+	/**
+	 * Match only rows which satisfy at least one of the filters.
+	 *
+	 * Unlike most filters, `filters` is used as-is and needs to follow [PostgREST
+	 * syntax](https://postgrest.org/en/stable/api.html#operators). You also need
+	 * to make sure it's properly sanitized.
+	 *
+	 * It's currently not possible to do an `.or()` filter across multiple tables.
+	 *
+	 * @param filters - The filters to use, following PostgREST syntax
+	 * @param foreignTable - Set this to filter on foreign tables instead of the
+	 * current table
+	 */
+	or(filters: string, { foreignTable }: { foreignTable?: string } = {}): this {
+		const key = foreignTable ? `${foreignTable}.or` : 'or';
+		this.url.searchParams.append(key, `(${filters})`);
+		return this;
+	}
 
-  /** @deprecated Use `rangeGte()` instead. */
-  nxl = this.rangeGte
-
-  /**
-   * Finds all rows whose range value on the stated `column` does not extend
-   * to the right of the specified `range`.
-   *
-   * @param column  The column to filter on.
-   * @param range  The range to filter with.
-   */
-  rangeLte(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${String(column)}`, `nxr.${range}`)
-    return this
-  }
-
-  /** @deprecated Use `rangeLte()` instead. */
-  nxr = this.rangeLte
-
-  /**
-   * Finds all rows whose range value on the stated `column` is adjacent to
-   * the specified `range`.
-   *
-   * @param column  The column to filter on.
-   * @param range  The range to filter with.
-   */
-  rangeAdjacent(column: keyof T, range: string): this {
-    this.url.searchParams.append(`${String(column)}`, `adj.${range}`)
-    return this
-  }
-
-  /** @deprecated Use `rangeAdjacent()` instead. */
-  adj = this.rangeAdjacent
-
-  /**
-   * Finds all rows whose array or range value on the stated `column` overlaps
-   * (has a value in common) with the specified `value`.
-   *
-   * @param column  The column to filter on.
-   * @param value  The value to filter with.
-   */
-  overlaps(column: keyof T, value: string | T[keyof T][]): this {
-    if (typeof value === 'string') {
-      // range
-      this.url.searchParams.append(`${String(column)}`, `ov.${value}`)
-    } else {
-      // array
-      this.url.searchParams.append(`${String(column)}`, `ov.{${value.join(',')}}`)
-    }
-    return this
-  }
-
-  /** @deprecated Use `overlaps()` instead. */
-  ov = this.overlaps
-
-  /**
-   * Finds all rows whose text or tsvector value on the stated `column` matches
-   * the tsquery in `query`.
-   *
-   * @param column  The column to filter on.
-   * @param query  The Postgres tsquery string to filter with.
-   * @param config  The text search configuration to use.
-   * @param type  The type of tsquery conversion to use on `query`.
-   */
-  textSearch(
-    column: keyof T,
-    query: string,
-    {
-      config,
-      type = null,
-    }: { config?: string; type?: 'plain' | 'phrase' | 'websearch' | null } = {}
-  ): this {
-    let typePart = ''
-    if (type === 'plain') {
-      typePart = 'pl'
-    } else if (type === 'phrase') {
-      typePart = 'ph'
-    } else if (type === 'websearch') {
-      typePart = 'w'
-    }
-    const configPart = config === undefined ? '' : `(${config})`
-    this.url.searchParams.append(`${String(column)}`, `${typePart}fts${configPart}.${query}`)
-    return this
-  }
-
-  /**
-   * Finds all rows whose tsvector value on the stated `column` matches
-   * to_tsquery(`query`).
-   *
-   * @param column  The column to filter on.
-   * @param query  The Postgres tsquery string to filter with.
-   * @param config  The text search configuration to use.
-   *
-   * @deprecated Use `textSearch()` instead.
-   */
-  fts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
-    const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${String(column)}`, `fts${configPart}.${query}`)
-    return this
-  }
-
-  /**
-   * Finds all rows whose tsvector value on the stated `column` matches
-   * plainto_tsquery(`query`).
-   *
-   * @param column  The column to filter on.
-   * @param query  The Postgres tsquery string to filter with.
-   * @param config  The text search configuration to use.
-   *
-   * @deprecated Use `textSearch()` with `type: 'plain'` instead.
-   */
-  plfts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
-    const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${String(column)}`, `plfts${configPart}.${query}`)
-    return this
-  }
-
-  /**
-   * Finds all rows whose tsvector value on the stated `column` matches
-   * phraseto_tsquery(`query`).
-   *
-   * @param column  The column to filter on.
-   * @param query  The Postgres tsquery string to filter with.
-   * @param config  The text search configuration to use.
-   *
-   * @deprecated Use `textSearch()` with `type: 'phrase'` instead.
-   */
-  phfts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
-    const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${String(column)}`, `phfts${configPart}.${query}`)
-    return this
-  }
-
-  /**
-   * Finds all rows whose tsvector value on the stated `column` matches
-   * websearch_to_tsquery(`query`).
-   *
-   * @param column  The column to filter on.
-   * @param query  The Postgres tsquery string to filter with.
-   * @param config  The text search configuration to use.
-   *
-   * @deprecated Use `textSearch()` with `type: 'websearch'` instead.
-   */
-  wfts(column: keyof T, query: string, {config}: { config?: string } = {}): this {
-    const configPart = typeof config === 'undefined' ? '' : `(${config})`
-    this.url.searchParams.append(`${String(column)}`, `wfts${configPart}.${query}`)
-    return this
-  }
-
-  /**
-   * Finds all rows whose `column` satisfies the filter.
-   *
-   * @param column  The column to filter on.
-   * @param operator  The operator to filter with.
-   * @param value  The value to filter with.
-   */
-  filter(column: keyof T, operator: FilterOperator, value: any): this {
-    this.url.searchParams.append(`${String(column)}`, `${operator}.${value}`)
-    return this
-  }
-
-  /**
-   * Finds all rows whose columns match the specified `query` object.
-   *
-   * @param query  The object to filter with, with column names as keys mapped
-   *               to their filter values.
-   */
-  match(query: { [key: string]: string }) {
-    Object.keys(query).forEach((key) => {
-      this.url.searchParams.append(`${key}`, `eq.${query[key]}`)
-    })
-    return this
-  }
+	filter<ColumnName extends string & keyof Row>(column: ColumnName, operator: `${'' | 'not.'}${FilterOperator}`, value: unknown): this;
+	filter(column: string, operator: string, value: unknown): this;
+	/**
+	 * Match only rows which satisfy the filter. This is an escape hatch - you
+	 * should use the specific filter methods wherever possible.
+	 *
+	 * Unlike most filters, `opearator` and `value` are used as-is and need to
+	 * follow [PostgREST
+	 * syntax](https://postgrest.org/en/stable/api.html#operators). You also need
+	 * to make sure they are properly sanitized.
+	 *
+	 * @param column - The column to filter on
+	 * @param operator - The operator to filter with, following PostgREST syntax
+	 * @param value - The value to filter with, following PostgREST syntax
+	 */
+	filter(column: string, operator: string, value: unknown): this {
+		this.url.searchParams.append(column, `${operator}.${value}`);
+		return this;
+	}
 }

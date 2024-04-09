@@ -1,7 +1,7 @@
 # Nativescript nativescript-opentok
 
 ```javascript
-ns plugin add @triniwiz/nativescript-opentok
+npm install @triniwiz/nativescript-opentok
 ```
 
 ## Usage

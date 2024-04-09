@@ -1,4 +1,5 @@
 {
+	"name": "demo-vue",
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"sourceRoot": "apps/demo-vue/app",
 	"projectType": "application",
