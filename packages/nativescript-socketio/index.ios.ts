@@ -1,5 +1,4 @@
 import { Common } from './common';
-import "./typings/objc!SocketIO";
 
 // declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
 //     NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
