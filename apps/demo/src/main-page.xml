@@ -5,49 +5,7 @@
   <StackLayout class="p-20">
     <ScrollView class="h-full">
       <StackLayout>
-        <Button text="nativescript-accelerometer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-accordion" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-autocomplete" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-aws-sdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-aws-sdk-s3" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-couchbase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-downloader" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-ffmpeg" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-here" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-image-cache-it" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-image-zoom" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-imageoptimize" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-messenger" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-nested-scrollview" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-opentok" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-pager" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-parsesdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-popup" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-pubnub" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-pusher-beams" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-pusher-channels" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-radar-io" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-sinch" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-socketio" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-splashscreen" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-sse" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-star-ratings" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-stripe" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-supabase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-supabase-functions" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-supabase-gotrue" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-supabase-postgrest" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-supabase-realtime" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-supabase-storage" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-textdrawable" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-toasty" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-tooltip" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-twitter" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-video-editor" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-videorecorder" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-        <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
       </StackLayout>
     </ScrollView>
   </StackLayout>
