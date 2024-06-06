@@ -41,7 +41,7 @@
 		"url": "https://github.com/triniwiz/nativescript-plugins/issues"
 	},
 	"license": "Apache-2.0",
-	"homepage": "https://github.com/tirniwiz/nativescript-plugins",
+	"homepage": "https://github.com/triniwiz/nativescript-plugins",
 	"readmeFilename": "README.md",
 	"bootstrapper": "@nativescript/plugin-seed"
 }
