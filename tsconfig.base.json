@@ -41,6 +41,7 @@
 			"@triniwiz/nativescript-image-cache-it/angular": ["packages/nativescript-image-cache-it/angular/index.ts"],
 			"@triniwiz/nativescript-image-zoom": ["packages/nativescript-image-zoom/index.d.ts"],
 			"@triniwiz/nativescript-imageoptimize": ["packages/nativescript-imageoptimize/index.d.ts"],
+			"@triniwiz/nativescript-messenger": ["packages/nativescript-messenger/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-core": ["packages/nativescript-mongo-stitch-core/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-sdk": ["packages/nativescript-mongo-stitch-sdk/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-services-mongodb-remote": ["packages/nativescript-mongo-stitch-services-mongodb-remote/index.d.ts"],
@@ -63,6 +64,7 @@
 			"@triniwiz/nativescript-stripe": ["packages/nativescript-stripe/index.d.ts"],
 			"@triniwiz/nativescript-stripe/angular": ["packages/nativescript-stripe/angular/index.ts"],
 			"@triniwiz/nativescript-supabase": ["packages/nativescript-supabase/index.ts"],
+			"@triniwiz/nativescript-supabase-functions": ["packages/nativescript-supabase-functions/index.d.ts"],
 			"@triniwiz/nativescript-supabase-gotrue": ["packages/nativescript-supabase-gotrue/index.ts"],
 			"@triniwiz/nativescript-supabase-postgrest": ["packages/nativescript-supabase-postgrest/index.ts"],
 			"@triniwiz/nativescript-supabase-realtime": ["packages/nativescript-supabase-realtime/index.ts"],
@@ -77,9 +79,7 @@
 			"@triniwiz/nativescript-yogalayout": ["packages/nativescript-yogalayout/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout/angular": ["packages/nativescript-yogalayout/angular/index.ts"],
 			"@triniwiz/nativescript-youtubeplayer": ["packages/nativescript-youtubeplayer/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"],
-			"@triniwiz/nativescript-messenger": ["packages/nativescript-messenger/index.d.ts"],
-			"@triniwiz/nativescript-supabase-functions": ["packages/nativescript-supabase-functions/index.d.ts"]
+			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

@@ -33,7 +33,7 @@ export class Popup {
 				this._popupController.view.backgroundColor = new Color(this._options.backgroundColor).ios;
 			}
 			if (this._options.hideArrow) {
-				this._popupController.popoverPresentationController.permittedArrowDirections = 0;
+				this._popupController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirection.Unknown;
 			}
 			// check the view argument
 			if (view instanceof View) {

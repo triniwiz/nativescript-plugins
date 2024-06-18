@@ -42,3 +42,5 @@ Thumbs.db
 
 *.tgz
 packages/**/angular/dist
+
+.nx/cache
