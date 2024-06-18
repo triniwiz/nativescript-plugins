@@ -7,14 +7,14 @@
 ## Installing 
 
 ```bash
-    ns plugin add @triniwiz/nativescript-nestedscrollview
+    ns plugin add @triniwiz/nativescript-nested-scrollview
 ```
 ## Configuration
 
 ### Core
 
 ::: tip IMPORTANT
-Ensure you've included `xmlns:ui="@triniwiz/nativescript-nestedscrollview"` on the
+Ensure you've included `xmlns:ui="@triniwiz/nativescript-nested-scrollview"` on the
 Page element
 :::
 
