@@ -1,5 +1,7 @@
 import { LogLevel, TNSLogBase, TNSLogRedirectionStrategy, TNSMediaInformationBase, TNSMediaStreamBase, TNSReturnCodeBase, TNSSessionBase, TNSSessionState, TNSStatisticsBase } from './common';
 
+export { LogLevel };
+
 export class TNSSession extends TNSSessionBase {
 	native: com.arthenica.ffmpegkit.Session;
 	get android() {
