@@ -6,6 +6,10 @@ export interface Options {
 	explanation?: string;
 	format?: VideoFormatType;
 	position?: CameraPositionType;
+	/**
+	 * (iOS Only) Specify a custom UIModalPresentationStyle (Defaults to UIModalPresentationStyle.CurrentContext)
+	 */
+	modalPresentationStyle?: number;
 }
 
 export interface RecordResult {

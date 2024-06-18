@@ -116,7 +116,7 @@ export class VideoRecorder extends VideoRecorderBase {
 			}
 
 			picker.delegate = listener;
-			picker.modalPresentationStyle = UIModalPresentationStyle.CurrentContext;
+			picker.modalPresentationStyle = options.modalPresentationStyle || UIModalPresentationStyle.CurrentContext;
 
 			let viewController;
 			let topMostFrame = Frame.topmost();
