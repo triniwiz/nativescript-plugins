@@ -79,7 +79,8 @@
 			"@triniwiz/nativescript-yogalayout": ["packages/nativescript-yogalayout/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout/angular": ["packages/nativescript-yogalayout/angular/index.ts"],
 			"@triniwiz/nativescript-youtubeplayer": ["packages/nativescript-youtubeplayer/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"]
+			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"],
+			"@triniwiz/*": ["packages/*"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]
