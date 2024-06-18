@@ -3,9 +3,10 @@
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
 	"projectType": "library",
 	"sourceRoot": "packages/nativescript-supabase-functions",
+	"tags": [],
 	"targets": {
 		"build": {
-			"executor": "@nrwl/js:tsc",
+			"executor": "@nx/js:tsc",
 			"options": {
 				"outputPath": "dist/packages/nativescript-supabase-functions",
 				"tsConfig": "packages/nativescript-supabase-functions/tsconfig.json",
@@ -34,15 +35,14 @@
 				"commands": ["node tools/scripts/build-finish.ts nativescript-supabase-functions"],
 				"parallel": false
 			},
-			"outputs": ["dist/packages/nativescript-supabase-functions"],
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-supabase-functions"],
 			"dependsOn": [
 				{
 					"target": "build.all",
-					"projects": "dependencies"
+					"dependencies": true
 				},
 				{
-					"target": "build",
-					"projects": "self"
+					"target": "build"
 				}
 			]
 		},
@@ -54,11 +54,7 @@
 			}
 		},
 		"lint": {
-			"executor": "@nrwl/linter:eslint",
-			"options": {
-				"lintFilePatterns": ["packages/nativescript-supabase-functions/**/*.ts"]
-			}
+			"executor": "@nx/eslint:lint"
 		}
-	},
-	"tags": []
+	}
 }

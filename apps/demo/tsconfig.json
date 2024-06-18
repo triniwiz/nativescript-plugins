@@ -62,7 +62,8 @@
 			"@triniwiz/nativescript-supabase-postgrest": ["../../packages/nativescript-supabase-postgrest/index.ts"],
 			"@triniwiz/nativescript-supabase-realtime": ["../../packages/nativescript-supabase-realtime/index.ts"],
 			"@triniwiz/nativescript-supabase-storage": ["../../packages/nativescript-supabase-storage/index.ts"],
-			"@triniwiz/nativescript-opentok": ["../../packages/nativescript-opentok/index.ts"]
+			"@triniwiz/nativescript-opentok": ["../../packages/nativescript-opentok/index.ts"],
+			"@triniwiz/*": ["../../packages/*"]
 		}
 	}
 }

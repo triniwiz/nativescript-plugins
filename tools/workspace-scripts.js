@@ -53,42 +53,6 @@ module.exports = {
 					description: '⚆  Run Android  🤖',
 				},
 			},
-			'...React...': {
-				script: `npx cowsay "Nothing wrong with React, either ⚛️"`,
-				description: ` 🔻 React`,
-			},
-			'demo-react': {
-				clean: {
-					script: 'nx run demo-react:clean',
-					description: '⚆  Clean  🧹',
-				},
-				ios: {
-					script: 'nx run demo-react:ios',
-					description: '⚆  Run iOS  ',
-				},
-				android: {
-					script: 'nx run demo-react:android',
-					description: '⚆  Run Android  🤖',
-				},
-			},
-			'...Vue...': {
-				script: `npx cowsay "What a nice Vue"`,
-				description: ` 🔻 Vue`,
-			},
-			'demo-vue': {
-				clean: {
-					script: 'nx run demo-vue:clean',
-					description: '⚆  Clean  🧹',
-				},
-				ios: {
-					script: 'nx run demo-vue:ios',
-					description: '⚆  Run iOS  ',
-				},
-				android: {
-					script: 'nx run demo-vue:android',
-					description: '⚆  Run Android  🤖',
-				},
-			},
 		},
 		'⚙️': {
 			script: `npx cowsay "@triniwiz/* packages will keep your ⚙️ cranking"`,
@@ -680,7 +644,7 @@ module.exports = {
 				description: 'Focus on @triniwiz/nativescript-supabase-functions',
 			},
 			reset: {
-				script: 'nx g @nativescript/plugin-tools:focus-packages',
+				script: 'nx g @triniwiz/plugin-tools:focus-packages',
 				description: 'Reset Focus',
 			},
 		},
