@@ -1,4 +1,4 @@
-import { ImageSource, Folder, Screen, } from '@nativescript/core';
+import { ImageSource, File, Screen, } from '@nativescript/core';
 import { completeSelfCheck, getFilenameFromUrl, HTTPFormData, HTTPFormDataEntry, ImageParseMethod, } from "./http.common";
 import { NetworkAgent } from "@nativescript/core/debugger";
 export { HTTPFormData, HTTPFormDataEntry, ImageParseMethod } from "./http.common";
@@ -96,7 +96,7 @@ function onRequestComplete(requestId, result) {
                 }
                 let stream;
                 try {
-                    const file = Folder.fromPath(destinationFilePath);
+                    const file = File.fromPath(destinationFilePath);
                     const javaFile = new java.io.File(destinationFilePath);
                     stream = new java.io.FileOutputStream(javaFile);
                     stream.write(result.raw.toByteArray());
