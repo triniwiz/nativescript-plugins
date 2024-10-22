@@ -4,7 +4,7 @@
 	"license": "MIT",
 	"scripts": {
 		"setup": "npx rimraf node_modules package-lock.json dist tmp yarn.lock && yarn",
-		"postinstall": "husky install && npx ts-patch install",
+		"postinstall": "husky && npx ts-patch install",
 		"start": "nps",
 		"add": "nx g @nativescript/plugin-tools:add-package",
 		"add-angular": "nx g @nativescript/plugin-tools:add-angular",
@@ -19,20 +19,20 @@
 	},
 	"private": true,
 	"devDependencies": {
-		"@angular-devkit/build-angular": "^17.0.0",
-		"@angular/animations": "^17.0.0",
-		"@angular/common": "^17.0.0",
-		"@angular/compiler": "^17.0.0",
-		"@angular/compiler-cli": "^17.0.0",
-		"@angular/core": "^17.0.0",
-		"@angular/forms": "^17.0.0",
-		"@angular/platform-browser": "^17.0.0",
-		"@angular/platform-browser-dynamic": "^17.0.0",
-		"@angular/router": "^17.0.0",
-		"@nativescript/angular": "^17.0.0",
-		"@nativescript/core": "~8.7.0",
-		"@nativescript/plugin-tools": "5.2.5",
-		"@nativescript/types": "~8.7.0",
+		"@angular-devkit/build-angular": "^18.0.0",
+		"@angular/animations": "^18.0.0",
+		"@angular/common": "^18.0.0",
+		"@angular/compiler": "^18.0.0",
+		"@angular/compiler-cli": "^18.0.0",
+		"@angular/core": "^18.0.0",
+		"@angular/forms": "^18.0.0",
+		"@angular/platform-browser": "^18.0.0",
+		"@angular/platform-browser-dynamic": "^18.0.0",
+		"@angular/router": "^18.0.0",
+		"@nativescript/angular": "^18.0.0",
+		"@nativescript/core": "~8.8.0",
+		"@nativescript/plugin-tools": "5.4.1",
+		"@nativescript/types": "~8.8.0",
 		"@nativescript/webpack": "~5.0.21",
 		"@nestjs/common": "^9.0.0",
 		"@nestjs/core": "^9.0.0",
@@ -40,7 +40,7 @@
 		"@nestjs/schematics": "^9.0.0",
 		"@nestjs/testing": "^9.0.0",
 		"@nestjs/websockets": "^9.0.0",
-		"@ngtools/webpack": "^17.0.0",
+		"@ngtools/webpack": "^18.0.0",
 		"@types/jest": "29.5.0",
 		"@types/react": "npm:types-react-without-jsx-intrinsics@^16.14.30",
 		"@types/socket.io": "^3.0.2",
@@ -55,7 +55,7 @@
 		"nativescript-videoplayer": "^5.0.1",
 		"nativescript-vue": "~2.9.0",
 		"nativescript-vue-template-compiler": "~2.9.0",
-		"ng-packagr": "^17.0.0",
+		"ng-packagr": "^18.0.0",
 		"pusher": "^5.0.0",
 		"react": "^16.14.0",
 		"react-nativescript": "^4.0.0",
@@ -66,10 +66,10 @@
 		"svelte-native": "~1.0.4",
 		"ts-jest": "28.0.8",
 		"tslib": "^2.0.0",
-		"typescript": "~5.4.0",
+		"typescript": "~5.5.0",
 		"vuepress": "^1.9.8",
 		"whatwg-url": "11.0.0",
-		"zone.js": "~0.14.0"
+		"zone.js": "~0.15.0"
 	},
 	"lint-staged": {
 		"**/*.{js,ts,scss,json,html}": [
@@ -77,6 +77,6 @@
 		]
 	},
 	"dependencies": {
-		"postcss-import": "^15.1.0"
+		"postcss-import": "^16.1.0"
 	}
 }

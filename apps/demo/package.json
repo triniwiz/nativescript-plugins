@@ -51,7 +51,7 @@
 		"@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer"
 	},
 	"devDependencies": {
-		"@nativescript/android": "~8.7.0",
-		"@nativescript/ios": "~8.7.0"
+		"@nativescript/android": "~8.8.0",
+		"@nativescript/ios": "~8.8.0"
 	}
 }
