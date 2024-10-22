@@ -1,73 +1,61 @@
 {
-  "name": "nativescript-messenger",
-  "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "projectType": "library",
-  "sourceRoot": "packages/nativescript-messenger",
-  "targets": {
-    "build": {
-      "executor": "@nrwl/js:tsc",
-      "options": {
-        "outputPath": "dist/packages/nativescript-messenger",
-        "tsConfig": "packages/nativescript-messenger/tsconfig.json",
-        "packageJson": "packages/nativescript-messenger/package.json",
-        "main": "packages/nativescript-messenger/index.d.ts",
-        "assets": [
-          "packages/nativescript-messenger/*.md",
-          "packages/nativescript-messenger/index.d.ts",
-          "LICENSE",
-          {
-            "glob": "**/*",
-            "input": "packages/nativescript-messenger/platforms/",
-            "output": "./platforms/"
-          }
-        ],
-        "dependsOn": [
-          {
-            "target": "build.all",
-            "projects": "dependencies"
-          }
-        ]
-      }
-    },
-    "build.all": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "node tools/scripts/build-finish.ts nativescript-messenger"
-        ],
-        "parallel": false
-      },
-      "outputs": [
-        "dist/packages/nativescript-messenger"
-      ],
-      "dependsOn": [
-        {
-          "target": "build.all",
-          "projects": "dependencies"
-        },
-        {
-          "target": "build",
-          "projects": "self"
-        }
-      ]
-    },
-    "focus": {
-      "executor": "nx:run-commands",
-      "options": {
-        "commands": [
-          "nx g @nativescript/plugin-tools:focus-packages nativescript-messenger"
-        ],
-        "parallel": false
-      }
-    },
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "options": {
-        "lintFilePatterns": [
-          "packages/nativescript-messenger/**/*.ts"
-        ]
-      }
-    }
-  },
-  "tags": []
+	"name": "nativescript-messenger",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "packages/nativescript-messenger",
+	"tags": [],
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"options": {
+				"outputPath": "dist/packages/nativescript-messenger",
+				"tsConfig": "packages/nativescript-messenger/tsconfig.json",
+				"packageJson": "packages/nativescript-messenger/package.json",
+				"main": "packages/nativescript-messenger/index.d.ts",
+				"assets": [
+					"packages/nativescript-messenger/*.md",
+					"packages/nativescript-messenger/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-messenger/platforms/",
+						"output": "./platforms/"
+					}
+				],
+				"dependsOn": [
+					{
+						"target": "build.all",
+						"projects": "dependencies"
+					}
+				]
+			}
+		},
+		"build.all": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-messenger"],
+				"parallel": false
+			},
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-messenger"],
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"dependencies": true
+				},
+				{
+					"target": "build"
+				}
+			]
+		},
+		"focus": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-messenger"],
+				"parallel": false
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:lint"
+		}
+	}
 }
