@@ -48,6 +48,7 @@
         <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+<Button text="nativescript-descope" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
       </StackLayout>
     </ScrollView>
   </StackLayout>

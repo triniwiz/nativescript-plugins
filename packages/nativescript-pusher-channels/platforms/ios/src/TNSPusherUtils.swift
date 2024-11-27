@@ -1,6 +1,6 @@
 #if canImport(PusherSwift)
 import PusherSwift
-#endif
+
 
 import Foundation
 
@@ -16,3 +16,4 @@ public class TNSPusherUtils: NSObject {
     }
     
 }
+#endif

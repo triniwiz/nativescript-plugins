@@ -5,7 +5,7 @@ declare const co: any, io: any, java: any, org: any, android: any;
 export class SocketIO extends Common {
 	protected socket: io.socket.client.Socket;
 
-  auth_payload: any;
+	auth_payload: any;
 	/* io.socket.client.Socket; */
 
 	constructor(...args: any[]) {
@@ -32,7 +32,7 @@ export class SocketIO extends Common {
 							opts.setQuery(query);
 						}
 					} else if (key === 'debug' && options[key]) {
-						co.fitcom.fancylogger.FancyLogger.reset(new co.fitcom.fancylogger.FancyLogger());
+						// co.fitcom.fancylogger.FancyLogger.reset(new co.fitcom.fancylogger.FancyLogger());
 						java.util.logging.Logger.getLogger(io.socket.client.Socket.class.getName()).setLevel(java.util.logging.Level.FINEST);
 						java.util.logging.Logger.getLogger(io.socket.client.Manager.class.getName()).setLevel(java.util.logging.Level.FINEST);
 					} else if (key === 'transports' && options[key]) {
@@ -45,17 +45,17 @@ export class SocketIO extends Common {
 							opts.setTransports(array);
 						}
 					} else if (key === 'auth') {
-            const authMap = new java.util.HashMap();
+						const authMap = new java.util.HashMap();
 						const cookies = options['cookie'];
 						const extraHeaders = options['extraHeaders'];
 						const headers = java.util.HashMap();
 
-            for (const [auth_key, auth_value] of Object.entries(options[key])) {
-              authMap.put(auth_key, auth_value);
-              this.auth_payload[auth_key] = auth_value;
-            }
+						for (const [auth_key, auth_value] of Object.entries(options[key])) {
+							authMap.put(auth_key, auth_value);
+							this.auth_payload[auth_key] = auth_value;
+						}
 
-            if (cookies) {
+						if (cookies) {
 							if (headers && headers.put) {
 								const list = new java.util.ArrayList(java.util.Arrays.asList(cookies));
 								headers.put('Cookie', list);
@@ -74,11 +74,10 @@ export class SocketIO extends Common {
 							}
 						}
 						if (!headers.isEmpty()) opts.setExtraHeaders(headers);
-            if (!authMap.isEmpty()) opts.setAuth(authMap);
-
-          } else if (opts['set' + key[0].toUpperCase() + key.substring(1)]) {
-            opts['set' + key[0].toUpperCase() + key.substring(1)](options[key]); // for example transforms to setPath(options[path])
-          }
+						if (!authMap.isEmpty()) opts.setAuth(authMap);
+					} else if (opts['set' + key[0].toUpperCase() + key.substring(1)]) {
+						opts['set' + key[0].toUpperCase() + key.substring(1)](options[key]); // for example transforms to setPath(options[path])
+					}
 				}
 				this.socket = io.socket.client.IO.socket(args[0], opts.build());
 				break;
@@ -138,7 +137,7 @@ export class SocketIO extends Common {
 		this.socket.on(event, listener);
 
 		return () => {
-      // @ts-ignore
+			// @ts-ignore
 			this.socket.off(event, listener);
 		};
 	}
@@ -166,17 +165,17 @@ export class SocketIO extends Common {
 			},
 		});
 
-    // @ts-ignore
+		// @ts-ignore
 		this.socket.once(event, listener);
 
 		return () => {
-      // @ts-ignore
+			// @ts-ignore
 			this.socket.off(event, listener);
 		};
 	}
 
 	off(event: string) {
-    // @ts-ignore
+		// @ts-ignore
 		this.socket.off(event);
 	}
 
@@ -204,7 +203,7 @@ export class SocketIO extends Common {
 						args = Array.prototype.slice.call(args);
 						ack.apply(null, (<any[]>args).map(deserialize));
 					},
-				})
+				}),
 			);
 		}
 

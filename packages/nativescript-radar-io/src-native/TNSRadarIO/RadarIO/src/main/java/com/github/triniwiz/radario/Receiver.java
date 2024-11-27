@@ -3,6 +3,8 @@ package com.github.triniwiz.radario;
 import android.content.Context;
 import android.location.Location;
 
+import androidx.annotation.NonNull;
+
 import io.radar.sdk.Radar;
 import io.radar.sdk.Radar.RadarStatus;
 import io.radar.sdk.model.*;
@@ -27,8 +29,7 @@ public class Receiver extends RadarReceiver {
         object.put("events", Receiver.getEvents(events));
         object.put("user", Receiver.getUser(user));
         RadarIOPlugin.listener.onEvents(object.toString());
-      } catch (JSONException e) {
-        e.printStackTrace();
+      } catch (JSONException ignored) {
       }
     }
   }
@@ -41,8 +42,7 @@ public class Receiver extends RadarReceiver {
         object.put("location", Receiver.getLocation(location));
         object.put("user", Receiver.getUser(user));
         RadarIOPlugin.listener.onLocation(object.toString());
-      } catch (JSONException e) {
-        e.printStackTrace();
+      } catch (JSONException ignored) {
       }
     }
   }
@@ -54,8 +54,7 @@ public class Receiver extends RadarReceiver {
       try {
         object.put("error", Receiver.getStatus(status));
         RadarIOPlugin.listener.onError(object.toString());
-      } catch (JSONException e) {
-        e.printStackTrace();
+      } catch (JSONException ignored) {
       }
     }
   }
@@ -115,8 +114,7 @@ public class Receiver extends RadarReceiver {
           }
 
           _events.put(object);
-        } catch (JSONException e) {
-          e.printStackTrace();
+        } catch (JSONException ignored) {
         }
       }
       return _events;
@@ -142,36 +140,48 @@ public class Receiver extends RadarReceiver {
         return "user.entered_geofence";
       case USER_EXITED_GEOFENCE:
         return "user.exited_geofence";
-      case USER_ENTERED_HOME:
-        return "user.entered_home";
-      case USER_EXITED_HOME:
-        return "user.exited_home";
-      case USER_ENTERED_OFFICE:
-        return "user.entered_office";
-      case USER_EXITED_OFFICE:
-        return "user.exited_office";
-      case USER_STARTED_TRAVELING:
-        return "user.started_traveling";
-      case USER_STOPPED_TRAVELING:
-        return "user.stopped_traveling";
+      case USER_DWELLED_IN_GEOFENCE:
+        return "user.dwelled_in_geofence";
       case USER_ENTERED_PLACE:
         return "user.entered_place";
       case USER_EXITED_PLACE:
         return "user.exited_place";
-      case USER_NEARBY_PLACE_CHAIN:
-        return "user.nearby_place_chain";
       case USER_ENTERED_REGION_COUNTRY:
         return "user.entered_region_country";
       case USER_EXITED_REGION_COUNTRY:
         return "user.exited_region_country";
-      case USER_ENTERED_REGION_STATE:
-        return "user.entered_region_state";
-      case USER_EXITED_REGION_STATE:
-        return "user.exited_region_state";
       case USER_ENTERED_REGION_DMA:
         return "user.entered_region_dma";
       case USER_EXITED_REGION_DMA:
         return "user.exited_region_dma";
+      case USER_ENTERED_REGION_STATE:
+        return "user.entered_region_state";
+      case USER_EXITED_REGION_STATE:
+        return "user.exited_region_state";
+      case USER_ENTERED_REGION_POSTAL_CODE:
+        return "user.entered_region_postal_code";
+      case USER_EXITED_REGION_POSTAL_CODE:
+        return "user.exited_region_postal_code";
+      case USER_NEARBY_PLACE_CHAIN:
+        return "user.nearby_place_chain";
+      case USER_ENTERED_BEACON:
+        return "user.entered_beacon";
+      case USER_EXITED_BEACON:
+        return "user.exited_beacon";
+      case USER_STARTED_TRIP:
+        return "user.started_trip";
+      case USER_UPDATED_TRIP:
+        return "user.updated_trip";
+      case USER_STOPPED_TRIP:
+        return "user.stopped_trip";
+      case USER_APPROACHING_TRIP_DESTINATION:
+        return "user.approaching_trip_destination";
+      case USER_ARRIVED_AT_TRIP_DESTINATION:
+        return "user.arrived_at_trip_destination";
+      case USER_ARRIVED_AT_WRONG_TRIP_DESTINATION:
+        return "user.arrived_at_wrong_trip_destination";
+      case USER_FAILED_FRAUD:
+        return "user.failed_fraud";
       default:
         return null;
     }
@@ -274,8 +284,7 @@ public class Receiver extends RadarReceiver {
         object.put("stopped", b);
         object.put("source", radarLocationSource.toString());
         RadarIOPlugin.listener.onClientLocation(object.toString());
-      } catch (JSONException e) {
-        e.printStackTrace();
+      } catch (JSONException ignored) {
       }
     }
   }
@@ -287,9 +296,13 @@ public class Receiver extends RadarReceiver {
       try {
         object.put("log", s);
         RadarIOPlugin.listener.onLog(object.toString());
-      } catch (JSONException e) {
-        e.printStackTrace();
+      } catch (JSONException ignored) {
       }
     }
+  }
+
+  @Override
+  public void onLocationPermissionStatusUpdated(@NonNull Context context, @NonNull RadarLocationPermissionStatus radarLocationPermissionStatus) {
+    // todo
   }
 }

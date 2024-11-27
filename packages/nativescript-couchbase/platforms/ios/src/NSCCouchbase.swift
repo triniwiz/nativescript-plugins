@@ -1,5 +1,8 @@
 import Foundation
+
+#if canImport(CouchbaseLite)
 import CouchbaseLite
+#endif
 
 @objc(NSCCouchbase)
 @objcMembers
@@ -12,6 +15,7 @@ public class NSCCouchbase: NSObject {
         return DispatchQueue(label: name)
     }
     
+#if canImport(CouchbaseLite)
     @objc public static func asyncNext(_ queue: DispatchQueue ,_ result: CBLQueryResultSet, _ callback: @escaping (Any?) -> Void) {
         let currentQueue = OperationQueue.current
         queue.async {
@@ -21,4 +25,5 @@ public class NSCCouchbase: NSObject {
             }
         }
     }
+#endif
 }

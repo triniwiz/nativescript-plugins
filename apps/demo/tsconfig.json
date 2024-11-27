@@ -63,7 +63,8 @@
 			"@triniwiz/nativescript-supabase-realtime": ["../../packages/nativescript-supabase-realtime/index.ts"],
 			"@triniwiz/nativescript-supabase-storage": ["../../packages/nativescript-supabase-storage/index.ts"],
 			"@triniwiz/nativescript-opentok": ["../../packages/nativescript-opentok/index.ts"],
-			"@triniwiz/*": ["../../packages/*"]
+			"@triniwiz/*": ["../../packages/*"],
+			"@triniwiz/nativescript-descope": ["../../packages/nativescript-descope/index.d.ts"]
 		}
 	}
 }

@@ -425,6 +425,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-supabase-functions: Build',
 				},
 			},
+			// @triniwiz/nativescript-descope
+			'nativescript-descope': {
+				build: {
+					script: 'nx run nativescript-descope:build.all',
+					description: '@triniwiz/nativescript-descope: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -642,6 +649,10 @@ module.exports = {
 			'nativescript-supabase-functions': {
 				script: 'nx run nativescript-supabase-functions:focus',
 				description: 'Focus on @triniwiz/nativescript-supabase-functions',
+			},
+			'nativescript-descope': {
+				script: 'nx run nativescript-descope:focus',
+				description: 'Focus on @triniwiz/nativescript-descope',
 			},
 			reset: {
 				script: 'nx g @triniwiz/plugin-tools:focus-packages',

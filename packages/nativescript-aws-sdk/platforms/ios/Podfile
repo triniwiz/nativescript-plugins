@@ -1,1 +1,3 @@
-pod 'AWSCore', '~> 2.17'
+platform :ios, '12.0'
+
+# pod 'AWSCore', '~> 2.37.2'

@@ -2,7 +2,7 @@ import { isStorageError, StorageError } from '../lib/errors';
 import { Fetch, get, post, remove } from '../lib/fetch';
 import { resolveFetch } from '../lib/helpers';
 import { FileObject, FileOptions, SearchOptions, FetchParameters, TransformOptions } from '../lib/types';
-import { Http, HTTPFormData, HTTPFormDataEntry } from '../vendor/nativescript-http';
+import { Http, HTTPFormData, HTTPFormDataEntry } from '@klippa/nativescript-http';
 
 const DEFAULT_SEARCH_OPTIONS = {
 	limit: 100,
@@ -45,7 +45,7 @@ export default class StorageFileApi {
 		method: 'POST' | 'PUT',
 		path: string,
 		fileBody: FileBody,
-		fileOptions?: FileOptions
+		fileOptions?: FileOptions,
 	): Promise<
 		| {
 				data: { path: string };
@@ -125,7 +125,7 @@ export default class StorageFileApi {
 	async upload(
 		path: string,
 		fileBody: FileBody,
-		fileOptions?: FileOptions
+		fileOptions?: FileOptions,
 	): Promise<
 		| {
 				data: { path: string };
@@ -257,7 +257,7 @@ export default class StorageFileApi {
 	async update(
 		path: string,
 		fileBody: ArrayBuffer | ArrayBufferView | Blob | Buffer | File | FormData | NodeJS.ReadableStream | ReadableStream<Uint8Array> | URLSearchParams | string,
-		fileOptions?: FileOptions
+		fileOptions?: FileOptions,
 	): Promise<
 		| {
 				data: { path: string };
@@ -279,7 +279,7 @@ export default class StorageFileApi {
 	 */
 	async move(
 		fromPath: string,
-		toPath: string
+		toPath: string,
 	): Promise<
 		| {
 				data: { message: string };
@@ -310,7 +310,7 @@ export default class StorageFileApi {
 	 */
 	async copy(
 		fromPath: string,
-		toPath: string
+		toPath: string,
 	): Promise<
 		| {
 				data: { path: string };
@@ -344,7 +344,7 @@ export default class StorageFileApi {
 	async createSignedUrl(
 		path: string,
 		expiresIn: number,
-		options?: { download?: string | boolean; transform?: TransformOptions }
+		options?: { download?: string | boolean; transform?: TransformOptions },
 	): Promise<
 		| {
 				data: { signedUrl: string };
@@ -382,7 +382,7 @@ export default class StorageFileApi {
 	async createSignedUrls(
 		paths: string[],
 		expiresIn: number,
-		options?: { download: string | boolean }
+		options?: { download: string | boolean },
 	): Promise<
 		| {
 				data: { error: string | null; path: string | null; signedUrl: string }[];
@@ -421,7 +421,7 @@ export default class StorageFileApi {
 	 */
 	async download(
 		path: string,
-		options?: { transform?: TransformOptions }
+		options?: { transform?: TransformOptions },
 	): Promise<
 		| {
 				data: Blob;
@@ -587,7 +587,7 @@ export default class StorageFileApi {
 	async list(
 		path?: string,
 		options?: SearchOptions,
-		parameters?: FetchParameters
+		parameters?: FetchParameters,
 	): Promise<
 		| {
 				data: FileObject[];

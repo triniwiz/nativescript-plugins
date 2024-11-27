@@ -3,5 +3,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.arthenica:ffmpeg-kit-full-gpl:4.4.LTS'
+    implementation 'com.arthenica:ffmpeg-kit-full-gpl:6.0-2.LTS'
 }

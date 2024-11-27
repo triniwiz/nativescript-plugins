@@ -1,8 +1,8 @@
 android {
-  compileSdkVersion 33
+  compileSdkVersion 34
   defaultConfig {
     minSdkVersion 22
-    targetSdkVersion 33
+    targetSdkVersion 34
     generatedDensities = []
   }
   aaptOptions {
@@ -10,13 +10,21 @@ android {
   }
 
   compileOptions {
-    targetCompatibility 1.8
-    sourceCompatibility 1.8
+    targetCompatibility 17
+    sourceCompatibility 17
   }
+
+  packagingOptions {
+    pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    pickFirst 'lib/x86_64/libc++_shared.so'
+    pickFirst 'lib/x86/libc++_shared.so'
+}
 }
 
 
 project.ext {
-  kotlinVersion = "1.6.0"
+  kotlinVersion = "2.0.0"
   useKotlin = true
 }
+

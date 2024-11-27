@@ -14,10 +14,10 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 	requiredShippingAddressFields: StripeStandardShippingAddressField[];
 	allowedPaymentMethodTypes: StripeStandardPaymentMethodType[] = [StripeStandardPaymentMethodType.Card];
 	createCardSources: any;
-	enableCardScanning: boolean = false;
+	enableCardScanning = false;
 	stripeAccountId: string;
 	private static _instance: any;
-	private _paymentConfigurationInitiated: boolean = false;
+	private _paymentConfigurationInitiated = false;
 
 	get native(): com.stripe.android.PaymentSessionConfig {
 		// getter gives client a chance to set properties before using.
@@ -27,7 +27,7 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 	get nativeBuilder(): com.stripe.android.PaymentSessionConfig.Builder {
 		this.initPaymentConfiguration();
 		const shippingRequired = this.requiredShippingAddressFields && this.requiredShippingAddressFields.length !== 0;
-		let optionalFields = [];
+		const optionalFields = [];
 		if (shippingRequired) {
 			if (this.requiredShippingAddressFields.indexOf(StripeStandardShippingAddressField.PostalAddress) < 0) {
 				optionalFields.unshift((com as any).stripe.android.view.ShippingInfoWidget.CustomizableShippingField.Line1);
@@ -62,13 +62,11 @@ export class StripeStandardConfig implements IStripeStandardConfig {
 export class StripeStandardCustomerSession {
 	native: com.stripe.android.CustomerSession;
 
-	constructor() {}
-
-	public async getInstance(shouldPrefetchEphemeralKey: boolean = false) {
+	public async getInstance(shouldPrefetchEphemeralKey = true) {
 		try {
 			StripeStandardConfig.shared.initPaymentConfiguration();
 			const ephemeralKey = await createKeyProvider();
-			com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, ephemeralKey, true ?? false);
+			com.stripe.android.CustomerSession.initCustomerSession(StripeStandardCustomerSession.context, ephemeralKey, shouldPrefetchEphemeralKey ?? false);
 			this.native = com.stripe.android.CustomerSession.getInstance();
 		} catch (e) {
 			console.error('getInstance customer session', e);
@@ -115,7 +113,7 @@ export class StripeStandardPaymentSession {
 	loading: boolean;
 	paymentInProgress: boolean;
 	_data: com.stripe.android.PaymentSessionData;
-	public customerSession: StripeStandardCustomerSession = new StripeStandardCustomerSession();
+	public customerSession = new StripeStandardCustomerSession();
 	public listener: StripeStandardPaymentListener;
 	public currency: string;
 	private _activityResultListener;
@@ -124,7 +122,7 @@ export class StripeStandardPaymentSession {
 	constructor(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
 		this.listener = listener;
 		// show the loader while getting the ephemeralKey
-		let paymentData = {
+		const paymentData = {
 			isReadyToCharge: false,
 			paymentMethod: null,
 			shippingInfo: null,
@@ -136,7 +134,7 @@ export class StripeStandardPaymentSession {
 
 	private async build(_page: Page, amount: number, currency: string, listener: StripeStandardPaymentListener, prefilledAddress?: Address) {
 		await this.customerSession.getInstance();
-		let builder = StripeStandardConfig.shared.nativeBuilder;
+		const builder = StripeStandardConfig.shared.nativeBuilder;
 		if (prefilledAddress) {
 			const address: com.stripe.android.model.Address.Builder = prefilledAddress.android;
 			const info = new com.stripe.android.model.ShippingInformation(address.build(), prefilledAddress.name, prefilledAddress.phone);
@@ -158,7 +156,7 @@ export class StripeStandardPaymentSession {
 
 		(com as any).github.triniwiz.stripe.Stripe.setShippingMethodsFactory(builder, Application.android.foregroundActivity || Application.android.startActivity);
 		(com as any).github.triniwiz.stripe.Stripe.setShippingInformationValidator(builder, Application.android.foregroundActivity || Application.android.startActivity);
-		let config = builder.build();
+		const config = builder.build();
 		this.native = new com.stripe.android.PaymentSession(Application.android.foregroundActivity, config);
 		this.native.init(createPaymentSessionListener(this, listener));
 		this.native.setCartTotal(amount);
@@ -173,7 +171,7 @@ export class StripeStandardPaymentSession {
 	}
 
 	get amount(): number {
-		let data = this._data;
+		const data = this._data;
 		if (!data) {
 			return 0;
 		}
@@ -266,7 +264,7 @@ export class StripeStandardPaymentSession {
 							amount: method.amount,
 							currency: method.currency,
 							detail: method.detail,
-						})
+						}),
 					);
 				}
 
@@ -328,7 +326,7 @@ function createPaymentSessionListener(parent: StripeStandardPaymentSession, list
 						parent.selectedPaymentMethod = createPaymentMethod(sessionData.getPaymentMethod());
 						parent.selectedShippingMethod = createShippingMethod(sessionData.getShippingMethod());
 						parent.shippingAddress = createAddress(sessionData.getShippingInformation());
-						let paymentData = {
+						const paymentData = {
 							isReadyToCharge: sessionData.isPaymentReadyToCharge(),
 							paymentMethod: parent.selectedPaymentMethod,
 							shippingInfo: parent.selectedShippingMethod,
@@ -339,7 +337,7 @@ function createPaymentSessionListener(parent: StripeStandardPaymentSession, list
 					onError(errorCode: number, errorMessage: string) {
 						listener.onError(errorCode, errorMessage);
 					},
-				})
+				}),
 			);
 		},
 		onCommunicatingStateChanged: (isCommunicating: boolean): void => {

@@ -7,6 +7,8 @@
 
 import Foundation
 import UIKit
+
+#if canImport(SDWebImage)
 import SDWebImage
 
 @objc(ImageCacheItUtils)
@@ -472,3 +474,4 @@ public class ImageCacheItUtils: NSObject {
     }
 }
 
+#endif

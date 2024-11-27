@@ -5,6 +5,7 @@ export * from './nativescript-autocomplete';
 export * from './nativescript-aws-sdk';
 export * from './nativescript-aws-sdk-s3';
 export * from './nativescript-couchbase';
+export * from './nativescript-descope';
 export * from './nativescript-downloader';
 export * from './nativescript-ffmpeg';
 export * from './nativescript-here';

@@ -4,6 +4,7 @@
 - [@triniwiz/nativescript-aws-sdk](packages/nativescript-aws-sdk/README.md)
 - [@triniwiz/nativescript-aws-sdk-s3](packages/nativescript-aws-sdk-s3/README.md)
 - [@triniwiz/nativescript-couchbase](packages/nativescript-couchbase/README.md)
+- [@triniwiz/nativescript-descope](packages/nativescript-descope/README.md)
 - [@triniwiz/nativescript-downloader](packages/nativescript-downloader/README.md)
 - [@triniwiz/nativescript-ffmpeg](packages/nativescript-ffmpeg/README.md)
 - [@triniwiz/nativescript-here](packages/nativescript-here/README.md)

@@ -125,7 +125,7 @@ class MyAppGlideModule : AppGlideModule() {
 
     override fun source(): BufferedSource {
       if (bufferedSource == null) {
-        bufferedSource = Okio.buffer(source(responseBody!!.source()))
+        bufferedSource = responseBody!!.source().buffer
       }
       return bufferedSource!!
     }
@@ -167,10 +167,10 @@ class MyAppGlideModule : AppGlideModule() {
       return Interceptor { chain ->
         val request = chain.request()
         val response = chain.proceed(request)
-        val key = request.url().toString()
+        val key = request.url.toString()
         response
           .newBuilder()
-          .body(OkHttpProgressResponseBody(key, response.body(), listener))
+          .body(OkHttpProgressResponseBody(key, response.body, listener))
           .build()
       }
     }
