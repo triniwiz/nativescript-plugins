@@ -1,5 +1,5 @@
 import createCoreSdk, { type ExtendedResponse } from '@descope/core-js-sdk';
-const pkg = require('../../../package.json');
+const pkg = require('../../package.json');
 
 export type Sdk = ReturnType<typeof createSdk>;
 export type SdkLogger = Parameters<typeof createCoreSdk>[0]['logger'];

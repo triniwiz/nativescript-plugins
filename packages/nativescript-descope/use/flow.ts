@@ -1,12 +1,11 @@
 import { transformResponse, type JWTResponse, type SdkResponse } from '@descope/core-js-sdk';
 import type { Sdk } from '../internal/core/sdk';
 import { DescopeNative } from '../internal/modules/descopeModule';
-import type { DescopeFlow, FlowAuthentication } from '../types';
-import useDescope from './descope';
+import type { FlowAuthentication } from '../types';
+import { DescopeContext } from './context';
 
-class FlowManager {
-	private sdk: Sdk;
-	private logger?: Console;
+export class FlowManager {
+	private context: DescopeContext;
 	private currentFlowUrl?: string;
 	private currentCodeVerifier?: string;
 	private pendingFlowResolution?: {
@@ -14,25 +13,24 @@ class FlowManager {
 		reject: (reason?: any) => void;
 	};
 
-	constructor(sdk: Sdk, logger?: Console) {
-		this.sdk = sdk;
-		this.logger = logger;
+	constructor(context: DescopeContext) {
+		this.context = context;
 	}
 
 	async start(flowUrl: string, deepLinkUrl?: string, backupCustomScheme?: string, authentication?: FlowAuthentication): Promise<SdkResponse<JWTResponse>> {
-		this.logger?.log('Starting flow');
+		this.context.logger?.log?.('Starting flow');
 		this.currentFlowUrl = flowUrl;
 
 		const resp = await DescopeNative.prepFlow();
 
 		if (authentication) {
-			await primeFlow(this.sdk, resp.codeChallenge, authentication);
+			await primeFlow(this.context.sdk, resp.codeChallenge, authentication);
 		}
 
 		const callbackUrl = await DescopeNative.startFlow(flowUrl, deepLinkUrl || '', backupCustomScheme || '', resp.codeChallenge);
 
 		if (__IOS__) {
-			return exchangeForJwtResponse(this.sdk, resp.codeVerifier, callbackUrl);
+			return exchangeForJwtResponse(this.context.sdk, resp.codeVerifier, callbackUrl);
 		}
 
 		this.currentCodeVerifier = resp.codeVerifier;
@@ -42,7 +40,7 @@ class FlowManager {
 	}
 
 	async resume(incomingUrl: string): Promise<void> {
-		this.logger?.log('Resuming flow');
+		this.context.logger?.log?.('Resuming flow');
 		if (!this.currentFlowUrl) {
 			this.pendingFlowResolution?.reject('No ongoing flow waiting to resume');
 			return;
@@ -57,11 +55,11 @@ class FlowManager {
 		}
 
 		try {
-			this.logger?.log('Exchanging flow code for JWTs');
-			const resp = await exchangeForJwtResponse(this.sdk, this.currentCodeVerifier, incomingUrl);
+			this.context.logger?.log?.('Exchanging flow code for JWTs');
+			const resp = await exchangeForJwtResponse(this.context.sdk, this.currentCodeVerifier, incomingUrl);
 			this.pendingFlowResolution?.resolve(resp);
 		} catch (e) {
-			this.logger?.error('Flow exchange failed', e);
+			this.context.logger?.error?.('Flow exchange failed', e);
 			this.pendingFlowResolution?.reject(e);
 		} finally {
 			// Clear state
@@ -89,9 +87,3 @@ const codeFromUrl = (urlString: string): string => {
 	const codeEnd = urlString.indexOf('&', codeStart) === -1 ? urlString.length : urlString.indexOf('&', codeStart);
 	return urlString.substring(codeStart, codeEnd);
 };
-
-const useFlow = () => {
-	return new FlowManager(useDescope(), console);
-};
-
-export default useFlow;
