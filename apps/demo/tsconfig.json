@@ -1,70 +1,201 @@
 {
-	"extends": "../../tsconfig.base.json",
-	"compilerOptions": {
-		"rootDirs": [".", "../.."],
-		"baseUrl": ".",
-		"paths": {
-			"~/*": ["src/*"],
-			"@demo/shared": ["../../tools/demo/index.ts"],
-			"@triniwiz/nativescript-couchbase": ["../../packages/nativescript-couchbase/index.d.ts"],
-			"@triniwiz/nativescript-stripe": ["../../packages/nativescript-stripe/index.d.ts"],
-			"@triniwiz/nativescript-stripe/angular": ["../../packages/nativescript-stripe/angular/index.ts"],
-			"@triniwiz/nativescript-toasty": ["../../packages/nativescript-toasty/index.d.ts"],
-			"@triniwiz/nativescript-image-cache-it": ["../../packages/nativescript-image-cache-it/index.d.ts"],
-			"@triniwiz/nativescript-image-cache-it/angular": ["../../packages/nativescript-image-cache-it/angular/index.ts"],
-			"@triniwiz/nativescript-socketio": ["../../packages/nativescript-socketio/index.d.ts"],
-			"@triniwiz/nativescript-socketio/angular": ["../../packages/nativescript-socketio/angular/index.ts"],
-			"@triniwiz/nativescript-webrtc": ["../../packages/nativescript-webrtc/index.d.ts"],
-			"@triniwiz/nativescript-accordion": ["../../packages/nativescript-accordion/index.d.ts"],
-			"@triniwiz/nativescript-accordion/angular": ["../../packages/nativescript-accordion/angular/index.ts"],
-			"@triniwiz/nativescript-downloader": ["../../packages/nativescript-downloader/index.d.ts"],
-			"@triniwiz/nativescript-radar-io": ["../../packages/nativescript-radar-io/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer": ["../../packages/nativescript-youtubeplayer/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer/angular": ["../../packages/nativescript-youtubeplayer/angular/index.ts"],
-			"@triniwiz/nativescript-image-zoom": ["../../packages/nativescript-image-zoom/index.d.ts"],
-			"@triniwiz/nativescript-sse": ["../../packages/nativescript-sse/index.d.ts"],
-			"@triniwiz/nativescript-star-ratings": ["../../packages/nativescript-star-ratings/index.d.ts"],
-			"@triniwiz/nativescript-awesome-loaders": ["../../packages/nativescript-awesome-loaders/index.d.ts"],
-			"@triniwiz/nativescript-textdrawable": ["../../packages/nativescript-textdrawable/index.d.ts"],
-			"@triniwiz/nativescript-pubnub": ["../../packages/nativescript-pubnub/index.d.ts"],
-			"@triniwiz/nativescript-popup": ["../../packages/nativescript-popup/index.d.ts"],
-			"@triniwiz/nativescript-nested-scrollview": ["../../packages/nativescript-nested-scrollview/index.d.ts"],
-			"@triniwiz/nativescript-tooltip": ["../../packages/nativescript-tooltip/index.d.ts"],
-			"@triniwiz/nativescript-twitter": ["../../packages/nativescript-twitter/index.d.ts"],
-			"@triniwiz/nativescript-splashscreen": ["../../packages/nativescript-splashscreen/index.d.ts"],
-			"@triniwiz/nativescript-fancy-list-view": ["../../packages/nativescript-fancy-list-view/index.d.ts"],
-			"@triniwiz/nativescript-autocomplete": ["../../packages/nativescript-autocomplete/index.d.ts"],
-			"@triniwiz/nativescript-here": ["../../packages/nativescript-here/index.d.ts"],
-			"@triniwiz/nativescript-video-editor": ["../../packages/nativescript-video-editor/index.d.ts"],
-			"@triniwiz/nativescript-ffmpeg": ["../../packages/nativescript-ffmpeg/index.d.ts"],
-			"@triniwiz/nativescript-imageoptimize": ["../../packages/nativescript-imageoptimize/index.d.ts"],
-			"@triniwiz/nativescript-aws-sdk": ["../../packages/nativescript-aws-sdk/index.d.ts"],
-			"@triniwiz/nativescript-card-io": ["../../packages/nativescript-card-io/index.d.ts"],
-			"@triniwiz/nativescript-sinch": ["../../packages/nativescript-sinch/index.d.ts"],
-			"@triniwiz/nativescript-ddp-login": ["../../packages/nativescript-ddp-login/index.d.ts"],
-			"@triniwiz/nativescript-fancy-camera": ["../../packages/nativescript-fancy-camera/index.d.ts"],
-			"@triniwiz/nativescript-mongo-stitch-core": ["../../packages/nativescript-mongo-stitch-core/index.d.ts"],
-			"@triniwiz/nativescript-mongo-stitch-services-mongodb-remote": ["../../packages/nativescript-mongo-stitch-services-mongodb-remote/index.d.ts"],
-			"@triniwiz/nativescript-mongo-stitch-sdk": ["../../packages/nativescript-mongo-stitch-sdk/index.d.ts"],
-			"@triniwiz/nativescript-pusher-channels": ["../../packages/nativescript-pusher-channels/index.d.ts"],
-			"@triniwiz/nativescript-pusher-beams": ["../../packages/nativescript-pusher-beams/index.d.ts"],
-			"@triniwiz/nativescript-aws-sdk-s3": ["../../packages/nativescript-aws-sdk-s3/index.d.ts"],
-			"@triniwiz/nativescript-videorecorder": ["../../packages/nativescript-videorecorder/index.d.ts"],
-			"@triniwiz/nativescript-pager": ["../../packages/nativescript-pager/index.d.ts"],
-			"@triniwiz/nativescript-pager/angular": ["../../packages/nativescript-pager/angular/index.ts"],
-			"@triniwiz/nativescript-accelerometer": ["../../packages/nativescript-accelerometer/index.d.ts"],
-			"@triniwiz/nativescript-file-manager": ["../../packages/nativescript-file-manager/index.d.ts"],
-			"@triniwiz/nativescript-yogalayout": ["../../packages/nativescript-yogalayout/index.d.ts"],
-			"@triniwiz/nativescript-yogalayout/angular": ["../../packages/nativescript-yogalayout/angular/index.ts"],
-			"@triniwiz/nativescript-parsesdk": ["../../packages/nativescript-parsesdk/index.d.ts"],
-			"@triniwiz/nativescript-supabase": ["../../packages/nativescript-supabase/index.ts"],
-			"@triniwiz/nativescript-supabase-gotrue": ["../../packages/nativescript-supabase-gotrue/index.ts"],
-			"@triniwiz/nativescript-supabase-postgrest": ["../../packages/nativescript-supabase-postgrest/index.ts"],
-			"@triniwiz/nativescript-supabase-realtime": ["../../packages/nativescript-supabase-realtime/index.ts"],
-			"@triniwiz/nativescript-supabase-storage": ["../../packages/nativescript-supabase-storage/index.ts"],
-			"@triniwiz/nativescript-opentok": ["../../packages/nativescript-opentok/index.ts"],
-			"@triniwiz/*": ["../../packages/*"],
-			"@triniwiz/nativescript-descope": ["../../packages/nativescript-descope/index.d.ts"]
-		}
-	}
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDirs": [
+      ".",
+      "../.."
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "src/*"
+      ],
+      "@demo/shared": [
+        "../../tools/demo/index.ts"
+      ],
+      "@triniwiz/nativescript-couchbase": [
+        "../../packages/nativescript-couchbase/index.d.ts"
+      ],
+      "@triniwiz/nativescript-stripe": [
+        "../../packages/nativescript-stripe/index.d.ts"
+      ],
+      "@triniwiz/nativescript-stripe/angular": [
+        "../../packages/nativescript-stripe/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-toasty": [
+        "../../packages/nativescript-toasty/index.d.ts"
+      ],
+      "@triniwiz/nativescript-image-cache-it": [
+        "../../packages/nativescript-image-cache-it/index.d.ts"
+      ],
+      "@triniwiz/nativescript-image-cache-it/angular": [
+        "../../packages/nativescript-image-cache-it/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-socketio": [
+        "../../packages/nativescript-socketio/index.d.ts"
+      ],
+      "@triniwiz/nativescript-socketio/angular": [
+        "../../packages/nativescript-socketio/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-webrtc": [
+        "../../packages/nativescript-webrtc/index.d.ts"
+      ],
+      "@triniwiz/nativescript-accordion": [
+        "../../packages/nativescript-accordion/index.d.ts"
+      ],
+      "@triniwiz/nativescript-accordion/angular": [
+        "../../packages/nativescript-accordion/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-downloader": [
+        "../../packages/nativescript-downloader/index.d.ts"
+      ],
+      "@triniwiz/nativescript-radar-io": [
+        "../../packages/nativescript-radar-io/index.d.ts"
+      ],
+      "@triniwiz/nativescript-youtubeplayer": [
+        "../../packages/nativescript-youtubeplayer/index.d.ts"
+      ],
+      "@triniwiz/nativescript-youtubeplayer/angular": [
+        "../../packages/nativescript-youtubeplayer/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-image-zoom": [
+        "../../packages/nativescript-image-zoom/index.d.ts"
+      ],
+      "@triniwiz/nativescript-sse": [
+        "../../packages/nativescript-sse/index.d.ts"
+      ],
+      "@triniwiz/nativescript-star-ratings": [
+        "../../packages/nativescript-star-ratings/index.d.ts"
+      ],
+      "@triniwiz/nativescript-awesome-loaders": [
+        "../../packages/nativescript-awesome-loaders/index.d.ts"
+      ],
+      "@triniwiz/nativescript-textdrawable": [
+        "../../packages/nativescript-textdrawable/index.d.ts"
+      ],
+      "@triniwiz/nativescript-pubnub": [
+        "../../packages/nativescript-pubnub/index.d.ts"
+      ],
+      "@triniwiz/nativescript-popup": [
+        "../../packages/nativescript-popup/index.d.ts"
+      ],
+      "@triniwiz/nativescript-nested-scrollview": [
+        "../../packages/nativescript-nested-scrollview/index.d.ts"
+      ],
+      "@triniwiz/nativescript-tooltip": [
+        "../../packages/nativescript-tooltip/index.d.ts"
+      ],
+      "@triniwiz/nativescript-twitter": [
+        "../../packages/nativescript-twitter/index.d.ts"
+      ],
+      "@triniwiz/nativescript-splashscreen": [
+        "../../packages/nativescript-splashscreen/index.d.ts"
+      ],
+      "@triniwiz/nativescript-fancy-list-view": [
+        "../../packages/nativescript-fancy-list-view/index.d.ts"
+      ],
+      "@triniwiz/nativescript-autocomplete": [
+        "../../packages/nativescript-autocomplete/index.d.ts"
+      ],
+      "@triniwiz/nativescript-here": [
+        "../../packages/nativescript-here/index.d.ts"
+      ],
+      "@triniwiz/nativescript-video-editor": [
+        "../../packages/nativescript-video-editor/index.d.ts"
+      ],
+      "@triniwiz/nativescript-ffmpeg": [
+        "../../packages/nativescript-ffmpeg/index.d.ts"
+      ],
+      "@triniwiz/nativescript-imageoptimize": [
+        "../../packages/nativescript-imageoptimize/index.d.ts"
+      ],
+      "@triniwiz/nativescript-aws-sdk": [
+        "../../packages/nativescript-aws-sdk/index.d.ts"
+      ],
+      "@triniwiz/nativescript-card-io": [
+        "../../packages/nativescript-card-io/index.d.ts"
+      ],
+      "@triniwiz/nativescript-sinch": [
+        "../../packages/nativescript-sinch/index.d.ts"
+      ],
+      "@triniwiz/nativescript-ddp-login": [
+        "../../packages/nativescript-ddp-login/index.d.ts"
+      ],
+      "@triniwiz/nativescript-fancy-camera": [
+        "../../packages/nativescript-fancy-camera/index.d.ts"
+      ],
+      "@triniwiz/nativescript-mongo-stitch-core": [
+        "../../packages/nativescript-mongo-stitch-core/index.d.ts"
+      ],
+      "@triniwiz/nativescript-mongo-stitch-services-mongodb-remote": [
+        "../../packages/nativescript-mongo-stitch-services-mongodb-remote/index.d.ts"
+      ],
+      "@triniwiz/nativescript-mongo-stitch-sdk": [
+        "../../packages/nativescript-mongo-stitch-sdk/index.d.ts"
+      ],
+      "@triniwiz/nativescript-pusher-channels": [
+        "../../packages/nativescript-pusher-channels/index.d.ts"
+      ],
+      "@triniwiz/nativescript-pusher-beams": [
+        "../../packages/nativescript-pusher-beams/index.d.ts"
+      ],
+      "@triniwiz/nativescript-aws-sdk-s3": [
+        "../../packages/nativescript-aws-sdk-s3/index.d.ts"
+      ],
+      "@triniwiz/nativescript-videorecorder": [
+        "../../packages/nativescript-videorecorder/index.d.ts"
+      ],
+      "@triniwiz/nativescript-pager": [
+        "../../packages/nativescript-pager/index.d.ts"
+      ],
+      "@triniwiz/nativescript-pager/angular": [
+        "../../packages/nativescript-pager/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-accelerometer": [
+        "../../packages/nativescript-accelerometer/index.d.ts"
+      ],
+      "@triniwiz/nativescript-file-manager": [
+        "../../packages/nativescript-file-manager/index.d.ts"
+      ],
+      "@triniwiz/nativescript-yogalayout": [
+        "../../packages/nativescript-yogalayout/index.d.ts"
+      ],
+      "@triniwiz/nativescript-yogalayout/angular": [
+        "../../packages/nativescript-yogalayout/angular/index.ts"
+      ],
+      "@triniwiz/nativescript-parsesdk": [
+        "../../packages/nativescript-parsesdk/index.d.ts"
+      ],
+      "@triniwiz/nativescript-supabase": [
+        "../../packages/nativescript-supabase/index.ts"
+      ],
+      "@triniwiz/nativescript-supabase-gotrue": [
+        "../../packages/nativescript-supabase-gotrue/index.ts"
+      ],
+      "@triniwiz/nativescript-supabase-postgrest": [
+        "../../packages/nativescript-supabase-postgrest/index.ts"
+      ],
+      "@triniwiz/nativescript-supabase-realtime": [
+        "../../packages/nativescript-supabase-realtime/index.ts"
+      ],
+      "@triniwiz/nativescript-supabase-storage": [
+        "../../packages/nativescript-supabase-storage/index.ts"
+      ],
+      "@triniwiz/nativescript-opentok": [
+        "../../packages/nativescript-opentok/index.ts"
+      ],
+      "@triniwiz/*": [
+        "../../packages/*"
+      ],
+      "@triniwiz/nativescript-descope": [
+        "../../packages/nativescript-descope/index.d.ts"
+      ],
+      "@triniwiz/nativescript-appwrite": [
+        "../../packages/nativescript-appwrite/index.d.ts"
+      ],
+      "@triniwiz/nativescript-supabase-auth": [
+        "../../packages/nativescript-supabase-auth/index.d.ts"
+      ]
+    }
+  }
 }

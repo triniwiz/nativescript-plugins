@@ -12,7 +12,7 @@ export class DemoSharedNativescriptDescope extends DemoSharedBase {
 			projectId: process.env.DESCOPE_PROJECT_ID,
 		});
 		Descope.flow
-			.start(`https://api.descope.com/login/${process.env.DESCOPE_PROJECT_ID}?flow=sign-up-or-in`, 'iogithubtriniwizpluginsdemo://')
+			.start(`https://api.descope.com/login/${process.env.DESCOPE_PROJECT_ID}?flow=mobile-sign-in`, 'iogithubtriniwizpluginsdemo://')
 			.then((response) => {
 				console.log(response);
 			})

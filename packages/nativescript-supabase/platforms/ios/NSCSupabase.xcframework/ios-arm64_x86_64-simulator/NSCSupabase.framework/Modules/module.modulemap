@@ -1,0 +1,11 @@
+framework module NSCSupabase {
+  umbrella header "NSCSupabase.h"
+  export *
+
+  module * { export * }
+}
+
+module NSCSupabase.Swift {
+  header "NSCSupabase-Swift.h"
+  requires objc
+}

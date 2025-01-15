@@ -1,5 +1,6 @@
 - [@triniwiz/nativescript-accelerometer](packages/nativescript-accelerometer/README.md)
 - [@triniwiz/nativescript-accordion](packages/nativescript-accordion/README.md)
+- [@triniwiz/nativescript-appwrite](packages/nativescript-appwrite/README.md)
 - [@triniwiz/nativescript-autocomplete](packages/nativescript-autocomplete/README.md)
 - [@triniwiz/nativescript-aws-sdk](packages/nativescript-aws-sdk/README.md)
 - [@triniwiz/nativescript-aws-sdk-s3](packages/nativescript-aws-sdk-s3/README.md)
