@@ -7,10 +7,12 @@
       <StackLayout>
         <Button text="nativescript-accelerometer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-accordion" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-appwrite" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-autocomplete" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-aws-sdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-aws-sdk-s3" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-couchbase" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-descope" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-downloader" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-ffmpeg" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-here" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
@@ -48,9 +50,6 @@
         <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-<Button text="nativescript-descope" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-<Button text="nativescript-appwrite" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-
       </StackLayout>
     </ScrollView>
   </StackLayout>
