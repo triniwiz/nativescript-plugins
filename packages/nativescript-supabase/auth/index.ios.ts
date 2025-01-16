@@ -1206,7 +1206,7 @@ export class Auth {
 		});
 	}
 
-	user(jwt?: string) {
+	getUser(jwt?: string) {
 		return new Promise<User>((resolve, reject) => {
 			this.native.user(jwt ?? null, (user, error) => {
 				if (error) {

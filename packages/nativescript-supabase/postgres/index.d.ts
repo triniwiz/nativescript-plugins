@@ -16,7 +16,7 @@ export class PostgresTransformBuilder implements PromiseLike<any> {
 	single(): PostgresTransformBuilder;
 }
 
-export class PostgresFilterBuilder implements PromiseLike<any> {
+export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: any }> {
 	containedBy(column: string, value: DataType): PostgresFilterBuilder;
 
 	contains(column: string, value: DataType): PostgresFilterBuilder;
@@ -76,8 +76,20 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		options?: {
 			config?: string;
 			type?: 'plain' | 'phrase' | 'phrase';
-		}
+		},
 	): PostgresFilterBuilder;
+
+	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
+		return new Promise((resolve, reject) => {
+			this.native.execute(null, (data, error) => {
+				if (error) {
+					reject(error);
+				} else {
+					resolve(dataDeserialize(data));
+				}
+			});
+		}).then(onfulfilled, onrejected);
+	}
 }
 
 export class SupabasePostgresQueryBuilder {
@@ -86,14 +98,14 @@ export class SupabasePostgresQueryBuilder {
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
 			defaultToNull?: boolean;
-		}
+		},
 	): PostgresFilterBuilder;
 
 	update(
 		values: Record<any, DataType>,
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
-		}
+		},
 	): PostgresFilterBuilder;
 
 	upsert(
@@ -103,7 +115,7 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 			ignoreDuplicates?: boolean;
 			onConflict?: string;
-		}
+		},
 	): PostgresFilterBuilder;
 
 	delete(options?: { count?: 'exact' | 'planned' | 'estimated' }): PostgresFilterBuilder;
@@ -116,8 +128,20 @@ export class SupabasePostgresQueryBuilder {
 		}: {
 			head?: boolean;
 			count?: 'exact' | 'planned' | 'estimated';
-		} = {}
+		} = {},
 	): PostgresFilterBuilder;
+
+	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
+		return new Promise((resolve, reject) => {
+			this.native.execute(null, (data, error) => {
+				if (error) {
+					reject(error);
+				} else {
+					resolve(dataDeserialize(data));
+				}
+			});
+		}).then(onfulfilled, onrejected);
+	}
 }
 
 export class SupabasePostgresClient {

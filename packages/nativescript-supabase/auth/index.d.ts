@@ -200,7 +200,7 @@ export class Auth {
 		options?: {
 			captchaToken?: string;
 			redirectTo?: string;
-		}
+		},
 	): Promise<void>;
 
 	verifyOtp(
@@ -230,7 +230,7 @@ export class Auth {
 						captchaToken?: string;
 						redirectTo?: string;
 					};
-			  }
+			  },
 	): Promise<{ user: User; session: Session | null }>;
 
 	refreshSession(refreshToken: string): Promise<Session>;
@@ -274,5 +274,5 @@ export class Auth {
 
 	exchangeCodeForSession(authCode: string): romise<Session>;
 
-	user(jwt?: string): Promise<User>;
+	getUser(jwt?: string): Promise<User>;
 }
