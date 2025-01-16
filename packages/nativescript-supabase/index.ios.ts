@@ -2,7 +2,7 @@ import { Auth } from './auth';
 import { SupabaseFunctionsClient } from './functions';
 import { SupabaseStorageClient } from './storage';
 import { SupabaseRealtimeClient } from './realtime';
-import { SupabasePostgreClient } from './postgres';
+import { SupabasePostgresClient, SupabasePostgresQueryBuilder } from './postgres';
 type RealtimeClient = SupabaseRealtimeClient & {
 	native: NSCSupabaseChannel;
 };
@@ -34,8 +34,12 @@ export class SupabaseClient {
 		return this[storage_];
 	}
 
-	from(relation: string): SupabasePostgreClient {
-		return (<any>SupabasePostgreClient).fromNative(this.native.from(relation));
+	schema(schema: string): SupabasePostgresClient {
+		return (<any>SupabasePostgresClient).fromNative(this.native.schema(schema));
+	}
+
+	from(relation: string): SupabasePostgresQueryBuilder {
+		return (<any>SupabasePostgresQueryBuilder).fromNative(this.native.from(relation));
 	}
 
 	channel(name: string) {

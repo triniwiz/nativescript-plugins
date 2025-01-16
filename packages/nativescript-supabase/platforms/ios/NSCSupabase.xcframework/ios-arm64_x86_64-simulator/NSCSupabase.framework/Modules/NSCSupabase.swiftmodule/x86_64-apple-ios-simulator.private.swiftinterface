@@ -502,6 +502,13 @@ import _SwiftConcurrencyShims
   @objc deinit
 }
 @_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresTransformBuilder) public class NSCSupabasePostgresTransformBuilder : ObjectiveC.NSObject {
+  @objc public func select(_ columns: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func order(_ column: Swift.String, _ ascending: Swift.Bool, _ nullsFirst: Swift.Bool, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func range(_ from: Swift.Int, _ to: Swift.Int, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func limit(_ count: Swift.Int) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func single() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func maybeSingle() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func csv() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func execute(_ options: NSCSupabase.NSCSupabasePostgresFetchOptions?, _ callback: @escaping (Swift.AnyHashable?, (any Swift.Error)?) -> Swift.Void)
   @objc deinit
 }
@@ -546,7 +553,8 @@ import _SwiftConcurrencyShims
   @objc public func textSearch(_ column: Swift.String, _ value: Swift.AnyHashable, _ config: Swift.String?) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func textSearch(_ column: Swift.String, _ value: Swift.AnyHashable, _ config: Swift.String?, type: NSCSupabase.NSCSupabasePostgresTextSearchType) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func match(_ query: [Swift.String : Swift.AnyHashable]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func not(_ column: Swift.String, _ operator: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func not(column: Swift.String, operatorFilter: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func select(_ columns: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func order(_ column: Swift.String, _ ascending: Swift.Bool, _ nullsFirst: Swift.Bool, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func range(_ from: Swift.Int, _ to: Swift.Int, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func limit(_ count: Swift.Int) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
@@ -568,6 +576,11 @@ import _SwiftConcurrencyShims
   public init?(rawValue: NSCSupabase.NSCSupabasePostgresCountOption.RawValue)
 }
 @_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresQueryBuilder) public class NSCSupabasePostgresQueryBuilder : ObjectiveC.NSObject {
+  @objc public func insert(_ value: [Swift.String : Swift.AnyHashable], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func insert(values: [[Swift.String : Swift.AnyHashable]], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func update(_ value: [Swift.String : Swift.AnyHashable], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func upsert(_ value: Swift.AnyHashable, _ onConflict: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, _ ignoreDuplicates: Swift.Bool) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func delete(_ count: NSCSupabase.NSCSupabasePostgresCountOption) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func select(_ columns: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func select(_ columns: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, head: Swift.Bool) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc deinit

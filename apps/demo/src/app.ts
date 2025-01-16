@@ -1,5 +1,4 @@
 import { Application, Folder, knownFolders } from '@nativescript/core';
-import { dataSerialize } from '@nativescript/core/utils';
 import * as dateFns from 'date-fns';
 import { createClient, SupabaseClient } from '@triniwiz/nativescript-supabase';
 const resources = Application.getResources();
@@ -43,16 +42,12 @@ try {
 
 	(async function () {
 		try {
-			const results = await client.from('cities')
-			.select('name, countries!inner(name)')
-			.eq('countries.name', 'united kingdom')
-			console.log('results', results);
+			const result = await client.from('countries').insert({ id: 1, name: 'Albania' });
+			console.log(result);
 		} catch (error) {
 			console.error(error);
 		}
 	})();
-
-
 
 	client.auth.onAuthStateChange((state, session) => {
 		console.log('onAuthStateChange', state, !!session);

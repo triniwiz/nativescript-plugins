@@ -31,9 +31,11 @@ public class NSCSupabasePostgresFetchOptions: NSObject {
 public class NSCSupabasePostgresTransformBuilder: NSObject {
   var transform: PostgrestTransformBuilder
   var isSingle: Bool
-  init(transform: PostgrestTransformBuilder, single: Bool = false) {
+  var isCVS: Bool
+  init(transform: PostgrestTransformBuilder, single: Bool = false, csv: Bool = false) {
     self.transform = transform
     self.isSingle = single
+    self.isCVS = csv
   }
   
   public func select(_ columns: String?) -> NSCSupabasePostgresTransformBuilder{
@@ -56,7 +58,7 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
   }
   
   public func limit(_ count: Int) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: transform.limit(count), single: false)
+    return NSCSupabasePostgresTransformBuilder(transform: transform.limit(count))
   }
   
   public func single() -> NSCSupabasePostgresTransformBuilder {
@@ -69,7 +71,7 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
   }
   
   public func csv()-> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: transform.csv(), single: false)
+    return NSCSupabasePostgresTransformBuilder(transform: transform.csv(), csv: true)
   }
   
   
@@ -77,24 +79,19 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
     Task {
       do {
         let result = if(options != nil){
-          if(isSingle){
-            try await transform.execute<JSONObject>(options: options!.options)
-          }else {
-            try await transform.execute<JSONArray>(options: options!.options)
-          }
+          try await transform.execute(options: options!.options)
         }else {
-          if(isSingle){
-            try await transform.execute<JSONObject>(options: FetchOptions())
-          }else {
-            try await transform.execute<JSONArray>(options: FetchOptions())
-          }
+          try await transform.execute(options: FetchOptions())
         }
+        
         
         var ret: [String: AnyHashable] = [:]
         
         do {
           if(result.count != nil){
             ret["count"] = result.count
+          }else if(isCVS){
+            ret["data"] = result.string()
           }else {
             let json = try JSONSerialization.jsonObject(with: result.data, options: [])
             if(isSingle){
@@ -451,8 +448,8 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
   }
   
   
-  public func not(_ column: String, _ `operator`: NSCSupabasePostgresFilterBuilderOperator, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.not(column, operator: `operator`.operator, value: value as! URLQueryRepresentable)
+  public func not(column: String, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.not(column, operator: operatorFilter.operator, value: value as! URLQueryRepresentable)
     return self
   }
   
@@ -488,7 +485,7 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
   }
   
   public func csv()-> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: filter.csv(), single: false)
+    return NSCSupabasePostgresTransformBuilder(transform: filter.csv(), csv: true)
   }
   
   public func execute(_ options: NSCSupabasePostgresFetchOptions?, _ callback: @escaping ([String: AnyHashable]?, Error?) -> Void){
@@ -584,6 +581,31 @@ public class NSCSupabasePostgresQueryBuilder: NSObject {
   init(builder: PostgrestQueryBuilder) {
     self.builder = builder
   }
+  
+  public func insert(_ value: [String: AnyHashable], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
+    let object = NSCSupabaseHelpers.encodeValue(value)
+    return try NSCSupabasePostgresFilterBuilder(filter: builder.insert(object, count: count.count))
+  }
+  
+  public func insert(values: [[String: AnyHashable]], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
+    let object = NSCSupabaseHelpers.encodeArray(values)
+    return try NSCSupabasePostgresFilterBuilder(filter: builder.insert(object, count: count.count))
+  }
+  
+  public func update(_ value: [String: AnyHashable], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
+    let object = NSCSupabaseHelpers.encodeObject(value)
+    return try NSCSupabasePostgresFilterBuilder(filter: builder.update(object,count: count.count))
+  }
+  
+  public func upsert(_ value: AnyHashable, _ onConflict: String?,  _ count: NSCSupabasePostgresCountOption, _ ignoreDuplicates: Bool) throws -> NSCSupabasePostgresFilterBuilder {
+    let object = NSCSupabaseHelpers.encodeValue(value)
+    return try NSCSupabasePostgresFilterBuilder(filter:  builder.upsert(object,onConflict: onConflict, count: count.count, ignoreDuplicates: false))
+  }
+  
+  public func delete(_ count: NSCSupabasePostgresCountOption) -> NSCSupabasePostgresFilterBuilder {
+    return NSCSupabasePostgresFilterBuilder(filter: builder.delete(count: count.count))
+  }
+  
   
   public func select(_ columns: String?, _ count: NSCSupabasePostgresCountOption) -> NSCSupabasePostgresFilterBuilder{
     NSCSupabasePostgresFilterBuilder(filter:  builder.select(columns ?? "*", count:  count.count))

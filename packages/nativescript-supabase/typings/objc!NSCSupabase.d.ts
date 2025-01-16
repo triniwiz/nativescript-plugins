@@ -242,13 +242,15 @@ declare class NSCSupabaseClient extends NSObject {
 
 	channel(name: string): NSCSupabaseChannel;
 
-	from(table: string): NSCSupabasePostgres;
+	from(table: string): NSCSupabasePostgresQueryBuilder;
 
 	handleURL(url: NSURL): void;
 
 	removeAllChannels(callback: () => void): void;
 
 	removeChannel(channel: NSCSupabaseChannel, callback: () => void): void;
+
+	schema(schema: string): NSCSupabasePostgres;
 }
 
 declare const enum NSCSupabaseEmailOTPType {
@@ -431,9 +433,9 @@ declare class NSCSupabasePostgres extends NSObject {
 
 	static new(): NSCSupabasePostgres; // inherited from NSObject
 
-	select(columns: string, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+	from(table: string): NSCSupabasePostgresQueryBuilder;
 
-	selectHead(columns: string, count: NSCSupabasePostgresCountOption, head: boolean): NSCSupabasePostgresFilterBuilder;
+	schema(schema: string): NSCSupabasePostgres;
 }
 
 declare const enum NSCSupabasePostgresCountOption {
@@ -462,15 +464,144 @@ declare class NSCSupabasePostgresFilterBuilder extends NSObject {
 
 	static new(): NSCSupabasePostgresFilterBuilder; // inherited from NSObject
 
+	containedBy(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	contains(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	csv(): NSCSupabasePostgresTransformBuilder;
+
 	eq(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
 
 	execute(options: NSCSupabasePostgresFetchOptions, callback: (p1: NSDictionary<string, NSObject>, p2: NSError) => void): void;
 
+	gt(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
 	gte(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	ilike(column: string, pattern: string): NSCSupabasePostgresFilterBuilder;
+
+	in(column: string, pattern: NSArray<NSObject> | NSObject[]): NSCSupabasePostgresFilterBuilder;
+
+	is(column: string): NSCSupabasePostgresFilterBuilder;
+
+	isValue(column: string, value: boolean): NSCSupabasePostgresFilterBuilder;
+
+	like(column: string, pattern: string): NSCSupabasePostgresFilterBuilder;
+
+	limit(count: number): NSCSupabasePostgresTransformBuilder;
+
+	lt(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
 
 	lte(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
 
+	match(query: NSDictionary<string, NSObject>): NSCSupabasePostgresFilterBuilder;
+
+	maybeSingle(): NSCSupabasePostgresTransformBuilder;
+
+	neq(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	notWithColumnOperatorFilterValue(column: string, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	order(column: string, ascending: boolean, nullsFirst: boolean, referencedTable: string): NSCSupabasePostgresTransformBuilder;
+
+	overlaps(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	range(from: number, to: number, referencedTable: string): NSCSupabasePostgresTransformBuilder;
+
+	rangeAdjacent(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	rangeGt(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	rangeGte(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	rangeLt(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	rangeLte(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	select(columns: string): NSCSupabasePostgresTransformBuilder;
+
 	single(): NSCSupabasePostgresTransformBuilder;
+
+	textSearch(column: string, value: NSObject, config: string): NSCSupabasePostgresFilterBuilder;
+
+	textSearchType(column: string, value: NSObject, config: string, type: NSCSupabasePostgresTextSearchType): NSCSupabasePostgresFilterBuilder;
+}
+
+declare const enum NSCSupabasePostgresFilterBuilderOperator {
+
+	Eq = 0,
+
+	Neq = 1,
+
+	Gt = 2,
+
+	Gte = 3,
+
+	Lt = 4,
+
+	Lte = 5,
+
+	Like = 6,
+
+	Ilike = 7,
+
+	Is = 8,
+
+	In = 9,
+
+	Cs = 10,
+
+	Cd = 11,
+
+	Sl = 12,
+
+	Sr = 13,
+
+	Nxl = 14,
+
+	Nxr = 15,
+
+	Adj = 16,
+
+	Ov = 17,
+
+	Fts = 18,
+
+	Plfts = 19,
+
+	Phfts = 20,
+
+	Wfts = 21
+}
+
+declare class NSCSupabasePostgresQueryBuilder extends NSObject {
+
+	static alloc(): NSCSupabasePostgresQueryBuilder; // inherited from NSObject
+
+	static new(): NSCSupabasePostgresQueryBuilder; // inherited from NSObject
+
+	delete(count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	insertError(value: NSDictionary<string, NSObject>, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	insertWithValuesError(values: NSArray<NSDictionary<string, NSObject>> | NSDictionary<string, NSObject>[], count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	select(columns: string, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	selectHead(columns: string, count: NSCSupabasePostgresCountOption, head: boolean): NSCSupabasePostgresFilterBuilder;
+
+	updateError(value: NSDictionary<string, NSObject>, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	upsertError(value: NSObject, onConflict: string, count: NSCSupabasePostgresCountOption, ignoreDuplicates: boolean): NSCSupabasePostgresFilterBuilder;
+}
+
+declare const enum NSCSupabasePostgresTextSearchType {
+
+	Plain = 0,
+
+	Phrase = 1,
+
+	Websearch = 2
 }
 
 declare class NSCSupabasePostgresTransformBuilder extends NSObject {
@@ -479,7 +610,21 @@ declare class NSCSupabasePostgresTransformBuilder extends NSObject {
 
 	static new(): NSCSupabasePostgresTransformBuilder; // inherited from NSObject
 
-	execute(options: NSCSupabasePostgresFetchOptions, callback: (p1: NSDictionary<string, NSObject>, p2: NSError) => void): void;
+	csv(): NSCSupabasePostgresTransformBuilder;
+
+	execute(options: NSCSupabasePostgresFetchOptions, callback: (p1: NSObject, p2: NSError) => void): void;
+
+	limit(count: number): NSCSupabasePostgresTransformBuilder;
+
+	maybeSingle(): NSCSupabasePostgresTransformBuilder;
+
+	order(column: string, ascending: boolean, nullsFirst: boolean, referencedTable: string): NSCSupabasePostgresTransformBuilder;
+
+	range(from: number, to: number, referencedTable: string): NSCSupabasePostgresTransformBuilder;
+
+	select(columns: string): NSCSupabasePostgresTransformBuilder;
+
+	single(): NSCSupabasePostgresTransformBuilder;
 }
 
 declare const enum NSCSupabaseProvider {
