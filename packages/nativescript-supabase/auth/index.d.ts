@@ -135,7 +135,7 @@ export class Auth {
 
 	setSession(currentSession: { accessToken: string; refreshToken: string }): Promise<Session>;
 
-	signIn(credentials: {
+	signInWithPassword(credentials: {
 		email?: string;
 		phone?: string;
 		password: string;

@@ -512,7 +512,7 @@ export class Auth {
 		});
 	}
 
-	signIn(credentials: {
+	signInWithPassword(credentials: {
 		email?: string;
 		phone?: string;
 		password: string;
