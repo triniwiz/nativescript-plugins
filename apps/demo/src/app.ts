@@ -38,10 +38,21 @@ declare const io;
 //   */
 // }
 
-console.log(process);
-
 try {
 	const client: SupabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
+	(async function () {
+		try {
+			const results = await client.from('cities')
+			.select('name, countries!inner(name)')
+			.eq('countries.name', 'united kingdom')
+			console.log('results', results);
+		} catch (error) {
+			console.error(error);
+		}
+	})();
+
+
 
 	client.auth.onAuthStateChange((state, session) => {
 		console.log('onAuthStateChange', state, !!session);

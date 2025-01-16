@@ -434,17 +434,9 @@ export class StorageFileApi {
 		});
 	}
 
-	uploadToSignedUrlData(path: string, token: string, data: ArrayBuffer, options: FileOptions) {
+	uploadToSignedUrlData(path: string, token: string, data: ArrayBuffer, options?: FileOptions) {
 		return new Promise<SignedURLUploadResponse>((resolve, reject) => {
-			const fileOptions = NSCSupabseStorageFileOptions.new();
-			fileOptions.cacheControl = options.cacheControl;
-			fileOptions.contentType = options.contentType;
-			fileOptions.duplex = options.duplex;
-			fileOptions.headers = NSDictionary.dictionaryWithDictionary(options.headers as any);
-			fileOptions.metadata = NSDictionary.dictionaryWithDictionary(options.metadata as any);
-			fileOptions.upsert = options.upsert;
-
-			this.native.uploadToSignedUrlData(path, token, NSData.dataWithData(data as never), fileOptions, (response, error) => {
+			this.native.uploadToSignedUrlData(path, token, NSData.dataWithData(data as never), parseFileOptions(options), (response, error) => {
 				if (error) {
 					reject(error);
 				} else {

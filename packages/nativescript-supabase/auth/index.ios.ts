@@ -512,25 +512,47 @@ export class Auth {
 		});
 	}
 
-	signIn(email: string, password: string, captchaToken?: string): Promise<Session> {
+	signIn(credentials: {
+		email?: string;
+		phone?: string;
+		password: string;
+		options?: {
+			captchaToken?: string;
+		};
+	}): Promise<Session> {
 		return new Promise((resolve, reject) => {
-			this.native.signIn(email, password, captchaToken, (session, error) => {
-				if (error) {
-					reject(new Error(error.localizedDescription));
-				} else {
-					resolve(Session.fromNative(session));
-				}
-			});
+			if (credentials.phone) {
+				this.native.signInPhone(credentials.phone, credentials.password, credentials.options?.captchaToken ?? null, (session, error) => {
+					if (error) {
+						reject(new Error(error.localizedDescription));
+					} else {
+						resolve(Session.fromNative(session));
+					}
+				});
+			} else {
+				this.native.signIn(credentials.email, credentials.password, credentials.options?.captchaToken ?? null, (session, error) => {
+					if (error) {
+						reject(new Error(error.localizedDescription));
+					} else {
+						resolve(Session.fromNative(session));
+					}
+				});
+			}
 		});
 	}
 
-	signInAnonymously(data?: Record<string, any>, captchaToken?: string) {
+	signInAnonymously(credentials?: {
+		data?: Record<string, any>;
+		options?: {
+			captchaToken?: string;
+		};
+	}) {
 		return new Promise<Session>((resolve, reject) => {
 			let dataSerialized = null;
-			if (data) {
-				dataSerialized = dataSerialize(data);
+			if (credentials?.data) {
+				dataSerialized = dataSerialize(credentials?.data);
 			}
-			this.native.signInAnonymously(dataSerialized as never, captchaToken ?? null, (session, error) => {
+			this.native.signInAnonymously(dataSerialized as never, credentials?.options?.captchaToken ?? null, (session, error) => {
 				if (error) {
 					reject(new Error(error.localizedDescription));
 				} else {
@@ -761,10 +783,10 @@ export class Auth {
 		});
 	}
 
-	signOut(scope?: 'global' | 'local' | 'others'): Promise<void> {
+	signOut(options?: { scope?: 'global' | 'local' | 'others' }): Promise<void> {
 		return new Promise((resolve, reject) => {
 			let nativeScope: NSCSupabaseSignOutScope;
-			switch (scope) {
+			switch (options?.scope) {
 				case 'global':
 					nativeScope = NSCSupabaseSignOutScope.Global;
 					break;

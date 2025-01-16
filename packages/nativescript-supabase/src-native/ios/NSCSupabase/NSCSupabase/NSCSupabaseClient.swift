@@ -20,9 +20,13 @@ public class NSCSupabaseClient: NSObject {
     return NSCSupabaseClient(client: SupabaseClient(supabaseURL: url, supabaseKey: supabaseKey))
   }
   
+  public func schema(_ schema: String) -> NSCSupabasePostgresClient{
+    return NSCSupabasePostgresClient(client: client.schema(schema))
+  }
   
-  public func from(_ table: String) -> NSCSupabasePostgres{
-    return NSCSupabasePostgres(postgres: client.from(table))
+  
+  public func from(_ table: String) -> NSCSupabasePostgresQueryBuilder{
+    return NSCSupabasePostgresQueryBuilder(builder: client.from(table))
   }
   
   public func handleURL(_ url: URL){

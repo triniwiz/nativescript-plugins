@@ -135,9 +135,21 @@ export class Auth {
 
 	setSession(currentSession: { accessToken: string; refreshToken: string }): Promise<Session>;
 
-	signIn(email: string, password: string, captchaToken?: string): Promise<Session>;
+	signIn(credentials: {
+		email?: string;
+		phone?: string;
+		password: string;
+		options?: {
+			captchaToken?: string;
+		};
+	}): Promise<Session>;
 
-	signInAnonymously(data?: Record<string, any>, captchaToken?: string): Promise<Session>;
+	signInAnonymously(credentials?: {
+		data?: Record<string, any>;
+		options?: {
+			captchaToken?: string;
+		};
+	}): Promise<Session>;
 	signInWithIdToken(credentials: OpenIDConnectCredentials): Promise<Session>;
 
 	signUp(value: {
@@ -181,7 +193,7 @@ export class Auth {
 		};
 	}): Promise<string>;
 
-	signOut(scope?: 'global' | 'local' | 'others'): Promise<void>;
+	signOut(options?: { scope?: 'global' | 'local' | 'others' }): Promise<void>;
 
 	resetPasswordForEmail(
 		email: string,

@@ -430,6 +430,56 @@ declare class NSCSupabasePostgres extends NSObject {
 	static alloc(): NSCSupabasePostgres; // inherited from NSObject
 
 	static new(): NSCSupabasePostgres; // inherited from NSObject
+
+	select(columns: string, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	selectHead(columns: string, count: NSCSupabasePostgresCountOption, head: boolean): NSCSupabasePostgresFilterBuilder;
+}
+
+declare const enum NSCSupabasePostgresCountOption {
+
+	None = 0,
+
+	Exact = 1,
+
+	Planned = 2,
+
+	Estimated = 3
+}
+
+declare class NSCSupabasePostgresFetchOptions extends NSObject {
+
+	static alloc(): NSCSupabasePostgresFetchOptions; // inherited from NSObject
+
+	static new(): NSCSupabasePostgresFetchOptions; // inherited from NSObject
+
+	readonly head: boolean;
+}
+
+declare class NSCSupabasePostgresFilterBuilder extends NSObject {
+
+	static alloc(): NSCSupabasePostgresFilterBuilder; // inherited from NSObject
+
+	static new(): NSCSupabasePostgresFilterBuilder; // inherited from NSObject
+
+	eq(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	execute(options: NSCSupabasePostgresFetchOptions, callback: (p1: NSDictionary<string, NSObject>, p2: NSError) => void): void;
+
+	gte(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	lte(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+
+	single(): NSCSupabasePostgresTransformBuilder;
+}
+
+declare class NSCSupabasePostgresTransformBuilder extends NSObject {
+
+	static alloc(): NSCSupabasePostgresTransformBuilder; // inherited from NSObject
+
+	static new(): NSCSupabasePostgresTransformBuilder; // inherited from NSObject
+
+	execute(options: NSCSupabasePostgresFetchOptions, callback: (p1: NSDictionary<string, NSObject>, p2: NSError) => void): void;
 }
 
 declare const enum NSCSupabaseProvider {
