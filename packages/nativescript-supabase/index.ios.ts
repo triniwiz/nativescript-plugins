@@ -17,7 +17,7 @@ export class SupabaseClient {
 		return ret;
 	}
 
-	[auth_] = new Auth(this);
+	[auth_] = new Auth();
 	public get auth() {
 		return this[auth_];
 	}

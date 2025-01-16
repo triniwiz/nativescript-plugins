@@ -722,7 +722,7 @@ export class Auth {
 					} else {
 						resolve(Session.fromNative(session));
 					}
-				}
+				},
 			);
 		});
 	}
@@ -763,16 +763,16 @@ export class Auth {
 
 	signOut(scope?: 'global' | 'local' | 'others'): Promise<void> {
 		return new Promise((resolve, reject) => {
-			let nativeScope: NSCSupabaseAuthSignOutScope;
+			let nativeScope: NSCSupabaseSignOutScope;
 			switch (scope) {
 				case 'global':
-					nativeScope = NSCSupabaseAuthSignOutScope.Global;
+					nativeScope = NSCSupabaseSignOutScope.Global;
 					break;
 				case 'local':
-					nativeScope = NSCSupabaseAuthSignOutScope.Local;
+					nativeScope = NSCSupabaseSignOutScope.Local;
 					break;
 				case 'others':
-					nativeScope = NSCSupabaseAuthSignOutScope.Others;
+					nativeScope = NSCSupabaseSignOutScope.Others;
 					break;
 				default:
 					break;
@@ -802,7 +802,7 @@ export class Auth {
 		options?: {
 			captchaToken?: string;
 			redirectTo?: string;
-		}
+		},
 	) {
 		return new Promise<void>((resolve, reject) => {
 			this.native.resetPasswordForEmail(email, options?.redirectTo ?? null, options?.captchaToken ?? null, (error) => {
@@ -842,7 +842,7 @@ export class Auth {
 						captchaToken?: string;
 						redirectTo?: string;
 					};
-			  }
+			  },
 	) {
 		return new Promise((resolve, reject) => {
 			if (params) {

@@ -1,6 +1,6 @@
-import { dataDeserialize } from '@nativescript/core/utils';
+import { Utils } from '@nativescript/core';
 import type { SupabaseClient } from '../index';
-import { FileOptions, SearchOptions, TransformOptions } from '.';
+import { BucketOptions, FileOptions, SearchOptions, TransformOptions } from '.';
 type Client = SupabaseClient & { native: NSCSupabaseClient };
 
 class FileUploadResponse {
@@ -114,7 +114,7 @@ class FileObject {
 	}
 
 	get metadata(): Record<string, any> {
-		return dataDeserialize(this.native.metadata);
+		return Utils.dataDeserialize(this.native.metadata);
 	}
 
 	get name(): string {
@@ -229,7 +229,7 @@ export class StorageBucket {
 	}
 
 	get allowedMimeTypes(): string[] {
-		return dataDeserialize(this.native.allowedMimeTypes);
+		return Utils.dataDeserialize(this.native.allowedMimeTypes);
 	}
 
 	get createdAt(): Date {
@@ -311,14 +311,14 @@ export class StorageFileApi {
 		expiresIn: number,
 		options?: {
 			download: string | boolean;
-		}
+		},
 	) {
 		return new Promise<string[]>((resolve, reject) => {
 			this.native.createSignedUrls(paths, expiresIn, parseDownload(options?.download), (urls, error) => {
 				if (error) {
 					reject(error);
 				} else {
-					resolve(dataDeserialize(urls));
+					resolve(Utils.dataDeserialize(urls));
 				}
 			});
 		});
@@ -436,7 +436,15 @@ export class StorageFileApi {
 
 	uploadToSignedUrlData(path: string, token: string, data: ArrayBuffer, options: FileOptions) {
 		return new Promise<SignedURLUploadResponse>((resolve, reject) => {
-			this.native.uploadToSignedUrlData(path, token, NSData.dataWithData(data as never), options, (response, error) => {
+			const fileOptions = NSCSupabseStorageFileOptions.new();
+			fileOptions.cacheControl = options.cacheControl;
+			fileOptions.contentType = options.contentType;
+			fileOptions.duplex = options.duplex;
+			fileOptions.headers = NSDictionary.dictionaryWithDictionary(options.headers as any);
+			fileOptions.metadata = NSDictionary.dictionaryWithDictionary(options.metadata as any);
+			fileOptions.upsert = options.upsert;
+
+			this.native.uploadToSignedUrlData(path, token, NSData.dataWithData(data as never), fileOptions, (response, error) => {
 				if (error) {
 					reject(error);
 				} else {
@@ -480,7 +488,7 @@ export class StorageFileObject {
 	}
 
 	get metadata() {
-		return dataDeserialize(this.native.metadata);
+		return Utils.dataDeserialize(this.native.metadata);
 	}
 
 	get name(): string {
