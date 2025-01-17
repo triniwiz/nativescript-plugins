@@ -1,3 +1,4 @@
+import { Utils } from '@nativescript/core';
 import { DataType } from '..';
 
 export function numberHasDecimals(value: number): boolean {
@@ -9,7 +10,7 @@ export function numberIs64Bit(value: number): boolean {
 }
 
 export function serialize(value: DataType): NSCSupabaseJSONValue {
-	if (!value) {
+	if (Utils.isNullOrUndefined(value)) {
 		return NSCSupabaseJSONValue.new();
 	}
 	switch (typeof value) {
