@@ -1,5 +1,5 @@
 import { dataDeserialize, dataSerialize } from '@nativescript/core/utils';
-import type { SupabaseClient } from '../index';
+import type { DataType, SupabaseClient } from '../index';
 type Client = SupabaseClient & { native: NSCSupabaseClient };
 import { OauthProviderType } from '.';
 
@@ -744,7 +744,7 @@ export class Auth {
 					} else {
 						resolve(Session.fromNative(session));
 					}
-				},
+				}
 			);
 		});
 	}
@@ -824,7 +824,7 @@ export class Auth {
 		options?: {
 			captchaToken?: string;
 			redirectTo?: string;
-		},
+		}
 	) {
 		return new Promise<void>((resolve, reject) => {
 			this.native.resetPasswordForEmail(email, options?.redirectTo ?? null, options?.captchaToken ?? null, (error) => {
@@ -864,7 +864,7 @@ export class Auth {
 						captchaToken?: string;
 						redirectTo?: string;
 					};
-			  },
+			  }
 	) {
 		return new Promise((resolve, reject) => {
 			if (params) {

@@ -303,6 +303,7 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 #if defined(__OBJC__)
+
 @class NSCSupabaseAuthAdmin;
 enum NSCSupabaseAuthChangeEvent : int8_t;
 @class NSCSupabaseAuthSession;
@@ -467,6 +468,9 @@ SWIFT_CLASS_NAMED("NSCSupabaseChannel")
 @class NSCSupabasePostgresQueryBuilder;
 @class NSCSupabseStorage;
 @class NSCSupabaseFunctions;
+@class NSCSupabasePostgresFilterBuilder;
+enum NSCSupabasePostgresCountOption : int8_t;
+@class NSCSupabaseJSONValue;
 
 SWIFT_CLASS_NAMED("NSCSupabaseClient")
 @interface NSCSupabaseClient : NSObject
@@ -480,6 +484,9 @@ SWIFT_CLASS_NAMED("NSCSupabaseClient")
 - (void)removeChannel:(NSCSupabaseChannel * _Nonnull)channel :(void (^ _Nonnull)(void))callback;
 - (void)removeAllChannels:(void (^ _Nonnull)(void))callback;
 @property (nonatomic, strong) NSCSupabaseFunctions * _Nonnull functions;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn count:(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn params:(NSCSupabaseJSONValue * _Nonnull)params count:(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -560,6 +567,23 @@ SWIFT_CLASS_NAMED("NSCSupabaseFunctionsResult")
 @end
 
 
+SWIFT_CLASS_NAMED("NSCSupabaseJSONValue")
+@interface NSCSupabaseJSONValue : NSObject
+@property (nonatomic, readonly, copy) NSString * _Nonnull queryValue;
+- (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithBoolean:(BOOL)boolean OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithInteger:(NSInteger)integer OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithDouble:(double)double_ OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithString:(NSString * _Nonnull)string OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithDate:(NSDate * _Nonnull)date OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithData:(NSData * _Nonnull)data OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithArray:(NSArray<NSCSupabaseJSONValue *> * _Nonnull)array OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithObject:(NSDictionary<NSString *, NSCSupabaseJSONValue *> * _Nonnull)object OBJC_DESIGNATED_INITIALIZER;
+@property (nonatomic, readonly) id _Nullable json;
+@property (nonatomic, readonly) id _Nullable value;
+@end
+
+
 SWIFT_CLASS_NAMED("NSCSupabaseLaunchFlowResult")
 @interface NSCSupabaseLaunchFlowResult : NSObject
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
@@ -616,6 +640,10 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresClient")
 @interface NSCSupabasePostgres : NSObject
 - (NSCSupabasePostgres * _Nonnull)schema:(NSString * _Nonnull)schema SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresQueryBuilder * _Nonnull)from:(NSString * _Nonnull)table SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn count:(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn params:(NSCSupabaseJSONValue * _Nonnull)params count:(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)rpc:(NSString * _Nonnull)fn params:(NSCSupabaseJSONValue * _Nonnull)params head:(BOOL)head get:(BOOL)get count:(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -641,29 +669,29 @@ enum NSCSupabasePostgresFilterBuilderOperator : int8_t;
 
 SWIFT_CLASS_NAMED("NSCSupabasePostgresFilterBuilder")
 @interface NSCSupabasePostgresFilterBuilder : NSObject
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)eq:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)gte:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)lte:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)lt:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)neq:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)gt:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)eq:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)gte:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)lte:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)lt:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)neq:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)gt:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)like:(NSString * _Nonnull)column :(NSString * _Nonnull)pattern SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)ilike:(NSString * _Nonnull)column :(NSString * _Nonnull)pattern SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)is:(NSString * _Nonnull)column SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)is:(NSString * _Nonnull)column value:(BOOL)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)in:(NSString * _Nonnull)column :(NSArray<NSObject *> * _Nonnull)pattern SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)contains:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)containedBy:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeGt:(NSString * _Nonnull)column :(NSObject * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeGte:(NSString * _Nonnull)column :(NSObject * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeLt:(NSString * _Nonnull)column :(NSObject * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeLte:(NSString * _Nonnull)column :(NSObject * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeAdjacent:(NSString * _Nonnull)column :(NSObject * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)overlaps:(NSString * _Nonnull)column :(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSObject * _Nonnull)value :(NSString * _Nullable)config SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSObject * _Nonnull)value :(NSString * _Nullable)config type:(enum NSCSupabasePostgresTextSearchType)type SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)match:(NSDictionary<NSString *, NSObject *> * _Nonnull)query SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)notWithColumn:(NSString * _Nonnull)column operatorFilter:(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter value:(NSObject * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)in:(NSString * _Nonnull)column :(NSArray<NSCSupabaseJSONValue *> * _Nonnull)pattern SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)contains:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)containedBy:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeGt:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeGte:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeLt:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeLte:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)rangeAdjacent:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)range SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)overlaps:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)config SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)config type:(enum NSCSupabasePostgresTextSearchType)type SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)match:(NSDictionary<NSString *, NSCSupabaseJSONValue *> * _Nonnull)query SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)notWithColumn:(NSString * _Nonnull)column operatorFilter:(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter value:(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)select:(NSString * _Nullable)columns SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)order:(NSString * _Nonnull)column :(BOOL)ascending :(BOOL)nullsFirst :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)range:(NSInteger)from :(NSInteger)to :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
@@ -704,10 +732,9 @@ typedef SWIFT_ENUM_NAMED(int8_t, NSCSupabasePostgresFilterBuilderOperator, "NSCS
 
 SWIFT_CLASS_NAMED("NSCSupabasePostgresQueryBuilder")
 @interface NSCSupabasePostgresQueryBuilder : NSObject
-- (NSCSupabasePostgresFilterBuilder * _Nullable)insert:(NSDictionary<NSString *, NSObject *> * _Nonnull)value :(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nullable)insertWithValues:(NSArray<NSDictionary<NSString *, NSObject *> *> * _Nonnull)values :(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nullable)update:(NSDictionary<NSString *, NSObject *> * _Nonnull)value :(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nullable)upsert:(NSObject * _Nonnull)value :(NSString * _Nullable)onConflict :(enum NSCSupabasePostgresCountOption)count :(BOOL)ignoreDuplicates error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)insert:(NSCSupabaseJSONValue * _Nonnull)values :(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)update:(NSDictionary<NSString *, NSCSupabaseJSONValue *> * _Nonnull)value :(enum NSCSupabasePostgresCountOption)count error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nullable)upsert:(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)onConflict :(enum NSCSupabasePostgresCountOption)count :(BOOL)ignoreDuplicates error:(NSError * _Nullable * _Nullable)error SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)delete:(enum NSCSupabasePostgresCountOption)count SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)select:(NSString * _Nullable)columns :(enum NSCSupabasePostgresCountOption)count SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)select:(NSString * _Nullable)columns :(enum NSCSupabasePostgresCountOption)count head:(BOOL)head SWIFT_WARN_UNUSED_RESULT;

@@ -2,10 +2,24 @@ import { Auth } from './auth';
 import { SupabaseFunctionsClient } from './functions';
 import { SupabaseStorageClient } from './storage';
 import { SupabaseRealtimeClient } from './realtime';
-import { SupabasePostgresClient, SupabasePostgresQueryBuilder } from './postgres';
+import { PostgresFilterBuilder, SupabasePostgresClient, SupabasePostgresQueryBuilder } from './postgres';
+import { serialize } from './utils';
 type RealtimeClient = SupabaseRealtimeClient & {
 	native: NSCSupabaseChannel;
 };
+
+function parseCount(count?: 'exact' | 'planned' | 'estimated') {
+	switch (count) {
+		case 'exact':
+			return NSCSupabasePostgresCountOption.Exact;
+		case 'planned':
+			return NSCSupabasePostgresCountOption.Planned;
+		case 'estimated':
+			return NSCSupabasePostgresCountOption.Estimated;
+		default:
+			return NSCSupabasePostgresCountOption.None;
+	}
+}
 
 const auth_ = Symbol('[[auth]]');
 const functions_ = Symbol('[[functions]]');
@@ -60,6 +74,26 @@ export class SupabaseClient {
 				resolve();
 			});
 		});
+	}
+
+	rpc(
+		fn: string,
+		args?: Record<string, any>,
+		options?: {
+			count?: 'exact' | 'planned' | 'estimated';
+			get?: boolean;
+			head?: boolean;
+		}
+	) {
+		if (args && options?.count) {
+			return (<any>PostgresFilterBuilder).fromNative(this.native.rpcParamsCountError(fn, serialize(args), parseCount(options?.count) as never));
+		} else if (args) {
+			return (<any>PostgresFilterBuilder).fromNative(this.native.rpcParamsCountError(fn, serialize(args), NSCSupabasePostgresCountOption.None));
+		} else if (options?.count) {
+			return (<any>PostgresFilterBuilder).fromNative(this.native.rpcCountError(fn, parseCount(options?.count) as never));
+		} else {
+			return (<any>PostgresFilterBuilder).fromNative(this.native.rpcError(fn));
+		}
 	}
 }
 

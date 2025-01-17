@@ -1,11 +1,61 @@
 import { dataDeserialize } from '@nativescript/core/utils';
 import { DataType } from '..';
-import { Utils } from '@nativescript/core';
+import { FilterOperator } from '.';
+import { serialize, serializeArray, serializeObject } from '../utils';
 
 interface Result {
 	data: DataType;
 	status: number;
 	statusText: string;
+}
+
+export function parseOperator(operator: FilterOperator) {
+	switch (operator) {
+		case 'eq':
+			return NSCSupabasePostgresFilterBuilderOperator.Eq;
+		case 'neq':
+			return NSCSupabasePostgresFilterBuilderOperator.Neq;
+		case 'gt':
+			return NSCSupabasePostgresFilterBuilderOperator.Gt;
+		case 'gte':
+			return NSCSupabasePostgresFilterBuilderOperator.Gte;
+		case 'lt':
+			return NSCSupabasePostgresFilterBuilderOperator.Lt;
+		case 'lte':
+			return NSCSupabasePostgresFilterBuilderOperator.Lte;
+		case 'like':
+			return NSCSupabasePostgresFilterBuilderOperator.Like;
+		case 'ilike':
+			return NSCSupabasePostgresFilterBuilderOperator.Ilike;
+		case 'is':
+			return NSCSupabasePostgresFilterBuilderOperator.Is;
+		case 'in':
+			return NSCSupabasePostgresFilterBuilderOperator.In;
+		case 'cs':
+			return NSCSupabasePostgresFilterBuilderOperator.Cs;
+		case 'cd':
+			return NSCSupabasePostgresFilterBuilderOperator.Cd;
+		case 'sl':
+			return NSCSupabasePostgresFilterBuilderOperator.Sl;
+		case 'sr':
+			return NSCSupabasePostgresFilterBuilderOperator.Sr;
+		case 'nxl':
+			return NSCSupabasePostgresFilterBuilderOperator.Nxl;
+		case 'nxr':
+			return NSCSupabasePostgresFilterBuilderOperator.Nxr;
+		case 'adj':
+			return NSCSupabasePostgresFilterBuilderOperator.Adj;
+		case 'ov':
+			return NSCSupabasePostgresFilterBuilderOperator.Ov;
+		case 'fts':
+			return NSCSupabasePostgresFilterBuilderOperator.Fts;
+		case 'plfts':
+			return NSCSupabasePostgresFilterBuilderOperator.Plfts;
+		case 'phfts':
+			return NSCSupabasePostgresFilterBuilderOperator.Phfts;
+		case 'wfts':
+			return NSCSupabasePostgresFilterBuilderOperator.Wfts;
+	}
 }
 
 export class PostgresTransformBuilder implements PromiseLike<any> {
@@ -76,12 +126,12 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	containedBy(column: string, value: DataType): PostgresFilterBuilder {
-		this.native_ = this.native.containedBy(column, value);
+		this.native_ = this.native.containedBy(column, serialize(value));
 		return this;
 	}
 
 	contains(column: string, value: DataType): PostgresFilterBuilder {
-		this.native_ = this.native.contains(column, value);
+		this.native_ = this.native.contains(column, serialize(value));
 		return this;
 	}
 
@@ -90,17 +140,17 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	eq(column: string, value: DataType) {
-		this.native_ = this.native.eq(column, value);
+		this.native_ = this.native.eq(column, serialize(value));
 		return this;
 	}
 
 	gt(column: string, value: DataType) {
-		this.native_ = this.native.gt(column, value);
+		this.native_ = this.native.gt(column, serialize(value));
 		return this;
 	}
 
 	gte(column: string, value: DataType) {
-		this.native_ = this.native.gte(column, value);
+		this.native_ = this.native.gte(column, serialize(value));
 		return this;
 	}
 
@@ -110,7 +160,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	in(column: string, pattern: DataType[]) {
-		this.native_ = this.native.in(column, Utils.dataSerialize(pattern));
+		this.native_ = this.native.in(column, serializeArray(pattern));
 		return this;
 	}
 
@@ -134,17 +184,17 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	lt(column: string, value: DataType) {
-		this.native_ = this.native.lt(column, value);
+		this.native_ = this.native.lt(column, serialize(value));
 		return this;
 	}
 
 	lte(column: string, value: DataType) {
-		this.native_ = this.native.lte(column, value);
+		this.native_ = this.native.lte(column, serialize(value));
 		return this;
 	}
 
 	match(query: Record<string, DataType>) {
-		this.native_ = this.native.match(Utils.dataSerialize(query));
+		this.native_ = this.native.match(serializeObject(query));
 		return this;
 	}
 
@@ -153,7 +203,16 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	neq(column: string, value: DataType) {
-		this.native_ = this.native.neq(column, value);
+		this.native_ = this.native.neq(column, serialize(value));
+		return this;
+	}
+
+	not(column: string, operator: FilterOperator, value: DataType) {
+		const nativeOperator = parseOperator(operator);
+		if (nativeOperator === undefined) {
+			throw new Error(`Invalid operator: ${operator}`);
+		}
+		this.native_ = this.native.notWithColumnOperatorFilterValue(column, nativeOperator, serialize(value));
 		return this;
 	}
 
@@ -162,7 +221,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	overlaps(column: string, value: DataType) {
-		this.native_ = this.native.overlaps(column, value);
+		this.native_ = this.native.overlaps(column, serialize(value));
 		return this;
 	}
 
@@ -171,27 +230,27 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	}
 
 	rangeAdjacent(column: string, range: DataType) {
-		this.native_ = this.native.rangeAdjacent(column, range);
+		this.native_ = this.native.rangeAdjacent(column, serialize(range));
 		return this;
 	}
 
 	rangeGt(column: string, range: DataType) {
-		this.native_ = this.native.rangeGt(column, range);
+		this.native_ = this.native.rangeGt(column, serialize(range));
 		return this;
 	}
 
 	rangeGte(column: string, range: DataType) {
-		this.native_ = this.native.rangeGte(column, range);
+		this.native_ = this.native.rangeGte(column, serialize(range));
 		return this;
 	}
 
 	rangeLt(column: string, range: DataType) {
-		this.native_ = this.native.rangeLt(column, range);
+		this.native_ = this.native.rangeLt(column, serialize(range));
 		return this;
 	}
 
 	rangeLte(column: string, range: DataType) {
-		this.native_ = this.native.rangeLte(column, range);
+		this.native_ = this.native.rangeLte(column, serialize(range));
 		return this;
 	}
 
@@ -224,9 +283,9 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 				break;
 		}
 		if (nativeType !== undefined) {
-			this.native_ = this.native.textSearchType(column, query, options?.config ?? null, nativeType);
+			this.native_ = this.native.textSearchType(column, serialize(query), options?.config ?? null, nativeType);
 		} else {
-			this.native_ = this.native.textSearch(column, query, options?.config ?? null);
+			this.native_ = this.native.textSearch(column, serialize(query), options?.config ?? null);
 		}
 		return this;
 	}
@@ -299,11 +358,7 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 		}
 	) {
-		if (Array.isArray(values)) {
-			PostgresFilterBuilder.fromNative(this.native.insertWithValuesError(Utils.dataSerialize(values), parseCount(options?.count) as never));
-		}
-
-		return PostgresFilterBuilder.fromNative(this.native.insertError(Utils.dataSerialize(values), parseCount(options?.count) as never));
+		return PostgresFilterBuilder.fromNative(this.native.insertError(serialize(values), parseCount(options?.count) as never));
 	}
 
 	update(
@@ -312,7 +367,7 @@ export class SupabasePostgresQueryBuilder {
 			count?: 'exact' | 'planned' | 'estimated';
 		}
 	) {
-		return PostgresFilterBuilder.fromNative(this.native.updateError(Utils.dataSerialize(values), parseCount(options?.count) as never));
+		return PostgresFilterBuilder.fromNative(this.native.updateError(serializeObject(values), parseCount(options?.count) as never));
 	}
 
 	upsert(
@@ -324,7 +379,7 @@ export class SupabasePostgresQueryBuilder {
 			onConflict?: string;
 		}
 	) {
-		return PostgresFilterBuilder.fromNative(this.native.upsertError(Utils.dataSerialize(values), options?.onConflict ?? null, parseCount(options?.count) as never, options?.ignoreDuplicates ?? false));
+		return PostgresFilterBuilder.fromNative(this.native.upsertError(serialize(values), options?.onConflict ?? null, parseCount(options?.count) as never, options?.ignoreDuplicates ?? false));
 	}
 
 	delete(options?: { count?: 'exact' | 'planned' | 'estimated' }) {

@@ -8,6 +8,7 @@
 internal import Supabase
 import Foundation
 
+
 @objcMembers
 @objc(NSCSupabasePostgresFetchOptions)
 public class NSCSupabasePostgresFetchOptions: NSObject {
@@ -77,6 +78,7 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
   
   public func execute(_ options: NSCSupabasePostgresFetchOptions?, _ callback: @escaping (AnyHashable?, Error?) -> Void){
     Task {
+      var ret: [String: AnyHashable] = [:]
       do {
         let result = if(options != nil){
           try await transform.execute(options: options!.options)
@@ -84,16 +86,13 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
           try await transform.execute(options: FetchOptions())
         }
         
-        
-        var ret: [String: AnyHashable] = [:]
-        
         do {
           if(result.count != nil){
             ret["count"] = result.count
           }else if(isCVS){
             ret["data"] = result.string()
           }else {
-            let json = try JSONSerialization.jsonObject(with: result.data, options: [])
+            let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
             if(isSingle){
               ret["data"] = json as? [String: AnyHashable]
             }else {
@@ -112,7 +111,36 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
         
         
       }catch {
-        callback(nil, error)
+        guard let postgresError = error as? PostgrestError else {
+          do {
+            let httpError = error as! HTTPError
+            let errorResponse = try JSONSerialization.jsonObject(with: httpError.data, options: [.allowFragments])
+            ret["error"] = errorResponse as? [String: AnyHashable]
+            ret["status"] = httpError.response.statusCode
+            ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: httpError.response.statusCode)
+            callback(ret, nil)
+          }catch {
+            ret["status"] = 500
+            ret["statusCode"] = "Internal Server Error"
+            ret["error"] = [
+              "message": String(describing: error),
+              "hint": nil
+            ];
+            
+            callback(ret, nil)
+          }
+          return
+        }
+        
+
+        ret["error"] = [
+          "code": postgresError.code,
+          "message": postgresError.message,
+          "hint": postgresError.hint,
+          "detail": postgresError.detail
+        ];
+        
+        callback(ret, nil)
       }
     }
   }
@@ -328,37 +356,38 @@ case eq, neq, gt, gte, lt, lte, like, ilike, `is`, `in`, cs, cd, sl, sr, nxl, nx
 @objc(NSCSupabasePostgresFilterBuilder)
 public class NSCSupabasePostgresFilterBuilder: NSObject {
   var filter: PostgrestFilterBuilder
-  init(filter: PostgrestFilterBuilder) {
+  var isRpc = false
+  init(filter: PostgrestFilterBuilder, isRpc: Bool = false) {
     self.filter = filter
   }
   
-  public func eq(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.eq(column, value: value as! URLQueryRepresentable)
+  public func eq(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.eq(column, value: value)
     return self
   }
   
-  public func gte(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.gte(column, value: value as! URLQueryRepresentable)
+  public func gte(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.gte(column, value: value)
     return self
   }
   
-  public func lte(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.lte(column, value: value as! URLQueryRepresentable)
+  public func lte(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.lte(column, value: value)
     return self
   }
   
-  public func lt(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.lt(column, value: value as! URLQueryRepresentable)
+  public func lt(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.lt(column, value: value)
     return self
   }
   
-  public func neq(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.neq(column, value: value as! URLQueryRepresentable)
+  public func neq(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.neq(column, value: value)
     return self
   }
   
-  public func gt(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.gt(column, value: value as! URLQueryRepresentable)
+  public func gt(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.gt(column, value: value)
     return self
   }
   
@@ -382,74 +411,74 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
     return self
   }
   
-  public func `in`(_ column: String, _ pattern: [AnyHashable]) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.in(column, values: pattern as! [URLQueryRepresentable])
+  public func `in`(_ column: String, _ pattern: [NSCSupabaseJSONValue]) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.in(column, values: pattern)
     return self
   }
   
-  public func contains(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.contains(column, value: value as! URLQueryRepresentable)
+  public func contains(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.contains(column, value: value)
     return self
   }
   
-  public func containedBy(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
+  public func containedBy(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
     let val = NSCSupabaseHelpers.encodeValue(value)
     filter = filter.containedBy(column, value: val)
     return self
   }
   
-  public func rangeGt(_ column: String, _ range: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.rangeGt(column, range: range as! URLQueryRepresentable)
+  public func rangeGt(_ column: String, _ range: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.rangeGt(column, range: range)
     return self
   }
   
-  public func rangeGte(_ column: String, _ range: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.rangeGte(column, range: range as! URLQueryRepresentable)
+  public func rangeGte(_ column: String, _ range: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.rangeGte(column, range: range)
     return self
   }
   
-  public func rangeLt(_ column: String, _ range: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.rangeLt(column, range: range as! URLQueryRepresentable)
-    return self
-  }
-  
-  
-  public func rangeLte(_ column: String, _ range: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.rangeLte(column, range: range as! URLQueryRepresentable)
-    return self
-  }
-  
-  public func rangeAdjacent(_ column: String, _ range: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.rangeAdjacent(column, range: range as! URLQueryRepresentable)
-    return self
-  }
-  
-  public func overlaps(_ column: String, _ value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.overlaps(column, value: value as! URLQueryRepresentable)
+  public func rangeLt(_ column: String, _ range: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.rangeLt(column, range: range)
     return self
   }
   
   
-  public func textSearch(_ column: String, _ value: AnyHashable, _ config: String?) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.textSearch(column, query: value  as! URLQueryRepresentable ,config: config)
+  public func rangeLte(_ column: String, _ range: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.rangeLte(column, range: range)
+    return self
+  }
+  
+  public func rangeAdjacent(_ column: String, _ range: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.rangeAdjacent(column, range: range)
+    return self
+  }
+  
+  public func overlaps(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.overlaps(column, value: value)
     return self
   }
   
   
-  public func textSearch(_ column: String, _ value: AnyHashable, _ config: String?, type: NSCSupabasePostgresTextSearchType) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.textSearch(column, query: value as! URLQueryRepresentable ,config: config,type: type.type)
+  public func textSearch(_ column: String, _ value: NSCSupabaseJSONValue, _ config: String?) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.textSearch(column, query: value ,config: config)
     return self
   }
   
   
-  public func match(_ query: [String: AnyHashable]) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.match(query as! [String : any URLQueryRepresentable])
+  public func textSearch(_ column: String, _ value: NSCSupabaseJSONValue, _ config: String?, type: NSCSupabasePostgresTextSearchType) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.textSearch(column, query: value ,config: config,type: type.type)
     return self
   }
   
   
-  public func not(column: String, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: AnyHashable) -> NSCSupabasePostgresFilterBuilder {
-    filter = filter.not(column, operator: operatorFilter.operator, value: value as! URLQueryRepresentable)
+  public func match(_ query: [String: NSCSupabaseJSONValue]) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.match(query)
+    return self
+  }
+  
+  
+  public func not(column: String, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.not(column, operator: operatorFilter.operator, value: value)
     return self
   }
   
@@ -490,33 +519,82 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
   
   public func execute(_ options: NSCSupabasePostgresFetchOptions?, _ callback: @escaping ([String: AnyHashable]?, Error?) -> Void){
     Task {
+      var ret: [String: AnyHashable] = [:]
       do {
         let result = if(options != nil){
-          try await filter.execute<JSONArray>(options: options!.options)
+          try await filter.execute<NSCSupabaseJSONValue>(options: options!.options)
         }else {
-          try await filter.execute<JSONArray>(options: FetchOptions())
+          try await filter.execute<NSCSupabaseJSONValue>(options: FetchOptions())
         }
-        
-        var ret: [String: AnyHashable] = [:]
-        
-        do {
-          if(result.count != nil){
-            ret["count"] = result.count
+      
+        if(result.count != nil){
+          ret["count"] = result.count
+        }else if(isRpc){
+          if let data = result.value as Any as? String {
+            ret["data"] = data
+          }else if let data = result.value as Any as? NSCSupabaseJSONValue {
+            ret["data"] = data.value as? AnyHashable
+          }else if let data = result as Any as? String {
+            ret["data"] = data
           }else {
-            let json = try JSONSerialization.jsonObject(with: result.data, options: [])
-            ret["data"] = json as? [[String: AnyHashable]]
+            ret["data"] = result.value as? AnyHashable
           }
-          ret["status"] = result.response.statusCode
-          ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: result.response.statusCode)
-          callback(ret, nil)
-        }catch {
-          // null ?
-          callback(nil, nil)
+
+        }else {
+          let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
+          ret["data"] = json as? AnyHashable
         }
         
-        
+        ret["status"] = result.response.statusCode
+        ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: result.response.statusCode)
+        callback(ret, nil)
+    
       }catch {
-        callback(nil, error)
+        guard let postgresError = error as? PostgrestError else {
+          guard let httpError = error as? HTTPError else {
+            
+            ret["status"] = 500
+            ret["statusCode"] = "Internal Server Error"
+            ret["error"] = [
+              "message": String(describing: error),
+              "hint": nil
+            ];
+            
+            callback(ret, nil)
+            return
+          }
+          
+          
+          do {
+            let errorResponse = try JSONSerialization.jsonObject(with: httpError.data, options: [.allowFragments])
+            ret["error"] = errorResponse as? [String: AnyHashable]
+            ret["status"] = httpError.response.statusCode
+            ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: httpError.response.statusCode)
+            callback(ret, nil)
+          }catch {
+            ret["status"] = 500
+            ret["statusCode"] = "Internal Server Error"
+            ret["error"] = [
+              "message": String(describing: error),
+              "hint": nil
+            ];
+            
+            callback(ret, nil)
+          }
+         
+          return
+        }
+        
+
+        ret["error"] = [
+          "code": postgresError.code,
+          "message": postgresError.message,
+          "hint": postgresError.hint,
+          "detail": postgresError.detail
+        ];
+        
+        callback(ret, nil)
+       
       }
     }
   }
@@ -581,25 +659,17 @@ public class NSCSupabasePostgresQueryBuilder: NSObject {
   init(builder: PostgrestQueryBuilder) {
     self.builder = builder
   }
-  
-  public func insert(_ value: [String: AnyHashable], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
-    let object = NSCSupabaseHelpers.encodeValue(value)
-    return try NSCSupabasePostgresFilterBuilder(filter: builder.insert(object, count: count.count))
+ 
+  public func insert(_ values: NSCSupabaseJSONValue, _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
+    return try NSCSupabasePostgresFilterBuilder(filter: builder.insert(values, count: count.count))
   }
   
-  public func insert(values: [[String: AnyHashable]], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
-    let object = NSCSupabaseHelpers.encodeArray(values)
-    return try NSCSupabasePostgresFilterBuilder(filter: builder.insert(object, count: count.count))
+  public func update(_ value: [String: NSCSupabaseJSONValue], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
+    return try NSCSupabasePostgresFilterBuilder(filter: builder.update(value,count: count.count))
   }
   
-  public func update(_ value: [String: AnyHashable], _ count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder {
-    let object = NSCSupabaseHelpers.encodeObject(value)
-    return try NSCSupabasePostgresFilterBuilder(filter: builder.update(object,count: count.count))
-  }
-  
-  public func upsert(_ value: AnyHashable, _ onConflict: String?,  _ count: NSCSupabasePostgresCountOption, _ ignoreDuplicates: Bool) throws -> NSCSupabasePostgresFilterBuilder {
-    let object = NSCSupabaseHelpers.encodeValue(value)
-    return try NSCSupabasePostgresFilterBuilder(filter:  builder.upsert(object,onConflict: onConflict, count: count.count, ignoreDuplicates: false))
+  public func upsert(_ value: NSCSupabaseJSONValue, _ onConflict: String?,  _ count: NSCSupabasePostgresCountOption, _ ignoreDuplicates: Bool) throws -> NSCSupabasePostgresFilterBuilder {
+    return try NSCSupabasePostgresFilterBuilder(filter:  builder.upsert(value,onConflict: onConflict, count: count.count, ignoreDuplicates: false))
   }
   
   public func delete(_ count: NSCSupabasePostgresCountOption) -> NSCSupabasePostgresFilterBuilder {
@@ -635,4 +705,21 @@ public class NSCSupabasePostgresClient: NSObject {
     return NSCSupabasePostgresQueryBuilder(builder: client.from(table))
   }
   
+  
+  public func rpc(_ fn: String) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn))
+  }
+  
+  public func rpc(_ fn: String, count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn, count: count.count), isRpc: true)
+  }
+  
+  public func rpc(_ fn: String, params: NSCSupabaseJSONValue, count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn, params: params,  count: count.count), isRpc: true)
+  }
+  
+  
+  public func rpc(_ fn: String, params: NSCSupabaseJSONValue, head: Bool, get: Bool, count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn, params: params, head: head, get: get, count: count.count) , isRpc: true)
+  }
 }

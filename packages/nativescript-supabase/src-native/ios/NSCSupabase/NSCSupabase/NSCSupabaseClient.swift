@@ -64,4 +64,16 @@ public class NSCSupabaseClient: NSObject {
     NSCSupabaseFunctions(functions: client.functions)
   }()
   
+  
+  public func rpc(_ fn: String) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn), isRpc: true)
+  }
+  
+  public func rpc(_ fn: String, count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn, count: count.count), isRpc: true)
+  }
+  
+  public func rpc(_ fn: String, params: NSCSupabaseJSONValue, count: NSCSupabasePostgresCountOption) throws -> NSCSupabasePostgresFilterBuilder{
+    return NSCSupabasePostgresFilterBuilder(filter: try client.rpc(fn, params: params,  count: count.count), isRpc: true)
+  }
 }

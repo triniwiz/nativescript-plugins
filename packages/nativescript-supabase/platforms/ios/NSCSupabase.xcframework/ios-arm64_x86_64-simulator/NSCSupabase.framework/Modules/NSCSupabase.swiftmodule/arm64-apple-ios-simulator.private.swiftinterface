@@ -456,6 +456,9 @@ import _SwiftConcurrencyShims
     @objc get
     @objc set
   }
+  @objc public func rpc(_ fn: Swift.String) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, params: NSCSupabase.NSCSupabaseJSONValue, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc deinit
 }
 @objcMembers @objc(NSCSupabaseFunctionInvokeOptions) public class NSCSupabaseFunctionInvokeOptions : ObjectiveC.NSObject {
@@ -495,6 +498,29 @@ import _SwiftConcurrencyShims
   @objc public func invoke(_ functionName: Swift.String, _ options: NSCSupabase.NSCSupabaseFunctionInvokeOptions?, _ callback: @escaping (NSCSupabase.NSCSupabaseFunctionsResult?, NSCSupabase.NSCSupabaseFunctionsErrorResult?) -> Swift.Void)
   @objc deinit
 }
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCSupabaseJSONValue) public class NSCSupabaseJSONValue : ObjectiveC.NSObject, Swift.Encodable, Swift.Decodable, PostgREST.URLQueryRepresentable {
+  @objc public var queryValue: Swift.String {
+    @objc get
+  }
+  @objc override dynamic public init()
+  @objc public init(boolean: Swift.Bool)
+  @objc public init(integer: Swift.Int)
+  @objc public init(double: Swift.Double)
+  @objc public init(string: Swift.String)
+  @objc public init(date: Foundation.Date)
+  @objc public init(data: Foundation.Data)
+  @objc public init(array: [NSCSupabase.NSCSupabaseJSONValue])
+  @objc public init(object: [Swift.String : NSCSupabase.NSCSupabaseJSONValue])
+  @objc public var json: Any? {
+    @objc get
+  }
+  @objc public var value: Any? {
+    @objc get
+  }
+  required public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+  @objc deinit
+}
 @objcMembers @objc(NSCSupabasePostgresFetchOptions) public class NSCSupabasePostgresFetchOptions : ObjectiveC.NSObject {
   @objc final public let head: Swift.Bool
   final public let count: NSCSupabase.NSCSupabasePostgresCountOption?
@@ -531,29 +557,29 @@ import _SwiftConcurrencyShims
   public init?(rawValue: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator.RawValue)
 }
 @_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresFilterBuilder) public class NSCSupabasePostgresFilterBuilder : ObjectiveC.NSObject {
-  @objc public func eq(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func gte(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func lte(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func lt(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func neq(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func gt(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func eq(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func gte(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func lte(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func lt(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func neq(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func gt(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func like(_ column: Swift.String, _ pattern: Swift.String) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func ilike(_ column: Swift.String, _ pattern: Swift.String) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func `is`(_ column: Swift.String) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func `is`(_ column: Swift.String, value: Swift.Bool) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func `in`(_ column: Swift.String, _ pattern: [Swift.AnyHashable]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func contains(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func containedBy(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func rangeGt(_ column: Swift.String, _ range: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func rangeGte(_ column: Swift.String, _ range: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func rangeLt(_ column: Swift.String, _ range: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func rangeLte(_ column: Swift.String, _ range: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func rangeAdjacent(_ column: Swift.String, _ range: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func overlaps(_ column: Swift.String, _ value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func textSearch(_ column: Swift.String, _ value: Swift.AnyHashable, _ config: Swift.String?) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func textSearch(_ column: Swift.String, _ value: Swift.AnyHashable, _ config: Swift.String?, type: NSCSupabase.NSCSupabasePostgresTextSearchType) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func match(_ query: [Swift.String : Swift.AnyHashable]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func not(column: Swift.String, operatorFilter: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, value: Swift.AnyHashable) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func `in`(_ column: Swift.String, _ pattern: [NSCSupabase.NSCSupabaseJSONValue]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func contains(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func containedBy(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeGt(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeGte(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeLt(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeLte(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeAdjacent(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func overlaps(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func textSearch(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue, _ config: Swift.String?) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func textSearch(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue, _ config: Swift.String?, type: NSCSupabase.NSCSupabasePostgresTextSearchType) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func match(_ query: [Swift.String : NSCSupabase.NSCSupabaseJSONValue]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func not(column: Swift.String, operatorFilter: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func select(_ columns: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func order(_ column: Swift.String, _ ascending: Swift.Bool, _ nullsFirst: Swift.Bool, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func range(_ from: Swift.Int, _ to: Swift.Int, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
@@ -576,10 +602,9 @@ import _SwiftConcurrencyShims
   public init?(rawValue: NSCSupabase.NSCSupabasePostgresCountOption.RawValue)
 }
 @_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresQueryBuilder) public class NSCSupabasePostgresQueryBuilder : ObjectiveC.NSObject {
-  @objc public func insert(_ value: [Swift.String : Swift.AnyHashable], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func insert(values: [[Swift.String : Swift.AnyHashable]], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func update(_ value: [Swift.String : Swift.AnyHashable], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func upsert(_ value: Swift.AnyHashable, _ onConflict: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, _ ignoreDuplicates: Swift.Bool) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func insert(_ values: NSCSupabase.NSCSupabaseJSONValue, _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func update(_ value: [Swift.String : NSCSupabase.NSCSupabaseJSONValue], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func upsert(_ value: NSCSupabase.NSCSupabaseJSONValue, _ onConflict: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, _ ignoreDuplicates: Swift.Bool) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func delete(_ count: NSCSupabase.NSCSupabasePostgresCountOption) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func select(_ columns: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func select(_ columns: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, head: Swift.Bool) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
@@ -588,6 +613,10 @@ import _SwiftConcurrencyShims
 @_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgres) public class NSCSupabasePostgresClient : ObjectiveC.NSObject {
   @objc public func schema(_ schema: Swift.String) -> NSCSupabase.NSCSupabasePostgresClient
   @objc public func from(_ table: Swift.String) -> NSCSupabase.NSCSupabasePostgresQueryBuilder
+  @objc public func rpc(_ fn: Swift.String) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, params: NSCSupabase.NSCSupabaseJSONValue, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, params: NSCSupabase.NSCSupabaseJSONValue, head: Swift.Bool, get: Swift.Bool, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc deinit
 }
 @_inheritsConvenienceInitializers @objcMembers @objc(NSCSupabseStorageBucketOptions) public class NSCSupabseStorageBucketOptions : ObjectiveC.NSObject {

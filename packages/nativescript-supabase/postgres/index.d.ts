@@ -120,6 +120,16 @@ export class SupabasePostgresQueryBuilder {
 
 	delete(options?: { count?: 'exact' | 'planned' | 'estimated' }): PostgresFilterBuilder;
 
+	rpc(
+		fn: string,
+		args?: Record<string, any>,
+		options?: {
+			count?: 'exact' | 'planned' | 'estimated';
+			get?: boolean;
+			head?: boolean;
+		}
+	): PostgresFilterBuilder;
+
 	select(
 		columns: string = '*',
 		{

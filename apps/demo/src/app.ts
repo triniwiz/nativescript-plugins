@@ -40,14 +40,29 @@ declare const io;
 // try {
 // 	const client: SupabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-// 	(async function () {
-// 		try {
-// 			const result = await client.from('countries').insert({ id: 1, name: 'Albania' });
-// 			console.log(result);
-// 		} catch (error) {
-// 			console.error(error);
-// 		}
-// 	})();
+	// (async function () {
+	// 	try {
+	// 		const ret = await client.rpc('add_one_each', { arr: [1, 2, 3] });
+
+	// 		await client.rpc('echo', { say: 'Hi' });
+
+	// 		// const not = await client.from('countries')
+	// 		// .select()
+	// 		// .not('name', 'is', null);
+
+	// 		// console.log(not);
+	// 		// const ret = await client.from('countries').update({ name: 'Vietnam' }).eq('id', 1).select();
+
+	// 		// console.log(ret);
+	// 		// const result = await client.from('countries').insert([
+	// 		// 	{ id: 1, name: 'Nepal' },
+	// 		// 	{ id: 1, name: 'Vietnam' },
+	// 		// ]);
+	// 		// console.log(result);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// })();
 
 // 	client.auth.onAuthStateChange((state, session) => {
 // 		console.log('onAuthStateChange', state, !!session);

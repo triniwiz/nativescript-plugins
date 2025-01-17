@@ -250,6 +250,12 @@ declare class NSCSupabaseClient extends NSObject {
 
 	removeChannel(channel: NSCSupabaseChannel, callback: () => void): void;
 
+	rpcCountError(fn: string, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
+	rpcError(fn: string): NSCSupabasePostgresFilterBuilder;
+
+	rpcParamsCountError(fn: string, params: NSCSupabaseJSONValue, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+
 	schema(schema: string): NSCSupabasePostgres;
 }
 
@@ -352,6 +358,51 @@ declare class NSCSupabaseFunctionsResult extends NSObject {
 	json(callback: (p1: NSDictionary<string, NSObject>, p2: NSError) => void): void;
 
 	text(callback: (p1: string) => void): void;
+}
+
+declare class NSCSupabaseJSONValue extends NSObject {
+
+	static alloc(): NSCSupabaseJSONValue; // inherited from NSObject
+
+	static new(): NSCSupabaseJSONValue; // inherited from NSObject
+
+	readonly json: any;
+
+	readonly queryValue: string;
+
+	readonly value: any;
+
+	constructor(o: { array: NSArray<NSCSupabaseJSONValue> | NSCSupabaseJSONValue[]; });
+
+	constructor(o: { boolean: boolean; });
+
+	constructor(o: { data: NSData; });
+
+	constructor(o: { date: Date; });
+
+	constructor(o: { double: number; });
+
+	constructor(o: { integer: number; });
+
+	constructor(o: { object: NSDictionary<string, NSCSupabaseJSONValue>; });
+
+	constructor(o: { string: string; });
+
+	initWithArray(array: NSArray<NSCSupabaseJSONValue> | NSCSupabaseJSONValue[]): this;
+
+	initWithBoolean(boolean: boolean): this;
+
+	initWithData(data: NSData): this;
+
+	initWithDate(date: Date): this;
+
+	initWithDouble(double_: number): this;
+
+	initWithInteger(integer: number): this;
+
+	initWithObject(object: NSDictionary<string, NSCSupabaseJSONValue>): this;
+
+	initWithString(string: string): this;
 }
 
 declare class NSCSupabaseLaunchFlowResult extends NSObject {
@@ -464,23 +515,23 @@ declare class NSCSupabasePostgresFilterBuilder extends NSObject {
 
 	static new(): NSCSupabasePostgresFilterBuilder; // inherited from NSObject
 
-	containedBy(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	containedBy(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	contains(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	contains(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
 	csv(): NSCSupabasePostgresTransformBuilder;
 
-	eq(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	eq(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
 	execute(options: NSCSupabasePostgresFetchOptions, callback: (p1: NSDictionary<string, NSObject>, p2: NSError) => void): void;
 
-	gt(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	gt(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	gte(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	gte(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
 	ilike(column: string, pattern: string): NSCSupabasePostgresFilterBuilder;
 
-	in(column: string, pattern: NSArray<NSObject> | NSObject[]): NSCSupabasePostgresFilterBuilder;
+	in(column: string, pattern: NSArray<NSCSupabaseJSONValue> | NSCSupabaseJSONValue[]): NSCSupabasePostgresFilterBuilder;
 
 	is(column: string): NSCSupabasePostgresFilterBuilder;
 
@@ -490,41 +541,41 @@ declare class NSCSupabasePostgresFilterBuilder extends NSObject {
 
 	limit(count: number): NSCSupabasePostgresTransformBuilder;
 
-	lt(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	lt(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	lte(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	lte(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	match(query: NSDictionary<string, NSObject>): NSCSupabasePostgresFilterBuilder;
+	match(query: NSDictionary<string, NSCSupabaseJSONValue>): NSCSupabasePostgresFilterBuilder;
 
 	maybeSingle(): NSCSupabasePostgresTransformBuilder;
 
-	neq(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	neq(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	notWithColumnOperatorFilterValue(column: string, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	notWithColumnOperatorFilterValue(column: string, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
 	order(column: string, ascending: boolean, nullsFirst: boolean, referencedTable: string): NSCSupabasePostgresTransformBuilder;
 
-	overlaps(column: string, value: NSObject): NSCSupabasePostgresFilterBuilder;
+	overlaps(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
 	range(from: number, to: number, referencedTable: string): NSCSupabasePostgresTransformBuilder;
 
-	rangeAdjacent(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+	rangeAdjacent(column: string, range: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	rangeGt(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+	rangeGt(column: string, range: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	rangeGte(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+	rangeGte(column: string, range: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	rangeLt(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+	rangeLt(column: string, range: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	rangeLte(column: string, range: NSObject): NSCSupabasePostgresFilterBuilder;
+	rangeLte(column: string, range: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
 	select(columns: string): NSCSupabasePostgresTransformBuilder;
 
 	single(): NSCSupabasePostgresTransformBuilder;
 
-	textSearch(column: string, value: NSObject, config: string): NSCSupabasePostgresFilterBuilder;
+	textSearch(column: string, value: NSCSupabaseJSONValue, config: string): NSCSupabasePostgresFilterBuilder;
 
-	textSearchType(column: string, value: NSObject, config: string, type: NSCSupabasePostgresTextSearchType): NSCSupabasePostgresFilterBuilder;
+	textSearchType(column: string, value: NSCSupabaseJSONValue, config: string, type: NSCSupabasePostgresTextSearchType): NSCSupabasePostgresFilterBuilder;
 }
 
 declare const enum NSCSupabasePostgresFilterBuilderOperator {
@@ -582,17 +633,15 @@ declare class NSCSupabasePostgresQueryBuilder extends NSObject {
 
 	delete(count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
 
-	insertError(value: NSDictionary<string, NSObject>, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
-
-	insertWithValuesError(values: NSArray<NSDictionary<string, NSObject>> | NSDictionary<string, NSObject>[], count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+	insertError(values: NSCSupabaseJSONValue, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
 
 	select(columns: string, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
 
 	selectHead(columns: string, count: NSCSupabasePostgresCountOption, head: boolean): NSCSupabasePostgresFilterBuilder;
 
-	updateError(value: NSDictionary<string, NSObject>, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
+	updateError(value: NSDictionary<string, NSCSupabaseJSONValue>, count: NSCSupabasePostgresCountOption): NSCSupabasePostgresFilterBuilder;
 
-	upsertError(value: NSObject, onConflict: string, count: NSCSupabasePostgresCountOption, ignoreDuplicates: boolean): NSCSupabasePostgresFilterBuilder;
+	upsertError(value: NSCSupabaseJSONValue, onConflict: string, count: NSCSupabasePostgresCountOption, ignoreDuplicates: boolean): NSCSupabasePostgresFilterBuilder;
 }
 
 declare const enum NSCSupabasePostgresTextSearchType {

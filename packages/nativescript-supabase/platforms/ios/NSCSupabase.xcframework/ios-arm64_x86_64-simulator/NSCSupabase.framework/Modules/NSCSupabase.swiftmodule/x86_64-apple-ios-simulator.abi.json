@@ -14990,6 +14990,111 @@
             ]
           },
           {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseClient(im)rpc:error:",
+            "mangledName": "$s11NSCSupabase0A6ClientC3rpcyAA0A21PostgresFilterBuilderCSSKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresCountOption",
+                "printedName": "NSCSupabase.NSCSupabasePostgresCountOption",
+                "usr": "c:@M@NSCSupabase@E@NSCSupabasePostgresCountOption"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseClient(im)rpc:count:error:",
+            "mangledName": "$s11NSCSupabase0A6ClientC3rpc_5countAA0A21PostgresFilterBuilderCSS_AA0aE11CountOptionOtKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:params:count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresCountOption",
+                "printedName": "NSCSupabase.NSCSupabasePostgresCountOption",
+                "usr": "c:@M@NSCSupabase@E@NSCSupabasePostgresCountOption"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseClient(im)rpc:params:count:error:",
+            "mangledName": "$s11NSCSupabase0A6ClientC3rpc_6params5countAA0A21PostgresFilterBuilderCSS_AA0A9JSONValueCAA0aF11CountOptionOtKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
             "kind": "Constructor",
             "name": "init",
             "printedName": "init()",
@@ -16577,6 +16682,612 @@
         "declAttributes": [
           "AccessControl",
           "RawDocComment"
+        ]
+      },
+      {
+        "kind": "Import",
+        "name": "PostgREST",
+        "printedName": "PostgREST",
+        "declKind": "Import",
+        "moduleName": "NSCSupabase",
+        "declAttributes": [
+          "ImplementationOnly"
+        ]
+      },
+      {
+        "kind": "TypeDecl",
+        "name": "NSCSupabaseJSONValue",
+        "printedName": "NSCSupabaseJSONValue",
+        "children": [
+          {
+            "kind": "Var",
+            "name": "queryValue",
+            "printedName": "queryValue",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(py)queryValue",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC10queryValueSSvp",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)queryValue",
+                "mangledName": "$s11NSCSupabase0A9JSONValueC10queryValueSSvg",
+                "moduleName": "NSCSupabase",
+                "declAttributes": [
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init()",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)init",
+            "mangledName": "$s11NSCSupabase0A9JSONValueCACycfc",
+            "moduleName": "NSCSupabase",
+            "overriding": true,
+            "objc_name": "init",
+            "declAttributes": [
+              "Dynamic",
+              "ObjC",
+              "Override",
+              "AccessControl"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(boolean:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithBoolean:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC7booleanACSb_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(integer:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Int",
+                "printedName": "Swift.Int",
+                "usr": "s:Si"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithInteger:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC7integerACSi_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(double:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Double",
+                "printedName": "Swift.Double",
+                "usr": "s:Sd"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithDouble:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC6doubleACSd_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(string:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithString:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC6stringACSS_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(date:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Date",
+                "printedName": "Foundation.Date",
+                "usr": "s:10Foundation4DateV"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithDate:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC4dateAC10Foundation4DateV_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(data:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Data",
+                "printedName": "Foundation.Data",
+                "usr": "s:10Foundation4DataV"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithData:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC4dataAC10Foundation4DataV_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(array:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Array",
+                "printedName": "[NSCSupabase.NSCSupabaseJSONValue]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "NSCSupabaseJSONValue",
+                    "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                    "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+                  }
+                ],
+                "usr": "s:Sa"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithArray:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC5arrayACSayACG_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(object:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Dictionary",
+                "printedName": "[Swift.String : NSCSupabase.NSCSupabaseJSONValue]",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "String",
+                    "printedName": "Swift.String",
+                    "usr": "s:SS"
+                  },
+                  {
+                    "kind": "TypeNominal",
+                    "name": "NSCSupabaseJSONValue",
+                    "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                    "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+                  }
+                ],
+                "usr": "s:SD"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)initWithObject:",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC6objectACSDySSACG_tcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Var",
+            "name": "json",
+            "printedName": "json",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Any?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(py)json",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC4jsonypSgvp",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Any?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "Any"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)json",
+                "mangledName": "$s11NSCSupabase0A9JSONValueC4jsonypSgvg",
+                "moduleName": "NSCSupabase",
+                "declAttributes": [
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Var",
+            "name": "value",
+            "printedName": "value",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Optional",
+                "printedName": "Any?",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "ProtocolComposition",
+                    "printedName": "Any"
+                  }
+                ],
+                "usr": "s:Sq"
+              }
+            ],
+            "declKind": "Var",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(py)value",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC5valueypSgvp",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "accessors": [
+              {
+                "kind": "Accessor",
+                "name": "Get",
+                "printedName": "Get()",
+                "children": [
+                  {
+                    "kind": "TypeNominal",
+                    "name": "Optional",
+                    "printedName": "Any?",
+                    "children": [
+                      {
+                        "kind": "TypeNominal",
+                        "name": "ProtocolComposition",
+                        "printedName": "Any"
+                      }
+                    ],
+                    "usr": "s:Sq"
+                  }
+                ],
+                "declKind": "Accessor",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue(im)value",
+                "mangledName": "$s11NSCSupabase0A9JSONValueC5valueypSgvg",
+                "moduleName": "NSCSupabase",
+                "declAttributes": [
+                  "ObjC"
+                ],
+                "accessorKind": "get"
+              }
+            ]
+          },
+          {
+            "kind": "Constructor",
+            "name": "init",
+            "printedName": "init(from:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Decoder",
+                "printedName": "any Swift.Decoder",
+                "usr": "s:s7DecoderP"
+              }
+            ],
+            "declKind": "Constructor",
+            "usr": "s:11NSCSupabase0A9JSONValueC4fromACs7Decoder_p_tKcfc",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC4fromACs7Decoder_p_tKcfc",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "Required"
+            ],
+            "throwing": true,
+            "init_kind": "Designated"
+          },
+          {
+            "kind": "Function",
+            "name": "encode",
+            "printedName": "encode(to:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "Void",
+                "printedName": "()"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Encoder",
+                "printedName": "any Swift.Encoder",
+                "usr": "s:s7EncoderP"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "s:11NSCSupabase0A9JSONValueC6encode2toys7Encoder_p_tKF",
+            "mangledName": "$s11NSCSupabase0A9JSONValueC6encode2toys7Encoder_p_tKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          }
+        ],
+        "declKind": "Class",
+        "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue",
+        "mangledName": "$s11NSCSupabase0A9JSONValueC",
+        "moduleName": "NSCSupabase",
+        "objc_name": "NSCSupabaseJSONValue",
+        "declAttributes": [
+          "AccessControl",
+          "ObjC",
+          "ObjCMembers"
+        ],
+        "superclassUsr": "c:objc(cs)NSObject",
+        "inheritsConvenienceInitializers": true,
+        "superclassNames": [
+          "ObjectiveC.NSObject"
+        ],
+        "conformances": [
+          {
+            "kind": "Conformance",
+            "name": "Encodable",
+            "printedName": "Encodable",
+            "usr": "s:SE",
+            "mangledName": "$sSE"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Decodable",
+            "printedName": "Decodable",
+            "usr": "s:Se",
+            "mangledName": "$sSe"
+          },
+          {
+            "kind": "Conformance",
+            "name": "URLQueryRepresentable",
+            "printedName": "URLQueryRepresentable",
+            "usr": "s:9PostgREST21URLQueryRepresentableP",
+            "mangledName": "$s9PostgREST21URLQueryRepresentableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Copyable",
+            "printedName": "Copyable",
+            "usr": "s:s8CopyableP",
+            "mangledName": "$ss8CopyableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Escapable",
+            "printedName": "Escapable",
+            "usr": "s:s9EscapableP",
+            "mangledName": "$ss9EscapableP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Equatable",
+            "printedName": "Equatable",
+            "usr": "s:SQ",
+            "mangledName": "$sSQ"
+          },
+          {
+            "kind": "Conformance",
+            "name": "Hashable",
+            "printedName": "Hashable",
+            "usr": "s:SH",
+            "mangledName": "$sSH"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CVarArg",
+            "printedName": "CVarArg",
+            "usr": "s:s7CVarArgP",
+            "mangledName": "$ss7CVarArgP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObservingPublishing",
+            "printedName": "_KeyValueCodingAndObservingPublishing",
+            "usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+            "mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "_KeyValueCodingAndObserving",
+            "printedName": "_KeyValueCodingAndObserving",
+            "usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+            "mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomStringConvertible",
+            "printedName": "CustomStringConvertible",
+            "usr": "s:s23CustomStringConvertibleP",
+            "mangledName": "$ss23CustomStringConvertibleP"
+          },
+          {
+            "kind": "Conformance",
+            "name": "CustomDebugStringConvertible",
+            "printedName": "CustomDebugStringConvertible",
+            "usr": "s:s28CustomDebugStringConvertibleP",
+            "mangledName": "$ss28CustomDebugStringConvertibleP"
+          }
         ]
       },
       {
@@ -18628,14 +19339,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)eq::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2eqyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2eqyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -18662,14 +19373,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)gte::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3gteyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3gteyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -18696,14 +19407,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)lte::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3lteyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3lteyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -18730,14 +19441,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)lt::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2ltyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2ltyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -18764,14 +19475,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)neq::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3neqyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3neqyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -18798,14 +19509,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)gt::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2gtyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2gtyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -18963,13 +19674,13 @@
               {
                 "kind": "TypeNominal",
                 "name": "Array",
-                "printedName": "[Swift.AnyHashable]",
+                "printedName": "[NSCSupabase.NSCSupabaseJSONValue]",
                 "children": [
                   {
                     "kind": "TypeNominal",
-                    "name": "AnyHashable",
-                    "printedName": "Swift.AnyHashable",
-                    "usr": "s:s11AnyHashableV"
+                    "name": "NSCSupabaseJSONValue",
+                    "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                    "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
                   }
                 ],
                 "usr": "s:Sa"
@@ -18977,7 +19688,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)in::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2inyACSS_Says11AnyHashableVGtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC2inyACSS_SayAA0A9JSONValueCGtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19004,14 +19715,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)contains::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8containsyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8containsyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19038,14 +19749,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)containedBy::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC11containedByyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC11containedByyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19072,14 +19783,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)rangeGt::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC7rangeGtyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC7rangeGtyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19106,14 +19817,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)rangeGte::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8rangeGteyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8rangeGteyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19140,14 +19851,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)rangeLt::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC7rangeLtyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC7rangeLtyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19174,14 +19885,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)rangeLte::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8rangeLteyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8rangeLteyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19208,14 +19919,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)rangeAdjacent::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC13rangeAdjacentyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC13rangeAdjacentyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19242,14 +19953,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)overlaps::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8overlapsyACSS_s11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC8overlapsyACSS_AA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19276,9 +19987,9 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               },
               {
                 "kind": "TypeNominal",
@@ -19297,7 +20008,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)textSearch:::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC10textSearchyACSS_s11AnyHashableVSSSgtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC10textSearchyACSS_AA0A9JSONValueCSSSgtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19324,9 +20035,9 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               },
               {
                 "kind": "TypeNominal",
@@ -19351,7 +20062,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)textSearch:::type:",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC10textSearch___4typeACSS_s11AnyHashableVSSSgAA0ab4TextF4TypeOtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC10textSearch___4typeACSS_AA0A9JSONValueCSSSgAA0ab4TextF4TypeOtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19373,7 +20084,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Dictionary",
-                "printedName": "[Swift.String : Swift.AnyHashable]",
+                "printedName": "[Swift.String : NSCSupabase.NSCSupabaseJSONValue]",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -19383,9 +20094,9 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "AnyHashable",
-                    "printedName": "Swift.AnyHashable",
-                    "usr": "s:s11AnyHashableV"
+                    "name": "NSCSupabaseJSONValue",
+                    "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                    "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
                   }
                 ],
                 "usr": "s:SD"
@@ -19393,7 +20104,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)match:",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC5matchyACSDySSs11AnyHashableVGF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC5matchyACSDySSAA0A9JSONValueCGF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -19426,14 +20137,14 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)notWithColumn:operatorFilter:value:",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3not6column08operatorC05valueACSS_AA0abcD8OperatorOs11AnyHashableVtF",
+            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3not6column08operatorC05valueACSS_AA0abcD8OperatorOAA0A9JSONValueCtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -20203,23 +20914,9 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "Dictionary",
-                "printedName": "[Swift.String : Swift.AnyHashable]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "AnyHashable",
-                    "printedName": "Swift.AnyHashable",
-                    "usr": "s:s11AnyHashableV"
-                  }
-                ],
-                "usr": "s:SD"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               },
               {
                 "kind": "TypeNominal",
@@ -20230,64 +20927,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresQueryBuilder(im)insert::error:",
-            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6insertyAA0ab6FilterD0CSDySSs11AnyHashableVG_AA0aB11CountOptionOtKF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "throwing": true,
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "insert",
-            "printedName": "insert(values:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresFilterBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Array",
-                "printedName": "[[Swift.String : Swift.AnyHashable]]",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Dictionary",
-                    "printedName": "[Swift.String : Swift.AnyHashable]",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "String",
-                        "printedName": "Swift.String",
-                        "usr": "s:SS"
-                      },
-                      {
-                        "kind": "TypeNominal",
-                        "name": "AnyHashable",
-                        "printedName": "Swift.AnyHashable",
-                        "usr": "s:s11AnyHashableV"
-                      }
-                    ],
-                    "usr": "s:SD"
-                  }
-                ],
-                "usr": "s:Sa"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresCountOption",
-                "printedName": "NSCSupabase.NSCSupabasePostgresCountOption",
-                "usr": "c:@M@NSCSupabase@E@NSCSupabasePostgresCountOption"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresQueryBuilder(im)insertWithValues::error:",
-            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6insert6values_AA0ab6FilterD0CSaySDySSs11AnyHashableVGG_AA0aB11CountOptionOtKF",
+            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6insertyAA0ab6FilterD0CAA0A9JSONValueC_AA0aB11CountOptionOtKF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -20310,7 +20950,7 @@
               {
                 "kind": "TypeNominal",
                 "name": "Dictionary",
-                "printedName": "[Swift.String : Swift.AnyHashable]",
+                "printedName": "[Swift.String : NSCSupabase.NSCSupabaseJSONValue]",
                 "children": [
                   {
                     "kind": "TypeNominal",
@@ -20320,9 +20960,9 @@
                   },
                   {
                     "kind": "TypeNominal",
-                    "name": "AnyHashable",
-                    "printedName": "Swift.AnyHashable",
-                    "usr": "s:s11AnyHashableV"
+                    "name": "NSCSupabaseJSONValue",
+                    "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                    "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
                   }
                 ],
                 "usr": "s:SD"
@@ -20336,7 +20976,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresQueryBuilder(im)update::error:",
-            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6updateyAA0ab6FilterD0CSDySSs11AnyHashableVG_AA0aB11CountOptionOtKF",
+            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6updateyAA0ab6FilterD0CSDySSAA0A9JSONValueCG_AA0aB11CountOptionOtKF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -20358,9 +20998,9 @@
               },
               {
                 "kind": "TypeNominal",
-                "name": "AnyHashable",
-                "printedName": "Swift.AnyHashable",
-                "usr": "s:s11AnyHashableV"
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
               },
               {
                 "kind": "TypeNominal",
@@ -20391,7 +21031,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresQueryBuilder(im)upsert::::error:",
-            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6upsertyAA0ab6FilterD0Cs11AnyHashableV_SSSgAA0aB11CountOptionOSbtKF",
+            "mangledName": "$s11NSCSupabase0A20PostgresQueryBuilderC6upsertyAA0ab6FilterD0CAA0A9JSONValueC_SSSgAA0aB11CountOptionOSbtKF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -20685,6 +21325,164 @@
               "AccessControl",
               "ObjC"
             ],
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgres(im)rpc:error:",
+            "mangledName": "$s11NSCSupabase0A14PostgresClientC3rpcyAA0aB13FilterBuilderCSSKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresCountOption",
+                "printedName": "NSCSupabase.NSCSupabasePostgresCountOption",
+                "usr": "c:@M@NSCSupabase@E@NSCSupabasePostgresCountOption"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgres(im)rpc:count:error:",
+            "mangledName": "$s11NSCSupabase0A14PostgresClientC3rpc_5countAA0aB13FilterBuilderCSS_AA0aB11CountOptionOtKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:params:count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresCountOption",
+                "printedName": "NSCSupabase.NSCSupabasePostgresCountOption",
+                "usr": "c:@M@NSCSupabase@E@NSCSupabasePostgresCountOption"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgres(im)rpc:params:count:error:",
+            "mangledName": "$s11NSCSupabase0A14PostgresClientC3rpc_6params5countAA0aB13FilterBuilderCSS_AA0A9JSONValueCAA0aB11CountOptionOtKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
+            "funcSelfKind": "NonMutating"
+          },
+          {
+            "kind": "Function",
+            "name": "rpc",
+            "printedName": "rpc(_:params:head:get:count:)",
+            "children": [
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresFilterBuilder",
+                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "String",
+                "printedName": "Swift.String",
+                "usr": "s:SS"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabaseJSONValue",
+                "printedName": "NSCSupabase.NSCSupabaseJSONValue",
+                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabaseJSONValue"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "Bool",
+                "printedName": "Swift.Bool",
+                "usr": "s:Sb"
+              },
+              {
+                "kind": "TypeNominal",
+                "name": "NSCSupabasePostgresCountOption",
+                "printedName": "NSCSupabase.NSCSupabasePostgresCountOption",
+                "usr": "c:@M@NSCSupabase@E@NSCSupabasePostgresCountOption"
+              }
+            ],
+            "declKind": "Func",
+            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgres(im)rpc:params:head:get:count:error:",
+            "mangledName": "$s11NSCSupabase0A14PostgresClientC3rpc_6params4head3get5countAA0aB13FilterBuilderCSS_AA0A9JSONValueCS2bAA0aB11CountOptionOtKF",
+            "moduleName": "NSCSupabase",
+            "declAttributes": [
+              "AccessControl",
+              "ObjC"
+            ],
+            "throwing": true,
             "funcSelfKind": "NonMutating"
           },
           {
@@ -27928,198 +28726,289 @@
       "value": "false"
     },
     {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 1841,
+      "length": 14,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 1854,
+      "length": 1,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 1919,
+      "length": 17,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 1935,
+      "length": 1,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 1998,
+      "length": 16,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 2013,
+      "length": 1,
+      "value": "\"\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 2384,
+      "length": 6,
+      "value": "\"NULL\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 2450,
+      "length": 58,
+      "value": "\"{\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 2501,
+      "length": 3,
+      "value": "\",\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 2506,
+      "length": 1,
+      "value": "\"}\""
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
+      "kind": "StringLiteral",
+      "offset": 2686,
+      "length": 6,
+      "value": "\"NULL\""
+    },
+    {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 800,
+      "offset": 801,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 819,
+      "offset": 820,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 3921,
+      "offset": 4956,
       "length": 6,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 3935,
+      "offset": 4970,
       "length": 9,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4622,
+      "offset": 5657,
       "length": 3,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4627,
+      "offset": 5662,
       "length": 2,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4631,
+      "offset": 5666,
       "length": 3,
       "value": "3"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4636,
+      "offset": 5671,
       "length": 2,
       "value": "4"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4640,
+      "offset": 5675,
       "length": 3,
       "value": "5"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4645,
+      "offset": 5680,
       "length": 4,
       "value": "6"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4651,
+      "offset": 5686,
       "length": 5,
       "value": "7"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4658,
+      "offset": 5693,
       "length": 4,
       "value": "8"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4664,
+      "offset": 5699,
       "length": 4,
       "value": "9"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4670,
+      "offset": 5705,
       "length": 2,
       "value": "10"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4674,
+      "offset": 5709,
       "length": 2,
       "value": "11"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4678,
+      "offset": 5713,
       "length": 2,
       "value": "12"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4682,
+      "offset": 5717,
       "length": 2,
       "value": "13"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4686,
+      "offset": 5721,
       "length": 3,
       "value": "14"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4691,
+      "offset": 5726,
       "length": 3,
       "value": "15"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4696,
+      "offset": 5731,
       "length": 3,
       "value": "16"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4701,
+      "offset": 5736,
       "length": 2,
       "value": "17"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4705,
+      "offset": 5740,
       "length": 3,
       "value": "18"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4715,
+      "offset": 5750,
       "length": 5,
       "value": "19"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4722,
+      "offset": 5757,
       "length": 5,
       "value": "20"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4729,
+      "offset": 5764,
       "length": 4,
       "value": "21"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
+      "kind": "BooleanLiteral",
+      "offset": 8129,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
+      "kind": "BooleanLiteral",
+      "offset": 8188,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 14582,
+      "offset": 17049,
       "length": 5,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 14595,
+      "offset": 17062,
       "length": 7,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/ios\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 14610,
+      "offset": 17077,
       "length": 9,
       "value": "3"
     },
