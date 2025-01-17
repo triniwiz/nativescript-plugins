@@ -14,6 +14,12 @@
 				"assets": [
 					"packages/nativescript-supabase/*.md",
 					"packages/nativescript-supabase/index.d.ts",
+					"packages/nativescript-supabase/auth/index.d.ts",
+					"packages/nativescript-supabase/functions/index.d.ts",
+					"packages/nativescript-supabase/postgres/index.d.ts",
+					"packages/nativescript-supabase/realtime/index.d.ts",
+					"packages/nativescript-supabase/storage/index.d.ts",
+					"packages/nativescript-supabase/utils/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",

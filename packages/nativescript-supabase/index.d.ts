@@ -3,6 +3,10 @@ import { SupabaseFunctionsClient } from './functions';
 import { SupabaseStorageClient } from './storage';
 import { SupabaseRealtimeClient } from './realtime';
 import { SupabasePostgresClient, SupabasePostgresQueryBuilder } from './postgres';
+export * from './auth';
+export * from './functions';
+export * from './storage';
+export * from './realtime';
 export type DataType = string | number | boolean | null | Record<string, DataType> | Array<DataType> | Date;
 export class SupabaseClient {
 	readonly auth: Auth;

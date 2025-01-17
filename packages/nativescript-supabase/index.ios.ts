@@ -4,6 +4,10 @@ import { SupabaseStorageClient } from './storage';
 import { SupabaseRealtimeClient } from './realtime';
 import { PostgresFilterBuilder, SupabasePostgresClient, SupabasePostgresQueryBuilder } from './postgres';
 import { serialize } from './utils';
+export * from './auth';
+export * from './functions';
+export * from './storage';
+export * from './realtime';
 type RealtimeClient = SupabaseRealtimeClient & {
 	native: NSCSupabaseChannel;
 };
@@ -83,7 +87,7 @@ export class SupabaseClient {
 			count?: 'exact' | 'planned' | 'estimated';
 			get?: boolean;
 			head?: boolean;
-		}
+		},
 	) {
 		if (args && options?.count) {
 			return (<any>PostgresFilterBuilder).fromNative(this.native.rpcParamsCountError(fn, serialize(args), parseCount(options?.count) as never));
