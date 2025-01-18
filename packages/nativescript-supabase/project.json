@@ -56,8 +56,8 @@
 		"build.native": {
 			"executor": "nx:run-commands",
 			"options": {
-				"commands": ["./src-native/apple/build.sh", "cp -R ./src-native/apple/dist/* ../../packages/nativescript-supabase/platforms/ios"],
-				"cwd": "packages/nativescript-supabase",
+				"commands": ["./build.sh", "cp -R ./dist/* ../../../platforms/ios"],
+				"cwd": "packages/nativescript-supabase/src-native/apple/NSCSupabase",
 				"parallel": false
 			}
 		},

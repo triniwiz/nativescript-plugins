@@ -3,15 +3,17 @@
 echo "Set exit on simple errors"
 set -e
 
-BUILD_DIR=$(PWD)/NSCSupabase/build
+BUILD_DIR=$(PWD)/build
+DIST_DIR=$(PWD)/dist
 rm -rf $BUILD_DIR
+rm -rf $DIST_DIR
 
 echo "Build for iphonesimulator"
 xcodebuild \
     -project NSCSupabase.xcodeproj \
     -scheme NSCSupabase \
-    -destination "generic/platform=iOS Simulator" \
     -configuration Release \
+    -destination "generic/platform=iOS Simulator" \
     clean build \
     BUILD_DIR=$BUILD_DIR \
     SKIP_INSTALL=NO \
@@ -35,7 +37,7 @@ xcodebuild \
 
 echo "Build for Mac Catalyst"
 xcodebuild \
-    -project NSCSupabase/NSCSupabase.xcodeproj \
+    -project NSCSupabase.xcodeproj \
     -scheme NSCSupabase \
     -configuration Release \
     -destination "generic/platform=macOS,variant=Mac Catalyst" \
@@ -50,7 +52,7 @@ xcodebuild \
 # Only available with Xcode >= 15.2
 echo "Build for visionOS Simulator"
 xcodebuild \
-    -project NSCSupabase/NSCSupabase.xcodeproj \
+    -project NSCSupabase.xcodeproj \
     -scheme NSCSupabase \
     -configuration Release \
     -destination "generic/platform=visionOS Simulator" \
@@ -62,7 +64,7 @@ xcodebuild \
 
 echo "Build for visionOS"
 xcodebuild \
-    -project NSCSupabase/NSCSupabase.xcodeproj \
+    -project NSCSupabase.xcodeproj \
     -scheme NSCSupabase \
     -configuration Release \
     -destination "generic/platform=visionOS" \
@@ -86,4 +88,4 @@ xcodebuild \
     -debug-symbols $BASE-xrsimulator/NSCSupabase.framework.dSYM \
     -framework     $BASE-xros/NSCSupabase.framework \
     -debug-symbols $BASE-xros/NSCSupabase.framework.dSYM \
-    -output $(PWD)/dist/NSCSupabase.xcframework
+    -output $DIST_DIR/NSCSupabase.xcframework
