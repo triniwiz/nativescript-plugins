@@ -17,7 +17,12 @@ export class PaymentSheet {
                 } else if (result instanceof com.stripe.android.paymentsheet.PaymentSheetResult.Canceled) {
                     PaymentSheet.#reject(new Error('cancelled'));
                 } else {
-                    PaymentSheet.#reject(new Error('unknown'));
+                    /** 
+                     * Note: previously this was returning just "unknown" - this has proven difficult to debug
+                     * for developers implementing this in their app. So better to return something that includes
+                     * original message.
+                     */
+                    PaymentSheet.#reject(new Error(`unknown error: ${JSON.stringify(result)}`));
                 }
                 PaymentSheet.#reject = undefined;
                 PaymentSheet.#resolve = undefined;

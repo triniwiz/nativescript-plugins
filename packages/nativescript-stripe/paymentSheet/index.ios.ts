@@ -39,7 +39,7 @@ export class PaymentSheet {
                         break;
                     default:
                         /** 
-                         * Note: previously this was returning just "undefined" - this has proven difficult to debug
+                         * Note: previously this was returning just "unknown" - this has proven difficult to debug
                          * for developers implementing this in their app. So better to return something that includes
                          * original message.
                          */
