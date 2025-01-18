@@ -29,6 +29,7 @@ export class PaymentSheet {
                         resolve();
                         break;
                     case "cancelled":
+                    case "canceled": // Stripe seems to return this misspelled variant
                         reject(new Error('cancelled'))
                         break;
                     case "error":
@@ -37,7 +38,12 @@ export class PaymentSheet {
                         reject(err)
                         break;
                     default:
-                        reject(new Error('unknown'));
+                        /** 
+                         * Note: previously this was returning just "undefined" - this has proven difficult to debug
+                         * for developers implementing this in their app. So better to return something that includes
+                         * original message.
+                         */
+                        reject(new Error(`unknown error: ${JSON.stringify(status)}`));
                         break;
                 }
             });
