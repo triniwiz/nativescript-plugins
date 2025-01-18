@@ -15,7 +15,7 @@ export class PaymentSheet {
                     (error as any).native = result.getError();
                     PaymentSheet.#reject(error);
                 } else if (result instanceof com.stripe.android.paymentsheet.PaymentSheetResult.Canceled) {
-                    PaymentSheet.#reject(new Error('canceled'));
+                    PaymentSheet.#reject(new Error('cancelled'));
                 } else {
                     PaymentSheet.#reject(new Error('unknown'));
                 }
