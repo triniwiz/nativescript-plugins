@@ -53,6 +53,14 @@
 				}
 			]
 		},
+		"build.native": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["./src-native/apple/build.sh", "cp -R ./src-native/apple/dist/* ../../packages/nativescript-supabase/platforms/ios"],
+				"cwd": "packages/nativescript-supabase",
+				"parallel": false
+			}
+		},
 		"focus": {
 			"options": {
 				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-supabase"],
