@@ -8,3 +8,5 @@ export function serialize(value: DataType): any;
 export function serializeObject(value: Record<string, DataType>): any;
 
 export function serializeArray(value: DataType[]): any;
+
+export function dataDeserialize(value): any;

@@ -69,3 +69,8 @@ export function serializeArray(value: DataType[]): NSArray<NSCSupabaseJSONValue>
 	}
 	return arr;
 }
+
+
+export function dataDeserialize(value) {
+	return Utils.dataDeserialize(value);
+}

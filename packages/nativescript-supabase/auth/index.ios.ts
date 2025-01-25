@@ -254,7 +254,7 @@ export class Session {
 	}
 
 	get expiresIn(): number {
-		return this.native.expiresAt;
+		return this.native.expiresIn;
 	}
 
 	get isExpired(): boolean {

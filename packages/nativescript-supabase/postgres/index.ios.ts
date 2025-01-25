@@ -317,24 +317,24 @@ function parseCount(count?: 'exact' | 'planned' | 'estimated') {
 }
 
 export class SupabasePostgresClient {
-	native_: NSCSupabasePostgres;
+	native_: io.github.triniwiz.supabase.SupabasePostgresClient;
 
 	get native() {
 		return this.native_;
 	}
 
-	static fromNative(value: NSCSupabasePostgres) {
+	static fromNative(value: io.github.triniwiz.supabase.SupabasePostgresClient) {
 		const client = new SupabasePostgresClient();
 		client.native_ = value;
 		return client;
 	}
 
 	from(table: string): SupabasePostgresQueryBuilder {
-		return SupabasePostgresQueryBuilder.fromNative(this.native.from(table));
+		return SupabasePostgresQueryBuilder.fromNative(this.native.from() as never);
 	}
 
 	schema(schema: string): SupabasePostgresClient {
-		return SupabasePostgresClient.fromNative(this.native.schema(schema));
+		return SupabasePostgresClient.fromNative(this.native.schema() as never);
 	}
 }
 
