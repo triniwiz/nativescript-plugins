@@ -38,195 +38,170 @@ export function parseOperator(operator: FilterOperator) {
 	}
 }
 
-type operationsActionType = 'insert' | 'update' | 'upsert' | 'delete' | 'select';
-type InsertAction = {
-	action: Omit<operationsActionType, 'update' | 'upsert' | 'delete' | 'select'>;
-	values: Record<any, DataType> | DataType[];
-	options?: {
-		count?: 'exact' | 'planned' | 'estimated';
-		defaultToNull?: boolean;
-	};
-};
-
-type UpsertAction = {
-	action: Omit<operationsActionType, 'update' | 'insert' | 'delete' | 'select'>;
-	values: Record<any, DataType> | DataType[];
-	options?: {
-		count?: 'exact' | 'planned' | 'estimated';
-		defaultToNull?: boolean;
-		ignoreDuplicates?: boolean;
-		onConflict?: string;
-	};
-};
-
-type DeleteAction = {
-	action: Omit<operationsActionType, 'update' | 'upsert' | 'insert' | 'select'>;
-	options?: { count?: 'exact' | 'planned' | 'estimated' };
-};
-
-type SelectAction = {
-	action: Omit<operationsActionType, 'update' | 'upsert' | 'insert' | 'delete'>;
-	columns?: string;
-	options: {
-		head?: boolean;
-		count?: 'exact' | 'planned' | 'estimated';
-	};
-};
-
-type OperationsAction = InsertAction | UpsertAction | DeleteAction | SelectAction;
-const operations_ = Symbol('[[operations]]');
-const operationsAction_ = Symbol('[[operationsAction]]');
-type transform = 'csv' | 'limit' | 'maybeSingle' | 'order' | 'range' | 'select' | 'single';
-type filter = 'containedBy' | 'contains' | 'eq' | 'gt' | 'gte' | 'ilike' | 'in' | 'is' | 'isValue' | 'like' | 'lt' | 'lte' | 'match' | 'maybeSingle' | 'neq' | 'not' | 'order' | 'overlaps' | 'range' | 'rangeAdjacent' | 'rangeGt' | 'rangeGte' | 'rangeLt' | 'rangeLte' | 'select' | 'single' | 'textSearch';
-export class PostgresTransformBuilder implements PromiseLike<any> {
-	[operationsAction_]?: OperationsAction;
-	native_;
-	constructor(type?: OperationsAction) {
-		this[operationsAction_] = type;
+function parseCount(count?: 'exact' | 'planned' | 'estimated') {
+	switch (count) {
+		case 'exact':
+			return (<any>io).github.triniwiz.supabase.SupabaseClient.CountOption.exact;
+		case 'planned':
+			return (<any>io).github.triniwiz.supabase.SupabaseClient.CountOption.planned;
+		case 'estimated':
+			return (<any>io).github.triniwiz.supabase.SupabaseClient.CountOption.estimated;
+		default:
+			return null;
 	}
-	[operations_]: { type: transform | filter; value?: DataType }[] = [];
+}
+
+export class PostgresTransformBuilder implements PromiseLike<any> {
+	native_;
+	static fromNative(value) {
+		const builder = new PostgresTransformBuilder();
+		builder.native_ = value;
+		return builder;
+	}
+
+	get native() {
+		return this.native_;
+	}
 
 	csv(): PostgresTransformBuilder {
-		this[operations_].push({ type: 'csv' });
+		this.native.csv();
 		return this;
 	}
 
 	limit(count: number) {
-		this[operations_].push({ type: 'limit', value: count });
+		this.native.limit(count);
 		return this;
 	}
 
 	maybeSingle() {
-		this[operations_].push({ type: 'maybeSingle' });
+		this.native.csv();
 		return this;
 	}
 
 	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }) {
-		this[operations_].push({ type: 'order', value: { column, ascending: options?.ascending ?? true, nullsFirst: options?.nullsFirst ?? false, referencedTable: options?.referencedTable ?? null } });
+		this.native.order(column, serialize(options?.ascending ?? true, true), serialize(options?.nullsFirst ?? false, true), options?.referencedTable ?? null);
 		return this;
 	}
 
 	range(from: number, to: number, referencedTable?: string) {
-		this[operations_].push({ type: 'range', value: { from, to, referencedTable: referencedTable ?? null } });
+		this.native.range(from, to, referencedTable ?? null);
 		return this;
 	}
 
-	select(columns: string) {
-		this[operations_].push({ type: 'select', value: columns });
+	select(columns?: string) {
+		this.native.select(columns ?? null);
 		return this;
 	}
 
 	single(): PostgresTransformBuilder {
-		this[operations_].push({ type: 'single' });
+		this.native.single();
 		return this;
 	}
 
 	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
 		return new Promise((resolve, reject) => {
-			// this.native.execute(null, (data, error) => {
-			// 	if (error) {
-			// 		reject(error);
-			// 	} else {
-			// 		resolve(dataDeserialize(data));
-			// 	}
-			// });
+			this.native.execute(
+				new kotlin.jvm.functions.Function1({
+					invoke(data) {
+						resolve(dataDeserialize(data));
+					},
+				})
+			);
 		}).then(onfulfilled, onrejected);
 	}
 }
 
 export class PostgresFilterBuilder implements PromiseLike<any> {
-	[operationsAction_]?: OperationsAction;
-	[operations_]: { type: transform | filter; value?: DataType }[] = [];
 	native_;
-	constructor(type?: OperationsAction) {
-		this[operationsAction_] = type;
+
+	static fromNative(value) {
+		const builder = new PostgresFilterBuilder();
+		builder.native_ = value;
+		return builder;
+	}
+
+	get native() {
+		return this.native_;
 	}
 
 	containedBy(column: string, value: DataType): PostgresFilterBuilder {
-		this[operations_].push({ type: 'containedBy', value: { column, value } });
+		this.native.containedBy(column, serialize(value));
 		return this;
 	}
 
 	contains(column: string, value: DataType): PostgresFilterBuilder {
-		this[operations_].push({ type: 'contains', value: { column, value } });
+		this.native.contains(column, serialize(value));
 		return this;
 	}
 
 	csv(): PostgresTransformBuilder {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [...this[operations_], { type: 'csv' }];
-		return builder;
+		return PostgresTransformBuilder.fromNative(this.native.csv());
 	}
 
 	eq(column: string, value: DataType) {
-		this[operations_].push({ type: 'eq', value: { column, value } });
+		this.native.eq(column, serialize(value));
 		return this;
 	}
 
 	gt(column: string, value: DataType) {
-		this[operations_].push({ type: 'gt', value: { column, value } });
+		this.native.gt(column, serialize(value));
 		return this;
 	}
 
 	gte(column: string, value: DataType) {
-		this[operations_].push({ type: 'gte', value: { column, value } });
+		this.native.gte(column, serialize(value));
 		return this;
 	}
 
 	ilike(column: string, pattern: string) {
-		this[operations_].push({ type: 'ilike', value: { column, pattern } });
+		this.native.ilike(column, pattern);
 		return this;
 	}
 
-	in(column: string, pattern: DataType[]) {
-		this[operations_].push({ type: 'in', value: { column, pattern } });
+	in(column: string, value: DataType[]) {
+		this.native.in(column, serialize(value));
 		return this;
 	}
 
-	is(column: string) {
-		this[operations_].push({ type: 'is', value: { column } });
-		return this;
-	}
-
-	isValue(column: string, value: boolean) {
-		this[operations_].push({ type: 'isValue', value: { column, value } });
+	is(column: string, value: boolean | null = null) {
+		if (typeof value === 'boolean') {
+			this.native.eq(column, serialize(value));
+		} else {
+			this.native.eq(column, null);
+		}
 		return this;
 	}
 
 	like(column: string, pattern: string) {
-		this[operations_].push({ type: 'like', value: { column, pattern } });
+		this.native.like(column, pattern);
 		return this;
 	}
 
-	limit(count: number) {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [...this[operations_], { type: 'limit', value: count }];
-		return builder;
+	limit(count: number): PostgresTransformBuilder {
+		return PostgresTransformBuilder.fromNative(this.native.limit(count));
 	}
 
 	lt(column: string, value: DataType) {
-		this[operations_].push({ type: 'lt', value: { column, value } });
+		this.native.lt(column, serialize(value));
 		return this;
 	}
 
 	lte(column: string, value: DataType) {
-		this[operations_].push({ type: 'lte', value: { column, value } });
+		this.native.lte(column, serialize(value));
 		return this;
 	}
 
 	match(query: Record<string, DataType>) {
-		this[operations_].push({ type: 'match', value: query });
+		this.native.match(serialize(query));
 		return this;
 	}
 
 	maybeSingle() {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [...this[operations_], { type: 'maybeSingle' }];
-		return builder;
+		return PostgresTransformBuilder.fromNative(this.native.maybeSingle());
 	}
 
 	neq(column: string, value: DataType) {
-		this[operations_].push({ type: 'neq', value: { column, value } });
+		this.native.neq(column, serialize(value));
 		return this;
 	}
 
@@ -235,75 +210,54 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		if (nativeOperator === undefined) {
 			throw new Error(`Invalid operator: ${operator}`);
 		}
-		this[operations_].push({ type: 'not', value: { column, operator: nativeOperator, value } });
+		this.native.not(column, operator, serialize(value));
 		return this;
 	}
 
 	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }) {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [
-			...this[operations_],
-			{
-				type: 'order',
-				value: {
-					column,
-					options: {
-						ascending: options?.ascending ?? true,
-						nullsFirst: options?.nullsFirst ?? false,
-						referencedTable: options?.referencedTable ?? null,
-					},
-				},
-			},
-		];
-		return builder;
+		return PostgresTransformBuilder.fromNative(this.native.order(column, serialize(options?.ascending ?? true, true), serialize(options?.nullsFirst ?? false, true), options?.referencedTable ?? null));
 	}
 
 	overlaps(column: string, value: DataType) {
-		this[operations_].push({ type: 'overlaps', value: { column, value } });
+		this.native.overlaps(column, serialize(value));
 		return this;
 	}
 
 	range(from: number, to: number, referencedTable?: string) {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [...this[operations_], { type: 'range', value: { from, to, referencedTable: referencedTable ?? null } }];
-		return builder;
+		return PostgresTransformBuilder.fromNative(this.native.range(from, to, referencedTable ?? null));
 	}
 
 	rangeAdjacent(column: string, range: DataType) {
-		this[operations_].push({ type: 'rangeAdjacent', value: { column, range } });
+		this.native.rangeAdjacent(column, serialize(range));
 		return this;
 	}
 
 	rangeGt(column: string, range: DataType) {
-		this[operations_].push({ type: 'rangeGt', value: { column, range } });
+		this.native.rangeGt(column, serialize(range));
 		return this;
 	}
 
 	rangeGte(column: string, range: DataType) {
-		this[operations_].push({ type: 'rangeGte', value: { column, range } });
+		this.native.rangeGte(column, serialize(range));
 		return this;
 	}
 
 	rangeLt(column: string, range: DataType) {
-		this[operations_].push({ type: 'rangeLt', value: { column, range } });
+		this.native.rangeLt(column, serialize(range));
 		return this;
 	}
 
 	rangeLte(column: string, range: DataType) {
-		this[operations_].push({ type: 'rangeLte', value: { column, range } });
+		this.native.rangeLte(column, serialize(range));
 		return this;
 	}
 
-	select(columns: string) {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [...this[operations_], { type: 'select', value: columns }];
-		return builder;
+	select(columns?: string) {
+		return PostgresTransformBuilder.fromNative(this.native.select(columns ?? null));
 	}
 
 	single(): PostgresTransformBuilder {
-		const builder = new PostgresTransformBuilder(this[operationsAction_]);
-		builder[operations_] = [...this[operations_], { type: 'single' }];
-		return builder;
+		return PostgresTransformBuilder.fromNative(this.native.single());
 	}
 
 	textSearch(
@@ -311,47 +265,16 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		query: DataType,
 		options?: {
 			config?: string;
-			type?: 'plain' | 'phrase' | 'phrase';
+			type?: 'plain' | 'phrase' | 'websearch';
 		}
 	) {
-		let nativeType = false;
-		switch (options?.type) {
-			case 'plain':
-			case 'phrase':
-			case 'phrase':
-				nativeType = true;
-				break;
-		}
-		if (nativeType) {
-			this[operations_].push({
-				type: 'textSearch',
-				value: {
-					column,
-					query,
-					options: {
-						config: options?.config ?? null,
-						type: options?.type,
-					},
-				},
-			});
-		} else {
-			this[operations_].push({
-				type: 'textSearch',
-				value: {
-					column,
-					query,
-					options: {
-						config: options?.config ?? null,
-					},
-				},
-			});
-		}
+		this.native.textSearch(column, serialize(query), options?.config ?? null, options?.type ?? null);
 		return this;
 	}
 
 	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: Result) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
 		return new Promise((resolve, reject) => {
-			this.native_.execute(
+			this.native.execute(
 				new kotlin.jvm.functions.Function1({
 					invoke(data) {
 						resolve(dataDeserialize(data));
@@ -363,13 +286,13 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 }
 
 export class SupabasePostgresClient {
-	native_: NSCSupabasePostgres;
+	native_;
 
 	get native() {
 		return this.native_;
 	}
 
-	static fromNative(value: NSCSupabasePostgres) {
+	static fromNative(value) {
 		const client = new SupabasePostgresClient();
 		client.native_ = value;
 		return client;
@@ -387,7 +310,18 @@ export class SupabasePostgresClient {
 }
 
 export class SupabasePostgresQueryBuilder {
-	native_: NSCSupabasePostgresQueryBuilder;
+	native_;
+
+	get native() {
+		return this.native_;
+	}
+
+	static fromNative(value) {
+		const builder = new SupabasePostgresQueryBuilder();
+		builder.native_ = value;
+		return builder;
+	}
+
 	insert(
 		values: Record<any, DataType> | DataType[],
 		options?: {
@@ -395,11 +329,10 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 		}
 	) {
-		return new PostgresFilterBuilder({
-			action: 'insert',
-			values,
-			options,
-		});
+		if (Array.isArray(values)) {
+			return PostgresFilterBuilder.fromNative(this.native.insertValues(serializeArray(values)?.getValue?.() ?? null, serialize(options?.defaultToNull ?? null, true), parseCount(options?.count)));
+		}
+		return PostgresFilterBuilder.fromNative(this.native.insert(serializeObject(values)?.getValue?.() ?? null, serialize(options?.defaultToNull ?? null, true), parseCount(options?.count)));
 	}
 
 	update(
@@ -408,11 +341,7 @@ export class SupabasePostgresQueryBuilder {
 			count?: 'exact' | 'planned' | 'estimated';
 		}
 	) {
-		return new PostgresFilterBuilder({
-			action: 'update',
-			values,
-			options,
-		});
+		return PostgresFilterBuilder.fromNative(this.native.update(serializeObject(values)?.getValue?.() ?? null, parseCount(options?.count)));
 	}
 
 	upsert(
@@ -424,18 +353,11 @@ export class SupabasePostgresQueryBuilder {
 			onConflict?: string;
 		}
 	) {
-		return new PostgresFilterBuilder({
-			action: 'upsert',
-			values,
-			options,
-		});
+		return PostgresFilterBuilder.fromNative(this.native.upsert(serializeObject(values)?.getValue?.() ?? null, options?.onConflict ?? null, parseCount(options?.count), serialize(options?.ignoreDuplicates ?? null, true)));
 	}
 
 	delete(options?: { count?: 'exact' | 'planned' | 'estimated' }) {
-		return new PostgresFilterBuilder({
-			action: 'delete',
-			options,
-		});
+		return PostgresFilterBuilder.fromNative(this.native.delete(parseCount(options?.count)));
 	}
 
 	select(
@@ -448,13 +370,6 @@ export class SupabasePostgresQueryBuilder {
 			count?: 'exact' | 'planned' | 'estimated';
 		} = {}
 	) {
-		return new PostgresFilterBuilder({
-			action: 'select',
-			columns: columns ?? '*',
-			options: {
-				head,
-				count,
-			},
-		});
+		return PostgresFilterBuilder.fromNative(this.native.select(columns, parseCount(count), serialize(head ?? false, true)));
 	}
 }

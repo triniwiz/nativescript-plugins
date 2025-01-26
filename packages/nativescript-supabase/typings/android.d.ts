@@ -22,18 +22,18 @@ declare module io {
 			export module supabase {
 				export class SupabaseAuth {
 					public static class: java.lang.Class<io.github.triniwiz.supabase.SupabaseAuth>;
-					public addOnAuthStateChange(job: kotlin.jvm.functions.Function1<any,java.lang.Void>): io.github.triniwiz.supabase.SupabaseAuth.SupabaseListener;
+					public addOnAuthStateChange(job: kotlin.jvm.functions.Function1<io.github.triniwiz.supabase.SupabaseAuth.AuthChangeEvent,java.lang.Void>): io.github.triniwiz.supabase.SupabaseAuth.SupabaseListener;
 					public stopAutoRefresh(): void;
 					public getAuth(): io.github.jan.supabase.auth.Auth;
-					public signIn(email: string, password: string, captchaToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
+					public signIn(email: string, password: string, captchaToken: string, callback: kotlin.jvm.functions.Function3<any,any,any,java.lang.Void>): void;
 					public userIdentities(): java.util.List<io.github.jan.supabase.auth.user.Identity>;
 					public signInWithSSOWithProviderId(providerId: string, redirectTo: string, captchaToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 					public setSession(accessToken: string, refreshToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
-					public signInWithPhone(phone: string, password: string, captchaToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
+					public signInWithPhone(phone: string, password: string, captchaToken: string, callback: kotlin.jvm.functions.Function3<any,any,any,java.lang.Void>): void;
 					public resend(phone: string, type: io.github.triniwiz.supabase.SupabaseAuth.ResendMobileType, captchaToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 					public constructor(auth: io.github.jan.supabase.auth.Auth);
 					public refreshSession(refreshToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
-					public signInAnonymously(data: string, captchaToken: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
+					public signInAnonymously(data: string, captchaToken: string, callback: kotlin.jvm.functions.Function3<any,any,any,java.lang.Void>): void;
 					public update(user: io.github.triniwiz.supabase.SupabaseAuth.UserAttributes, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 					public signInWithIdToken(credentialsProvider: io.github.triniwiz.supabase.SupabaseAuth.OpenIDConnectCredentials, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 					public signOut(scope: io.github.triniwiz.supabase.SupabaseAuth.SignOutScope, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
@@ -48,7 +48,7 @@ declare module io {
 					public signInWithOTP(email: string, redirectTo: string, shouldCreateUser: java.lang.Boolean, data: string, captchaToken: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public resend(email: string, type: io.github.triniwiz.supabase.SupabaseAuth.ResendEmailType, emailRedirectTo: string, captchaToken: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public linkIdentity(provider: io.github.triniwiz.supabase.SupabaseAuth.Provider, scopes: string, redirectTo: string, queryParams: java.util.Map<string,string>, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
-					public signUp(email: string, password: string, data: string, captchaToken: string, redirectTo: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
+					public signUp(email: string, password: string, data: string, captchaToken: string, redirectTo: string, callback: kotlin.jvm.functions.Function3<any,any,any,java.lang.Void>): void;
 					public reauthenticate(callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public signInWithOAuth(provider: io.github.triniwiz.supabase.SupabaseAuth.Provider, redirectTo: string, scopes: string, queryParams: java.util.Map<string,string>, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 					public resetPasswordForEmail(email: string, redirectTo: string, captchaToken: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
@@ -58,7 +58,8 @@ declare module io {
 					public verifyOTPEmail(email: string, token: string, type: io.github.triniwiz.supabase.SupabaseAuth.EmailOTPType, captchaToken: string, callback: kotlin.jvm.functions.Function3<any,any,any,java.lang.Void>): void;
 					public unlinkIdentity(value: io.github.jan.supabase.auth.user.Identity, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public getOAuthSignInURL(provider: io.github.triniwiz.supabase.SupabaseAuth.Provider, scopes: string, redirectTo: string, queryParams: java.util.Map<string,string>, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
-					public signUpPhone(phone: string, password: string, data: string, captchaToken: string, redirectTo: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
+					public signUpPhone(phone: string, password: string, data: string, captchaToken: string, redirectTo: string, callback: kotlin.jvm.functions.Function3<any,any,any,java.lang.Void>): void;
+					public user(jwt: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 				}
 				export module SupabaseAuth {
 					export class AuthChangeEvent {
@@ -382,7 +383,7 @@ declare module io {
 					public deleteBucket(id: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public createBucket(id: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public updateBucket(id: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
-					public getBucket(id: string): io.github.triniwiz.supabase.SupabseStorage.FileApi;
+					public getBucket(id: string, callback: kotlin.jvm.functions.Function2<any, any,java.lang.Void>): void;
 					public emptyBucket(id: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public createBucket(id: string, options: io.github.triniwiz.supabase.SupabseStorage.BucketOptions, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
 					public listBuckets(id: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
@@ -407,7 +408,7 @@ declare module io {
 					}
 					export class FileApi {
 						public static class: java.lang.Class<io.github.triniwiz.supabase.SupabseStorage.FileApi>;
-						public list(path: string, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.SearchOptions, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
+						public list(path: string, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.SearchOptions, callback: kotlin.jvm.functions.Function2<java.util.List<io.github.jan.supabase.storage.FileObject>,any,java.lang.Void>): void;
 						public uploadToSignedUrl(path: string, token: string, data: androidNative.Array<number>, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.FileOptions, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public update(path: string, file: java.io.File, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.FileOptions, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public upload(path: string, file: java.io.File, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.FileOptions, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
@@ -416,7 +417,7 @@ declare module io {
 						public remove(paths: androidNative.Array<string>, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public upload(path: string, file: java.io.File, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public update(path: string, data: java.nio.ByteBuffer, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.FileOptions, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
-						public copy(fromPath: string, toPath: string, callback: kotlin.jvm.functions.Function1<any,java.lang.Void>): void;
+						public copy(fromPath: string, toPath: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public download(path: string, options: io.github.triniwiz.supabase.SupabseStorage.FileApi.TransformOptions, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public update(path: string, file: java.io.File, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;
 						public createSignedUrls(paths: androidNative.Array<string>, expiresIn: number, download: string, callback: kotlin.jvm.functions.Function2<any,any,java.lang.Void>): void;

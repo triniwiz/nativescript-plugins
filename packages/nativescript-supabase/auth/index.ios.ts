@@ -1013,7 +1013,6 @@ export class Auth {
 				if (error) {
 					reject(new Error(error.localizedDescription));
 				} else {
-					console.log(user.userMetadata, user.appMetadata);
 					resolve(User.fromNative(user));
 				}
 			});
@@ -1129,7 +1128,6 @@ export class Auth {
 			}
 
 			this.native.linkIdentity(nativeProvider, credentials.options?.scopes ?? null, credentials.options?.redirectTo ?? null, queryParams, (error) => {
-				console.log('linkIdentity', error);
 				if (error) {
 					reject(new Error(error.localizedDescription));
 				} else {

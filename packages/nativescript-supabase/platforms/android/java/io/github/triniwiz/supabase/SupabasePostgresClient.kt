@@ -29,7 +29,6 @@ class SupabasePostgresClient internal constructor(val client: SupabaseClient, va
     get: Boolean? = null,
     head: Boolean? = null,
     countOption: CountOption? = null,
-    callback: (JsonObject) -> Void
   ): SupabasePostgresFilterBuilder {
     return SupabasePostgresFilterBuilder(
       client.client.postgrest,
@@ -38,7 +37,6 @@ class SupabasePostgresClient internal constructor(val client: SupabaseClient, va
       get,
       head,
       countOption,
-      callback
     )
   }
 }

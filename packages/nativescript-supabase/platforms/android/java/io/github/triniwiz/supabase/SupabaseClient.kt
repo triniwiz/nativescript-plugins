@@ -12,8 +12,6 @@ import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Count
-import io.github.jan.supabase.postgrest.result.PostgrestResult
-import io.github.jan.supabase.postgrest.rpc
 import io.github.jan.supabase.realtime.Realtime
 import io.github.jan.supabase.realtime.channel
 import io.github.jan.supabase.storage.Storage
@@ -21,8 +19,6 @@ import io.github.jan.supabase.storage.storage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 
 class SupabaseClient internal constructor(
@@ -95,10 +91,9 @@ class SupabaseClient internal constructor(
     fn: String,
     params: String? = null,
     countOption: CountOption? = null,
-    callback: (JsonObject?) -> Void
   ): SupabasePostgresFilterBuilder {
     return SupabasePostgresFilterBuilder(
-      client.postgrest, fn, params, null, null, countOption, callback
+      client.postgrest, fn, params, null, null, countOption
     )
   }
 

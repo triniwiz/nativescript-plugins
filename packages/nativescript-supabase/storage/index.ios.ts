@@ -336,7 +336,7 @@ export class StorageFileApi {
 		});
 	}
 
-	getPublicUrlError(path: string, options?: { transform: TransformOptions; download?: string | boolean }) {
+	getPublicUrl(path: string, options?: { transform: TransformOptions; download?: string | boolean }) {
 		try {
 			return this.native.getPublicUrlError(path, parseDownload(options?.download ?? null), parseTransformOptions(options?.transform ?? null));
 		} catch (error) {
@@ -374,15 +374,15 @@ export class StorageFileApi {
 	}
 
 	remove(paths: string[]) {
-		return new Promise<StorageFileObject[]>((resolve, reject) => {
+		return new Promise<FileObject[]>((resolve, reject) => {
 			this.native.remove(paths, (files, error) => {
 				if (error) {
 					reject(error);
 				} else {
 					const count = files.count;
-					const ret = new Array<StorageFileObject>(count);
+					const ret = new Array<FileObject>(count);
 					for (let i = 0; i < count; i++) {
-						ret[i] = StorageFileObject.fromNative(files.objectAtIndex(i));
+						ret[i] = FileObject.fromNative(files.objectAtIndex(i));
 					}
 					resolve(ret);
 				}
@@ -434,7 +434,7 @@ export class StorageFileApi {
 		});
 	}
 
-	uploadToSignedUrlData(path: string, token: string, data: ArrayBuffer, options?: FileOptions) {
+	uploadToSignedUrl(path: string, token: string, data: ArrayBuffer, options?: FileOptions) {
 		return new Promise<SignedURLUploadResponse>((resolve, reject) => {
 			this.native.uploadToSignedUrlData(path, token, NSData.dataWithData(data as never), parseFileOptions(options), (response, error) => {
 				if (error) {
@@ -444,55 +444,6 @@ export class StorageFileApi {
 				}
 			});
 		});
-	}
-}
-
-export class StorageFileObject {
-	native_: NSCSupabseStorageFileObject;
-	static fromNative(value: NSCSupabseStorageFileObject): StorageFileObject {
-		if (!value) return null;
-		const ret = new StorageFileObject();
-		ret.native_ = value;
-		return ret;
-	}
-
-	get native() {
-		return this.native_;
-	}
-	get bucketId(): string {
-		return this.native.bucketId;
-	}
-
-	get buckets(): StorageBucket {
-		return StorageBucket.fromNative(this.native.buckets);
-	}
-
-	get createdAt(): Date {
-		return this.native.createdAt;
-	}
-
-	get id(): string {
-		return this.native.id;
-	}
-
-	get lastAccessedAt(): Date {
-		return this.native.lastAccessedAt;
-	}
-
-	get metadata() {
-		return Utils.dataDeserialize(this.native.metadata);
-	}
-
-	get name(): string {
-		return this.native.name;
-	}
-
-	get owner(): string {
-		return this.native.owner;
-	}
-
-	get updatedAt(): Date {
-		return this.native.updatedAt;
 	}
 }
 

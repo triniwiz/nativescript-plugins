@@ -6,7 +6,7 @@ import { PostgresFilterBuilder, SupabasePostgresClient, SupabasePostgresQueryBui
 type RealtimeClient = SupabaseRealtimeClient & {
 	native: io.github.triniwiz.supabase.SupabaseChannel;
 };
-declare const kotlin: any;
+
 
 function parseCount(count?: 'exact' | 'planned' | 'estimated') {
 	switch (count) {
@@ -43,7 +43,7 @@ export class SupabaseClient {
 		return this[functions_];
 	}
 
-	[storage_] = null; //new SupabaseStorageClient(this);
+	[storage_] = new SupabaseStorageClient(this);
 	get storage(): SupabaseStorageClient {
 		return this[storage_];
 	}
@@ -85,51 +85,23 @@ export class SupabaseClient {
 	) {
 		const ret = new PostgresFilterBuilder();
 		if (args && options?.count) {
-			const value = (<any>this).native.rpc(
-				fn,
-				JSON.stringify(args),
-				parseCount(options.count) as never,
-				new kotlin.jvm.functions.Function1({
-					invoke(json) {},
-				})
-			);
+			const value = (<any>this).native.rpc(fn, JSON.stringify(args), parseCount(options.count) as never);
 			(<any>ret).native_ = value;
 
 			return ret;
 		} else if (args) {
-			const value = (<any>this).native.rpc(
-				fn,
-				JSON.stringify(args),
-				null,
-				new kotlin.jvm.functions.Function1({
-					invoke(json) {},
-				})
-			);
+			const value = (<any>this).native.rpc(fn, JSON.stringify(args), null);
 
 			(<any>ret).native_ = value;
 
 			return ret;
 		} else if (options?.count) {
-			const value = (<any>this).native.rpc(
-				fn,
-				null,
-				parseCount(options.count) as never,
-				new kotlin.jvm.functions.Function1({
-					invoke(json) {},
-				})
-			);
+			const value = (<any>this).native.rpc(fn, null, parseCount(options.count) as never);
 			(<any>ret).native_ = value;
 
 			return ret;
 		} else {
-			const value = (<any>this).native.rpc(
-				fn,
-				null,
-				null,
-				new kotlin.jvm.functions.Function1({
-					invoke(json) {},
-				})
-			);
+			const value = (<any>this).native.rpc(fn, null, null);
 			(<any>ret).native_ = value;
 
 			return ret;

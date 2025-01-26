@@ -40,50 +40,49 @@ declare const io;
 try {
 	const client: SupabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-	(async function () {
-		try {
-			const ret = await client.rpc('add_one_each', { arr: [1, 2, 3] });
-			const b = await client.rpc('echo', { say: 'Hi' });
-			console.log('add_one_each', ret);
-			console.log('echo', b);
-			// const not = await client.from('countries')
-			// .select()
-			// .not('name', 'is', null);
-			// console.log(not);
-			// const ret = await client.from('countries').update({ name: 'Vietnam' }).eq('id', 1).select();
-			// console.log(ret);
-			// const result = await client.from('countries').insert([
-			// 	{ id: 1, name: 'Nepal' },
-			// 	{ id: 1, name: 'Vietnam' },
-			// ]);
-			// console.log(result);
-		} catch (error) {
-			console.error(error);
-		}
-	})();
+	// (async function () {
+	// 	try {
+	// 		const ret = await client.rpc('add_one_each', { arr: [1, 2, 3] });
+	// 		const b = await client.rpc('echo', { say: 'Hi' });
+	// 		console.log('add_one_each', ret);
+	// 		console.log('echo', b);
+	// 		const not = await client.from('countries').select().not('name', 'is', null);
+	// 		console.log('not', not);
+	// 		const update = await client.from('countries').update({ name: 'Vietnam' }).eq('id', 1).select();
+	// 		console.log('update', update);
+	// 		const result = await client.from('countries').insert([
+	// 			{ id: 1, name: 'Nepal' },
+	// 			{ id: 1, name: 'Vietnam' },
+	// 		]);
+	// 		console.log(result);
+	// 	} catch (error) {
+	// 		console.error(error);
+	// 	}
+	// })();
 
-	client.auth.onAuthStateChange((state, session) => {
-		console.log('onAuthStateChange', state, !!session);
-	});
+	// client.auth.onAuthStateChange((state, session) => {
+	// 	console.log('onAuthStateChange', state, !!session);
+	// });
 
-	const thing = client.channel('thing');
+	// const thing = client.channel('thing');
 
-	thing.on('broadcast', { event: 'chat' }, (data) => {
-		console.log('broadcast', data);
-	});
+	// thing.on('broadcast', { event: 'chat' }, (data) => {
+	// 	console.log('broadcast', data);
+	// });
 
-	thing.on('presence', { event: 'sync' }, (data) => {
-		console.log('presence:sync', data);
-	});
+	// thing.on('presence', { event: 'sync' }, (data) => {
+	// 	console.log('presence:sync', data);
+	// });
 
-	thing.on('presence', { event: 'join' }, (data) => {
-		console.log('presence:join', data);
-	});
+	// thing.on('presence', { event: 'join' }, (data) => {
+	// 	console.log('presence:join', data);
+	// });
 
-	thing.on('presence', { event: 'leave' }, (data) => {
-		console.log('presence:leave', data);
-	});
+	// thing.on('presence', { event: 'leave' }, (data) => {
+	// 	console.log('presence:leave', data);
+	// });
 
+	/*
 	(async function () {
 		// const updated = await client.auth.update({
 		// 	data: {
@@ -98,12 +97,14 @@ try {
 				password: 'password',
 			});
 
+            console.log(session)
+
 			// await client.functions.invoke('hello-world', {
 			// 	body: { foo: 'bar', name: 'Osei Fortune' },
 			// 	method: 'POST',
 			// });
 
-			const echo = await client.rpc('echo', { say: 'Hi 2' });
+			// const echo = await client.rpc('echo', { say: 'Hi 2' });
 		} catch (error) {
 			console.log(error);
 			// try {
@@ -113,19 +114,21 @@ try {
 			// }
 		}
 
-		thing.on('postgres_changes', { event: '*', scheme: 'public' }, (data) => {
-			console.log('postgres_changes', data);
-		});
+		// thing.on('postgres_changes', { event: '*', scheme: 'public' }, (data) => {
+		// 	console.log('postgres_changes', data);
+		// });
 
-		try {
-			await thing.subscribe();
-			console.log('subscribed');
-		} catch (error) {
-			console.log('subscribe error', error);
-		}
+		// try {
+		// 	await thing.subscribe();
+		// 	console.log('subscribed');
+		// } catch (error) {
+		// 	console.log('subscribe error', error);
+		// }
 
 		//	client.auth.signOut();
 	})();
+
+	*/
 
 	// client.auth.addOnAuthStateChange((state, session) => {
 	// 	console.log(state, session);

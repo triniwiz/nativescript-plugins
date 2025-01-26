@@ -306,7 +306,7 @@ class SupabaseAuth internal constructor(val auth: Auth) {
     email: String,
     password: String,
     captchaToken: String?,
-    callback: (UserInfo?, Throwable?) -> Void
+    callback: (UserInfo?, UserSession?, Throwable?) -> Void
   ) {
     scope.launch {
       try {
@@ -316,9 +316,10 @@ class SupabaseAuth internal constructor(val auth: Auth) {
           this.captchaToken = captchaToken
         }
         val user = auth.currentUserOrNull()
-        callback(user, null)
+        val session = auth.currentSessionOrNull()
+        callback(user, session, null)
       } catch (e: Exception) {
-        callback(null, e)
+        callback(null, null, e)
       }
     }
   }
@@ -327,7 +328,7 @@ class SupabaseAuth internal constructor(val auth: Auth) {
     phone: String,
     password: String,
     captchaToken: String?,
-    callback: (UserInfo?, Throwable?) -> Void
+    callback: (UserInfo?, UserSession?, Throwable?) -> Void
   ) {
     scope.launch {
       try {
@@ -337,9 +338,10 @@ class SupabaseAuth internal constructor(val auth: Auth) {
           this.captchaToken = captchaToken
         }
         val user = auth.currentUserOrNull()
-        callback(user, null)
+        val session = auth.currentSessionOrNull()
+        callback(user, session, null)
       } catch (e: Exception) {
-        callback(null, e)
+        callback(null, null, e)
       }
     }
   }
@@ -347,7 +349,7 @@ class SupabaseAuth internal constructor(val auth: Auth) {
   fun signInAnonymously(
     data: String?,
     captchaToken: String?,
-    callback: (UserInfo?, Throwable?) -> Void
+    callback: (UserInfo?, UserSession?, Throwable?) -> Void
   ) {
     scope.launch {
       try {
@@ -355,10 +357,11 @@ class SupabaseAuth internal constructor(val auth: Auth) {
           Json.decodeFromString<JsonObject>(it)
         }
         auth.signInAnonymously(json, captchaToken)
-        val session = auth.currentUserOrNull()
-        callback(session, null)
+        val user = auth.currentUserOrNull()
+        val session = auth.currentSessionOrNull()
+        callback(user, session, null)
       } catch (e: Exception) {
-        callback(null, e)
+        callback(null, null, e)
       }
     }
   }
@@ -369,22 +372,25 @@ class SupabaseAuth internal constructor(val auth: Auth) {
     data: String?,
     captchaToken: String?,
     redirectTo: String?,
-    callback: (UserInfo?, Throwable?) -> Void
+    callback: (
+      UserInfo?,
+      UserSession?, Throwable?
+    ) -> Void
   ) {
     scope.launch {
       try {
         val json = data?.let {
           Json.decodeFromString<JsonObject>(it)
         }
-        val session = auth.signUpWith(Email, redirectTo) {
+        val info = auth.signUpWith(Email, redirectTo) {
           this.email = email
           this.password = password
           this.data = json
           this.captchaToken = captchaToken
         }
-        callback(session, null)
+        callback(info, auth.currentSessionOrNull(), null)
       } catch (e: Exception) {
-        callback(null, e)
+        callback(null, null, e)
       }
     }
   }
@@ -396,7 +402,7 @@ class SupabaseAuth internal constructor(val auth: Auth) {
     data: String?,
     captchaToken: String?,
     redirectTo: String?,
-    callback: (UserInfo?, Throwable?) -> Void
+    callback: (UserInfo?, UserSession?, Throwable?) -> Void
   ) {
     scope.launch {
       try {
@@ -409,9 +415,9 @@ class SupabaseAuth internal constructor(val auth: Auth) {
           this.data = json
           this.captchaToken = captchaToken
         }
-        callback(session, null)
+        callback(session, auth.currentSessionOrNull(), null)
       } catch (e: Exception) {
-        callback(null, e)
+        callback(null, null, e)
       }
     }
   }
@@ -442,10 +448,23 @@ class SupabaseAuth internal constructor(val auth: Auth) {
       return auth.currentSessionOrNull()
     }
 
-     val currentUser: UserInfo?
+  val currentUser: UserInfo?
     get() {
       return auth.currentUserOrNull()
     }
+
+  fun user(jwt: String?, callback: (UserInfo?, Throwable?) -> Void) {
+    scope.launch {
+      try {
+        val user = auth.retrieveUser(
+          jwt ?: auth.currentSessionOrNull()?.accessToken ?: ""
+        )
+        callback(user, null)
+      } catch (e: Exception) {
+        callback(null, e)
+      }
+    }
+  }
 
   fun refreshSession(refreshToken: String?, callback: (UserSession?, Throwable?) -> Void) {
     scope.launch {

@@ -267,7 +267,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		query: DataType,
 		options?: {
 			config?: string;
-			type?: 'plain' | 'phrase' | 'phrase';
+			type?: 'plain' | 'phrase' | 'websearch';
 		}
 	) {
 		let nativeType: NSCSupabasePostgresTextSearchType;
@@ -278,8 +278,8 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 			case 'phrase':
 				nativeType = NSCSupabasePostgresTextSearchType.Phrase;
 				break;
-			case 'phrase':
-				nativeType = NSCSupabasePostgresTextSearchType.Phrase;
+			case 'websearch':
+				nativeType = NSCSupabasePostgresTextSearchType.Websearch;
 				break;
 		}
 		if (nativeType !== undefined) {

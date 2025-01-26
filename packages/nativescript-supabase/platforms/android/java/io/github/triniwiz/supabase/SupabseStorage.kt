@@ -8,9 +8,11 @@ import io.github.jan.supabase.storage.ImageTransformation
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.UploadData
 import io.github.jan.supabase.storage.UploadSignedUrl
+import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.storage.update
 import io.github.jan.supabase.storage.upload
 import io.ktor.http.ContentType
+import io.ktor.util.cio.readChannel
 import io.ktor.utils.io.ByteReadChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +22,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import java.io.File
 import java.nio.ByteBuffer
+import java.nio.channels.Channels
 import kotlin.time.Duration.Companion.seconds
 
 
@@ -90,10 +93,16 @@ class SupabseStorage internal constructor(private val storage: Storage) {
     }
   }
 
-  fun getBucket(id: String): FileApi {
-    return FileApi(storage[id])
+  fun getBucket(id: String, callback: (Bucket?, Exception?) -> Void) {
+    scope.launch {
+      try {
+        val bucket = storage.retrieveBucketById(id)
+        callback(bucket, null)
+      } catch (e: Exception) {
+        callback(null, e)
+      }
+    }
   }
-
 
   fun listBuckets(id: String, callback: (List<Bucket>?, Exception?) -> Void) {
     scope.launch {
@@ -206,8 +215,8 @@ class SupabseStorage internal constructor(private val storage: Storage) {
       var width: Int? = null
       var height: Int? = null
       var resize: String? = null
-      var quality: Int? = null
-      var format: String? = null
+      var quality: Int? = 80
+      var format: String? = "origin"
     }
 
     class SortBy {
@@ -243,12 +252,12 @@ class SupabseStorage internal constructor(private val storage: Storage) {
                   this.contentType = ContentType.parse(contentType)
                 } catch (_: Exception) {
                 }
+              }
 
-                it.headers?.let { headers ->
-                  this.httpOverride {
-                    headers.forEach { entry ->
-                      this.headers.append(entry.key, entry.value)
-                    }
+              it.headers?.let { headers ->
+                this.httpOverride {
+                  headers.forEach { entry ->
+                    this.headers.append(entry.key, entry.value)
                   }
                 }
               }
@@ -278,12 +287,11 @@ class SupabseStorage internal constructor(private val storage: Storage) {
                   this.contentType = ContentType.parse(contentType)
                 } catch (_: Exception) {
                 }
-
-                it.headers?.let { headers ->
-                  this.httpOverride {
-                    headers.forEach { entry ->
-                      this.headers.append(entry.key, entry.value)
-                    }
+              }
+              it.headers?.let { headers ->
+                this.httpOverride {
+                  headers.forEach { entry ->
+                    this.headers.append(entry.key, entry.value)
                   }
                 }
               }
@@ -314,12 +322,12 @@ class SupabseStorage internal constructor(private val storage: Storage) {
                     this.contentType = ContentType.parse(contentType)
                   } catch (_: Exception) {
                   }
+                }
 
-                  it.headers?.let { headers ->
-                    this.httpOverride {
-                      headers.forEach { entry ->
-                        this.headers.append(entry.key, entry.value)
-                      }
+                it.headers?.let { headers ->
+                  this.httpOverride {
+                    headers.forEach { entry ->
+                      this.headers.append(entry.key, entry.value)
                     }
                   }
                 }
@@ -346,8 +354,8 @@ class SupabseStorage internal constructor(private val storage: Storage) {
             this.transform {
               this.width = options?.width
               this.height = options?.height
-              this.format = options?.format
-              this.quality = options?.quality
+              this.format = options?.format ?: "origin"
+              this.quality = options?.quality ?: 80
               when (options?.resize) {
                 "cover" -> {
                   this.resize = ImageTransformation.Resize.COVER
@@ -415,12 +423,12 @@ class SupabseStorage internal constructor(private val storage: Storage) {
                   this.contentType = ContentType.parse(contentType)
                 } catch (_: Exception) {
                 }
+              }
 
-                it.headers?.let { headers ->
-                  this.httpOverride {
-                    headers.forEach { entry ->
-                      this.headers.append(entry.key, entry.value)
-                    }
+              it.headers?.let { headers ->
+                this.httpOverride {
+                  headers.forEach { entry ->
+                    this.headers.append(entry.key, entry.value)
                   }
                 }
               }
@@ -450,12 +458,12 @@ class SupabseStorage internal constructor(private val storage: Storage) {
                   this.contentType = ContentType.parse(contentType)
                 } catch (_: Exception) {
                 }
+              }
 
-                it.headers?.let { headers ->
-                  this.httpOverride {
-                    headers.forEach { entry ->
-                      this.headers.append(entry.key, entry.value)
-                    }
+              it.headers?.let { headers ->
+                this.httpOverride {
+                  headers.forEach { entry ->
+                    this.headers.append(entry.key, entry.value)
                   }
                 }
               }
@@ -486,12 +494,12 @@ class SupabseStorage internal constructor(private val storage: Storage) {
                     this.contentType = ContentType.parse(contentType)
                   } catch (_: Exception) {
                   }
+                }
 
-                  it.headers?.let { headers ->
-                    this.httpOverride {
-                      headers.forEach { entry ->
-                        this.headers.append(entry.key, entry.value)
-                      }
+                it.headers?.let { headers ->
+                  this.httpOverride {
+                    headers.forEach { entry ->
+                      this.headers.append(entry.key, entry.value)
                     }
                   }
                 }
@@ -516,13 +524,13 @@ class SupabseStorage internal constructor(private val storage: Storage) {
       }
     }
 
-    fun copy(fromPath: String, toPath: String, callback: (Exception?) -> Void) {
+    fun copy(fromPath: String, toPath: String, callback: (String?, Exception?) -> Void) {
       scope.launch {
         try {
           api.copy(fromPath, toPath)
-          callback(null)
+          callback("${api.bucketId}/$toPath", null)
         } catch (e: Exception) {
-          callback(e)
+          callback(null, e)
         }
       }
     }
@@ -553,8 +561,8 @@ class SupabseStorage internal constructor(private val storage: Storage) {
             api.createSignedUrl(path, expiresIn.seconds) {
               this.width = options?.width
               this.height = options?.height
-              this.format = options?.format
-              this.quality = options?.quality
+              this.format = options?.format ?: "origin"
+              this.quality = options?.quality ?: 80
               when (options?.resize) {
                 "cover" -> {
                   this.resize = ImageTransformation.Resize.COVER
@@ -640,7 +648,100 @@ class SupabseStorage internal constructor(private val storage: Storage) {
       scope.launch {
         try {
           val response = api.uploadToSignedUrl(path, token, data) {
+            options?.upsert?.let {
+              this.upsert = it
+            }
+            options?.contentType?.let { contentType ->
+              try {
+                this.contentType = ContentType.parse(contentType)
+              } catch (_: Exception) {
+              }
+            }
+            options?.headers?.let { headers ->
+              this.httpOverride {
+                headers.forEach { entry ->
+                  this.headers.append(entry.key, entry.value)
+                }
+              }
+            }
+          }
+          callback(response, null)
+        } catch (e: Exception) {
+          callback(null, e)
+        }
+      }
+    }
 
+
+    fun uploadToSignedUrl(
+      path: String,
+      token: String,
+      data: ByteBuffer,
+      options: FileOptions?,
+      callback: (FileUploadResponse?, Exception?) -> Void
+    ) {
+      scope.launch {
+        try {
+          val response = api.uploadToSignedUrl(
+            path,
+            token,
+            UploadData(ByteReadChannel(data), data.capacity().toLong())
+          ) {
+            options?.upsert?.let {
+              this.upsert = it
+            }
+            options?.contentType?.let { contentType ->
+              try {
+                this.contentType = ContentType.parse(contentType)
+              } catch (_: Exception) {
+              }
+            }
+            options?.headers?.let { headers ->
+              this.httpOverride {
+                headers.forEach { entry ->
+                  this.headers.append(entry.key, entry.value)
+                }
+              }
+            }
+          }
+          callback(response, null)
+        } catch (e: Exception) {
+          callback(null, e)
+        }
+      }
+    }
+
+    fun uploadToSignedUrl(
+      path: String,
+      token: String,
+      file: File,
+      options: FileOptions?,
+      callback: (FileUploadResponse?, Exception?) -> Void
+    ) {
+      scope.launch {
+        try {
+          val size = file.length()
+          val response = api.uploadToSignedUrl(
+            path,
+            token,
+            UploadData(file.readChannel(), size)
+          ) {
+            options?.upsert?.let {
+              this.upsert = it
+            }
+            options?.contentType?.let { contentType ->
+              try {
+                this.contentType = ContentType.parse(contentType)
+              } catch (_: Exception) {
+              }
+            }
+            options?.headers?.let { headers ->
+              this.httpOverride {
+                headers.forEach { entry ->
+                  this.headers.append(entry.key, entry.value)
+                }
+              }
+            }
           }
           callback(response, null)
         } catch (e: Exception) {

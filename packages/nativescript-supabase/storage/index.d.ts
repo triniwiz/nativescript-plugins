@@ -120,39 +120,19 @@ export class StorageFileApi {
 
 	download(path: string, options?: TransformOptions): Promise<ArrayBuffer>;
 
-	getPublicUrlError(path: string, options?: { transform: TransformOptions; download?: string | boolean }): string;
+	getPublicUrl(path: string, options?: { transform: TransformOptions; download?: string | boolean }): string;
 
 	list(path?: string, options?: SearchOptions): Promise<FileObject[]>;
 
 	move(fromPath: string, toPath: string): Promise<void>;
 
-	remove(paths: string[]): Promise<StorageFileObject[]>;
+	remove(paths: string[]): Promise<FileObject[]>;
 
 	update(path: string, data: ArrayBuffer | string, options?: FileOptions): Promise<FileUploadResponse>;
 
 	upload(path: string, data: ArrayBuffer | string, options?: FileOptions): Promise<FileUploadResponse>;
 
-	uploadToSignedUrlData(path: string, token: string, data: ArrayBuffer, options?: FileOptions): Promise<SignedURLUploadResponse>;
-}
-
-export class StorageFileObject {
-	readonly bucketId: string;
-
-	readonly buckets: StorageBucket;
-
-	readonly createdAt: Date;
-
-	readonly id: string;
-
-	readonly lastAccessedAt: Date;
-
-	readonly metadata: Record<string, any>;
-
-	readonly name: string;
-
-	readonly owner: string;
-
-	readonly updatedAt: Date;
+	uploadToSignedUrl(path: string, token: string, data: ArrayBuffer, options?: FileOptions): Promise<SignedURLUploadResponse>;
 }
 
 export class SupabaseStorageClient {

@@ -1,3 +1,4 @@
+import { Utils } from '@nativescript/core';
 import { DataType } from '..';
 
 export function numberHasDecimals(value: number): boolean {
@@ -41,7 +42,7 @@ export function dataDeserialize(nativeData?: any) {
 			}
 			break;
 		}
-		case 'kotlinx.serialization.json.JsonObject':  {
+		case 'kotlinx.serialization.json.JsonObject': {
 			store = JSON.parse(nativeData.toString());
 			break;
 		}
@@ -94,66 +95,70 @@ export function dataDeserialize(nativeData?: any) {
 	return store;
 }
 
-export function serialize(value: DataType): any {
-	// if (!value) {
-	// 	return NSCSupabaseJSONValue.new();
-	// }
-	// switch (typeof value) {
-	// 	case 'string':
-	// 		return NSCSupabaseJSONValue.alloc().initWithString(value);
-	// 	case 'number':
-	// 		if (numberHasDecimals(value)) {
-	// 			return NSCSupabaseJSONValue.alloc().initWithDouble(value);
-	// 		}
-	// 		return NSCSupabaseJSONValue.alloc().initWithInteger(value);
-	// 	case 'boolean':
-	// 		return NSCSupabaseJSONValue.alloc().initWithBoolean(value);
-	// 	case 'object': {
-	// 		if (Array.isArray(value)) {
-	// 			const arr = NSMutableArray.alloc().initWithCapacity(value.length);
-	// 			for (let i = 0; i < value.length; i++) {
-	// 				arr.addObject(serialize(value[i]));
-	// 			}
-	// 			return NSCSupabaseJSONValue.alloc().initWithArray(arr);
-	// 		}
 
-	// 		if (value instanceof Date) {
-	// 			return NSCSupabaseJSONValue.alloc().initWithDate(value);
-	// 		}
+export function serialize(data?: any, wrapPrimitives?: boolean) {
+	let store;
+	switch (typeof data) {
+		case 'string':
+		case 'boolean': {
+			if (wrapPrimitives) {
+				if (typeof data === 'string') {
+					return new java.lang.String(data);
+				}
+				return new java.lang.Boolean(data);
+			}
+			return data;
+		}
+		case 'number': {
+			const hasDecimals = numberHasDecimals(data);
+			if (numberIs64Bit(data)) {
+				if (hasDecimals) {
+					return java.lang.Double.valueOf(data);
+				} else {
+					return java.lang.Long.valueOf(data);
+				}
+			} else {
+				if (hasDecimals) {
+					return java.lang.Float.valueOf(data);
+				} else {
+					return java.lang.Integer.valueOf(data);
+				}
+			}
+		}
 
-	// 		const keys = Object.keys(value);
-	// 		const dict = NSMutableDictionary.alloc().initWithCapacity(keys.length);
-	// 		for (const key of keys) {
-	// 			dict.setObjectForKey(serialize(value[key]), key);
-	// 		}
-	// 		return NSCSupabaseJSONValue.alloc().initWithObject(dict);
-	// 	}
-	// }
-	return null
+		case 'object': {
+			if (!data) {
+				return null;
+			}
+
+			if (data instanceof Date) {
+				return new java.util.Date(data.getTime());
+			}
+
+			if (Array.isArray(data)) {
+				store = new (<any>io).github.triniwiz.supabase.JsonHelpers.JsonArray();
+				data.forEach((item) => store.add(serialize(item, wrapPrimitives)));
+				return store;
+			}
+
+			if (data.native) {
+				return data.native;
+			}
+
+			store = new (<any>io).github.triniwiz.supabase.JsonHelpers.JsonObject();
+			Object.keys(data).forEach((key) => store.put(key, serialize(data[key], wrapPrimitives)));
+			return store;
+		}
+
+		default:
+			return null;
+	}
 }
 
-export function serializeObject(value: Record<string, DataType>) {
-	// if (!value) {
-	// 	return null;
-	// }
-	// const keys = Object.keys(value);
-	// const dict = NSMutableDictionary.alloc().initWithCapacity(keys.length);
-	// for (const key of keys) {
-	// 	dict.setObjectForKey(serialize(value[key]), key);
-	// }
-	// return dict;
-	return null
+export function serializeObject(value: Record<string, DataType>, wrapPrimitives?: boolean) {
+	return serialize(value, wrapPrimitives);
 }
 
-export function serializeArray(value: DataType[]) {
-	return null
-	// if (!value) {
-	// 	return null;
-	// }
-	// const arr = NSMutableArray.alloc().initWithCapacity(value.length);
-
-	// for (let i = 0; i < value.length; i++) {
-	// 	arr.addObject(serialize(value[i]));
-	// }
-	// return arr;
+export function serializeArray(value: DataType[], wrapPrimitives?: boolean) {
+	return serialize(value, wrapPrimitives);
 }
