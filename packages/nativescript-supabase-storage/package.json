@@ -1,38 +1,38 @@
 {
-  "name": "@triniwiz/nativescript-supabase-storage",
-  "version": "2.0.0-rc.15",
-  "description": "A Nativescript client library to interact with Supabase Storage",
-  "main": "index",
-  "typings": "index.d.ts",
-  "nativescript": {
-    "platforms": {
-      "ios": "7.0.0",
-      "android": "7.0.0"
-    }
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/triniwiz/nativeScript-plugins.git"
-  },
-  "keywords": [
-    "NativeScript",
-    "JavaScript",
-    "TypeScript",
-    "iOS",
-    "Android"
-  ],
-  "author": {
-    "name": "Osei Fortune",
-    "email": "fortune.osei@yahoo.com"
-  },
-  "bugs": {
-    "url": "https://github.com/triniwiz/nativeScript-plugins/issues"
-  },
-  "license": "Apache-2.0",
-  "homepage": "https://github.com/triniwiz/nativeScript-plugins",
-  "readmeFilename": "README.md",
-  "bootstrapper": "@nativescript/plugin-seed",
-  "dependencies": {
-    "@klippa/nativescript-http": "3.0.4"
-  }
+	"name": "@triniwiz/nativescript-supabase-storage",
+	"version": "2.0.0-rc.16",
+	"description": "A Nativescript client library to interact with Supabase Storage",
+	"main": "index",
+	"typings": "index.d.ts",
+	"nativescript": {
+		"platforms": {
+			"ios": "7.0.0",
+			"android": "7.0.0"
+		}
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/triniwiz/nativeScript-plugins.git"
+	},
+	"keywords": [
+		"NativeScript",
+		"JavaScript",
+		"TypeScript",
+		"iOS",
+		"Android"
+	],
+	"author": {
+		"name": "Osei Fortune",
+		"email": "fortune.osei@yahoo.com"
+	},
+	"bugs": {
+		"url": "https://github.com/triniwiz/nativeScript-plugins/issues"
+	},
+	"license": "Apache-2.0",
+	"homepage": "https://github.com/triniwiz/nativeScript-plugins",
+	"readmeFilename": "README.md",
+	"bootstrapper": "@nativescript/plugin-seed",
+	"dependencies": {
+		"@klippa/nativescript-http": "3.0.4"
+	}
 }

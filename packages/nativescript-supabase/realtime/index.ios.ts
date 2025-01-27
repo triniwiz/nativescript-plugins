@@ -1,4 +1,4 @@
-import { dataDeserialize } from '@nativescript/core';
+import { Utils } from '@nativescript/core';
 
 export class SupabaseRealtimeClient {
 	_native: NSCSupabaseChannel;
@@ -29,15 +29,15 @@ export class SupabaseRealtimeClient {
 		if (type) {
 			if (type === 'broadcast') {
 				this.native.onBroadcast(filter.event, (message) => {
-					callback(dataDeserialize(message));
+					callback(Utils.dataDeserialize(message));
 				});
 			} else if (type === 'presence') {
 				this.native.onPresenceChange(filter.event, (event) => {
-					callback(dataDeserialize(event));
+					callback(Utils.dataDeserialize(event));
 				});
 			} else if (type === 'postgres_changes' && filter && 'event' in filter && 'schema' in filter) {
 				this.native.onPostgresChange(filter.event, filter.schema, filter.filter ?? null, filter.table ?? null, (payload) => {
-					callback(dataDeserialize(payload));
+					callback(Utils.dataDeserialize(payload));
 				});
 			}
 		}

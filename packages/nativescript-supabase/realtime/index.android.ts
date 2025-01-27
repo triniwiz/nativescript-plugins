@@ -46,10 +46,10 @@ export class SupabaseRealtimeClient {
 						},
 					}),
 				);
-			} else if (type === 'postgres_changes' && filter && 'event' in filter && 'scheme' in filter) {
+			} else if (type === 'postgres_changes' && filter && 'event' in filter && 'schema' in filter) {
 				this.native.onPostgresChange(
 					filter.event,
-					filter.scheme,
+					filter.schema,
 					filter.filter ?? null,
 					filter.table ?? null,
 					new kotlin.jvm.functions.Function1({
