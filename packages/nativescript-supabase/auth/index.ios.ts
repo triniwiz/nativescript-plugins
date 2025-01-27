@@ -1,4 +1,4 @@
-import { dataDeserialize, dataSerialize } from '@nativescript/core/utils';
+import { Utils } from '@nativescript/core';
 import type { DataType, SupabaseClient } from '../index';
 type Client = SupabaseClient & { native: NSCSupabaseClient };
 import { OauthProviderType } from '.';
@@ -24,7 +24,7 @@ export class UserIdentity {
 	private _identityData: Record<string, any>;
 	get identityData(): Record<string, any> {
 		if (!this._identityData) {
-			this._identityData = dataDeserialize(this.native.identityData);
+			this._identityData = Utils.dataDeserialize(this.native.identityData);
 		}
 		return this._identityData;
 	}
@@ -129,7 +129,7 @@ export class User {
 	private _appMetadata: any;
 	get appMetadata(): Record<string, any> {
 		if (!this._appMetadata) {
-			this._appMetadata = dataDeserialize(this.native.appMetadata);
+			this._appMetadata = Utils.dataDeserialize(this.native.appMetadata);
 		}
 		return this._appMetadata;
 	}
@@ -230,7 +230,7 @@ export class User {
 	private _userMetadata: Record<string, any>;
 	get userMetadata(): Record<string, any> {
 		if (!this._userMetadata) {
-			this._userMetadata = dataDeserialize(this.native.userMetadata);
+			this._userMetadata = Utils.dataDeserialize(this.native.userMetadata);
 		}
 		return this._userMetadata;
 	}
@@ -550,7 +550,7 @@ export class Auth {
 		return new Promise<Session>((resolve, reject) => {
 			let dataSerialized = null;
 			if (credentials?.data) {
-				dataSerialized = dataSerialize(credentials?.data);
+				dataSerialized = Utils.dataSerialize(credentials?.data);
 			}
 			this.native.signInAnonymously(dataSerialized as never, credentials?.options?.captchaToken ?? null, (session, error) => {
 				if (error) {
@@ -585,7 +585,7 @@ export class Auth {
 	}) {
 		return new Promise<{ session?: Session; user: User }>((resolve, reject) => {
 			if (value.email) {
-				this.native.signUp(value.email, value.password, value.captchaToken ?? null, value.options?.data ? dataSerialize(value.options.data) : null, value.options?.emailRedirectTo ?? null, (user, session, error) => {
+				this.native.signUp(value.email, value.password, value.captchaToken ?? null, value.options?.data ? Utils.dataSerialize(value.options.data) : null, value.options?.emailRedirectTo ?? null, (user, session, error) => {
 					if (error) {
 						reject(new Error(error.localizedDescription));
 					} else {
@@ -593,7 +593,7 @@ export class Auth {
 					}
 				});
 			} else if (value.phone) {
-				this.native.signUpWithPhone(value.phone, value.password, value.captchaToken ?? null, value.options?.data ? dataSerialize(value.options.data) : null, (user, session, error) => {
+				this.native.signUpWithPhone(value.phone, value.password, value.captchaToken ?? null, value.options?.data ? Utils.dataSerialize(value.options.data) : null, (user, session, error) => {
 					if (error) {
 						reject(new Error(error.localizedDescription));
 					} else {
@@ -623,7 +623,7 @@ export class Auth {
 				return;
 			}
 			if (credentials.email) {
-				this.native.signInWithOTP(credentials.email, credentials.options?.emailRedirectTo ?? null, credentials.options?.data ? dataSerialize(credentials.options.data) : null, credentials.options?.captchaToken ?? null, (error) => {
+				this.native.signInWithOTP(credentials.email, credentials.options?.emailRedirectTo ?? null, credentials.options?.data ? Utils.dataSerialize(credentials.options.data) : null, credentials.options?.captchaToken ?? null, (error) => {
 					if (error) {
 						reject(new Error(error.localizedDescription));
 					} else {
@@ -631,7 +631,7 @@ export class Auth {
 					}
 				});
 			} else if (credentials.phone) {
-				this.native.signInWithOTPWithPhoneShouldCreateUser(credentials.phone, credentials.options?.channel === 'whatsapp' ? NSCSupabaseMessagingChannel.Whatsapp : NSCSupabaseMessagingChannel.Sms, credentials.options?.shouldCreateUser ?? true, credentials.options?.data ? dataSerialize(credentials.options.data) : null, credentials.options?.captchaToken ?? null, (error) => {
+				this.native.signInWithOTPWithPhoneShouldCreateUser(credentials.phone, credentials.options?.channel === 'whatsapp' ? NSCSupabaseMessagingChannel.Whatsapp : NSCSupabaseMessagingChannel.Sms, credentials.options?.shouldCreateUser ?? true, credentials.options?.data ? Utils.dataSerialize(credentials.options.data) : null, credentials.options?.captchaToken ?? null, (error) => {
 					if (error) {
 						reject(new Error(error.localizedDescription));
 					} else {
@@ -744,7 +744,7 @@ export class Auth {
 					} else {
 						resolve(Session.fromNative(session));
 					}
-				}
+				},
 			);
 		});
 	}
@@ -824,7 +824,7 @@ export class Auth {
 		options?: {
 			captchaToken?: string;
 			redirectTo?: string;
-		}
+		},
 	) {
 		return new Promise<void>((resolve, reject) => {
 			this.native.resetPasswordForEmail(email, options?.redirectTo ?? null, options?.captchaToken ?? null, (error) => {
@@ -864,7 +864,7 @@ export class Auth {
 						captchaToken?: string;
 						redirectTo?: string;
 					};
-			  }
+			  },
 	) {
 		return new Promise((resolve, reject) => {
 			if (params) {
@@ -994,7 +994,7 @@ export class Auth {
 		return new Promise<User>((resolve, reject) => {
 			const attr = NSCSupabaseUserAttributes.new();
 			if (attributes.data) {
-				attr.data = dataSerialize(attributes.data);
+				attr.data = Utils.dataSerialize(attributes.data);
 			}
 			if (attributes.email) {
 				attr.email = attributes.email;

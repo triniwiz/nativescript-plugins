@@ -1,4 +1,4 @@
-import { dataDeserialize, dataSerialize } from '@nativescript/core/utils';
+import { Utils } from '@nativescript/core';
 import { FunctionOptions } from '.';
 import type { SupabaseClient } from '../index';
 import { response } from 'express';
@@ -14,13 +14,13 @@ function parseOptions(options?: FunctionOptions) {
 	if (options.body instanceof ArrayBuffer) {
 		ret = NSCSupabaseFunctionInvokeOptions.alloc().initWithFileBody(NSData.dataWithData(options.body as never));
 	} else if (options.body) {
-		ret = NSCSupabaseFunctionInvokeOptions.alloc().initWithJson(dataSerialize(options.body));
+		ret = NSCSupabaseFunctionInvokeOptions.alloc().initWithJson(Utils.dataSerialize(options.body));
 	} else {
 		ret = NSCSupabaseFunctionInvokeOptions.new();
 	}
 
 	if (options.headers) {
-		ret.headers = dataSerialize(options.headers);
+		ret.headers = Utils.dataSerialize(options.headers);
 	}
 
 	if (options.method) {
@@ -84,7 +84,7 @@ export class SupabaseFunctionsClient {
 						reject(new FunctionsRelayError(error.message));
 					}
 				} else {
-					const headers = dataDeserialize(response.response.allHeaderFields);
+					const headers = Utils.dataDeserialize(response.response.allHeaderFields);
 					const responseType = (headers['Content-Type'] ?? 'text/plain').split(';')[0].trim();
 
 					let data: any;
@@ -93,7 +93,7 @@ export class SupabaseFunctionsClient {
 							if (error) {
 								reject(error);
 							} else {
-								resolve({ data: dataDeserialize(data) });
+								resolve({ data: Utils.dataDeserialize(data) });
 							}
 						});
 					} else if (responseType === 'application/octet-stream') {

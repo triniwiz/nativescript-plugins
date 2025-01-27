@@ -114,7 +114,7 @@ try {
 			// }
 		}
 
-		// thing.on('postgres_changes', { event: '*', scheme: 'public' }, (data) => {
+		// thing.on('postgres_changes', { event: '*', schema: 'public' }, (data) => {
 		// 	console.log('postgres_changes', data);
 		// });
 

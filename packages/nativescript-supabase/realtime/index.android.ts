@@ -26,7 +26,7 @@ export class SupabaseRealtimeClient {
 		return this._native;
 	}
 
-	on(type: 'broadcast' | 'presence' | 'postgres_changes', filter: { event: 'sync' | 'join' | 'leave' } | { event: string; scheme: string; filter?: string; table?: string } | { event: string }, callback: (data) => void) {
+	on(type: 'broadcast' | 'presence' | 'postgres_changes', filter: { event: 'sync' | 'join' | 'leave' } | { event: string; schema: string; filter?: string; table?: string } | { event: string }, callback: (data) => void) {
 		if (type) {
 			if (type === 'broadcast') {
 				this.native.onBroadcast(
@@ -35,7 +35,7 @@ export class SupabaseRealtimeClient {
 						invoke(message) {
 							callback(JSON.parse(message));
 						},
-					})
+					}),
 				);
 			} else if (type === 'presence') {
 				this.native.onPresenceChange(
@@ -44,7 +44,7 @@ export class SupabaseRealtimeClient {
 						invoke(event) {
 							callback(JSON.parse(event));
 						},
-					})
+					}),
 				);
 			} else if (type === 'postgres_changes' && filter && 'event' in filter && 'scheme' in filter) {
 				this.native.onPostgresChange(
@@ -56,7 +56,7 @@ export class SupabaseRealtimeClient {
 						invoke(payload) {
 							callback(JSON.parse(payload));
 						},
-					})
+					}),
 				);
 				console.log('onPostgresChange', filter);
 			}
@@ -71,7 +71,7 @@ export class SupabaseRealtimeClient {
 					invoke() {
 						resolve();
 					},
-				})
+				}),
 			);
 		});
 	}
@@ -83,7 +83,7 @@ export class SupabaseRealtimeClient {
 					invoke() {
 						resolve();
 					},
-				})
+				}),
 			);
 		});
 	}

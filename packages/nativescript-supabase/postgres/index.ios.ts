@@ -1,4 +1,4 @@
-import { dataDeserialize } from '@nativescript/core/utils';
+import { Utils } from '@nativescript/core';
 import { DataType } from '..';
 import { FilterOperator } from '.';
 import { serialize, serializeArray, serializeObject } from '../utils';
@@ -105,7 +105,7 @@ export class PostgresTransformBuilder implements PromiseLike<any> {
 				if (error) {
 					reject(error);
 				} else {
-					resolve(dataDeserialize(data));
+					resolve(Utils.dataDeserialize(data));
 				}
 			});
 		}).then(onfulfilled, onrejected);
@@ -268,7 +268,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		options?: {
 			config?: string;
 			type?: 'plain' | 'phrase' | 'websearch';
-		}
+		},
 	) {
 		let nativeType: NSCSupabasePostgresTextSearchType;
 		switch (options?.type) {
@@ -296,7 +296,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 				if (error) {
 					reject(error);
 				} else {
-					resolve(dataDeserialize(data));
+					resolve(Utils.dataDeserialize(data));
 				}
 			});
 		}).then(onfulfilled, onrejected);
@@ -356,7 +356,7 @@ export class SupabasePostgresQueryBuilder {
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
 			defaultToNull?: boolean;
-		}
+		},
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.insertError(serialize(values), parseCount(options?.count) as never));
 	}
@@ -365,7 +365,7 @@ export class SupabasePostgresQueryBuilder {
 		values: Record<any, DataType>,
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
-		}
+		},
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.updateError(serializeObject(values), parseCount(options?.count) as never));
 	}
@@ -377,7 +377,7 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 			ignoreDuplicates?: boolean;
 			onConflict?: string;
-		}
+		},
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.upsertError(serialize(values), options?.onConflict ?? null, parseCount(options?.count) as never, options?.ignoreDuplicates ?? false));
 	}
@@ -394,7 +394,7 @@ export class SupabasePostgresQueryBuilder {
 		}: {
 			head?: boolean;
 			count?: 'exact' | 'planned' | 'estimated';
-		} = {}
+		} = {},
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.selectHead(columns ?? '*', parseCount(count) as never, head ?? false));
 	}

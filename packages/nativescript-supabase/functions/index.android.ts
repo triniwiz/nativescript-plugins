@@ -1,4 +1,3 @@
-import { dataDeserialize, dataSerialize } from '@nativescript/core/utils';
 import { FunctionOptions } from '.';
 import type { SupabaseClient } from '../index';
 import { Utils } from '@nativescript/core';
@@ -20,7 +19,7 @@ function parseOptions(options?: FunctionOptions) {
 	}
 
 	if (options.headers) {
-		ret.setHeaders(dataSerialize(options.headers));
+		ret.setHeaders(Utils.dataSerialize(options.headers));
 	}
 
 	if (options.method) {
@@ -92,7 +91,7 @@ export class SupabaseFunctionsClient {
 							const responseType = headers.get('Content-Type') ?? headers.get('Content-Type') ?? 'text/plain';
 
 							console.log(responseType);
-						
+
 							let data: any;
 							if (responseType === 'application/json') {
 								response.toJSON(
@@ -106,12 +105,12 @@ export class SupabaseFunctionsClient {
 										resolve({ data: dataDeserialize(data) });
 									}
 											*/
-										
+
 											if (error) {
 											} else {
 											}
 										},
-									})
+									}),
 								);
 							} else if (responseType === 'application/octet-stream') {
 								response.toBuffer(
@@ -129,7 +128,7 @@ export class SupabaseFunctionsClient {
 											} else {
 											}
 										},
-									})
+									}),
 								);
 								// resolve({
 								// 	data: new Blob([interop.bufferFromData(response.data)], { type: headers['Content-Type'] }),
@@ -167,12 +166,12 @@ export class SupabaseFunctionsClient {
 											} else {
 											}
 										},
-									})
+									}),
 								);
 							}
 						}
 					},
-				})
+				}),
 			);
 		});
 	}
