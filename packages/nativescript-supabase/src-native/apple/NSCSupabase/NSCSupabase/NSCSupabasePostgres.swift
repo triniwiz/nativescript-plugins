@@ -539,10 +539,11 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
           }else {
             ret["data"] = result.value as? AnyHashable
           }
-
         }else {
-          let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
-          ret["data"] = json as? AnyHashable
+          if(!result.data.isEmpty){
+            let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
+            ret["data"] = json as? AnyHashable
+          }
         }
         
         ret["status"] = result.response.statusCode
