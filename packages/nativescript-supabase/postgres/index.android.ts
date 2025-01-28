@@ -103,11 +103,6 @@ export class PostgresTransformBuilder implements PromiseLike<any> {
 			this.native.execute(
 				new kotlin.jvm.functions.Function1({
 					invoke(data) {
-						try {
-							const d = dataDeserialize(data);
-						} catch (error) {
-							console.log('error', error);
-						}
 						resolve(dataDeserialize(data));
 					},
 				})
@@ -282,7 +277,6 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 			this.native.execute(
 				new kotlin.jvm.functions.Function1({
 					invoke(data) {
-						console.log('data', data);
 						resolve(dataDeserialize(data));
 					},
 				})
@@ -335,14 +329,7 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 		}
 	) {
-		if (Array.isArray(values)) {
-			return PostgresFilterBuilder.fromNative(this.native.insertValues(serializeArray(values, true)?.getValue?.() ?? null, serialize(options?.defaultToNull ?? null, true), parseCount(options?.count)));
-		}
-		console.log(
-			'insert',
-			serializeObject(values)?.getValue?.()
-		);
-		return PostgresFilterBuilder.fromNative(this.native.insert(serializeObject(values, true)?.getValue?.() ?? null, serialize(options?.defaultToNull ?? null, true), parseCount(options?.count)));
+		return PostgresFilterBuilder.fromNative(this.native.insert(serialize(values, true)?.getValue?.() ?? null, serialize(options?.defaultToNull ?? null, true), parseCount(options?.count)));
 	}
 
 	update(
