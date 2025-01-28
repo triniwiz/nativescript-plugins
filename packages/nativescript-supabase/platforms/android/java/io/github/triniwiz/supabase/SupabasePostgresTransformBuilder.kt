@@ -304,7 +304,7 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
           val jsonMap = mutableMapOf<String, JsonElement>()
           try {
             var response = filterBuilder.query?.insert?.let { insert ->
-              (insert.values as? JsonArray)?.let { values ->
+              (insert.value as? JsonArray)?.let { values ->
                 filterBuilder.query!!.builder.insert(
                   values
                 ) {

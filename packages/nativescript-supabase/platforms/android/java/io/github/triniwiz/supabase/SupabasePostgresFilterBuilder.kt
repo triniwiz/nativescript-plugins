@@ -40,47 +40,36 @@ class SupabasePostgresFilterBuilder {
     }
   }
 
-  class Query constructor(val builder: PostgrestQueryBuilder) {
+  class Query(val builder: PostgrestQueryBuilder) {
     internal var insert: Insert? = null
     internal var update: Update? = null
     internal var upsert: Upsert? = null
     internal var delete: Delete? = null
     internal var select: Select? = null
 
-    class Insert constructor(
-      value: Any?,
+    class Insert(
+      val value: Any?,
       val defaultToNull: Boolean?,
       val count: CountOption?
-    ) {
-      var value: Any? = null
-      var values: List<Any>? = null
+    )
 
-      constructor(
-        values: List<Any>,
-        defaultToNull: Boolean?,
-        count: CountOption?
-      ) : this(null, defaultToNull, count) {
-        this.values = values
-      }
-    }
-
-    class Update constructor(
+    class Update(
       val value: Any,
       val count: CountOption?
     )
 
-    class Upsert constructor(
+    class Upsert(
       val value: Any,
       val onConflict: String?,
       val count: CountOption?,
       val ignoreDuplicates: Boolean? = false
     )
 
-    class Delete constructor(
+    class Delete(
       val count: CountOption?
     )
 
-    class Select constructor(
+    class Select(
       val column: String?,
       val count: CountOption?,
       val head: Boolean?
@@ -769,7 +758,7 @@ class SupabasePostgresFilterBuilder {
           var statusCode: Int? = null
           try {
             var response = query?.insert?.let { insert ->
-              (insert.values as? JsonArray)?.let { values ->
+              (insert.value as? JsonArray)?.let { values ->
                 query!!.builder.insert(
                   values
                 ) {
