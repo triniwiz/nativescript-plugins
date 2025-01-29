@@ -60,5 +60,18 @@
     <string>Requires access to camera.</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>Requires access to microphone.</string>
+
+
+	  <key>CFBundleURLName</key>
+        <string>io.github.triniwiz.plugins.demo</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>iogithubtriniwizpluginsdemo</string>
+        </array>
+				<key>ASWebAuthenticationSessionWebBrowserSupportCapabilities</key>
+		<dict>
+		<key>IsSupported</key>
+		<true/>
+		</dict>
 </dict>
 </plist>

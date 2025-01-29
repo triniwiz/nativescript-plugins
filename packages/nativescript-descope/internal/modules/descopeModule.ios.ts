@@ -1,28 +1,26 @@
 import { native_ } from '../../common';
 import { PrepFlowResponse } from './descopeModule';
 
-let instance: NSCDescope;
-
-function init() {
-	if (!DescopeNative[native_]) {
-		instance = NSCDescope.alloc().init();
-	}
-}
+let instance: DescopeNative;
 
 export class DescopeNative {
-	static {
-		init();
+	[native_];
+
+	constructor() {
+		this[native_] = NSCDescope.alloc().init();
 	}
 
 	static getInstance() {
-		init();
+		if (!instance) {
+			instance = new DescopeNative();
+		}
 		return instance;
 	}
 
 	static prepFlow(): Promise<PrepFlowResponse> {
 		return new Promise((resolve, reject) => {
 			try {
-				const flow = DescopeNative.getInstance().prepFlowAndReturnError();
+				const flow = DescopeNative.getInstance()[native_].prepFlowAndReturnError();
 				return resolve({
 					codeChallenge: flow.objectForKey('codeChallenge'),
 					codeVerifier: flow.objectForKey('codeVerifier'),
@@ -34,7 +32,7 @@ export class DescopeNative {
 	}
 	static startFlow(flowUrl: string, deepLinkUrl: string, backupCustomScheme: string, codeChallenge: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			DescopeNative.getInstance().startFlowDeepLinkURLBackupCustomSchemeCodeChallengeCallback(flowUrl, deepLinkUrl, backupCustomScheme, codeChallenge, (response, error) => {
+			DescopeNative.getInstance()[native_].startFlowDeepLinkURLBackupCustomSchemeCodeChallengeCallback(flowUrl, deepLinkUrl, backupCustomScheme ?? '', codeChallenge, (response, error) => {
 				if (error) {
 					reject(new Error(error.localizedDescription));
 				} else {
@@ -46,7 +44,7 @@ export class DescopeNative {
 	static resumeFlow(flowUrl: string, incomingUrl: string): Promise<void> {
 		return new Promise((resolve, reject) => {
 			try {
-				DescopeNative.getInstance().resumeFlowIncomingURLError(flowUrl, incomingUrl);
+				DescopeNative.getInstance()[native_].resumeFlowIncomingURLError(flowUrl, incomingUrl);
 				resolve();
 			} catch (error) {
 				reject(error);
@@ -56,7 +54,7 @@ export class DescopeNative {
 	static loadItem(key: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
-				resolve(DescopeNative.getInstance().loadItemError(key));
+				resolve(DescopeNative.getInstance()[native_].loadItemError(key));
 			} catch (error) {
 				reject(error);
 			}
@@ -65,7 +63,7 @@ export class DescopeNative {
 	static saveItem(key: string, value: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
-				resolve(DescopeNative.getInstance().saveItemError(key, value));
+				resolve(DescopeNative.getInstance()[native_].saveItemError(key, value));
 			} catch (error) {
 				reject(error);
 			}
@@ -74,7 +72,7 @@ export class DescopeNative {
 	static removeItem(key: string): Promise<string> {
 		return new Promise((resolve, reject) => {
 			try {
-				resolve(DescopeNative.getInstance().removeItemError(key));
+				resolve(DescopeNative.getInstance()[native_].removeItemError(key));
 			} catch (error) {
 				reject(error);
 			}

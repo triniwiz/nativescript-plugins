@@ -1,0 +1,859 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios15.6 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name NSCSupabase
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import AuthenticationServices
+import Foundation
+@_exported import NSCSupabase
+import Swift
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseUserIdentity) public class NSCSupabaseUserIdentity : ObjectiveC.NSObject {
+  @objc public var id: Swift.String {
+    @objc get
+  }
+  @objc public var identityId: Foundation.UUID {
+    @objc get
+  }
+  @objc public var userId: Foundation.UUID {
+    @objc get
+  }
+  @objc public var identityData: [Swift.String : Swift.AnyHashable]? {
+    @objc get
+  }
+  @objc public var provider: Swift.String {
+    @objc get
+  }
+  @objc public var createdAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var lastSignInAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var updatedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc deinit
+}
+@objc(NSCSupabaseFactorStatus) public enum NSCSupabaseFactorStatus : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case verified
+  case unverified
+  public var rawValue: NSCSupabase.NSCSupabaseFactorStatus.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseFactorStatus.RawValue)
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseFactor) public class NSCSupabaseFactor : ObjectiveC.NSObject {
+  @objc public var id: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var friendlyName: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var factorType: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var status: NSCSupabase.NSCSupabaseFactorStatus {
+    @objc get
+    @objc set
+  }
+  @objc public var createdAt: Foundation.Date {
+    @objc get
+    @objc set
+  }
+  @objc public var updatedAt: Foundation.Date {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseAuthUser) public class NSCSupabaseAuthUser : ObjectiveC.NSObject {
+  @objc public var id: Foundation.UUID {
+    @objc get
+  }
+  @objc public var appMetadata: [Swift.String : Swift.AnyHashable] {
+    @objc get
+  }
+  @objc public var userMetadata: [Swift.String : Swift.AnyHashable] {
+    @objc get
+  }
+  @objc public var aud: Swift.String {
+    @objc get
+  }
+  @objc public var confirmationSentAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var recoverySentAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var emailChangeSentAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var newEmail: Swift.String? {
+    @objc get
+  }
+  @objc public var invitedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var actionLink: Swift.String? {
+    @objc get
+  }
+  @objc public var email: Swift.String? {
+    @objc get
+  }
+  @objc public var phone: Swift.String? {
+    @objc get
+  }
+  @objc public var createdAt: Foundation.Date {
+    @objc get
+  }
+  @objc public var confirmedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var emailConfirmedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var phoneConfirmedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var lastSignInAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var role: Swift.String? {
+    @objc get
+  }
+  @objc public var updatedAt: Foundation.Date {
+    @objc get
+  }
+  @objc public var identities: [NSCSupabase.NSCSupabaseUserIdentity]? {
+    @objc get
+  }
+  @objc public var isAnonymous: Swift.Bool {
+    @objc get
+  }
+  @objc public var factors: [NSCSupabase.NSCSupabaseFactor]? {
+    @objc get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseAuthSession) public class NSCSupabaseAuthSession : ObjectiveC.NSObject {
+  @objc public var providerToken: Swift.String? {
+    @objc get
+  }
+  @objc public var providerRefreshToken: Swift.String? {
+    @objc get
+  }
+  @objc public var accessToken: Swift.String {
+    @objc get
+  }
+  @objc public var tokenType: Swift.String {
+    @objc get
+  }
+  @objc public var expiresIn: Foundation.TimeInterval {
+    @objc get
+  }
+  @objc public var expiresAt: Foundation.TimeInterval {
+    @objc get
+  }
+  @objc public var refreshToken: Swift.String {
+    @objc get
+  }
+  @objc public var isExpired: Swift.Bool {
+    @objc get
+  }
+  @objc public var user: NSCSupabase.NSCSupabaseAuthUser {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@objc(NSCSupabaseAuthChangeEvent) public enum NSCSupabaseAuthChangeEvent : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case initialSession
+  case passwordRecovery
+  case signedIn
+  case signedOut
+  case tokenRefreshed
+  case userUpdated
+  case userDeleted
+  case mfaChallengeVerified
+  public var rawValue: NSCSupabase.NSCSupabaseAuthChangeEvent.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseAuthChangeEvent.RawValue)
+}
+@objc(NSCSupabaseSignOutScope) public enum NSCSupabaseSignOutScope : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case global
+  case local
+  case others
+  public var rawValue: NSCSupabase.NSCSupabaseSignOutScope.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseSignOutScope.RawValue)
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseListener) public class NSCSupabaseListener : ObjectiveC.NSObject {
+  @objc public func remove()
+  @objc deinit
+}
+@objc(NSCSupabaseOpenIDConnectCredentialsProvider) public enum NSCSupabaseOpenIDConnectCredentialsProvider : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case google, apple, azure, facebook
+  public var id: NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider.RawValue {
+    get
+  }
+  public var rawValue: NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider.RawValue)
+}
+@objcMembers @objc(NSCSupabaseAuthMetaSecurity) public class NSCSupabaseAuthMetaSecurity : ObjectiveC.NSObject {
+  @objc public var captchaToken: Swift.String
+  @objc public init(captchaToken: Swift.String)
+  @objc deinit
+}
+@objcMembers @objc(NSCSupabaseOpenIDConnectCredentials) public class NSCSupabaseOpenIDConnectCredentials : ObjectiveC.NSObject {
+  @objc public var provider: NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider
+  @objc public var idToken: Swift.String
+  @objc public var accessToken: Swift.String?
+  @objc public var nonce: Swift.String?
+  @objc public var gotrueMetaSecurity: NSCSupabase.NSCSupabaseAuthMetaSecurity?
+  @objc public init(_ provider: NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider, _ idToken: Swift.String)
+  @objc public init(provider: NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider, idToken: Swift.String, accessToken: Swift.String? = nil, nonce: Swift.String? = nil, gotrueMetaSecurity: NSCSupabase.NSCSupabaseAuthMetaSecurity? = nil)
+  @objc deinit
+}
+@objc(NSCSupabaseMessagingChannel) public enum NSCSupabaseMessagingChannel : Swift.Int8, Swift.RawRepresentable {
+  case sms
+  case whatsapp
+  public typealias RawValue = Swift.Int8
+  public var rawValue: NSCSupabase.NSCSupabaseMessagingChannel.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseMessagingChannel.RawValue)
+}
+@objc(NSCSupabaseProvider) public enum NSCSupabaseProvider : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case apple
+  case azure
+  case bitbucket
+  case discord
+  case email
+  case facebook
+  case figma
+  case github
+  case gitlab
+  case google
+  case kakao
+  case keycloak
+  case linkedin
+  case linkedinOIDC
+  case notion
+  case slack
+  case slackOIDC
+  case spotify
+  case twitch
+  case twitter
+  case workos
+  case zoom
+  case fly
+  public var id: NSCSupabase.NSCSupabaseProvider.RawValue {
+    get
+  }
+  public var rawValue: NSCSupabase.NSCSupabaseProvider.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseProvider.RawValue)
+}
+@objc(NSCSupabaseLaunchFlowResultType) public enum NSCSupabaseLaunchFlowResultType : Swift.Int8, Swift.RawRepresentable {
+  case success
+  case error
+  public typealias RawValue = Swift.Int8
+  public var rawValue: NSCSupabase.NSCSupabaseLaunchFlowResultType.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseLaunchFlowResultType.RawValue)
+}
+@objc(NSCSupabaseLaunchFlowResult) public class NSCSupabaseLaunchFlowResult : ObjectiveC.NSObject {
+  public init(_ type: NSCSupabase.NSCSupabaseLaunchFlowResultType, _ error: (any Swift.Error)?, _ url: Foundation.URL?)
+  @objc deinit
+}
+@objc(NSCSupabaseEmailOTPType) public enum NSCSupabaseEmailOTPType : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case signup
+  case invite
+  case magiclink
+  case recovery
+  case emailChange
+  case email
+  public var rawValue: NSCSupabase.NSCSupabaseEmailOTPType.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseEmailOTPType.RawValue)
+}
+@objc(NSCSupabaseMobileOTPType) public enum NSCSupabaseMobileOTPType : Swift.Int8, Swift.RawRepresentable {
+  case sms
+  case phoneChange
+  public typealias RawValue = Swift.Int8
+  public var rawValue: NSCSupabase.NSCSupabaseMobileOTPType.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseMobileOTPType.RawValue)
+}
+@objc(NSCSupabaseResendMobileType) public enum NSCSupabaseResendMobileType : Swift.Int8, Swift.RawRepresentable {
+  case sms
+  case phoneChange
+  public typealias RawValue = Swift.Int8
+  public var rawValue: NSCSupabase.NSCSupabaseResendMobileType.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseResendMobileType.RawValue)
+}
+@objc(NSCSupabaseResendEmailType) public enum NSCSupabaseResendEmailType : Swift.Int8, Swift.RawRepresentable {
+  case signup
+  case emailChange
+  public typealias RawValue = Swift.Int8
+  public var rawValue: NSCSupabase.NSCSupabaseResendEmailType.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseResendEmailType.RawValue)
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseUserAttributes) public class NSCSupabaseUserAttributes : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc public var email: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var phone: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var password: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var nonce: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc @available(*, deprecated, message: "This is an old field, stop relying on it.")
+  public var emailChangeToken: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var data: [Swift.String : Swift.AnyHashable]? {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@objcMembers @objc(NSCSupabaseQueryParamEntry) public class NSCSupabaseQueryParamEntry : ObjectiveC.NSObject {
+  @objc public var name: Swift.String
+  @objc public var value: Swift.String?
+  @objc public init(name: Swift.String, value: Swift.String?)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseAuth) public class NSCSupabaseAuth : ObjectiveC.NSObject {
+  @objc public var admin: NSCSupabase.NSCSupabaseAuthAdmin {
+    @objc get
+    @objc set
+  }
+  @objc public func addOnAuthStateChange(_ listener: @escaping (NSCSupabase.NSCSupabaseAuthChangeEvent, NSCSupabase.NSCSupabaseAuthSession?) -> Swift.Void) -> NSCSupabase.NSCSupabaseListener
+  @objc public func signIn(_ email: Swift.String, _ password: Swift.String, _ captchaToken: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signIn(phone: Swift.String, _ password: Swift.String, _ captchaToken: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signInAnonymously(_ data: [Swift.String : Swift.AnyHashable]?, _ captchaToken: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signUp(_ email: Swift.String, _ password: Swift.String, _ captchaToken: Swift.String?, _ data: [Swift.String : Swift.AnyHashable]?, _ redirectTo: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signUp(phone: Swift.String, _ password: Swift.String, _ captchaToken: Swift.String?, _ data: [Swift.String : Swift.AnyHashable]?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signOut(_ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func signOut(scope: NSCSupabase.NSCSupabaseSignOutScope, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func getSession(_ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public var currentSession: NSCSupabase.NSCSupabaseAuthSession? {
+    @objc get
+  }
+  @objc public func refreshSession(_ refreshToken: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func user(_ jwt: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, (any Swift.Error)?) -> Swift.Void)
+  @objc public var currentUser: NSCSupabase.NSCSupabaseAuthUser? {
+    @objc get
+  }
+  @objc public func signInWithIdToken(_ credentials: NSCSupabase.NSCSupabaseOpenIDConnectCredentials, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithOTP(_ email: Swift.String, _ redirectTo: Swift.String?, _ data: [Swift.String : Swift.AnyHashable]?, _ captchaToken: Swift.String?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithOTP(_ email: Swift.String, _ redirectTo: Swift.String?, shouldCreateUser: Swift.Bool, _ data: [Swift.String : Swift.AnyHashable]?, _ captchaToken: Swift.String?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithOTP(phone: Swift.String, _ data: [Swift.String : Swift.AnyHashable]?, _ captchaToken: Swift.String?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithOTP(phone: Swift.String, _ channel: NSCSupabase.NSCSupabaseMessagingChannel, shouldCreateUser: Swift.Bool, _ data: [Swift.String : Swift.AnyHashable]?, _ captchaToken: Swift.String?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithOAuth(_ provider: NSCSupabase.NSCSupabaseProvider, _ redirectTo: Swift.String?, _ scopes: Swift.String?, _ queryParams: [NSCSupabase.NSCSupabaseQueryParamEntry]?, _ configure: ((AuthenticationServices.ASWebAuthenticationSession) -> Swift.Void)?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithOAuth(_ provider: NSCSupabase.NSCSupabaseProvider, _ redirectTo: Swift.String?, _ scopes: Swift.String?, _ queryParams: [NSCSupabase.NSCSupabaseQueryParamEntry]?, launchFlow: @escaping (Foundation.URL) -> NSCSupabase.NSCSupabaseLaunchFlowResult, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func getOAuthSignInURL(_ provider: NSCSupabase.NSCSupabaseProvider, _ scopes: Swift.String?, _ redirectTo: Swift.String?, _ queryParams: [NSCSupabase.NSCSupabaseQueryParamEntry]?) throws -> Foundation.URL
+  @objc public func signInWithSSO(domain: Swift.String, _ redirectTo: Swift.String?, _ captchaToken: Swift.String?, _ callback: @escaping (Foundation.URL?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func signInWithSSO(providerId: Swift.String, _ redirectTo: Swift.String?, _ captchaToken: Swift.String?, _ callback: @escaping (Foundation.URL?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func verifyOTP(tokenHash: Swift.String, _ type: NSCSupabase.NSCSupabaseEmailOTPType, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func verifyOTP(phone: Swift.String, _ token: Swift.String, _ type: NSCSupabase.NSCSupabaseMobileOTPType, _ captchaToken: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func verifyOTP(email: Swift.String, _ token: Swift.String, _ type: NSCSupabase.NSCSupabaseEmailOTPType, _ redirectTo: Swift.String?, _ captchaToken: Swift.String?, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func userIdentities(_ callback: @escaping ([NSCSupabase.NSCSupabaseUserIdentity]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func linkIdentity(_ provider: NSCSupabase.NSCSupabaseProvider, _ scopes: Swift.String?, _ redirectTo: Swift.String?, _ queryParams: [NSCSupabase.NSCSupabaseQueryParamEntry]?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func linkIdentity(_ provider: NSCSupabase.NSCSupabaseProvider, _ scopes: Swift.String?, _ redirectTo: Swift.String?, _ queryParams: [NSCSupabase.NSCSupabaseQueryParamEntry]?, launchURL: @escaping (Foundation.URL) -> Swift.Void, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func unlinkIdentity(_ identity: NSCSupabase.NSCSupabaseUserIdentity, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func reauthenticate(_ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func resend(phone: Swift.String, _ type: NSCSupabase.NSCSupabaseResendMobileType, _ captchaToken: Swift.String?, _ callback: @escaping (Swift.String?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func resend(email: Swift.String, _ type: NSCSupabase.NSCSupabaseResendEmailType, _ emailRedirectTo: Swift.String?, _ captchaToken: Swift.String?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func resetPasswordForEmail(_ email: Swift.String, _ redirectTo: Swift.String?, _ captchaToken: Swift.String?, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func setSession(_ accessToken: Swift.String, _ refreshToken: Swift.String, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func exchangeCodeForSession(_ authCode: Swift.String, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthSession?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func update(_ user: NSCSupabase.NSCSupabaseUserAttributes, _ callback: @escaping (NSCSupabase.NSCSupabaseAuthUser?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func startAutoRefresh()
+  @objc public func stopAutoRefresh()
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseAuthAdmin) public class NSCSupabaseAuthAdmin : ObjectiveC.NSObject {
+  @objc public func deleteUser(_ id: Swift.String, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func deleteUser(_ id: Swift.String, _ shouldSoftDelete: Swift.Bool, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc deinit
+}
+@objc(NSCSupabaseRealtimeChannelStatus) public enum NSCSupabaseRealtimeChannelStatus : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case unsubscribed
+  case subscribing
+  case subscribed
+  case unsubscribing
+  public var rawValue: NSCSupabase.NSCSupabaseRealtimeChannelStatus.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabaseRealtimeChannelStatus.RawValue)
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseChannel) public class NSCSupabaseChannel : ObjectiveC.NSObject {
+  @objc public var status: NSCSupabase.NSCSupabaseRealtimeChannelStatus {
+    @objc get
+  }
+  @objc public func broadcast(_ event: Swift.String, _ message: [Swift.String : Swift.AnyHashable], _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func onBroadcast(_ event: Swift.String, _ callback: @escaping ([Swift.String : Swift.AnyHashable]) -> Swift.Void)
+  @objc public func onPresenceChange(_ event: Swift.String, _ callback: @escaping ([Swift.String : Swift.AnyHashable]) -> Swift.Void)
+  @objc public func onPostgresChange(_ event: Swift.String, _ scheme: Swift.String, _ table: Swift.String?, _ filter: Swift.String?, _ callback: @escaping ([Swift.String : Swift.AnyHashable]) -> Swift.Void)
+  @objc public func subscribe(_ callback: @escaping () -> Swift.Void)
+  @objc public func unsubscribe(_ callback: @escaping () -> Swift.Void)
+  @objc public func untrack(_ callback: @escaping () -> Swift.Void)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseClient) public class NSCSupabaseClient : ObjectiveC.NSObject {
+  @objc public static func createClient(_ supabaseURL: Swift.String, _ supabaseKey: Swift.String) throws -> NSCSupabase.NSCSupabaseClient
+  @objc public func schema(_ schema: Swift.String) -> NSCSupabase.NSCSupabasePostgresClient
+  @objc public func from(_ table: Swift.String) -> NSCSupabase.NSCSupabasePostgresQueryBuilder
+  @objc public func handleURL(_ url: Foundation.URL)
+  @objc public var auth: NSCSupabase.NSCSupabaseAuth {
+    @objc get
+    @objc set
+  }
+  @objc public var storage: NSCSupabase.NSCSupabseStorage {
+    @objc get
+    @objc set
+  }
+  @objc public func channel(_ name: Swift.String) -> NSCSupabase.NSCSupabaseChannel
+  @objc public func removeChannel(_ channel: NSCSupabase.NSCSupabaseChannel, _ callback: @escaping () -> Swift.Void)
+  @objc public func removeAllChannels(_ callback: @escaping () -> Swift.Void)
+  @objc public var functions: NSCSupabase.NSCSupabaseFunctions {
+    @objc get
+    @objc set
+  }
+  @objc public func rpc(_ fn: Swift.String) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, params: NSCSupabase.NSCSupabaseJSONValue, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc deinit
+}
+@objcMembers @objc(NSCSupabaseFunctionInvokeOptions) public class NSCSupabaseFunctionInvokeOptions : ObjectiveC.NSObject {
+  @objc public var method: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var headers: [Swift.String : Swift.String]?
+  @objc public init(fileBody: Foundation.Data)
+  @objc public init(json: [Swift.String : Swift.AnyHashable]?)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseFunctionsResult) public class NSCSupabaseFunctionsResult : ObjectiveC.NSObject {
+  @objc final public let data: Foundation.Data?
+  @objc final public let response: Foundation.HTTPURLResponse?
+  @objc public func json(_ callback: @escaping ([Swift.String : Swift.AnyHashable]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func text(_ callback: @escaping (Swift.String?) -> Swift.Void)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseFunctionsErrorResult) public class NSCSupabaseFunctionsErrorResult : ObjectiveC.NSObject {
+  @objc public var isHttpError: Swift.Bool {
+    get
+  }
+  @objc public var httpError: Foundation.Data? {
+    @objc get
+  }
+  @objc public func json(_ callback: @escaping ([Swift.String : Swift.AnyHashable]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public var httpErrorCode: Foundation.NSNumber? {
+    @objc get
+  }
+  @objc public var message: Swift.String? {
+    @objc get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabaseFunctions) public class NSCSupabaseFunctions : ObjectiveC.NSObject {
+  @objc public func invoke(_ functionName: Swift.String, _ options: NSCSupabase.NSCSupabaseFunctionInvokeOptions?, _ callback: @escaping (NSCSupabase.NSCSupabaseFunctionsResult?, NSCSupabase.NSCSupabaseFunctionsErrorResult?) -> Swift.Void)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCSupabaseJSONValue) public class NSCSupabaseJSONValue : ObjectiveC.NSObject, Swift.Encodable, Swift.Decodable, PostgREST.URLQueryRepresentable {
+  @objc public var queryValue: Swift.String {
+    @objc get
+  }
+  @objc override dynamic public init()
+  @objc public init(boolean: Swift.Bool)
+  @objc public init(integer: Swift.Int)
+  @objc public init(double: Swift.Double)
+  @objc public init(string: Swift.String)
+  @objc public init(date: Foundation.Date)
+  @objc public init(data: Foundation.Data)
+  @objc public init(array: [NSCSupabase.NSCSupabaseJSONValue])
+  @objc public init(object: [Swift.String : NSCSupabase.NSCSupabaseJSONValue])
+  @objc public var json: Any? {
+    @objc get
+  }
+  @objc public var value: Any? {
+    @objc get
+  }
+  required public init(from decoder: any Swift.Decoder) throws
+  public func encode(to encoder: any Swift.Encoder) throws
+  @objc deinit
+}
+@objcMembers @objc(NSCSupabasePostgresFetchOptions) public class NSCSupabasePostgresFetchOptions : ObjectiveC.NSObject {
+  @objc final public let head: Swift.Bool
+  final public let count: NSCSupabase.NSCSupabasePostgresCountOption?
+  public init(head: Swift.Bool, count: NSCSupabase.NSCSupabasePostgresCountOption?)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresTransformBuilder) public class NSCSupabasePostgresTransformBuilder : ObjectiveC.NSObject {
+  @objc public func select(_ columns: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func order(_ column: Swift.String, _ ascending: Swift.Bool, _ nullsFirst: Swift.Bool, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func range(_ from: Swift.Int, _ to: Swift.Int, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func limit(_ count: Swift.Int) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func single() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func maybeSingle() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func csv() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func execute(_ options: NSCSupabase.NSCSupabasePostgresFetchOptions?, _ callback: @escaping (Swift.AnyHashable?, (any Swift.Error)?) -> Swift.Void)
+  @objc deinit
+}
+@objc(NSCSupabasePostgresTextSearchType) public enum NSCSupabasePostgresTextSearchType : Swift.Int8, Swift.RawRepresentable {
+  case plain
+  case phrase
+  case websearch
+  public var rawValue: Swift.Int8 {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabasePostgresTextSearchType.RawValue)
+  public typealias RawValue = Swift.Int8
+}
+@objc(NSCSupabasePostgresFilterBuilderOperator) public enum NSCSupabasePostgresFilterBuilderOperator : Swift.Int8, Swift.RawRepresentable {
+  case eq, neq, gt, gte, lt, lte, like, ilike, `is`, `in`, cs, cd, sl, sr, nxl, nxr, adj, ov, fts, plfts, phfts, wfts
+  public typealias RawValue = Swift.Int8
+  public var rawValue: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator.RawValue)
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresFilterBuilder) public class NSCSupabasePostgresFilterBuilder : ObjectiveC.NSObject {
+  @objc public func eq(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func gte(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func lte(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func lt(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func neq(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func gt(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func like(_ column: Swift.String, _ pattern: Swift.String) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func ilike(_ column: Swift.String, _ pattern: Swift.String) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func `is`(_ column: Swift.String) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func `is`(_ column: Swift.String, value: Swift.Bool) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func `in`(_ column: Swift.String, _ pattern: [NSCSupabase.NSCSupabaseJSONValue]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func contains(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func containedBy(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeGt(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeGte(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeLt(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeLte(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rangeAdjacent(_ column: Swift.String, _ range: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func overlaps(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func textSearch(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue, _ config: Swift.String?) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func textSearch(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue, _ config: Swift.String?, type: NSCSupabase.NSCSupabasePostgresTextSearchType) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func match(_ query: [Swift.String : NSCSupabase.NSCSupabaseJSONValue]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func not(column: Swift.String, operatorFilter: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func select(_ columns: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func order(_ column: Swift.String, _ ascending: Swift.Bool, _ nullsFirst: Swift.Bool, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func range(_ from: Swift.Int, _ to: Swift.Int, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func limit(_ count: Swift.Int) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func single() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func maybeSingle() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func csv() -> NSCSupabase.NSCSupabasePostgresTransformBuilder
+  @objc public func execute(_ options: NSCSupabase.NSCSupabasePostgresFetchOptions?, _ callback: @escaping ([Swift.String : Swift.AnyHashable]?, (any Swift.Error)?) -> Swift.Void)
+  @objc deinit
+}
+@objc(NSCSupabasePostgresCountOption) public enum NSCSupabasePostgresCountOption : Swift.Int8, Swift.RawRepresentable {
+  public typealias RawValue = Swift.Int8
+  case none
+  case exact
+  case planned
+  case estimated
+  public var rawValue: NSCSupabase.NSCSupabasePostgresCountOption.RawValue {
+    get
+  }
+  public init?(rawValue: NSCSupabase.NSCSupabasePostgresCountOption.RawValue)
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgresQueryBuilder) public class NSCSupabasePostgresQueryBuilder : ObjectiveC.NSObject {
+  @objc public func insert(_ values: NSCSupabase.NSCSupabaseJSONValue, _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func update(_ value: [Swift.String : NSCSupabase.NSCSupabaseJSONValue], _ count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func upsert(_ value: NSCSupabase.NSCSupabaseJSONValue, _ onConflict: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, _ ignoreDuplicates: Swift.Bool) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func delete(_ count: NSCSupabase.NSCSupabasePostgresCountOption) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func select(_ columns: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func select(_ columns: Swift.String?, _ count: NSCSupabase.NSCSupabasePostgresCountOption, head: Swift.Bool) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabasePostgres) public class NSCSupabasePostgresClient : ObjectiveC.NSObject {
+  @objc public func schema(_ schema: Swift.String) -> NSCSupabase.NSCSupabasePostgresClient
+  @objc public func from(_ table: Swift.String) -> NSCSupabase.NSCSupabasePostgresQueryBuilder
+  @objc public func rpc(_ fn: Swift.String) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, params: NSCSupabase.NSCSupabaseJSONValue, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func rpc(_ fn: Swift.String, params: NSCSupabase.NSCSupabaseJSONValue, head: Swift.Bool, get: Swift.Bool, count: NSCSupabase.NSCSupabasePostgresCountOption) throws -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCSupabseStorageBucketOptions) public class NSCSupabseStorageBucketOptions : ObjectiveC.NSObject {
+  @objc public var `public`: Swift.Bool
+  @objc public var fileSizeLimit: Swift.String?
+  @objc public var allowedMimeTypes: [Swift.String]?
+  @objc override dynamic public init()
+  @objc public init(_ public: Swift.Bool = false, _ fileSizeLimit: Swift.String?, _ allowedMimeTypes: [Swift.String]?)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageBucket) public class NSCSupabseStorageBucket : ObjectiveC.NSObject {
+  @objc public var id: Swift.String {
+    @objc get
+  }
+  @objc public var name: Swift.String {
+    @objc get
+  }
+  @objc public var owner: Swift.String {
+    @objc get
+  }
+  @objc public var isPublic: Swift.Bool {
+    @objc get
+  }
+  @objc public var createdAt: Foundation.Date {
+    @objc get
+  }
+  @objc public var updatedAt: Foundation.Date {
+    @objc get
+  }
+  @objc public var allowedMimeTypes: [Swift.String]? {
+    @objc get
+  }
+  public var fileSizeLimit: Swift.Int64? {
+    get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageFileUploadResponse) public class NSCSupabseStorageFileUploadResponse : ObjectiveC.NSObject {
+  @objc public var id: Swift.String {
+    @objc get
+  }
+  @objc public var path: Swift.String {
+    @objc get
+  }
+  @objc public var fullPath: Swift.String {
+    @objc get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageSignedURLUploadResponse) public class NSCSupabseStorageSignedURLUploadResponse : ObjectiveC.NSObject {
+  @objc public var path: Swift.String {
+    @objc get
+  }
+  @objc public var fullPath: Swift.String {
+    @objc get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageFileOptions) public class NSCSupabseStorageFileOptions : ObjectiveC.NSObject {
+  @objc public var cacheControl: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var contentType: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var upsert: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc public var duplex: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var metadata: [Swift.String : Swift.AnyHashable]? {
+    @objc get
+    @objc set
+  }
+  @objc public var headers: [Swift.String : Swift.String]? {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageTransformOptions) public class NSCSupabseStorageTransformOptions : ObjectiveC.NSObject {
+  @objc public var width: Foundation.NSNumber? {
+    @objc get
+    @objc set
+  }
+  @objc public var height: Foundation.NSNumber? {
+    @objc get
+    @objc set
+  }
+  @objc public var resize: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var quality: Foundation.NSNumber? {
+    @objc get
+    @objc set
+  }
+  @objc public var format: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageSortBy) public class NSCSupabseStorageSortBy : ObjectiveC.NSObject {
+  @objc public var column: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public var order: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageSearchOptions) public class NSCSupabseStorageSearchOptions : ObjectiveC.NSObject {
+  @objc public var limit: Foundation.NSNumber? {
+    @objc get
+    @objc set
+  }
+  @objc public var offset: Foundation.NSNumber? {
+    @objc get
+    @objc set
+  }
+  @objc public var sortBy: NSCSupabase.NSCSupabseStorageSortBy? {
+    @objc get
+    @objc set
+  }
+  @objc public var search: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageFileObject) public class NSCSupabseStorageFileObject : ObjectiveC.NSObject {
+  @objc public var name: Swift.String {
+    @objc get
+  }
+  @objc public var bucketId: Swift.String? {
+    @objc get
+  }
+  @objc public var owner: Swift.String? {
+    @objc get
+  }
+  @objc public var id: Swift.String? {
+    @objc get
+  }
+  @objc public var updatedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var createdAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var lastAccessedAt: Foundation.Date? {
+    @objc get
+  }
+  @objc public var metadata: [Swift.String : Swift.AnyHashable]? {
+    @objc get
+  }
+  @objc public var buckets: NSCSupabase.NSCSupabseStorageBucket? {
+    @objc get
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageSignedUploadURL) public class NSCSupabseStorageSignedUploadURL : ObjectiveC.NSObject {
+  @objc public var signedURL: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var path: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var token: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorageFileApi) public class NSCSupabseStorageFileApi : ObjectiveC.NSObject {
+  @objc public func upload(_ path: Swift.String, data: Foundation.Data, _ options: NSCSupabase.NSCSupabseStorageFileOptions, _ callback: @escaping (NSCSupabase.NSCSupabseStorageFileUploadResponse?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func upload(_ path: Swift.String, file: Foundation.URL, _ options: NSCSupabase.NSCSupabseStorageFileOptions, _ callback: @escaping (NSCSupabase.NSCSupabseStorageFileUploadResponse?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func download(_ path: Swift.String, _ options: NSCSupabase.NSCSupabseStorageTransformOptions, _ callback: @escaping (Foundation.Data?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func list(_ path: Swift.String?, _ options: NSCSupabase.NSCSupabseStorageSearchOptions?, _ callback: @escaping ([NSCSupabase.NSCSupabseStorageFileObject]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func update(_ path: Swift.String, data: Foundation.Data, _ options: NSCSupabase.NSCSupabseStorageFileOptions, _ callback: @escaping (NSCSupabase.NSCSupabseStorageFileUploadResponse?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func update(_ path: Swift.String, file: Foundation.URL, _ options: NSCSupabase.NSCSupabseStorageFileOptions, _ callback: @escaping (NSCSupabase.NSCSupabseStorageFileUploadResponse?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func move(_ fromPath: Swift.String, _ toPath: Swift.String, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func copy(_ fromPath: Swift.String, _ toPath: Swift.String, _ callback: @escaping (Swift.String?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func remove(_ paths: [Swift.String], _ callback: @escaping ([NSCSupabase.NSCSupabseStorageFileObject]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func createSignedUrl(_ path: Swift.String, _ expiresIn: Swift.Int, _ download: Swift.String?, _ options: NSCSupabase.NSCSupabseStorageTransformOptions?, _ callback: @escaping (Swift.String?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func createSignedUrls(_ paths: [Swift.String], _ expiresIn: Swift.Int, _ download: Swift.String?, _ callback: @escaping ([Swift.String]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func createSignedUploadUrl(_ path: Swift.String, _ callback: @escaping (NSCSupabase.NSCSupabseStorageSignedUploadURL?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func uploadToSignedUrl(_ path: Swift.String, _ token: Swift.String, data: Foundation.Data, _ options: NSCSupabase.NSCSupabseStorageFileOptions?, _ callback: @escaping (NSCSupabase.NSCSupabseStorageSignedURLUploadResponse?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func getPublicUrl(_ path: Swift.String, _ download: Swift.String?, _ options: NSCSupabase.NSCSupabseStorageTransformOptions?) throws -> Swift.String
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCSupabseStorage) public class NSCSupabseStorage : ObjectiveC.NSObject {
+  @objc public func createBucket(_ id: Swift.String, _ options: NSCSupabase.NSCSupabseStorageBucketOptions, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func getBucket(_ id: Swift.String, _ callback: @escaping (NSCSupabase.NSCSupabseStorageBucket?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func listBuckets(_ id: Swift.String, _ callback: @escaping ([NSCSupabase.NSCSupabseStorageBucket]?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func updateBucket(_ id: Swift.String, _ options: NSCSupabase.NSCSupabseStorageBucketOptions, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func deleteBucket(_ id: Swift.String, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func emptyBucket(_ id: Swift.String, _ callback: @escaping ((any Swift.Error)?) -> Swift.Void)
+  @objc public func from(_ id: Swift.String) -> NSCSupabase.NSCSupabseStorageFileApi
+  @objc deinit
+}
+extension NSCSupabase.NSCSupabaseFactorStatus : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseFactorStatus : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseAuthChangeEvent : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseAuthChangeEvent : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseSignOutScope : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseSignOutScope : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseOpenIDConnectCredentialsProvider : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseMessagingChannel : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseMessagingChannel : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseProvider : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseProvider : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseLaunchFlowResultType : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseLaunchFlowResultType : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseEmailOTPType : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseEmailOTPType : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseMobileOTPType : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseMobileOTPType : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseResendMobileType : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseResendMobileType : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseResendEmailType : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseResendEmailType : Swift.Hashable {}
+extension NSCSupabase.NSCSupabaseRealtimeChannelStatus : Swift.Equatable {}
+extension NSCSupabase.NSCSupabaseRealtimeChannelStatus : Swift.Hashable {}
+extension NSCSupabase.NSCSupabasePostgresTextSearchType : Swift.Equatable {}
+extension NSCSupabase.NSCSupabasePostgresTextSearchType : Swift.Hashable {}
+extension NSCSupabase.NSCSupabasePostgresFilterBuilderOperator : Swift.Equatable {}
+extension NSCSupabase.NSCSupabasePostgresFilterBuilderOperator : Swift.Hashable {}
+extension NSCSupabase.NSCSupabasePostgresCountOption : Swift.Equatable {}
+extension NSCSupabase.NSCSupabasePostgresCountOption : Swift.Hashable {}

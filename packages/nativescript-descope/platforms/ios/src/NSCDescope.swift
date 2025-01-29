@@ -107,7 +107,7 @@ public class NSCDescope: NSObject {
 
     @MainActor
     private func startFlow(_ url: URL, _ callback:((String?, NSError?) -> Void)?) async {
-        await defaultContextProvider.waitKeyWindow(attempts: maxKeyWindowAttempts)
+       await defaultContextProvider.waitKeyWindow(attempts: maxKeyWindowAttempts)
 
         let session = ASWebAuthenticationSession(url: url, callbackURLScheme: redirectScheme) { [self] callbackURL, error in
             if let error {
@@ -129,7 +129,7 @@ public class NSCDescope: NSObject {
             callback?(callbackURL?.absoluteString ?? "", nil)
             cleanUp()
         }
-        session.prefersEphemeralWebBrowserSession = true
+       session.prefersEphemeralWebBrowserSession = true
         session.presentationContextProvider = defaultContextProvider
         sessions += [session]
         session.start()
@@ -200,7 +200,7 @@ private func prepareInitialRequest(for flowURL: String, with codeChallenge: Stri
     return initialURL
 }
 
-private class DefaultContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
+private class DefaultContextProvider: NSObject, ASWebAuthenticationPresentationContextProviding, ASAuthorizationControllerPresentationContextProviding {
     func waitKeyWindow(attempts: Int) async {
         for _ in 1...attempts {
             if findKeyWindow() != nil {
@@ -215,6 +215,7 @@ private class DefaultContextProvider: NSObject, ASWebAuthenticationPresentationC
             .filter { $0.activationState == .foregroundActive }
             .compactMap { $0 as? UIWindowScene }
             .first
+      
 
         let window = scene?.windows
             .first { $0.isKeyWindow }
@@ -225,6 +226,12 @@ private class DefaultContextProvider: NSObject, ASWebAuthenticationPresentationC
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         return findKeyWindow() ?? ASPresentationAnchor()
     }
+  
+
+     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+         return findKeyWindow() ?? ASPresentationAnchor()
+     }
+
 }
 
 enum DescopeError: Error {

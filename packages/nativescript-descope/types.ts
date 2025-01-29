@@ -57,9 +57,14 @@ export interface DescopeSession {
  */
 export interface DescopeSessionManager {
 	/** The active [DescopeSession] managed by this object. */
-	session?: DescopeSession;
+	readonly session?: DescopeSession;
 	/** A loading flag, set to true during initial load. Updates to false once loading completes. Only loads once. */
 	isSessionLoading: boolean;
+
+	/// Called by the session manager when it's initialized to load any
+	/// existing [DescopeSession].
+	loadSession(): Promise<DescopeSession>;
+
 	/**
 	 * Set an active [DescopeSession] in this manager.
 	 *

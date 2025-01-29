@@ -1,6 +1,7 @@
 export * from './utils';
 export * from './nativescript-accelerometer';
 export * from './nativescript-accordion';
+export * from './nativescript-appwrite';
 export * from './nativescript-autocomplete';
 export * from './nativescript-aws-sdk';
 export * from './nativescript-aws-sdk-s3';

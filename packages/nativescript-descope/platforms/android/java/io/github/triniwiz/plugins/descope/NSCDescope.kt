@@ -1,15 +1,21 @@
+package io.github.triniwiz.plugins.descope
+
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Base64
+import android.util.Log
 import androidx.annotation.Nullable
 import androidx.browser.customtabs.CustomTabsCallback
 import androidx.browser.customtabs.CustomTabsClient
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.browser.customtabs.CustomTabsServiceConnection
 import androidx.browser.customtabs.CustomTabsSession
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import java.security.MessageDigest
@@ -19,7 +25,6 @@ import kotlin.random.Random
 private const val prefName = "io.github.triniwiz.plugins.descope"
 
 class NSCDescope(private val context: Context) {
-
   interface Callback {
     fun onSuccess()
     fun onError()
@@ -50,7 +55,6 @@ class NSCDescope(private val context: Context) {
     return mapOf("codeVerifier" to codeVerifier, "codeChallenge" to codeChallenge)
   }
 
-
   @Throws(Exception::class)
   fun startFlow(
     flowUrl: String,
@@ -73,8 +77,29 @@ class NSCDescope(private val context: Context) {
     }
     val uri = uriBuilder.build()
 
-    // launch via chrome custom tabs
-    launchUri(context, uri, callback)
+    if (!isStarted && isStarting.value == false) {
+      isStarting.observeForever(object : Observer<Boolean> {
+        override fun onChanged(value: Boolean) {
+          init(context)
+          if (!value && isStarted) {
+            launchUri(context, uri, callback)
+            isStarting.removeObserver(this)
+          }
+        }
+      })
+    } else if (isStarting.value == true) {
+      isStarting.observeForever(object : Observer<Boolean> {
+        override fun onChanged(value: Boolean) {
+          if (!value) {
+            launchUri(context, uri, callback)
+            isStarting.removeObserver(this)
+          }
+        }
+      })
+    } else {
+      // launch via chrome custom tabs
+      launchUri(context, uri, callback)
+    }
   }
 
 
@@ -96,7 +121,6 @@ class NSCDescope(private val context: Context) {
 
   // Storage
 
-
   fun loadItem(key: String): String {
     return storage?.loadItem(key) ?: ""
   }
@@ -117,18 +141,19 @@ class NSCDescope(private val context: Context) {
     const val NAME = "DescopeNativeScript"
     internal var customTabsClient: CustomTabsClient? = null
     internal var customTabsSession: CustomTabsSession? = null
-    private var isStarting = false
+    internal var currentCallback: Callback? = null
+    internal var isStarting = MutableLiveData(false)
+    internal var isStarted = false
 
+    @JvmStatic
     fun init(context: Context) {
-      if (!isStarting && customTabsClient == null && customTabsSession == null) {
+      if ((isStarted && customTabsClient != null && customTabsSession != null) || isStarting.value == true) {
         return
       }
       val packageName = CustomTabsClient.getPackageName(context.applicationContext, null)
-      if (packageName == null) {
-        // Do nothing as service connection is not supported.
+        ?: // Do nothing as service connection is not supported.
         return
-      }
-      isStarting = true
+      isStarting.value = true
       CustomTabsClient.bindCustomTabsService(
         context,
         packageName,
@@ -146,12 +171,16 @@ class NSCDescope(private val context: Context) {
             if (customTabsSession == null) {
               customTabsSession = client.newSession(customTabsCallback)
             }
+
+            isStarting.value = false
+            isStarted = true
           }
 
           override fun onServiceDisconnected(componentName: ComponentName) {
             // Remove the custom tabs client and custom tabs session.
             customTabsClient = null
             customTabsSession = null
+            isStarted = false
           }
         }
       )
@@ -159,8 +188,12 @@ class NSCDescope(private val context: Context) {
 
     private val customTabsCallback: CustomTabsCallback = object : CustomTabsCallback() {
       override fun onNavigationEvent(navigationEvent: Int, extras: Bundle?) {
-        //todo
         super.onNavigationEvent(navigationEvent, extras)
+        if (navigationEvent == NAVIGATION_STARTED) {
+          currentCallback?.onSuccess()
+        } else if (navigationEvent == NAVIGATION_FAILED) {
+          currentCallback?.onError()
+        }
       }
 
     }
@@ -168,11 +201,11 @@ class NSCDescope(private val context: Context) {
 }
 
 private fun launchUri(context: Context, uri: Uri, callback: NSCDescope.Callback) {
-  if (NSCDescope.customTabsSession == null){
+  if (NSCDescope.customTabsSession == null) {
     // todo
     return
   }
-  
+
   val customTabsIntent = CustomTabsIntent.Builder()
     .setSession(NSCDescope.customTabsSession!!)
     .setUrlBarHidingEnabled(true)
@@ -180,7 +213,12 @@ private fun launchUri(context: Context, uri: Uri, callback: NSCDescope.Callback)
     .setShareState(CustomTabsIntent.SHARE_STATE_OFF)
     .build()
 
-  customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+  if (Build.VERSION.SDK_INT >= 30) {
+    customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_REQUIRE_NON_BROWSER)
+  } else {
+    customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+  }
+
   customTabsIntent.launchUrl(context, uri)
 }
 

@@ -10,9 +10,16 @@
 				"outputPath": "dist/packages/nativescript-supabase",
 				"tsConfig": "packages/nativescript-supabase/tsconfig.json",
 				"packageJson": "packages/nativescript-supabase/package.json",
-				"main": "packages/nativescript-supabase/index.ts",
+				"main": "packages/nativescript-supabase/index.d.ts",
 				"assets": [
 					"packages/nativescript-supabase/*.md",
+					"packages/nativescript-supabase/index.d.ts",
+					"packages/nativescript-supabase/auth/index.d.ts",
+					"packages/nativescript-supabase/functions/index.d.ts",
+					"packages/nativescript-supabase/postgres/index.d.ts",
+					"packages/nativescript-supabase/realtime/index.d.ts",
+					"packages/nativescript-supabase/storage/index.d.ts",
+					"packages/nativescript-supabase/utils/index.d.ts",
 					"LICENSE",
 					{
 						"glob": "**/*",
@@ -45,6 +52,14 @@
 					"target": "build"
 				}
 			]
+		},
+		"build.native": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["./build.sh", "cp -R ./dist/* ../../../platforms/ios"],
+				"cwd": "packages/nativescript-supabase/src-native/apple/NSCSupabase",
+				"parallel": false
+			}
 		},
 		"focus": {
 			"options": {

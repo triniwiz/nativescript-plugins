@@ -81,7 +81,9 @@
 			"@triniwiz/nativescript-yogalayout/angular": ["packages/nativescript-yogalayout/angular/index.ts"],
 			"@triniwiz/nativescript-youtubeplayer": ["packages/nativescript-youtubeplayer/index.d.ts"],
 			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"],
-			"@triniwiz/nativescript-descope": ["packages/nativescript-descope/index.d.ts"]
+			"@triniwiz/nativescript-descope": ["packages/nativescript-descope/index.d.ts"],
+			"@triniwiz/nativescript-appwrite": ["packages/nativescript-appwrite/index.d.ts"],
+			"@triniwiz/nativescript-supabase-auth": ["packages/nativescript-supabase-auth/index.d.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]
