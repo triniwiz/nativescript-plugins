@@ -19,9 +19,18 @@ export class Downloader extends DownloaderBase {
 	}
 
 	private static _setFetcher() {
-		Downloader._downloadsData = new Map();
-		Downloader._downloads = new Map();
-		Downloader._downloadRequests = new Map();
+		if (!this._downloadRequests) {
+			Downloader._downloadRequests = new Map();
+		}
+
+		if (!this._downloads) {
+			Downloader._downloads = new Map();
+		}
+
+		if (!this._downloadsData) {
+			Downloader._downloadsData = new Map();
+		}
+
 		Downloader._okHttpClient = new okhttp3.OkHttpClient.Builder().readTimeout(Downloader._timeout, java.util.concurrent.TimeUnit.SECONDS).writeTimeout(Downloader._timeout, java.util.concurrent.TimeUnit.SECONDS).build();
 		const config = new com.tonyodev.fetch2.FetchConfiguration.Builder(Utils.android.getApplicationContext());
 		config.setHttpDownloader(new com.tonyodev.fetch2okhttp.OkHttpDownloader(Downloader._okHttpClient));
@@ -31,12 +40,9 @@ export class Downloader extends DownloaderBase {
 
 		Downloader._fetch.addListener(
 			new com.tonyodev.fetch2.FetchListener({
-				onAdded(param0: com.tonyodev.fetch2.Download) {
-				},
-				onQueued(param0: com.tonyodev.fetch2.Download, param1: boolean) {
-				},
-				onWaitingNetwork(param0: com.tonyodev.fetch2.Download) {
-				},
+				onAdded(param0: com.tonyodev.fetch2.Download) {},
+				onQueued(param0: com.tonyodev.fetch2.Download, param1: boolean) {},
+				onWaitingNetwork(param0: com.tonyodev.fetch2.Download) {},
 				onCompleted(param0: com.tonyodev.fetch2.Download) {
 					const request = param0.getRequest();
 					const id = Downloader._downloadRequests.get(request.getId());
@@ -48,7 +54,7 @@ export class Downloader extends DownloaderBase {
 							id,
 							Object.assign({}, data, {
 								status: StatusCode.COMPLETED,
-							})
+							}),
 						);
 						if (resolve) {
 							resolve(<DownloadEventData>{
@@ -67,7 +73,7 @@ export class Downloader extends DownloaderBase {
 							id,
 							Object.assign({}, data, {
 								status: StatusCode.ERROR,
-							})
+							}),
 						);
 
 						const reject = data.reject;
@@ -92,7 +98,7 @@ export class Downloader extends DownloaderBase {
 								id,
 								Object.assign({}, data, {
 									status: StatusCode.DOWNLOADING,
-								})
+								}),
 							);
 						}
 						if (callback && typeof callback === 'function') {
@@ -114,7 +120,7 @@ export class Downloader extends DownloaderBase {
 							requestId,
 							Object.assign({}, data, {
 								status: StatusCode.PAUSED,
-							})
+							}),
 						);
 					}
 				},
@@ -122,7 +128,7 @@ export class Downloader extends DownloaderBase {
 				onCancelled(param0: com.tonyodev.fetch2.Download) {},
 				onRemoved(param0: com.tonyodev.fetch2.Download) {},
 				onDeleted(param0: com.tonyodev.fetch2.Download) {},
-			})
+			}),
 		);
 	}
 
@@ -141,7 +147,7 @@ export class Downloader extends DownloaderBase {
 			if (typeof options.query === 'object') {
 				const keysArray = Object.keys(options.query);
 				query = '';
-				for (let key of keysArray) {
+				for (const key of keysArray) {
 					query += key + '=' + options.query[key] + '&';
 				}
 			} else if (typeof options.query === 'string') {
@@ -169,7 +175,7 @@ export class Downloader extends DownloaderBase {
 
 		if (options.headers) {
 			const keysArray = Object.keys(options.headers);
-			for (let key of keysArray) {
+			for (const key of keysArray) {
 				request.addHeader(key, options.headers[key]);
 			}
 		}
@@ -202,7 +208,7 @@ export class Downloader extends DownloaderBase {
 						reject: reject,
 						resolve: resolve,
 						callback: progress,
-					})
+					}),
 				);
 
 				if (Downloader._downloads.has(id)) {

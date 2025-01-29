@@ -89,7 +89,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						owner._emitProgressEvent(loaded, total, progress, url);
 					}
 				},
-			})
+			}),
 		);
 		nativeView.setEventsListener(
 			new com.github.triniwiz.imagecacheit.EventsListener({
@@ -111,7 +111,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						owner._emitLoadEndEvent(owner.src, image);
 					}
 				},
-			})
+			}),
 		);
 		return nativeView;
 	}
@@ -205,7 +205,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 
 	private _getOverlayColor(overlay) {
 		if (overlay instanceof Color) {
-			overlay.android;
+			return overlay.android;
 		} else if (typeof overlay === 'string') {
 			return new Color(overlay).android;
 		}
@@ -296,8 +296,8 @@ export class ImageCacheIt extends ImageCacheItBase {
 	private static _setSrc(context: any, src: any, nativeView?: any, base?: ImageCacheIt) {
 		if (nativeView) {
 			const decodeWidth = base?.decodeWidth ?? 0;
-      const decodeHeight = base?.decodeHeight  ?? 0;
-      const keepAspectRatio = base._calculateKeepAspectRatio();
+			const decodeHeight = base?.decodeHeight ?? 0;
+			const keepAspectRatio = base._calculateKeepAspectRatio();
 			if (isNullOrUndefined(src)) {
 				nativeView.setSource(null, decodeWidth, decodeHeight, keepAspectRatio, false, true);
 			} else {
@@ -464,7 +464,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						onError(error) {
 							reject(ImageCacheItError.fromNative(error));
 						},
-					})
+					}),
 				);
 			} else {
 				com.github.triniwiz.imagecacheit.ImageCache.getItem(
@@ -477,7 +477,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						onError(error) {
 							reject(ImageCacheItError.fromNative(error));
 						},
-					})
+					}),
 				);
 			}
 		});
@@ -502,7 +502,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 					onError(error) {
 						reject(ImageCacheItError.fromNative(error));
 					},
-				})
+				}),
 			);
 		});
 	}

@@ -425,6 +425,27 @@ module.exports = {
 					description: '@triniwiz/nativescript-supabase-functions: Build',
 				},
 			},
+			// @triniwiz/nativescript-descope
+			'nativescript-descope': {
+				build: {
+					script: 'nx run nativescript-descope:build.all',
+					description: '@triniwiz/nativescript-descope: Build',
+				},
+			},
+			// @triniwiz/nativescript-appwrite
+			'nativescript-appwrite': {
+				build: {
+					script: 'nx run nativescript-appwrite:build.all',
+					description: '@triniwiz/nativescript-appwrite: Build',
+				},
+			},
+			// @triniwiz/nativescript-supabase-auth
+			'nativescript-supabase-auth': {
+				build: {
+					script: 'nx run nativescript-supabase-auth:build.all',
+					description: '@triniwiz/nativescript-supabase-auth: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -643,8 +664,20 @@ module.exports = {
 				script: 'nx run nativescript-supabase-functions:focus',
 				description: 'Focus on @triniwiz/nativescript-supabase-functions',
 			},
+			'nativescript-descope': {
+				script: 'nx run nativescript-descope:focus',
+				description: 'Focus on @triniwiz/nativescript-descope',
+			},
+			'nativescript-appwrite': {
+				script: 'nx run nativescript-appwrite:focus',
+				description: 'Focus on @triniwiz/nativescript-appwrite',
+			},
+			'nativescript-supabase-auth': {
+				script: 'nx run nativescript-supabase-auth:focus',
+				description: 'Focus on @triniwiz/nativescript-supabase-auth',
+			},
 			reset: {
-				script: 'nx g @triniwiz/plugin-tools:focus-packages',
+				script: 'nx g @nativescript/plugin-tools:focus-packages',
 				description: 'Reset Focus',
 			},
 		},

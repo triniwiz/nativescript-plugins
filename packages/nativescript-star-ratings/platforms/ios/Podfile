@@ -1,2 +1,2 @@
-use_frameworks!
+
 pod 'Cosmos', :git => 'https://github.com/triniwiz/Cosmos.git'

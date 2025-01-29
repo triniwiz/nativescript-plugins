@@ -1,2 +1,2 @@
 platform :ios, '10.0'
-pod 'RadarSDK', '~> 3.0.0'
+pod 'RadarSDK', '~> 3.19.1'

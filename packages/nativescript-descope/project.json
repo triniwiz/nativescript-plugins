@@ -1,0 +1,65 @@
+{
+	"name": "nativescript-descope",
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "packages/nativescript-descope",
+	"targets": {
+		"build": {
+			"executor": "@nx/js:tsc",
+			"options": {
+				"outputPath": "dist/packages/nativescript-descope",
+				"tsConfig": "packages/nativescript-descope/tsconfig.json",
+				"packageJson": "packages/nativescript-descope/package.json",
+				"main": "packages/nativescript-descope/index.d.ts",
+				"assets": [
+					"packages/nativescript-descope/*.md",
+					"packages/nativescript-descope/index.d.ts",
+					"LICENSE",
+					{
+						"glob": "**/*",
+						"input": "packages/nativescript-descope/platforms/",
+						"output": "./platforms/"
+					}
+				],
+				"dependsOn": [
+					{
+						"target": "build.all",
+						"projects": "dependencies"
+					}
+				]
+			}
+		},
+		"build.all": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["node tools/scripts/build-finish.ts nativescript-descope"],
+				"parallel": false
+			},
+			"outputs": ["{workspaceRoot}/dist/packages/nativescript-descope"],
+			"dependsOn": [
+				{
+					"target": "build.all",
+					"projects": "dependencies"
+				},
+				{
+					"target": "build",
+					"projects": "self"
+				}
+			]
+		},
+		"focus": {
+			"executor": "nx:run-commands",
+			"options": {
+				"commands": ["nx g @nativescript/plugin-tools:focus-packages nativescript-descope"],
+				"parallel": false
+			}
+		},
+		"lint": {
+			"executor": "@nx/eslint:eslint",
+			"options": {
+				"lintFilePatterns": ["packages/nativescript-descope/**/*.ts"]
+			}
+		}
+	},
+	"tags": []
+}

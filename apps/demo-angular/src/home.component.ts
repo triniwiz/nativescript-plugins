@@ -13,6 +13,9 @@ export class HomeComponent {
 		name: 'nativescript-accordion'
 	},
 	{
+		name: 'nativescript-appwrite'
+	},
+	{
 		name: 'nativescript-autocomplete'
 	},
 	{
@@ -23,6 +26,9 @@ export class HomeComponent {
 	},
 	{
 		name: 'nativescript-couchbase'
+	},
+	{
+		name: 'nativescript-descope'
 	},
 	{
 		name: 'nativescript-downloader'

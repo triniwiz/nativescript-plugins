@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-supabase-realtime",
-  "version": "2.0.0-rc.6",
+  "version": "2.0.0-rc.19",
   "description": "A NativeScript client for Supabase Realtime server.",
   "main": "index",
   "typings": "index.d.ts",
@@ -33,6 +33,6 @@
   "readmeFilename": "README.md",
   "bootstrapper": "@nativescript/plugin-seed",
   "dependencies": {
-    "@valor/nativescript-websockets": "^1.0.3"
+    "@valor/nativescript-websockets": "^2.0.0"
   }
 }

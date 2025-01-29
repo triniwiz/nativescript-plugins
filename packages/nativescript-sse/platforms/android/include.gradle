@@ -1,3 +1,12 @@
+android {
+    defaultConfig {
+      minSdkVersion 21
+    }
+  packagingOptions {
+    pickFirst 'META-INF/io.netty.versions.properties'
+  }
+}
+
 dependencies {
-  implementation 'com.tylerjroach:eventsource:1.2.11'
+  implementation 'io.netty:netty-all:4.1.115.Final'
 }

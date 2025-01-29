@@ -31,7 +31,7 @@ export class Downloader extends DownloaderBase {
 			if (typeof options.query === 'object') {
 				const keysArray = Object.keys(options.query);
 				query = '';
-				for (let key of keysArray) {
+				for (const key of keysArray) {
 					query += key + '=' + options.query[key] + '&';
 				}
 			} else if (typeof options.query === 'string') {
@@ -80,7 +80,7 @@ export class Downloader extends DownloaderBase {
 										id,
 										Object.assign({}, data, {
 											status: StatusCode.DOWNLOADING,
-										})
+										}),
 									);
 								}
 							}
@@ -88,8 +88,8 @@ export class Downloader extends DownloaderBase {
 							let speed;
 							const currentBytes = task.countOfBytesReceived;
 							const totalBytes = progress.totalUnitCount;
-							let currentTime = Date.now();
-							let minTime = 100;
+							const currentTime = Date.now();
+							const minTime = 100;
 
 							if (currentTime - lastRefreshTime >= minTime || currentBytes === totalBytes) {
 								let intervalTime = currentTime - lastRefreshTime;
@@ -119,7 +119,7 @@ export class Downloader extends DownloaderBase {
 								id,
 								Object.assign({}, data, {
 									status: StatusCode.PAUSED,
-								})
+								}),
 							);
 						}
 					}
@@ -140,7 +140,7 @@ export class Downloader extends DownloaderBase {
 							id,
 							Object.assign({}, data, {
 								status: StatusCode.ERROR,
-							})
+							}),
 						);
 
 						reject({
@@ -159,7 +159,7 @@ export class Downloader extends DownloaderBase {
 								id,
 								Object.assign({}, data, {
 									status: StatusCode.COMPLETED,
-								})
+								}),
 							);
 
 							resolve(<DownloadEventData>{
@@ -170,7 +170,7 @@ export class Downloader extends DownloaderBase {
 						}
 					}
 				}
-			}
+			},
 		);
 		this.downloads.set(id, task);
 		this.downloadsData.set(id, {
@@ -190,7 +190,7 @@ export class Downloader extends DownloaderBase {
 						reject: reject,
 						resolve: resolve,
 						callback: progress,
-					})
+					}),
 				);
 				const task = this.downloads.get(id);
 				if (task) {
@@ -221,7 +221,7 @@ export class Downloader extends DownloaderBase {
 						id,
 						Object.assign({}, data, {
 							status: StatusCode.PAUSED,
-						})
+						}),
 					);
 				}
 			}

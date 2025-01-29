@@ -3,8 +3,12 @@ android {
     minSdkVersion 22
   }
   compileOptions {
-    targetCompatibility 1.8
-    sourceCompatibility 1.8
+    targetCompatibility 17
+    sourceCompatibility 17
+  }
+
+  packagingOptions {
+    pickFirst 'META-INF/INDEX.LIST'
   }
 }
 

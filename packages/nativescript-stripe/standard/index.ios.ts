@@ -95,7 +95,15 @@ export class StripeStandardPaymentSession {
 	private delegate: StripePaymentDelegate; // Necessary to keep delegate in memory
 	_paymentInProgress: boolean;
 
-	constructor(private page: Page, customerSession: StripeStandardCustomerSession, amount: number, currency: string, listener?: StripeStandardPaymentListener, prefilledAddress?: StripeStandardAddress) {
+	public customerSession = new StripeStandardCustomerSession();
+
+	constructor(
+		private page: Page,
+		amount: number,
+		currency: string,
+		listener?: StripeStandardPaymentListener,
+		prefilledAddress?: StripeStandardAddress,
+	) {
 		StripeStandardConfig.shared.allowedPaymentMethodTypes.forEach((type) => {
 			switch (type) {
 				case StripeStandardPaymentMethodType.ApplePay:
@@ -106,10 +114,10 @@ export class StripeStandardPaymentSession {
 					break;
 			}
 		});
-		this.native = STPPaymentContext.alloc().initWithCustomerContextConfigurationTheme(customerSession.native, StripeStandardConfig.shared.native, STPTheme.defaultTheme);
-		this.native.prefilledInformation = STPUserInformation.alloc().init();
+		this.native = STPPaymentContext.alloc().initWithCustomerContextConfigurationTheme(this.customerSession.native, StripeStandardConfig.shared.native, STPTheme.defaultTheme);
+		this.native.prefilledInformation = STPUserInformation.new();
 		if (prefilledAddress) {
-			const addr = STPAddress.alloc().init();
+			const addr = STPAddress.new();
 			addr.name = prefilledAddress.name;
 			addr.line1 = prefilledAddress.line1;
 			addr.line2 = prefilledAddress.line2;
@@ -266,7 +274,7 @@ class StripePaymentDelegate extends NSObject implements STPPaymentContextDelegat
 		} else if (!isValid) {
 			completion(STPShippingStatus.Invalid, createError('ShippingError', 123, errorMessage), null, null);
 		} else {
-			const sh = NSMutableArray.new();
+			const sh = NSMutableArray.arrayWithCapacity(methods?.shippingMethods?.length ?? 0);
 			methods.shippingMethods.forEach((m) => sh.addObject(createPKShippingMethod(m)));
 			completion(STPShippingStatus.Valid, null, sh, createPKShippingMethod(methods.selectedShippingMethod));
 		}
@@ -378,7 +386,7 @@ function createPKShippingMethod(method: StripeStandardShippingMethod) {
 	// m.identifier = method.identifier;
 	// return m;
 	return {
-		amount: NSDecimalNumber.alloc().initWithDouble(method.amount / 100),
+		amount: NSDecimalNumber.numberWithDouble(method.amount / 100),
 		detail: method.detail,
 		label: method.label,
 		identifier: method.identifier,

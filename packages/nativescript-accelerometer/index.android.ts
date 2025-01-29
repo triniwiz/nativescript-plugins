@@ -2,83 +2,59 @@ import { Utils } from '@nativescript/core';
 import { startButNotStopped, stopButNotStarted, AccelerometerOptions, AccelerometerData, SensorDelay } from './common';
 
 export { SensorDelay };
-
-const baseAcceleration = -9.81;
-let sensorListener: android.hardware.SensorEventListener;
-let sensorManager: android.hardware.SensorManager;
-let accelerometerSensor: android.hardware.Sensor;
+declare const io;
+let accelerometer;
+let dataView: Float32Array;
 
 function getNativeDelay(options?: AccelerometerOptions): number {
 	if (!options || !options.sensorDelay) {
-		return android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
+		return 0;
 	}
 
 	switch (options.sensorDelay) {
 		case SensorDelay.Normal:
-			return android.hardware.SensorManager.SENSOR_DELAY_NORMAL;
-
-		case SensorDelay.Game:
-			return android.hardware.SensorManager.SENSOR_DELAY_GAME;
-
+			return 0;
 		case SensorDelay.UI:
-			return android.hardware.SensorManager.SENSOR_DELAY_UI;
-
+			return 1;
+		case SensorDelay.Game:
+			return 2;
 		case SensorDelay.Fastest:
-			return android.hardware.SensorManager.SENSOR_DELAY_FASTEST;
+			return 3;
 	}
 }
 
 export function startAccelerometerUpdates(callback: (data: AccelerometerData) => void, options?: AccelerometerOptions) {
-	if (isListening()) {
-		stopAccelerometerUpdates();
+	if (!accelerometer) {
+		accelerometer = new io.github.triniwiz.plugins.accelerometer.Accelerometer(Utils.android.getApplicationContext());
+		dataView = new Float32Array((<any>ArrayBuffer).from(accelerometer.getData()));
 	}
+	accelerometer.setSensorDelay(getNativeDelay(options));
 
 	const wrappedCallback = zonedCallback(callback);
-	const context: android.content.Context = Utils.android.getApplicationContext();
-	if (!context) {
-		throw Error('Could not get Android application context.');
-	}
-
-	if (!sensorManager) {
-		sensorManager = context.getSystemService(android.content.Context.SENSOR_SERVICE);
-
-		if (!sensorManager) {
-			throw Error('Could not initialize SensorManager.');
-		}
-	}
-
-	if (!accelerometerSensor) {
-		accelerometerSensor = sensorManager.getDefaultSensor(android.hardware.Sensor.TYPE_ACCELEROMETER);
-		if (!accelerometerSensor) {
-			throw Error('Could get accelerometer sensor.');
-		}
-	}
-
-	sensorListener = new android.hardware.SensorEventListener({
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		onAccuracyChanged: (sensor, accuracy) => {},
-		onSensorChanged: (event) => {
-			wrappedCallback({
-				x: event.values[0] / baseAcceleration,
-				y: event.values[1] / baseAcceleration,
-				z: event.values[2] / baseAcceleration,
-			});
-		},
-	});
-
-	const nativeDelay = getNativeDelay(options);
-	sensorManager.registerListener(sensorListener, accelerometerSensor, nativeDelay);
+	accelerometer.setCallback(
+		new io.github.triniwiz.plugins.accelerometer.Accelerometer.Callback({
+			onData() {
+				wrappedCallback({
+					x: dataView[0],
+					y: dataView[1],
+					z: dataView[2],
+				});
+			},
+		}),
+	);
+	accelerometer.startAccelerometerUpdates();
 }
 
 export function stopAccelerometerUpdates() {
-	if (sensorListener) {
-		sensorManager.unregisterListener(sensorListener);
-		sensorListener = undefined;
-	} else {
-		console.log(stopButNotStarted);
-	}
+	accelerometer.stopAccelerometerUpdates();
+	// if (sensorListener) {
+	// 	sensorManager.unregisterListener(sensorListener);
+	// 	sensorListener = undefined;
+	// } else {
+	// 	console.log(stopButNotStarted);
+	// }
 }
 
 export function isListening(): boolean {
-	return !!sensorListener;
+	return accelerometer.isListening;
 }

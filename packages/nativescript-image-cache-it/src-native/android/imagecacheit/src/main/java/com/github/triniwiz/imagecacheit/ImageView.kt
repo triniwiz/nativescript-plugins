@@ -1611,6 +1611,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
           clazz.getDeclaredMethod("getBorderBottomRightRadius")
         getBorderBottomLeftRadius =
           clazz.getDeclaredMethod("getBorderBottomLeftRadius")
+      } catch (_: ClassNotFoundException) {
       } catch (_: NoSuchMethodException) {
       } catch (_: IllegalAccessException) {
       } catch (_: InvocationTargetException) {

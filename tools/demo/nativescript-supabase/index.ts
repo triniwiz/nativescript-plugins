@@ -13,14 +13,7 @@ export class DemoSharedNativescriptSupabase extends DemoSharedBase {
 
 	async loginUser() {
 		try {
-			let currentUser = this.supabase.auth.user();
-			if (!currentUser) {
-				const result = await this.supabase.auth.signIn({
-					email: 'fortune.osei@yahoo.com',
-					password: 'password',
-				});
-				currentUser = result.user;
-			}
+			let currentUser = this.supabase.auth.currentUser;
 
 			if (!currentUser) {
 				const result = await this.supabase.auth.signUp({
@@ -33,44 +26,56 @@ export class DemoSharedNativescriptSupabase extends DemoSharedBase {
 			console.log(currentUser);
 
 			const mySubscription = this.supabase
-				.from('*')
-				.on('*', (payload) => {
-					console.log('Change received!', payload);
+				.channel('table_db_changes')
+				.on('postgres_changes', { event: '*', schema: 'public', table: 'items' }, (payload) => {
+					console.log('Realtime update received:', payload);
+					switch (payload.eventType) {
+						case 'INSERT':
+							break;
+						case 'UPDATE':
+							break;
+						case 'DELETE':
+							break;
+					}
 				})
-				.subscribe();
+				.subscribe((status) => {
+					console.log(`Subscription status: ${status}`);
+				});
 
-			const { data, error } = await this.supabase.from('demo').select('first');
+			const { data, error } = await this.supabase.from('items').select('*');
 
 			if (error) {
 				console.log('query: error', error);
-			}
-
-			if (data?.length === 0) {
-				const { data, error } = await this.supabase.from('demo').insert([
-					{
-						first: 'Osei',
-						last: 'Fortune',
-						country: 'Trinidad & Tobago',
-					},
-				]);
-
-				console.log(data, error);
 			} else {
-				console.log(data);
+				console.log('query: data', data);
 			}
 
-			const file = nsFile.fromPath(path.join(knownFolders.currentApp().path, '/assets/big_buck_bunny.mp4'));
-			const bytes = await file.read();
-			let buf;
-			if (global.isIOS) {
-				buf = interop.bufferFromData(bytes);
-			} else if (global.isAndroid) {
-				buf = new Uint8Array(bytes);
-			}
-			const blob = new Blob([buf]);
-			const f = new File([blob], 'big_buck_bunny.mp4', { type: 'video/mp4' });
-			const result = await this.supabase.storage.from('ns-demo').upload('big_buck_bunny.mp4', f);
-			console.info('result ?', result.error, f);
+			// if (data?.length === 0) {
+			// 	const { data, error } = await this.supabase.from('demo').insert([
+			// 		{
+			// 			first: 'Osei',
+			// 			last: 'Fortune',
+			// 			country: 'Trinidad & Tobago',
+			// 		},
+			// 	]);
+
+			// 	console.log(data, error);
+			// } else {
+			// 	console.log(data);
+			// }
+
+			// const file = nsFile.fromPath(path.join(knownFolders.currentApp().path, '/assets/big_buck_bunny.mp4'));
+			// const bytes = await file.read();
+			// let buf;
+			// if (global.isIOS) {
+			// 	buf = interop.bufferFromData(bytes);
+			// } else if (global.isAndroid) {
+			// 	buf = new Uint8Array(bytes);
+			// }
+			// const blob = new Blob([buf]);
+			// const f = new File([blob], 'big_buck_bunny.mp4', { type: 'video/mp4' });
+			// const result = await this.supabase.storage.from('ns-demo').upload('big_buck_bunny.mp4', f);
+			// console.info('result ?', result.error, f);
 		} catch (e) {
 			console.error(e);
 		}

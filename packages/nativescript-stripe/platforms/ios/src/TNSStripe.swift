@@ -1,5 +1,7 @@
 import Foundation
 import UIKit
+
+#if canImport(Stripe)
 import Stripe
 
 @objcMembers
@@ -112,3 +114,5 @@ public class TNSStripe: NSObject {
     }
     
 }
+
+#endif

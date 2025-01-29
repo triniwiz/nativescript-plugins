@@ -1,0 +1,16 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" navigatingTo="navigatingTo" class="page">
+    <Page.actionBar>
+        <ActionBar title="nativescript-descope" icon="" class="action-bar">
+        </ActionBar>
+    </Page.actionBar>
+    <StackLayout class="p-20">
+        <ScrollView class="h-full">
+          <StackLayout>
+          <Label text="{{ status }}" class="h2 text-center"/>
+          <Button text="Send Otp" tap="{{ sendOtp }}" class="btn btn-primary"/>
+            <Button text="Verify Otp" tap="{{ verifyOtp }}" class="btn btn-primary"/>
+            <TextField text="{{ code }}" class="h2 text-center"/>
+          </StackLayout>
+        </ScrollView>
+    </StackLayout>
+</Page>

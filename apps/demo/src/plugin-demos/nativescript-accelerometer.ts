@@ -14,14 +14,14 @@ const shakeDetector = new ShakeDetector(() => {
 		duration: 1000,
 		opacity: 0,
 		scale: { x: 2, y: 2 },
-		curve: "easeOut"
+		curve: 'easeOut',
 	});
 });
 
 function update(data: AccelerometerData) {
-	context.set("x", data.x.toFixed(2));
-	context.set("y", data.y.toFixed(2));
-	context.set("z", data.z.toFixed(2));
+	context.set('x', data.x.toFixed(2));
+	context.set('y', data.y.toFixed(2));
+	context.set('z', data.z.toFixed(2));
 
 	shakeDetector.onSensorData(data);
 }
@@ -31,17 +31,17 @@ const demoShared: DemoSharedNativescriptAccelerometer = new DemoSharedNativescri
 // Event handler for Page "navigatingTo" event attached in main-page.xml
 export function navigatingTo(args: EventData) {
 	// Get the event sender
-	let page = <Page>args.object;
+	const page = <Page>args.object;
 	page.bindingContext = context;
-	shakeView = page.getViewById("shake-view");
-	console.log("shake-view", shakeView)
+	shakeView = page.getViewById('shake-view');
+	console.log('shake-view', shakeView);
 	try {
 		demoShared.start(update);
 	} catch (e) {
-		alert("Error: " + e.message);
+		alert('Error: ' + e.message);
 	}
 
-	context.set("isListening", demoShared.isAccelerometerListening());
+	context.set('isListening', demoShared.isAccelerometerListening());
 }
 
 export function navigatingFrom(args: EventData) {
@@ -49,14 +49,11 @@ export function navigatingFrom(args: EventData) {
 }
 
 export function toggleUpdates() {
-
 	try {
 		demoShared.toggleUpdates();
 	} catch (e) {
-		alert("Error: " + e.message);
+		alert('Error: ' + e.message);
 	}
 
-
-	context.set("isListening", demoShared.isAccelerometerListening());
+	context.set('isListening', demoShared.isAccelerometerListening());
 }
-

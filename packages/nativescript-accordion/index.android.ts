@@ -118,7 +118,7 @@ export class Accordion extends AccordionBase {
 					owner.notify(args);
 					return false;
 				},
-			})
+			}),
 		);
 		this.nativeView.setOnChildClickListener(
 			new android.widget.ExpandableListView.OnChildClickListener({
@@ -138,7 +138,7 @@ export class Accordion extends AccordionBase {
 					owner.notify(args);
 					return false;
 				},
-			})
+			}),
 		);
 		this.nativeView.setGroupIndicator(null);
 		this.nativeView.setOnGroupExpandListener(
@@ -161,7 +161,7 @@ export class Accordion extends AccordionBase {
 					const newIndexes = Array.from(new Set(oldIndexes));
 					selectedIndexesProperty.nativeValueChange(owner, newIndexes);
 				},
-			})
+			}),
 		);
 		this.nativeView.setOnGroupCollapseListener(
 			new android.widget.ExpandableListView.OnGroupCollapseListener({
@@ -178,7 +178,7 @@ export class Accordion extends AccordionBase {
 					});
 					selectedIndexesProperty.nativeValueChange(owner, newIndexes);
 				},
-			})
+			}),
 		);
 		this._listAdapter = new AccordionListAdapter(new WeakRef(this));
 		this.nativeView.setAdapter(this._listAdapter);
@@ -330,18 +330,6 @@ export class Accordion extends AccordionBase {
 		this._itemContentTemplatesInternal = new Array<KeyedTemplate>(this._defaultItemContentTemplate);
 		if (value) {
 			this._itemContentTemplatesInternal = this._itemContentTemplatesInternal.concat(value);
-		}
-		this.refresh();
-	}
-
-	[headerTemplatesProperty.getDefault](): KeyedTemplate[] {
-		return null;
-	}
-
-	[headerTemplatesProperty.setNative](value: KeyedTemplate[]) {
-		this._headerTemplatesInternal = new Array<KeyedTemplate>(this._defaultHeaderTemplate);
-		if (value) {
-			this._headerTemplatesInternal = this._headerTemplatesInternal.concat(value);
 		}
 		this.refresh();
 	}

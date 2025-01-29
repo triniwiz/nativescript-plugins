@@ -43,7 +43,7 @@ export class StripeService implements IStripeStandardBackendAPI {
 	}
 
 	// PaymentIntent
-	createPaymentIntent(amount: number, currency: string = 'usd'): Promise<any> {
+	createPaymentIntent(amount: number, currency = 'usd'): Promise<any> {
 		const content = `amount=${amount}&currency=${currency}`;
 		return this._postRequest('create_payment_intent', content).then((response) => response.content.toJSON());
 	}
@@ -56,38 +56,40 @@ export class StripeService implements IStripeStandardBackendAPI {
 	capturePayment(stripeID: string, amount: number, shippingMethod?: StripeStandardShippingMethod, shippingAddress?: StripeStandardAddress): Promise<any> {
 		let content = `payment_method_id=${stripeID}&amount=${amount}`;
 		if (shippingMethod && shippingAddress) content += `&${this._encodeShipping(shippingMethod, shippingAddress)}`;
-		return new Promise(async (resolve, reject) => {
-			try {
-				const intent = await this.createPaymentIntent(amount, shippingMethod?.currency);
+		return new Promise((resolve, reject) => {
+			(async () => {
+				try {
+					const intent = await this.createPaymentIntent(amount, shippingMethod?.currency);
 
-				const pi = new StripePaymentIntentParams();
-				pi.clientSecret = intent.secret;
-				pi.paymentMethodId = stripeID;
-				if (global.isIOS) {
-					pi.returnURL = 'iotriniwiznativescriptplugindemo://payment';
-				} else {
-					pi.returnURL = 'io.triniwiz.nativescript.plugindemo://payment';
-				}
-				this.stripe.confirmPaymentIntent(pi, (e, pm) => {
-					if (pm?.requiresAction) {
-						this.stripe.authenticatePaymentIntent(pm.clientSecret, pi.returnURL, (err, pm) => {
-							if (err) {
-								reject(err);
+					const pi = new StripePaymentIntentParams();
+					pi.clientSecret = intent.secret;
+					pi.paymentMethodId = stripeID;
+					if (global.isIOS) {
+						pi.returnURL = 'iotriniwiznativescriptplugindemo://payment';
+					} else {
+						pi.returnURL = 'io.triniwiz.nativescript.plugindemo://payment';
+					}
+					this.stripe.confirmPaymentIntent(pi, (e, pm) => {
+						if (pm?.requiresAction) {
+							this.stripe.authenticatePaymentIntent(pm.clientSecret, pi.returnURL, (err, pm) => {
+								if (err) {
+									reject(err);
+								} else {
+									resolve(pm);
+								}
+							});
+						} else {
+							if (e) {
+								reject(e);
 							} else {
 								resolve(pm);
 							}
-						});
-					} else {
-						if (e) {
-							reject(e);
-						} else {
-							resolve(pm);
 						}
-					}
-				});
-			} catch (e) {
-				reject(e);
-			}
+					});
+				} catch (e) {
+					reject(e);
+				}
+			})();
 		});
 
 		/*return this._postRequest('confirm_payment_intent', content).then((response) => {
@@ -101,7 +103,7 @@ export class StripeService implements IStripeStandardBackendAPI {
 	}
 
 	createPaymentSession(page: Page, price: number, listener?: StripeStandardPaymentListener): StripeStandardPaymentSession {
-		return new StripeStandardPaymentSession(page, this.customerSession, price, 'usd', listener);
+		return new StripeStandardPaymentSession(page, price, 'usd', listener);
 	}
 
 	showPaymentMethods(paymentSession: StripeStandardPaymentSession) {
@@ -120,8 +122,8 @@ export class StripeService implements IStripeStandardBackendAPI {
 	 *  Private
 	 */
 
-	private _postRequest(endpoint: string, content: string = '', urlOverride = undefined): Promise<any> {
-		let url = this._backendURL(endpoint, urlOverride);
+	private _postRequest(endpoint: string, content = '', urlOverride = undefined): Promise<any> {
+		const url = this._backendURL(endpoint, urlOverride);
 		return request({
 			url: url,
 			method: 'POST',
