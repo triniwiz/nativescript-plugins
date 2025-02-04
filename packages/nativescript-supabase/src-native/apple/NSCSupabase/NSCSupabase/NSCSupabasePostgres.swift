@@ -482,6 +482,11 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
     return self
   }
   
+  public func or(filters: String, _ referencedTable: String?) -> NSCSupabasePostgresFilterBuilder {
+    filter = filter.or(filters, referencedTable: referencedTable)
+    return self
+  }
+  
   public func select(_ columns: String?) -> NSCSupabasePostgresTransformBuilder{
     guard let columns = columns else {
       return NSCSupabasePostgresTransformBuilder(transform: filter.select())
