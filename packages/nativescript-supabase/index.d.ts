@@ -2,7 +2,7 @@ import { Auth } from './auth';
 import { SupabaseFunctionsClient } from './functions';
 import { SupabaseStorageClient } from './storage';
 import { SupabaseRealtimeClient } from './realtime';
-import { SupabasePostgresClient, SupabasePostgresQueryBuilder } from './postgres';
+import { SupabasePostgresClient, SupabasePostgresQueryBuilder, PostgresFilterBuilder } from './postgres';
 export * from './auth';
 export * from './functions';
 export * from './storage';
@@ -24,6 +24,16 @@ export class SupabaseClient {
 	removeChannel(channel: SupabaseRealtimeClient): Promise<void>;
 
 	removeAllChannels(): Promise<void>;
+
+	rpc(
+		fn: string,
+		args?: Record<string, any>,
+		options?: {
+			count?: 'exact' | 'planned' | 'estimated';
+			get?: boolean;
+			head?: boolean;
+		}
+	): PostgresFilterBuilder;
 }
 
 export function createClient(supabaseURL: string, supabaseKey: string): SupabaseClient;

@@ -1,3 +1,5 @@
+import { DataType } from '..';
+
 export type FilterOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like' | 'ilike' | 'is' | 'in' | 'cs' | 'cd' | 'sl' | 'sr' | 'nxl' | 'nxr' | 'adj' | 'ov' | 'fts' | 'plfts' | 'phfts' | 'wfts';
 
 export class PostgresTransformBuilder implements PromiseLike<any> {
@@ -49,6 +51,8 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 	maybeSingle(): PostgresFilterBuilder;
 
 	neq(column: string, value: DataType): PostgresFilterBuilder;
+
+	not(column: string, operator: FilterOperator, value: DataType);
 
 	or(
 		filters: string
