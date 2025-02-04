@@ -212,20 +212,20 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		if (nativeOperator === undefined) {
 			throw new Error(`Invalid operator: ${operator}`);
 		}
-		this.native_ = this.native.not(column, nativeOperator, serialize(value));
+		this.native_ = this.native.notWithColumn(column, nativeOperator, serialize(value));
 		return this;
 	}
 
-
-	or(filters: string, options: {
-		foreignTable?: string;
-		referencedTable?: string;
-	}) {
-		// @ts-ignore
-		this.native_ = this.native.orWithFilters(filters, options?.referencedTable ?? null);
+	or(
+		filters: string,
+		options: {
+			foreignTable?: string;
+			referencedTable?: string;
+		}
+	) {
+		this.native_ = this.native.orWithFilters(filters, options?.foreignTable ?? options?.referencedTable ?? null);
 		return this;
 	}
-
 
 	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }) {
 		return PostgresTransformBuilder.fromNative(this.native.order(column, options?.ascending ?? true, options?.nullsFirst ?? false, options?.referencedTable ?? null));
@@ -279,7 +279,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		options?: {
 			config?: string;
 			type?: 'plain' | 'phrase' | 'websearch';
-		},
+		}
 	) {
 		let nativeType: NSCSupabasePostgresTextSearchType;
 		switch (options?.type) {
@@ -328,24 +328,24 @@ function parseCount(count?: 'exact' | 'planned' | 'estimated') {
 }
 
 export class SupabasePostgresClient {
-	native_: io.github.triniwiz.supabase.SupabasePostgresClient;
+	native_: NSCSupabasePostgres;
 
 	get native() {
 		return this.native_;
 	}
 
-	static fromNative(value: io.github.triniwiz.supabase.SupabasePostgresClient) {
+	static fromNative(value: NSCSupabasePostgres) {
 		const client = new SupabasePostgresClient();
 		client.native_ = value;
 		return client;
 	}
 
 	from(table: string): SupabasePostgresQueryBuilder {
-		return SupabasePostgresQueryBuilder.fromNative(this.native.from() as never);
+		return SupabasePostgresQueryBuilder.fromNative(this.native.from(table) as never);
 	}
 
 	schema(schema: string): SupabasePostgresClient {
-		return SupabasePostgresClient.fromNative(this.native.schema() as never);
+		return SupabasePostgresClient.fromNative(this.native.schema(schema) as never);
 	}
 }
 
@@ -367,7 +367,7 @@ export class SupabasePostgresQueryBuilder {
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
 			defaultToNull?: boolean;
-		},
+		}
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.insertError(serialize(values), parseCount(options?.count) as never));
 	}
@@ -376,7 +376,7 @@ export class SupabasePostgresQueryBuilder {
 		values: Record<any, DataType>,
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
-		},
+		}
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.updateError(serializeObject(values), parseCount(options?.count) as never));
 	}
@@ -388,7 +388,7 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 			ignoreDuplicates?: boolean;
 			onConflict?: string;
-		},
+		}
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.upsertError(serialize(values), options?.onConflict ?? null, parseCount(options?.count) as never, options?.ignoreDuplicates ?? false));
 	}
@@ -405,7 +405,7 @@ export class SupabasePostgresQueryBuilder {
 		}: {
 			head?: boolean;
 			count?: 'exact' | 'planned' | 'estimated';
-		} = {},
+		} = {}
 	) {
 		return PostgresFilterBuilder.fromNative(this.native.selectHead(columns ?? '*', parseCount(count) as never, head ?? false));
 	}

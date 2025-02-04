@@ -691,7 +691,7 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresFilterBuilder")
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)config SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)config type:(enum NSCSupabasePostgresTextSearchType)type SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)match:(NSDictionary<NSString *, NSCSupabaseJSONValue *> * _Nonnull)query SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)not:(NSString * _Nonnull)column :(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)notWithColumn:(NSString * _Nonnull)column :(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)orWithFilters:(NSString * _Nonnull)filters :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)select:(NSString * _Nullable)columns SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)order:(NSString * _Nonnull)column :(BOOL)ascending :(BOOL)nullsFirst :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
@@ -1711,7 +1711,7 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresFilterBuilder")
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)config SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)textSearch:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value :(NSString * _Nullable)config type:(enum NSCSupabasePostgresTextSearchType)type SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)match:(NSDictionary<NSString *, NSCSupabaseJSONValue *> * _Nonnull)query SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresFilterBuilder * _Nonnull)not:(NSString * _Nonnull)column :(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
+- (NSCSupabasePostgresFilterBuilder * _Nonnull)notWithColumn:(NSString * _Nonnull)column :(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)orWithFilters:(NSString * _Nonnull)filters :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)select:(NSString * _Nullable)columns SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresTransformBuilder * _Nonnull)order:(NSString * _Nonnull)column :(BOOL)ascending :(BOOL)nullsFirst :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;

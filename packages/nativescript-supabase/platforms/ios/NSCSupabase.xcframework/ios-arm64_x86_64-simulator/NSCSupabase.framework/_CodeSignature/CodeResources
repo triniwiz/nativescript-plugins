@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/NSCSupabase-Swift.h</key>
 		<data>
-		mxOzxYq1aur4DRE/n9DxqJrKV0g=
+		Ce/uhWNs4HtThtvNEdTuKKUN1fg=
 		</data>
 		<key>Headers/NSCSupabase.h</key>
 		<data>
@@ -18,19 +18,19 @@
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		OfhKigRLUsCrpzwZroo1N7eGPs4=
+		bRSoLw5JvvZnWd1jH4M4wV3hWNo=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		Ti3kzOWBs9xk9adwZT1XSklDscg=
+		ohbAzJejWO2LqhwFsMlaE64mlDU=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		7viUHOdMsMOog/YOPO80Q5kCty0=
+		LFoUIqXiillFJ6P6x9ukPiRQZJI=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		xBBmL2UrY3Z+/30J5ETrkF6QLPk=
+		QNdYkMaSSkV/P2DxGDiBO7hxUsw=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -38,19 +38,19 @@
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		xBBmL2UrY3Z+/30J5ETrkF6QLPk=
+		QNdYkMaSSkV/P2DxGDiBO7hxUsw=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		9u9MNbb4eb9BFqIOxZEUqAzc7m4=
+		Bth5/faVPphe2qEVcfsvERPql50=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		7viUHOdMsMOog/YOPO80Q5kCty0=
+		LFoUIqXiillFJ6P6x9ukPiRQZJI=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		Fvk7LNl3x0HpVzh2PsarDJFu+vI=
+		OylLgfzZ7Kc/62v63Ppl06UXXSA=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
@@ -58,11 +58,11 @@
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		Fvk7LNl3x0HpVzh2PsarDJFu+vI=
+		OylLgfzZ7Kc/62v63Ppl06UXXSA=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		GP2M8wPWjuNDd1exR6y+yWqeGY8=
+		gT6gF84z+MPHzhx2QAIQ9GgSxTA=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -75,7 +75,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			OMsOdraJTi+l7dYMPoYmPk/AsXY3QEvedJybTJQCyB4=
+			2ZAJtvBizmkFPkW/JLpPERGr7SCmeFw2nNeF/cogXbA=
 			</data>
 		</dict>
 		<key>Headers/NSCSupabase.h</key>
@@ -89,28 +89,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			1bwT9AZLnQTC3ZTZyKIb0cYQcuDBHtXnfrnaiucNUHs=
+			RkBblY4TAU3aa3u4JbJOhP425rCrnMrzZXIGQXhF9Vc=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			E9x5+lhoUaw9ZmcQpDO2aSNI0nvemjZIBVcTFWMm4DQ=
+			NMsDD4CWUxGyxiw9T53utO5FbGbqGcJCF6jgJXIg42c=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ILyD0BegXoB0Dj8Ts+3JzvtTvWBetsuV15Cr81lhfx8=
+			Je25lxWtw52HORQ3wJkNQrh5Ma8CmKaAOYQxzzS2l04=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			B4lsCKXf0kZvs+x4ZvNFedwp4H5Z+cqV1VAUoppKuPo=
+			yYl7nesTK+jB9lEHJNxBaQhtI9l9q5YMCVOM5/FjToA=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
@@ -124,28 +124,28 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			B4lsCKXf0kZvs+x4ZvNFedwp4H5Z+cqV1VAUoppKuPo=
+			yYl7nesTK+jB9lEHJNxBaQhtI9l9q5YMCVOM5/FjToA=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			U+XqarzYN6AUTfhsGPpfVcqyYAFqRjV429pqnEtE3V8=
+			aH2su18oJ47/ZQs0ZIX1n8tpGuKkNh+aeEBPZSeQ7zc=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			ILyD0BegXoB0Dj8Ts+3JzvtTvWBetsuV15Cr81lhfx8=
+			Je25lxWtw52HORQ3wJkNQrh5Ma8CmKaAOYQxzzS2l04=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			Sn3G4BLVI2EEzA6hEsgeVP9Dm+hMi5Fjmj+NsnNo9Bk=
+			8CvZnjDnPhxBKiikjZuzCTfHC9lAYsUrJvwLPVg7Hng=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
@@ -159,14 +159,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Sn3G4BLVI2EEzA6hEsgeVP9Dm+hMi5Fjmj+NsnNo9Bk=
+			8CvZnjDnPhxBKiikjZuzCTfHC9lAYsUrJvwLPVg7Hng=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			X7ach6HOxfAfzBR6Bq6P300+PflEQqMFLuSXYP8dOPE=
+			AjEIqBWQxdMPSqGx1HkadwFDkGNzAbfaLb2KD6W3x+8=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

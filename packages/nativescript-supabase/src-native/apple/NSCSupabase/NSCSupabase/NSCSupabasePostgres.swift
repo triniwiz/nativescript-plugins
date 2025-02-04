@@ -477,7 +477,7 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
   }
   
   
-  public func not(_ column: String, _ operatorFilter: NSCSupabasePostgresFilterBuilderOperator, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
+  public func not(column: String, _ operatorFilter: NSCSupabasePostgresFilterBuilderOperator, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
     filter = filter.not(column, operator: operatorFilter.operator, value: value)
     return self
   }

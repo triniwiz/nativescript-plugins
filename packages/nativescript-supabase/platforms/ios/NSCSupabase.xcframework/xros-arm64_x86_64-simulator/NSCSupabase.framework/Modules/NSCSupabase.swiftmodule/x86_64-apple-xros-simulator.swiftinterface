@@ -579,7 +579,7 @@ import _SwiftConcurrencyShims
   @objc public func textSearch(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue, _ config: Swift.String?) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func textSearch(_ column: Swift.String, _ value: NSCSupabase.NSCSupabaseJSONValue, _ config: Swift.String?, type: NSCSupabase.NSCSupabasePostgresTextSearchType) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func match(_ query: [Swift.String : NSCSupabase.NSCSupabaseJSONValue]) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
-  @objc public func not(_ column: Swift.String, _ operatorFilter: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
+  @objc public func not(column: Swift.String, _ operatorFilter: NSCSupabase.NSCSupabasePostgresFilterBuilderOperator, _ value: NSCSupabase.NSCSupabaseJSONValue) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func or(filters: Swift.String, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresFilterBuilder
   @objc public func select(_ columns: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder
   @objc public func order(_ column: Swift.String, _ ascending: Swift.Bool, _ nullsFirst: Swift.Bool, _ referencedTable: Swift.String?) -> NSCSupabase.NSCSupabasePostgresTransformBuilder

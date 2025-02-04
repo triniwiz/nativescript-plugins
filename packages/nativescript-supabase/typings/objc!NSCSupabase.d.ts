@@ -551,9 +551,9 @@ declare class NSCSupabasePostgresFilterBuilder extends NSObject {
 
 	neq(column: string, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	not(column: string, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
+	notWithColumn(column: string, operatorFilter: NSCSupabasePostgresFilterBuilderOperator, value: NSCSupabaseJSONValue): NSCSupabasePostgresFilterBuilder;
 
-	or(filters: string, referencedTable: string): NSCSupabasePostgresTransformBuilder;
+	orWithFilters(filters: string, referencedTable: string): NSCSupabasePostgresFilterBuilder;
 
 	order(column: string, ascending: boolean, nullsFirst: boolean, referencedTable: string): NSCSupabasePostgresTransformBuilder;
 
