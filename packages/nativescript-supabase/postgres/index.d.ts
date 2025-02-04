@@ -50,6 +50,18 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 
 	neq(column: string, value: DataType): PostgresFilterBuilder;
 
+	or(
+		filters: string
+	): PostgresFilterBuilder;
+
+	or(
+		filters: string,
+		options: {
+			foreignTable?: string;
+			referencedTable?: string;
+		}
+	): PostgresFilterBuilder;
+
 	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }): PostgresFilterBuilder;
 
 	overlaps(column: string, value: DataType): PostgresFilterBuilder;
@@ -76,7 +88,7 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 		options?: {
 			config?: string;
 			type?: 'plain' | 'phrase' | 'phrase';
-		},
+		}
 	): PostgresFilterBuilder;
 
 	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
@@ -98,14 +110,14 @@ export class SupabasePostgresQueryBuilder {
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
 			defaultToNull?: boolean;
-		},
+		}
 	): PostgresFilterBuilder;
 
 	update(
 		values: Record<any, DataType>,
 		options?: {
 			count?: 'exact' | 'planned' | 'estimated';
-		},
+		}
 	): PostgresFilterBuilder;
 
 	upsert(
@@ -115,7 +127,7 @@ export class SupabasePostgresQueryBuilder {
 			defaultToNull?: boolean;
 			ignoreDuplicates?: boolean;
 			onConflict?: string;
-		},
+		}
 	): PostgresFilterBuilder;
 
 	delete(options?: { count?: 'exact' | 'planned' | 'estimated' }): PostgresFilterBuilder;
@@ -138,7 +150,7 @@ export class SupabasePostgresQueryBuilder {
 		}: {
 			head?: boolean;
 			count?: 'exact' | 'planned' | 'estimated';
-		} = {},
+		} = {}
 	): PostgresFilterBuilder;
 
 	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {

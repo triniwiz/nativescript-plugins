@@ -212,7 +212,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		if (nativeOperator === undefined) {
 			throw new Error(`Invalid operator: ${operator}`);
 		}
-		this.native_ = this.native.notWithColumnOperatorFilterValue(column, nativeOperator, serialize(value));
+		this.native_ = this.native.not(column, nativeOperator, serialize(value));
 		return this;
 	}
 
@@ -222,7 +222,7 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		referencedTable?: string;
 	}) {
 		// @ts-ignore
-		this.native_ = this.native.or(filters, options?.referencedTable ?? null);
+		this.native_ = this.native.orWithFilters(filters, options?.referencedTable ?? null);
 		return this;
 	}
 
