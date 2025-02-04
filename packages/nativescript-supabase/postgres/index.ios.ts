@@ -216,6 +216,17 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		return this;
 	}
 
+
+	or(filters: string, options: {
+		foreignTable?: string;
+		referencedTable?: string;
+	}) {
+		// @ts-ignore
+		this.native_ = this.native.or(filters, options?.referencedTable ?? null);
+		return this;
+	}
+
+
 	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }) {
 		return PostgresTransformBuilder.fromNative(this.native.order(column, options?.ascending ?? true, options?.nullsFirst ?? false, options?.referencedTable ?? null));
 	}
