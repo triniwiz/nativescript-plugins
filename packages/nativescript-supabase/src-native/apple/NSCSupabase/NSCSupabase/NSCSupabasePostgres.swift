@@ -88,37 +88,58 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
   }
   
   
-  public func execute(_ options: NSCSupabasePostgresFetchOptions?, _ callback: @escaping (AnyHashable?, Error?) -> Void){
+  public func execute(_ options: NSCSupabasePostgresFetchOptions?, _ callback: @escaping (Any?, Error?) -> Void){
     Task {
-      var ret: [String: AnyHashable] = [:]
+      var ret: [String: Any?] = [:]
       do {
         let result = if(options != nil){
           try await transform.execute(options: options!.options)
         }else {
           try await transform.execute(options: FetchOptions())
         }
+      
         
         do {
+          
           if(result.count != nil){
             ret["count"] = result.count
-          }else if(isRpc){
+          }
+          
+           if(isRpc){
             if let data = result.value as Any as? String {
               ret["data"] = data
             }else if let data = result.value as Any as? NSCSupabaseJSONValue {
-              ret["data"] = data.value as? AnyHashable
+              ret["data"] = data.value
             }else if let data = result as Any as? String {
               ret["data"] = data
             }else {
-              ret["data"] = result.value as? AnyHashable
+              // try decoding using NSCSupabaseJSONValue
+              do {
+                let decoder = JSONDecoder()
+                let json = try decoder.decode(NSCSupabaseJSONValue.self, from: result.data)
+                ret["data"] = json.value
+              }catch {
+                // fallback to JSONSerialization
+                do {
+                  let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
+                  if(isSingle){
+                    ret["data"] = json as? [String: Any?]
+                  }else {
+                    ret["data"] = json as? [[String: Any?]]
+                  }
+                }catch {
+                  ret["data"] = result.value
+                }
+              }
             }
           }else if(isCVS){
             ret["data"] = result.string()
           }else {
             let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
             if(isSingle){
-              ret["data"] = json as? [String: AnyHashable]
+              ret["data"] = json as? [String: Any?]
             }else {
-              ret["data"] = json as? [[String: AnyHashable]]
+              ret["data"] = json as? [[String: Any?]]
             }
           }
           
@@ -137,7 +158,7 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
           do {
             let httpError = error as! HTTPError
             let errorResponse = try JSONSerialization.jsonObject(with: httpError.data, options: [.allowFragments])
-            ret["error"] = errorResponse as? [String: AnyHashable]
+            ret["error"] = errorResponse as? [String: Any?]
             ret["status"] = httpError.response.statusCode
             ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: httpError.response.statusCode)
             callback(ret, nil)

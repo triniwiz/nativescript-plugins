@@ -296,7 +296,6 @@ open class SupabasePostgresTransformBuilder internal constructor(
           var earlyReturn = false
           if (response.countOrNull() != null) {
             jsonMap["count"] = JsonPrimitive(response.countOrNull()!!)
-            earlyReturn = true
           }
 
 
@@ -527,7 +526,6 @@ open class SupabasePostgresTransformBuilder internal constructor(
             var earlyReturn = false
             if (response.countOrNull() != null) {
               jsonMap["count"] = JsonPrimitive(response.countOrNull()!!)
-              earlyReturn = true
             }
 
             try {

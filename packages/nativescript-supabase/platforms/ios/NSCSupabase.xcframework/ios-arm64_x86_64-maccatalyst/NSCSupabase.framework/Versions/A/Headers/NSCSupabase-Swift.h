@@ -673,7 +673,7 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresTransformBuilder")
 - (nonnull instancetype)single SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)maybeSingle SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)csv SWIFT_WARN_UNUSED_RESULT;
-- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(NSObject * _Nullable, NSError * _Nullable))callback;
+- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(id _Nullable, NSError * _Nullable))callback;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
@@ -1683,7 +1683,7 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresTransformBuilder")
 - (nonnull instancetype)single SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)maybeSingle SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)csv SWIFT_WARN_UNUSED_RESULT;
-- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(NSObject * _Nullable, NSError * _Nullable))callback;
+- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(id _Nullable, NSError * _Nullable))callback;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end

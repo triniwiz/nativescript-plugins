@@ -535,7 +535,7 @@ import _SwiftConcurrencyShims
   @objc public func single() -> Self
   @objc public func maybeSingle() -> Self
   @objc public func csv() -> Self
-  @objc public func execute(_ options: NSCSupabase.NSCSupabasePostgresFetchOptions?, _ callback: @escaping (Swift.AnyHashable?, (any Swift.Error)?) -> Swift.Void)
+  @objc public func execute(_ options: NSCSupabase.NSCSupabasePostgresFetchOptions?, _ callback: @escaping (Any?, (any Swift.Error)?) -> Swift.Void)
   @objc deinit
 }
 @objc(NSCSupabasePostgresTextSearchType) public enum NSCSupabasePostgresTextSearchType : Swift.Int8, Swift.RawRepresentable {

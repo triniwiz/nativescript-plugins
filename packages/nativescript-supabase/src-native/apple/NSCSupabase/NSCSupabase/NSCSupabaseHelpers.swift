@@ -208,13 +208,21 @@ public class NSCSupabaseJSONValue: NSObject, Encodable, Decodable, URLQueryRepre
       }
       if let arrayValue = arrayValue {
         return arrayValue.map({ value in
-          value.value
+          if(value.value == nil){
+            NSNull()
+          }else {
+            value.value
+          }
         })  as Any
       }
       
       if let objectValue = objectValue {
         return objectValue.mapValues({ value in
-          value.value
+          if(value.value == nil){
+            NSNull()
+          }else {
+            value.value
+          }
         })  as Any
       }
       
