@@ -3,27 +3,27 @@ import { DataType } from '..';
 export type FilterOperator = 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'like' | 'ilike' | 'is' | 'in' | 'cs' | 'cd' | 'sl' | 'sr' | 'nxl' | 'nxr' | 'adj' | 'ov' | 'fts' | 'plfts' | 'phfts' | 'wfts';
 
 export class PostgresTransformBuilder implements PromiseLike<any> {
-	csv(): PostgresTransformBuilder;
+	csv(): this;
 
-	limit(count: number): PostgresTransformBuilder;
+	limit(count: number): this;
 
-	maybeSingle(): PostgresTransformBuilder;
+	maybeSingle(): this;
 
-	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }): PostgresTransformBuilder;
+	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }): this;
 
-	range(from: number, to: number, referencedTable?: string): PostgresTransformBuilder;
+	range(from: number, to: number, referencedTable?: string): this;
 
-	select(columns: string): PostgresTransformBuilder;
+	select(columns: string): this;
 
-	single(): PostgresTransformBuilder;
+	single(): this;
+
+	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2>;
 }
 
-export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: any }> {
+export class PostgresFilterBuilder extends PostgresTransformBuilder {
 	containedBy(column: string, value: DataType): PostgresFilterBuilder;
 
 	contains(column: string, value: DataType): PostgresFilterBuilder;
-
-	csv(): PostgresTransformBuilder;
 
 	eq(column: string, value: DataType): PostgresFilterBuilder;
 
@@ -41,14 +41,11 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 
 	like(column: string, pattern: string): PostgresFilterBuilder;
 
-	limit(count: number): PostgresFilterBuilder;
-
 	lt(column: string, value: DataType): PostgresFilterBuilder;
 
 	lte(column: string, value: DataType): PostgresFilterBuilder;
-	match(query: Record<string, DataType>): PostgresFilterBuilder;
 
-	maybeSingle(): PostgresFilterBuilder;
+	match(query: Record<string, DataType>): PostgresFilterBuilder;
 
 	neq(column: string, value: DataType): PostgresFilterBuilder;
 
@@ -66,11 +63,7 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 		}
 	): PostgresFilterBuilder;
 
-	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }): PostgresFilterBuilder;
-
 	overlaps(column: string, value: DataType): PostgresFilterBuilder;
-
-	range(from: number, to: number, referencedTable?: string): PostgresFilterBuilder;
 
 	rangeAdjacent(column: string, range: DataType): PostgresFilterBuilder;
 
@@ -82,9 +75,6 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 
 	rangeLte(column: string, range: DataType): PostgresFilterBuilder;
 
-	select(columns: string): PostgresTransformBuilder;
-
-	single(): PostgresTransformBuilder;
 
 	textSearch(
 		column: string,
@@ -94,18 +84,6 @@ export class PostgresFilterBuilder implements PromiseLike<{ data: any; error: an
 			type?: 'plain' | 'phrase' | 'phrase';
 		}
 	): PostgresFilterBuilder;
-
-	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: any) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
-		return new Promise((resolve, reject) => {
-			this.native.execute(null, (data, error) => {
-				if (error) {
-					reject(error);
-				} else {
-					resolve(dataDeserialize(data));
-				}
-			});
-		}).then(onfulfilled, onrejected);
-	}
 }
 
 export class SupabasePostgresQueryBuilder {

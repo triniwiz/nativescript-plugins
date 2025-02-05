@@ -33,46 +33,58 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
   var transform: PostgrestTransformBuilder
   var isSingle: Bool
   var isCVS: Bool
-  init(transform: PostgrestTransformBuilder, single: Bool = false, csv: Bool = false) {
+  var isRpc: Bool
+  init(transform: PostgrestTransformBuilder, single: Bool = false, csv: Bool = false, isRpc: Bool = false) {
     self.transform = transform
     self.isSingle = single
     self.isCVS = csv
+    self.isRpc = isRpc
   }
   
-  public func select(_ columns: String?) -> NSCSupabasePostgresTransformBuilder{
+  public func select(_ columns: String?) -> Self {
     guard let columns = columns else {
-      return NSCSupabasePostgresTransformBuilder(transform: transform.select(), single: isSingle)
+      transform = transform.select()
+      return self
     }
-    
-    return NSCSupabasePostgresTransformBuilder(transform: transform.select(columns), single: isSingle)
+    transform = transform.select(columns)
+    return self
   }
   
   
   public func order(_ column: String, _ ascending: Bool,
                     _ nullsFirst: Bool,
-                    _ referencedTable: String?) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: transform.order(column, ascending: ascending, nullsFirst: nullsFirst, referencedTable: referencedTable), single: false)
+                    _ referencedTable: String?) -> Self {
+    transform = transform.order(column, ascending: ascending, nullsFirst: nullsFirst, referencedTable: referencedTable)
+    return self
   }
   
-  public func range(_ from: Int, _ to : Int, _ referencedTable: String?) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: transform.range(from: from, to: to, referencedTable: referencedTable), single: false)
+  public func range(_ from: Int, _ to : Int, _ referencedTable: String?) -> Self{
+    transform = transform.range(from: from, to: to, referencedTable: referencedTable)
+    return self
   }
   
-  public func limit(_ count: Int) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: transform.limit(count))
+  public func limit(_ count: Int) -> Self{
+    transform = transform.limit(count)
+    return self
   }
   
-  public func single() -> NSCSupabasePostgresTransformBuilder {
-    return NSCSupabasePostgresTransformBuilder(transform: transform.single(), single: true)
+  public func single() -> Self {
+    transform = transform.single()
+    self.isSingle = true
+    return self
   }
   
   
-  public func maybeSingle() -> NSCSupabasePostgresTransformBuilder {
-    return NSCSupabasePostgresTransformBuilder(transform: transform.limit(1).single(), single: true)
+  public func maybeSingle() -> Self {
+    transform = transform.limit(1).single()
+    self.isSingle = true
+    return self
   }
   
-  public func csv()-> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: transform.csv(), csv: true)
+  public func csv()-> Self{
+    transform = transform.csv()
+    self.isCVS = true
+    return self
   }
   
   
@@ -89,6 +101,16 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
         do {
           if(result.count != nil){
             ret["count"] = result.count
+          }else if(isRpc){
+            if let data = result.value as Any as? String {
+              ret["data"] = data
+            }else if let data = result.value as Any as? NSCSupabaseJSONValue {
+              ret["data"] = data.value as? AnyHashable
+            }else if let data = result as Any as? String {
+              ret["data"] = data
+            }else {
+              ret["data"] = result.value as? AnyHashable
+            }
           }else if(isCVS){
             ret["data"] = result.string()
           }else {
@@ -351,14 +373,14 @@ case eq, neq, gt, gte, lt, lte, like, ilike, `is`, `in`, cs, cd, sl, sr, nxl, nx
 }
 
 
-
 @objcMembers
 @objc(NSCSupabasePostgresFilterBuilder)
-public class NSCSupabasePostgresFilterBuilder: NSObject {
+public class NSCSupabasePostgresFilterBuilder: NSCSupabasePostgresTransformBuilder {
   var filter: PostgrestFilterBuilder
-  var isRpc = false
-  init(filter: PostgrestFilterBuilder, isRpc: Bool = false) {
-    self.filter = filter
+  
+  init(filter builder: PostgrestFilterBuilder, single: Bool = false, csv: Bool = false, isRpc: Bool = false) {
+    filter = builder
+    super.init(transform: filter, single: single, csv: csv, isRpc: isRpc)
   }
   
   public func eq(_ column: String, _ value: NSCSupabaseJSONValue) -> NSCSupabasePostgresFilterBuilder {
@@ -485,124 +507,6 @@ public class NSCSupabasePostgresFilterBuilder: NSObject {
   public func or(filters: String, _ referencedTable: String?) -> NSCSupabasePostgresFilterBuilder {
     filter = filter.or(filters, referencedTable: referencedTable)
     return self
-  }
-  
-  public func select(_ columns: String?) -> NSCSupabasePostgresTransformBuilder{
-    guard let columns = columns else {
-      return NSCSupabasePostgresTransformBuilder(transform: filter.select())
-    }
-    
-    return NSCSupabasePostgresTransformBuilder(transform: filter.select(columns))
-  }
-  
-  
-  public func order(_ column: String, _ ascending: Bool,
-                    _ nullsFirst: Bool,
-                    _ referencedTable: String?) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: filter.order(column, ascending: ascending, nullsFirst: nullsFirst, referencedTable: referencedTable), single: false)
-  }
-  
-  public func range(_ from: Int, _ to : Int, _ referencedTable: String?) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: filter.range(from: from, to: to, referencedTable: referencedTable), single: false)
-  }
-  
-  public func limit(_ count: Int) -> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: filter.limit(count), single: false)
-  }
-  
-  public func single() -> NSCSupabasePostgresTransformBuilder {
-    return NSCSupabasePostgresTransformBuilder(transform: filter.single(), single: true)
-  }
-  
-  public func maybeSingle() -> NSCSupabasePostgresTransformBuilder {
-    return NSCSupabasePostgresTransformBuilder(transform: filter.limit(1).single(), single: true)
-  }
-  
-  public func csv()-> NSCSupabasePostgresTransformBuilder{
-    return NSCSupabasePostgresTransformBuilder(transform: filter.csv(), csv: true)
-  }
-  
-  public func execute(_ options: NSCSupabasePostgresFetchOptions?, _ callback: @escaping ([String: AnyHashable]?, Error?) -> Void){
-    Task {
-      var ret: [String: AnyHashable] = [:]
-      do {
-        let result = if(options != nil){
-          try await filter.execute<NSCSupabaseJSONValue>(options: options!.options)
-        }else {
-          try await filter.execute<NSCSupabaseJSONValue>(options: FetchOptions())
-        }
-      
-        if(result.count != nil){
-          ret["count"] = result.count
-        }else if(isRpc){
-          if let data = result.value as Any as? String {
-            ret["data"] = data
-          }else if let data = result.value as Any as? NSCSupabaseJSONValue {
-            ret["data"] = data.value as? AnyHashable
-          }else if let data = result as Any as? String {
-            ret["data"] = data
-          }else {
-            ret["data"] = result.value as? AnyHashable
-          }
-        }else {
-          if(!result.data.isEmpty){
-            let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
-            ret["data"] = json as? AnyHashable
-          }
-        }
-        
-        ret["status"] = result.response.statusCode
-        ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: result.response.statusCode)
-        callback(ret, nil)
-    
-      }catch {
-        guard let postgresError = error as? PostgrestError else {
-          guard let httpError = error as? HTTPError else {
-            
-            ret["status"] = 500
-            ret["statusCode"] = "Internal Server Error"
-            ret["error"] = [
-              "message": String(describing: error),
-              "hint": nil
-            ];
-            
-            callback(ret, nil)
-            return
-          }
-          
-          
-          do {
-            let errorResponse = try JSONSerialization.jsonObject(with: httpError.data, options: [.allowFragments])
-            ret["error"] = errorResponse as? [String: AnyHashable]
-            ret["status"] = httpError.response.statusCode
-            ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: httpError.response.statusCode)
-            callback(ret, nil)
-          }catch {
-            ret["status"] = 500
-            ret["statusCode"] = "Internal Server Error"
-            ret["error"] = [
-              "message": String(describing: error),
-              "hint": nil
-            ];
-            
-            callback(ret, nil)
-          }
-         
-          return
-        }
-        
-
-        ret["error"] = [
-          "code": postgresError.code,
-          "message": postgresError.message,
-          "hint": postgresError.hint,
-          "detail": postgresError.detail
-        ];
-        
-        callback(ret, nil)
-       
-      }
-    }
   }
 }
 

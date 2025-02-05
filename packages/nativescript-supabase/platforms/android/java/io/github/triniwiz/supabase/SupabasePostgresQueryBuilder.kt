@@ -10,8 +10,8 @@ class SupabasePostgresQueryBuilder internal constructor(val builder: PostgrestQu
     count: SupabaseClient.CountOption?
   ): SupabasePostgresFilterBuilder {
     val builder = SupabasePostgresFilterBuilder(builder.postgrest)
-    val query = SupabasePostgresFilterBuilder.Query(this.builder)
-    query.insert = SupabasePostgresFilterBuilder.Query.Insert(
+    val query = SupabasePostgresTransformBuilder.Query(this.builder)
+    query.insert = SupabasePostgresTransformBuilder.Query.Insert(
       value, defaultToNull, count
     )
     builder.query = query
@@ -24,8 +24,8 @@ class SupabasePostgresQueryBuilder internal constructor(val builder: PostgrestQu
     count: SupabaseClient.CountOption?
   ): SupabasePostgresFilterBuilder {
     val builder = SupabasePostgresFilterBuilder(builder.postgrest)
-    val query = SupabasePostgresFilterBuilder.Query(this.builder)
-    query.insert = SupabasePostgresFilterBuilder.Query.Insert(
+    val query = SupabasePostgresTransformBuilder.Query(this.builder)
+    query.insert = SupabasePostgresTransformBuilder.Query.Insert(
       values, defaultToNull, count
     )
     builder.query = query
@@ -34,8 +34,8 @@ class SupabasePostgresQueryBuilder internal constructor(val builder: PostgrestQu
 
   fun update(value: Any, count: SupabaseClient.CountOption?): SupabasePostgresFilterBuilder {
     val builder = SupabasePostgresFilterBuilder(builder.postgrest)
-    val query = SupabasePostgresFilterBuilder.Query(this.builder)
-    query.update = SupabasePostgresFilterBuilder.Query.Update(
+    val query = SupabasePostgresTransformBuilder.Query(this.builder)
+    query.update = SupabasePostgresTransformBuilder.Query.Update(
       value, count
     )
     builder.query = query
@@ -49,8 +49,8 @@ class SupabasePostgresQueryBuilder internal constructor(val builder: PostgrestQu
     ignoreDuplicates: Boolean? = false
   ): SupabasePostgresFilterBuilder {
     val builder = SupabasePostgresFilterBuilder(builder.postgrest)
-    val query = SupabasePostgresFilterBuilder.Query(this.builder)
-    query.upsert = SupabasePostgresFilterBuilder.Query.Upsert(
+    val query = SupabasePostgresTransformBuilder.Query(this.builder)
+    query.upsert = SupabasePostgresTransformBuilder.Query.Upsert(
       value, onConflict, count, ignoreDuplicates ?: false
     )
     builder.query = query
@@ -59,8 +59,8 @@ class SupabasePostgresQueryBuilder internal constructor(val builder: PostgrestQu
 
   fun delete(count: SupabaseClient.CountOption?): SupabasePostgresFilterBuilder {
     val builder = SupabasePostgresFilterBuilder(builder.postgrest)
-    val query = SupabasePostgresFilterBuilder.Query(this.builder)
-    query.delete = SupabasePostgresFilterBuilder.Query.Delete(
+    val query = SupabasePostgresTransformBuilder.Query(this.builder)
+    query.delete = SupabasePostgresTransformBuilder.Query.Delete(
       count
     )
     builder.query = query
@@ -74,8 +74,8 @@ class SupabasePostgresQueryBuilder internal constructor(val builder: PostgrestQu
     head: Boolean? = false
   ): SupabasePostgresFilterBuilder {
     val builder = SupabasePostgresFilterBuilder(builder.postgrest)
-    val query = SupabasePostgresFilterBuilder.Query(this.builder)
-    query.select = SupabasePostgresFilterBuilder.Query.Select(
+    val query = SupabasePostgresTransformBuilder.Query(this.builder)
+    query.select = SupabasePostgresTransformBuilder.Query.Select(
       column, count, head
     )
     builder.query = query

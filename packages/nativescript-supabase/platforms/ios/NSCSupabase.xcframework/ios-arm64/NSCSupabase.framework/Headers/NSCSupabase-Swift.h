@@ -663,12 +663,26 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresFetchOptions")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_CLASS_NAMED("NSCSupabasePostgresTransformBuilder")
+@interface NSCSupabasePostgresTransformBuilder : NSObject
+- (nonnull instancetype)select:(NSString * _Nullable)columns SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)order:(NSString * _Nonnull)column :(BOOL)ascending :(BOOL)nullsFirst :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)range:(NSInteger)from :(NSInteger)to :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)limit:(NSInteger)count SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)single SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)maybeSingle SWIFT_WARN_UNUSED_RESULT;
+- (nonnull instancetype)csv SWIFT_WARN_UNUSED_RESULT;
+- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(NSObject * _Nullable, NSError * _Nullable))callback;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 enum NSCSupabasePostgresTextSearchType : int8_t;
 enum NSCSupabasePostgresFilterBuilderOperator : int8_t;
-@class NSCSupabasePostgresTransformBuilder;
 
 SWIFT_CLASS_NAMED("NSCSupabasePostgresFilterBuilder")
-@interface NSCSupabasePostgresFilterBuilder : NSObject
+@interface NSCSupabasePostgresFilterBuilder : NSCSupabasePostgresTransformBuilder
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)eq:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)gte:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)lte:(NSString * _Nonnull)column :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
@@ -693,16 +707,6 @@ SWIFT_CLASS_NAMED("NSCSupabasePostgresFilterBuilder")
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)match:(NSDictionary<NSString *, NSCSupabaseJSONValue *> * _Nonnull)query SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)notWithColumn:(NSString * _Nonnull)column :(enum NSCSupabasePostgresFilterBuilderOperator)operatorFilter :(NSCSupabaseJSONValue * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (NSCSupabasePostgresFilterBuilder * _Nonnull)orWithFilters:(NSString * _Nonnull)filters :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)select:(NSString * _Nullable)columns SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)order:(NSString * _Nonnull)column :(BOOL)ascending :(BOOL)nullsFirst :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)range:(NSInteger)from :(NSInteger)to :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)limit:(NSInteger)count SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)single SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)maybeSingle SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)csv SWIFT_WARN_UNUSED_RESULT;
-- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(NSDictionary<NSString *, NSObject *> * _Nullable, NSError * _Nullable))callback;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
 typedef SWIFT_ENUM_NAMED(int8_t, NSCSupabasePostgresFilterBuilderOperator, "NSCSupabasePostgresFilterBuilderOperator", open) {
@@ -749,20 +753,6 @@ typedef SWIFT_ENUM_NAMED(int8_t, NSCSupabasePostgresTextSearchType, "NSCSupabase
   NSCSupabasePostgresTextSearchTypeWebsearch = 2,
 };
 
-
-SWIFT_CLASS_NAMED("NSCSupabasePostgresTransformBuilder")
-@interface NSCSupabasePostgresTransformBuilder : NSObject
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)select:(NSString * _Nullable)columns SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)order:(NSString * _Nonnull)column :(BOOL)ascending :(BOOL)nullsFirst :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)range:(NSInteger)from :(NSInteger)to :(NSString * _Nullable)referencedTable SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)limit:(NSInteger)count SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)single SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)maybeSingle SWIFT_WARN_UNUSED_RESULT;
-- (NSCSupabasePostgresTransformBuilder * _Nonnull)csv SWIFT_WARN_UNUSED_RESULT;
-- (void)execute:(NSCSupabasePostgresFetchOptions * _Nullable)options :(void (^ _Nonnull)(NSObject * _Nullable, NSError * _Nullable))callback;
-- (nonnull instancetype)init SWIFT_UNAVAILABLE;
-+ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
-@end
 
 typedef SWIFT_ENUM_NAMED(int8_t, NSCSupabaseProvider, "NSCSupabaseProvider", open) {
   NSCSupabaseProviderApple = 0,

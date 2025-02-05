@@ -63,7 +63,7 @@ export class PostgresTransformBuilder implements PromiseLike<any> {
 		return this.native_;
 	}
 
-	csv(): PostgresTransformBuilder {
+	csv() {
 		this.native.csv();
 		return this;
 	}
@@ -93,7 +93,7 @@ export class PostgresTransformBuilder implements PromiseLike<any> {
 		return this;
 	}
 
-	single(): PostgresTransformBuilder {
+	single() {
 		this.native.single();
 		return this;
 	}
@@ -111,7 +111,7 @@ export class PostgresTransformBuilder implements PromiseLike<any> {
 	}
 }
 
-export class PostgresFilterBuilder implements PromiseLike<any> {
+export class PostgresFilterBuilder extends PostgresTransformBuilder {
 	native_;
 
 	static fromNative(value) {
@@ -132,10 +132,6 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	contains(column: string, value: DataType): PostgresFilterBuilder {
 		this.native.contains(column, serialize(value));
 		return this;
-	}
-
-	csv(): PostgresTransformBuilder {
-		return PostgresTransformBuilder.fromNative(this.native.csv());
 	}
 
 	eq(column: string, value: DataType) {
@@ -177,10 +173,6 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		return this;
 	}
 
-	limit(count: number): PostgresTransformBuilder {
-		return PostgresTransformBuilder.fromNative(this.native.limit(count));
-	}
-
 	lt(column: string, value: DataType) {
 		this.native.lt(column, serialize(value));
 		return this;
@@ -194,10 +186,6 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	match(query: Record<string, DataType>) {
 		this.native.match(serialize(query));
 		return this;
-	}
-
-	maybeSingle() {
-		return PostgresTransformBuilder.fromNative(this.native.maybeSingle());
 	}
 
 	neq(column: string, value: DataType) {
@@ -214,26 +202,20 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		return this;
 	}
 
-	or(filters: string, options: {
-		foreignTable?: string;
-		referencedTable?: string;
-	}) {
+	or(
+		filters: string,
+		options: {
+			foreignTable?: string;
+			referencedTable?: string;
+		}
+	) {
 		// todo implement
 		return this;
-	}
-
-
-	order(column: string, options?: { ascending?: boolean; nullsFirst?: boolean; referencedTable?: string }) {
-		return PostgresTransformBuilder.fromNative(this.native.order(column, serialize(options?.ascending ?? true, true), serialize(options?.nullsFirst ?? false, true), options?.referencedTable ?? null));
 	}
 
 	overlaps(column: string, value: DataType) {
 		this.native.overlaps(column, serialize(value));
 		return this;
-	}
-
-	range(from: number, to: number, referencedTable?: string) {
-		return PostgresTransformBuilder.fromNative(this.native.range(from, to, referencedTable ?? null));
 	}
 
 	rangeAdjacent(column: string, range: DataType) {
@@ -261,14 +243,6 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 		return this;
 	}
 
-	select(columns?: string) {
-		return PostgresTransformBuilder.fromNative(this.native.select(columns ?? null));
-	}
-
-	single(): PostgresTransformBuilder {
-		return PostgresTransformBuilder.fromNative(this.native.single());
-	}
-
 	textSearch(
 		column: string,
 		query: DataType,
@@ -279,18 +253,6 @@ export class PostgresFilterBuilder implements PromiseLike<any> {
 	) {
 		this.native.textSearch(column, serialize(query), options?.config ?? null, options?.type ?? null);
 		return this;
-	}
-
-	then<TResult1 = Result, TResult2 = never>(onfulfilled?: (value: Result) => TResult1 | PromiseLike<TResult1>, onrejected?: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2> {
-		return new Promise((resolve, reject) => {
-			this.native.execute(
-				new kotlin.jvm.functions.Function1({
-					invoke(data) {
-						resolve(dataDeserialize(data));
-					},
-				})
-			);
-		}).then(onfulfilled, onrejected);
 	}
 }
 

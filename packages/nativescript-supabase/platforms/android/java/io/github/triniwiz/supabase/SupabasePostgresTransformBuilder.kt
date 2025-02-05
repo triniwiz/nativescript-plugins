@@ -1,12 +1,16 @@
 package io.github.triniwiz.supabase
 
-import android.util.Log
 import io.github.jan.supabase.exceptions.RestException
+import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.RpcMethod
 import io.github.jan.supabase.postgrest.query.Columns
 import io.github.jan.supabase.postgrest.query.Order
+import io.github.jan.supabase.postgrest.query.PostgrestQueryBuilder
 import io.github.jan.supabase.postgrest.query.PostgrestRequestBuilder
-import io.github.triniwiz.supabase.SupabasePostgresFilterBuilder.Action
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.postgrest.query.filter.PostgrestFilterBuilder
+import io.github.jan.supabase.postgrest.query.filter.TextSearchType
+import io.github.triniwiz.supabase.SupabaseClient.CountOption
 import io.github.triniwiz.supabase.SupabasePostgresFilterBuilder.Companion.localizedStringForStatusCode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,9 +22,87 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 
-class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: SupabasePostgresFilterBuilder) {
+open class SupabasePostgresTransformBuilder internal constructor(
+  internal var postgrest: Postgrest,
+  fn: String? = null,
+  args: String? = null,
+  get: Boolean? = null,
+  head: Boolean? = null,
+  countOption: CountOption? = null
+) {
+  internal var rpc: Rpc? = null
+  internal var query: Query? = null
+
+
+  class Query(val builder: PostgrestQueryBuilder) {
+    internal var insert: Insert? = null
+    internal var update: Update? = null
+    internal var upsert: Upsert? = null
+    internal var delete: Delete? = null
+    internal var select: Select? = null
+
+    class Insert(
+      val value: Any?,
+      val defaultToNull: Boolean?,
+      val count: CountOption?
+    )
+
+    class Update(
+      val value: Any,
+      val count: CountOption?
+    )
+
+    class Upsert(
+      val value: Any,
+      val onConflict: String?,
+      val count: CountOption?,
+      val ignoreDuplicates: Boolean? = false
+    )
+
+    class Delete(
+      val count: CountOption?
+    )
+
+    class Select(
+      val column: String?,
+      val count: CountOption?,
+      val head: Boolean?
+    )
+  }
+
+  class Rpc internal constructor(
+    internal val fn: String,
+    internal val args: String? = null,
+    internal val get: Boolean? = null,
+    internal val head: Boolean? = null,
+    internal val countOption: CountOption? = null,
+  )
+
 
   enum class Action {
+    containedBy,
+    contains,
+    eq,
+    gt,
+    gte,
+    ilike,
+    `in`,
+    `is`,
+    like,
+    lt,
+    lte,
+    match,
+    neq,
+    not,
+    overlaps,
+    rangeAdjacent,
+    rangeGt,
+    rangeGte,
+    rangeLt,
+    rangeLte,
+    textSearch,
+
+      // transform
     csv,
     limit,
     maybeSingle,
@@ -32,7 +114,7 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
 
   private val scope = CoroutineScope(Dispatchers.Default + Job())
 
-  private var commands = mutableListOf<Pair<Action, Map<String, Any?>?>>()
+  internal var commands = mutableListOf<Pair<Action, Map<String, Any?>?>>()
 
   fun csv(): SupabasePostgresTransformBuilder {
     commands.add(Pair(Action.csv, null))
@@ -154,6 +236,8 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
         Action.single -> {
           builder.single()
         }
+
+        else -> {}
       }
     }
   }
@@ -161,8 +245,8 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
 
   fun execute(callback: ((JsonObject) -> Void)) {
     scope.launch {
-      if (filterBuilder.rpc != null) {
-        val json = filterBuilder.rpc!!.args?.let {
+      if (rpc != null) {
+        val json = rpc!!.args?.let {
           try {
             Json.decodeFromString<JsonObject>(it)
           } catch (e: Exception) {
@@ -173,38 +257,38 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
         val jsonMap = mutableMapOf<String, JsonElement>()
         try {
           val response = json?.let {
-            filterBuilder.postgrest.rpc(filterBuilder.rpc!!.fn, it) {
-              filterBuilder.rpc?.countOption?.let { count ->
+            postgrest.rpc(rpc!!.fn, it) {
+              rpc?.countOption?.let { count ->
                 this.count(count.option)
               }
 
-              if (filterBuilder.rpc?.get == true) {
+              if (rpc?.get == true) {
                 this.method = RpcMethod.GET
               }
 
-              if (filterBuilder.rpc?.head == true) {
+              if (rpc?.head == true) {
                 this.method = RpcMethod.HEAD
               }
 
               this.filter {
-                filterBuilder.applyFilters(this)
+                applyFilters(this)
               }
               applyTransformation(this)
             }
-          } ?: filterBuilder.postgrest.rpc(filterBuilder.rpc!!.fn) {
-            filterBuilder.rpc?.countOption?.let { count ->
+          } ?: postgrest.rpc(rpc!!.fn) {
+            rpc?.countOption?.let { count ->
               this.count(count.option)
             }
-            if (filterBuilder.rpc?.get == true) {
+            if (rpc?.get == true) {
               this.method = RpcMethod.GET
             }
 
-            if (filterBuilder.rpc?.head == true) {
+            if (rpc?.head == true) {
               this.method = RpcMethod.HEAD
             }
 
             this.filter {
-              filterBuilder.applyFilters(this)
+              applyFilters(this)
             }
             applyTransformation(this)
           }
@@ -299,13 +383,13 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
 
         }
       } else {
-        if (filterBuilder.query != null) {
+        if (query != null) {
           var statusCode: Int? = null
           val jsonMap = mutableMapOf<String, JsonElement>()
           try {
-            var response = filterBuilder.query?.insert?.let { insert ->
+            var response = query?.insert?.let { insert ->
               (insert.value as? JsonArray)?.let { values ->
-                filterBuilder.query!!.builder.insert(
+                query!!.builder.insert(
                   values
                 ) {
                   this.defaultToNull = insert.defaultToNull ?: true
@@ -313,14 +397,14 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
                     this.count(count)
                   }
                   this.filter {
-                    filterBuilder.applyFilters(this)
+                    applyFilters(this)
                   }
                   applyTransformation(this)
                 }
               }
 
                 ?: (insert.value as? JsonObject)?.let { value ->
-                  filterBuilder.query!!.builder.insert(
+                  query!!.builder.insert(
                     value
                   ) {
                     this.defaultToNull = insert.defaultToNull ?: true
@@ -328,28 +412,28 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
                       this.count(count)
                     }
                     this.filter {
-                      filterBuilder.applyFilters(this)
+                      applyFilters(this)
                     }
                     applyTransformation(this)
                   }
                 }
 
             }
-            if (response != null && filterBuilder.query?.insert != null){
+            if (response != null && query?.insert != null){
               statusCode = 201
             }
 
             if (response == null) {
-              response = filterBuilder.query?.update?.let { update ->
+              response = query?.update?.let { update ->
                 (update.value as? JsonObject)?.let {
-                  filterBuilder.query!!.builder.update(
+                  query!!.builder.update(
                     update.value
                   ) {
                     update.count?.option?.let { count ->
                       this.count(count)
                     }
                     this.filter {
-                      filterBuilder.applyFilters(this)
+                      applyFilters(this)
                     }
                     applyTransformation(this)
                   }
@@ -357,14 +441,14 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
               }
             }
 
-            if (response != null  && filterBuilder.query?.update != null){
+            if (response != null  && query?.update != null){
               statusCode = 204
             }
 
             if (response == null) {
-              response = filterBuilder.query?.upsert?.let { upsert ->
+              response = query?.upsert?.let { upsert ->
                 (upsert.value as? JsonObject)?.let {
-                  filterBuilder.query!!.builder.upsert(
+                  query!!.builder.upsert(
                     upsert.value,
                   ) {
                     upsert.ignoreDuplicates?.let {
@@ -375,7 +459,7 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
                       this.count(count)
                     }
                     this.filter {
-                      filterBuilder.applyFilters(this)
+                      applyFilters(this)
                     }
                     applyTransformation(this)
                   }
@@ -383,31 +467,31 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
               }
             }
 
-            if (response != null  && filterBuilder.query?.upsert != null){
+            if (response != null  && query?.upsert != null){
               statusCode = 201
             }
 
             if (response == null) {
-              response = filterBuilder.query?.delete?.let { delete ->
-                filterBuilder.query!!.builder.delete {
+              response = query?.delete?.let { delete ->
+                query!!.builder.delete {
                   delete.count?.option?.let { count ->
                     this.count(count)
                   }
                   this.filter {
-                    filterBuilder.applyFilters(this)
+                    applyFilters(this)
                   }
                   applyTransformation(this)
                 }
               }
             }
 
-            if (response != null &&  filterBuilder.query?.delete != null){
+            if (response != null &&  query?.delete != null){
               statusCode = 204
             }
 
             if (response == null) {
-              response = filterBuilder.query?.select?.let { select ->
-                filterBuilder.query!!.builder.select(
+              response = query?.select?.let { select ->
+                query!!.builder.select(
                   Columns.raw(select.column ?: "*")
                 ) {
                   select.head?.let {
@@ -417,14 +501,14 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
                     this.count(count)
                   }
                   this.filter {
-                    filterBuilder.applyFilters(this)
+                    applyFilters(this)
                   }
                   applyTransformation(this)
                 }
               }
             }
 
-            if (response != null  && filterBuilder.query?.select != null){
+            if (response != null  && query?.select != null){
               statusCode = 200
             }
 
@@ -503,7 +587,7 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
               statusCode = 200
             }
 
-            if (filterBuilder.query?.insert != null) {
+            if (query?.insert != null) {
               jsonMap["status"] = JsonPrimitive(204)
               jsonMap["statusText"] = JsonPrimitive(
                 localizedStringForStatusCode(204)
@@ -539,6 +623,273 @@ class SupabasePostgresTransformBuilder internal constructor(val filterBuilder: S
           }
         }
       }
+    }
+  }
+
+  private fun applyFilters(builder: PostgrestFilterBuilder) {
+    commands.forEach { command ->
+      when (command.first) {
+        Action.containedBy -> {
+          (command.second?.get("value") as? List<Any>)?.let {
+            builder.contained(
+              command.second?.get("column") as String,
+              it
+            )
+          }
+        }
+
+        Action.contains -> {
+          (command.second?.get("value") as? List<Any>)?.let {
+            builder.contains(
+              command.second?.get("column") as String,
+              it
+            )
+          }
+        }
+
+        Action.eq -> {
+          (command.second?.get("value"))?.let {
+            builder.eq(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.gt -> {
+          (command.second?.get("value"))?.let {
+            builder.gt(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.gte -> {
+          (command.second?.get("value"))?.let {
+            builder.gt(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.ilike -> {
+          (command.second?.get("pattern") as? String)?.let {
+            builder.ilike(
+              command.second?.get("column") as String,
+              it
+            )
+          }
+        }
+
+        Action.`in` -> {
+          (command.second?.get("value") as? List<Any>)?.let {
+            builder.isIn(
+              command.second?.get("column") as String,
+              it
+            )
+          }
+        }
+
+        Action.`is` -> {
+          builder.exact(
+            command.second?.get("column") as String,
+            command.second!!["value"] as? Boolean
+          )
+        }
+
+        Action.like -> {
+          (command.second?.get("pattern") as? String)?.let {
+            builder.like(
+              command.second?.get("column") as String,
+              it
+            )
+          }
+        }
+
+        Action.lt -> {
+          (command.second?.get("value"))?.let {
+            builder.lt(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.lte -> {
+          (command.second?.get("value"))?.let {
+            builder.lte(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.match -> {
+          (command.second?.get("pattern") as? String)?.let {
+            builder.match(
+              command.second?.get("column") as String,
+              it
+            )
+          }
+        }
+
+        Action.neq -> {
+          (command.second?.get("value"))?.let {
+            builder.neq(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.not -> {
+          when (
+            command.second?.get("filter") as String
+          ) {
+            "eq" -> FilterOperator.EQ
+            "neq" -> FilterOperator.NEQ
+            "gt" -> FilterOperator.GT
+            "gte" -> FilterOperator.GTE
+            "lt" -> FilterOperator.LT
+            "lte" -> FilterOperator.LTE
+            "like" -> FilterOperator.LIKE
+            "ilike" -> FilterOperator.ILIKE
+            "is" -> FilterOperator.IS
+            "in" -> FilterOperator.IN
+            "cs" -> FilterOperator.CS
+            "cd" -> FilterOperator.CD
+            "sl" -> FilterOperator.SL
+            "sr" -> FilterOperator.SR
+            "nxl" -> FilterOperator.NXL
+            "nxr" -> FilterOperator.NXR
+            "adj" -> FilterOperator.ADJ
+            "ov" -> FilterOperator.OV
+            "fts" -> FilterOperator.FTS
+            "plfts" -> FilterOperator.PLFTS
+            "phfts" -> FilterOperator.PHFTS
+            "wfts" -> FilterOperator.WFTS
+            else -> null
+          }?.let {
+            builder.filterNot(
+              command.second!!["column"] as String,
+              it,
+              command.second!!["value"]
+            )
+          }
+        }
+
+        Action.overlaps -> {
+          (command.second?.get("value") as? List<Any>)?.let {
+            builder.overlaps(
+              command.second!!["column"] as String,
+              it
+            )
+          }
+        }
+
+        Action.rangeAdjacent -> {
+          (command.second?.get("range") as? String)?.let {
+            val values = it.split(",")
+            if (values.size >= 2) {
+              builder.adjacent(
+                command.second!!["column"] as String,
+                Pair(values[0], values[1])
+              )
+            }
+          }
+        }
+
+        Action.rangeGt -> {
+          (command.second?.get("range") as? String)?.let {
+            val values = it.split(",")
+            if (values.size >= 2) {
+              builder.rangeGt(
+                command.second!!["column"] as String,
+                Pair(values[0], values[1])
+              )
+            }
+          }
+        }
+
+        Action.rangeGte -> {
+          (command.second?.get("range") as? String)?.let {
+            val values = it.split(",")
+            if (values.size >= 2) {
+              builder.rangeGte(
+                command.second!!["column"] as String,
+                Pair(values[0], values[1])
+              )
+            }
+          }
+        }
+
+        Action.rangeLt -> {
+          (command.second?.get("range") as? String)?.let {
+            val values = it.split(",")
+            if (values.size >= 2) {
+              builder.rangeLt(
+                command.second!!["column"] as String,
+                Pair(values[0], values[1])
+              )
+            }
+          }
+        }
+
+        Action.rangeLte -> {
+          (command.second?.get("range") as? String)?.let {
+            val values = it.split(",")
+            if (values.size >= 2) {
+              builder.rangeLte(
+                command.second!!["column"] as String,
+                Pair(values[0], values[1])
+              )
+            }
+          }
+        }
+
+        Action.textSearch -> {
+          (command.second?.get("type") as? String)?.let {
+            builder.textSearch(
+              command.second?.get("column") as String,
+              command.second!!["query"] as String,
+              when (it) {
+                "plain" -> {
+                  TextSearchType.PLAINTO
+                }
+
+                "phrase" -> {
+                  TextSearchType.PHRASETO
+                }
+
+                "websearch" -> {
+                  TextSearchType.WEBSEARCH
+                }
+
+                else -> {
+                  TextSearchType.NONE
+                }
+              },
+              command.second!!["config"] as? String
+            )
+          }
+        }
+
+        Action.csv -> {}
+        Action.limit -> {}
+        Action.maybeSingle -> {}
+        Action.order -> {}
+        Action.range -> {}
+        Action.select -> {}
+        Action.single -> {}
+      }
+    }
+  }
+
+  init {
+    fn?.let {
+      this.rpc = Rpc(fn, args, get, head, countOption)
     }
   }
 }

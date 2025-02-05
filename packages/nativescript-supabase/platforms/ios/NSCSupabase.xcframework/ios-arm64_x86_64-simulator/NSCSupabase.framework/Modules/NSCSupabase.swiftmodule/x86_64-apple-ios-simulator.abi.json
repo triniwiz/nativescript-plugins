@@ -17587,9 +17587,8 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               },
               {
                 "kind": "TypeNominal",
@@ -17608,7 +17607,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)select:",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC6selectyACSSSgF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC6selectyACXDSSSgF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -17623,9 +17622,8 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               },
               {
                 "kind": "TypeNominal",
@@ -17662,7 +17660,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)order::::",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC5orderyACSS_S2bSSSgtF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC5orderyACXDSS_S2bSSSgtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -17677,9 +17675,8 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               },
               {
                 "kind": "TypeNominal",
@@ -17710,7 +17707,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)range:::",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC5rangeyACSi_SiSSSgtF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC5rangeyACXDSi_SiSSSgtF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -17725,9 +17722,8 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               },
               {
                 "kind": "TypeNominal",
@@ -17738,7 +17734,7 @@
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)limit:",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC5limityACSiF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC5limityACXDSiF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -17753,14 +17749,13 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)single",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC6singleACyF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC6singleACXDyF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -17775,14 +17770,13 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)maybeSingle",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC11maybeSingleACyF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC11maybeSingleACXDyF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -17797,14 +17791,13 @@
             "children": [
               {
                 "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
+                "name": "DynamicSelf",
+                "printedName": "Self"
               }
             ],
             "declKind": "Func",
             "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder(im)csv",
-            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC3csvACyF",
+            "mangledName": "$s11NSCSupabase0A24PostgresTransformBuilderC3csvACXDyF",
             "moduleName": "NSCSupabase",
             "declAttributes": [
               "AccessControl",
@@ -20193,360 +20186,6 @@
               "ObjC"
             ],
             "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "select",
-            "printedName": "select(_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Swift.String?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "usr": "s:Sq"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)select:",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC6selectyAA0ab9TransformD0CSSSgF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "order",
-            "printedName": "order(_:_:_:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "String",
-                "printedName": "Swift.String",
-                "usr": "s:SS"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Bool",
-                "printedName": "Swift.Bool",
-                "usr": "s:Sb"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Swift.String?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "usr": "s:Sq"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)order::::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC5orderyAA0ab9TransformD0CSS_S2bSSSgtF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "range",
-            "printedName": "range(_:_:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "Swift.String?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "String",
-                    "printedName": "Swift.String",
-                    "usr": "s:SS"
-                  }
-                ],
-                "usr": "s:Sq"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)range:::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC5rangeyAA0ab9TransformD0CSi_SiSSSgtF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "limit",
-            "printedName": "limit(_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Int",
-                "printedName": "Swift.Int",
-                "usr": "s:Si"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)limit:",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC5limityAA0ab9TransformD0CSiF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "single",
-            "printedName": "single()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)single",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC6singleAA0ab9TransformD0CyF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "maybeSingle",
-            "printedName": "maybeSingle()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)maybeSingle",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC11maybeSingleAA0ab9TransformD0CyF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "csv",
-            "printedName": "csv()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresTransformBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresTransformBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder"
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)csv",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC3csvAA0ab9TransformD0CyF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Function",
-            "name": "execute",
-            "printedName": "execute(_:_:)",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "Void",
-                "printedName": "()"
-              },
-              {
-                "kind": "TypeNominal",
-                "name": "Optional",
-                "printedName": "NSCSupabase.NSCSupabasePostgresFetchOptions?",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "NSCSupabasePostgresFetchOptions",
-                    "printedName": "NSCSupabase.NSCSupabasePostgresFetchOptions",
-                    "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFetchOptions"
-                  }
-                ],
-                "usr": "s:Sq"
-              },
-              {
-                "kind": "TypeFunc",
-                "name": "Function",
-                "printedName": "([Swift.String : Swift.AnyHashable]?, (any Swift.Error)?) -> ()",
-                "children": [
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Void",
-                    "printedName": "()"
-                  },
-                  {
-                    "kind": "TypeNominal",
-                    "name": "Tuple",
-                    "printedName": "([Swift.String : Swift.AnyHashable]?, (any Swift.Error)?)",
-                    "children": [
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Optional",
-                        "printedName": "[Swift.String : Swift.AnyHashable]?",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "Dictionary",
-                            "printedName": "[Swift.String : Swift.AnyHashable]",
-                            "children": [
-                              {
-                                "kind": "TypeNominal",
-                                "name": "String",
-                                "printedName": "Swift.String",
-                                "usr": "s:SS"
-                              },
-                              {
-                                "kind": "TypeNominal",
-                                "name": "AnyHashable",
-                                "printedName": "Swift.AnyHashable",
-                                "usr": "s:s11AnyHashableV"
-                              }
-                            ],
-                            "usr": "s:SD"
-                          }
-                        ],
-                        "usr": "s:Sq"
-                      },
-                      {
-                        "kind": "TypeNominal",
-                        "name": "Optional",
-                        "printedName": "(any Swift.Error)?",
-                        "children": [
-                          {
-                            "kind": "TypeNominal",
-                            "name": "Error",
-                            "printedName": "any Swift.Error",
-                            "usr": "s:s5ErrorP"
-                          }
-                        ],
-                        "usr": "s:Sq"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ],
-            "declKind": "Func",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)execute::",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderC7executeyyAA0aB12FetchOptionsCSg_ySDySSs11AnyHashableVGSg_s5Error_pSgtctF",
-            "moduleName": "NSCSupabase",
-            "declAttributes": [
-              "AccessControl",
-              "ObjC"
-            ],
-            "funcSelfKind": "NonMutating"
-          },
-          {
-            "kind": "Constructor",
-            "name": "init",
-            "printedName": "init()",
-            "children": [
-              {
-                "kind": "TypeNominal",
-                "name": "NSCSupabasePostgresFilterBuilder",
-                "printedName": "NSCSupabase.NSCSupabasePostgresFilterBuilder",
-                "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder"
-              }
-            ],
-            "declKind": "Constructor",
-            "usr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresFilterBuilder(im)init",
-            "mangledName": "$s11NSCSupabase0A21PostgresFilterBuilderCACycfc",
-            "moduleName": "NSCSupabase",
-            "overriding": true,
-            "implicit": true,
-            "objc_name": "init",
-            "declAttributes": [
-              "Dynamic",
-              "ObjC",
-              "Override"
-            ],
-            "init_kind": "Designated"
           }
         ],
         "declKind": "Class",
@@ -20559,9 +20198,10 @@
           "ObjC",
           "ObjCMembers"
         ],
-        "superclassUsr": "c:objc(cs)NSObject",
+        "superclassUsr": "c:@M@NSCSupabase@objc(cs)NSCSupabasePostgresTransformBuilder",
         "hasMissingDesignatedInitializers": true,
         "superclassNames": [
+          "NSCSupabase.NSCSupabasePostgresTransformBuilder",
           "ObjectiveC.NSObject"
         ],
         "conformances": [
@@ -28847,210 +28487,224 @@
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 801,
+      "offset": 819,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 820,
+      "offset": 838,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
+      "kind": "BooleanLiteral",
+      "offset": 859,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4956,
+      "offset": 4987,
       "length": 6,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 4970,
+      "offset": 5001,
       "length": 9,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5657,
+      "offset": 5688,
       "length": 3,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5662,
+      "offset": 5693,
       "length": 2,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5666,
+      "offset": 5697,
       "length": 3,
       "value": "3"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5671,
+      "offset": 5702,
       "length": 2,
       "value": "4"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5675,
+      "offset": 5706,
       "length": 3,
       "value": "5"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5680,
+      "offset": 5711,
       "length": 4,
       "value": "6"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5686,
+      "offset": 5717,
       "length": 5,
       "value": "7"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5693,
+      "offset": 5724,
       "length": 4,
       "value": "8"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5699,
+      "offset": 5730,
       "length": 4,
       "value": "9"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5705,
+      "offset": 5736,
       "length": 2,
       "value": "10"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5709,
+      "offset": 5740,
       "length": 2,
       "value": "11"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5713,
+      "offset": 5744,
       "length": 2,
       "value": "12"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5717,
+      "offset": 5748,
       "length": 2,
       "value": "13"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5721,
+      "offset": 5752,
       "length": 3,
       "value": "14"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5726,
+      "offset": 5757,
       "length": 3,
       "value": "15"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5731,
+      "offset": 5762,
       "length": 3,
       "value": "16"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5736,
+      "offset": 5767,
       "length": 2,
       "value": "17"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5740,
+      "offset": 5771,
       "length": 3,
       "value": "18"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5750,
+      "offset": 5781,
       "length": 5,
       "value": "19"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5757,
+      "offset": 5788,
       "length": 5,
       "value": "20"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5764,
+      "offset": 5795,
       "length": 4,
       "value": "21"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 8129,
+      "offset": 8237,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 8188,
+      "offset": 8256,
+      "length": 5,
+      "value": "false"
+    },
+    {
+      "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
+      "kind": "BooleanLiteral",
+      "offset": 8277,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 17293,
+      "offset": 13067,
       "length": 5,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 17306,
+      "offset": 13080,
       "length": 7,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 17321,
+      "offset": 13095,
       "length": 9,
       "value": "3"
     },
