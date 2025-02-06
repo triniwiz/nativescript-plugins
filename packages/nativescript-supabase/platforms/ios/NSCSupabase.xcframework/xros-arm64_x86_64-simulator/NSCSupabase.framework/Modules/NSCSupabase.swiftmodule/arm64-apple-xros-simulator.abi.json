@@ -28409,77 +28409,77 @@
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 1841,
+      "offset": 1951,
       "length": 14,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 1854,
+      "offset": 1964,
       "length": 1,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 1919,
+      "offset": 2029,
       "length": 17,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 1935,
+      "offset": 2045,
       "length": 1,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 1998,
+      "offset": 2108,
       "length": 16,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 2013,
+      "offset": 2123,
       "length": 1,
       "value": "\"\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 2384,
+      "offset": 2494,
       "length": 6,
       "value": "\"NULL\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 2450,
+      "offset": 2560,
       "length": 58,
       "value": "\"{\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 2501,
+      "offset": 2611,
       "length": 3,
       "value": "\",\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 2506,
+      "offset": 2616,
       "length": 1,
       "value": "\"}\""
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabaseHelpers.swift",
       "kind": "StringLiteral",
-      "offset": 2686,
+      "offset": 2796,
       "length": 6,
       "value": "\"NULL\""
     },
@@ -28507,203 +28507,203 @@
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5669,
+      "offset": 5135,
       "length": 6,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 5683,
+      "offset": 5149,
       "length": 9,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6370,
+      "offset": 5836,
       "length": 3,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6375,
+      "offset": 5841,
       "length": 2,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6379,
+      "offset": 5845,
       "length": 3,
       "value": "3"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6384,
+      "offset": 5850,
       "length": 2,
       "value": "4"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6388,
+      "offset": 5854,
       "length": 3,
       "value": "5"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6393,
+      "offset": 5859,
       "length": 4,
       "value": "6"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6399,
+      "offset": 5865,
       "length": 5,
       "value": "7"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6406,
+      "offset": 5872,
       "length": 4,
       "value": "8"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6412,
+      "offset": 5878,
       "length": 4,
       "value": "9"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6418,
+      "offset": 5884,
       "length": 2,
       "value": "10"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6422,
+      "offset": 5888,
       "length": 2,
       "value": "11"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6426,
+      "offset": 5892,
       "length": 2,
       "value": "12"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6430,
+      "offset": 5896,
       "length": 2,
       "value": "13"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6434,
+      "offset": 5900,
       "length": 3,
       "value": "14"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6439,
+      "offset": 5905,
       "length": 3,
       "value": "15"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6444,
+      "offset": 5910,
       "length": 3,
       "value": "16"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6449,
+      "offset": 5915,
       "length": 2,
       "value": "17"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6453,
+      "offset": 5919,
       "length": 3,
       "value": "18"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6463,
+      "offset": 5929,
       "length": 5,
       "value": "19"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6470,
+      "offset": 5936,
       "length": 5,
       "value": "20"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 6477,
+      "offset": 5943,
       "length": 4,
       "value": "21"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 8919,
+      "offset": 8385,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 8938,
+      "offset": 8404,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "BooleanLiteral",
-      "offset": 8959,
+      "offset": 8425,
       "length": 5,
       "value": "false"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 13749,
+      "offset": 13215,
       "length": 5,
       "value": "1"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 13762,
+      "offset": 13228,
       "length": 7,
       "value": "2"
     },
     {
       "filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-supabase\/src-native\/apple\/NSCSupabase\/NSCSupabase\/NSCSupabasePostgres.swift",
       "kind": "IntegerLiteral",
-      "offset": 13777,
+      "offset": 13243,
       "length": 9,
       "value": "3"
     },

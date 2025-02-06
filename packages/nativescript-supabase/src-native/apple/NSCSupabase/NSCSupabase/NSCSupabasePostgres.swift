@@ -113,34 +113,21 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
             }else if let data = result as Any as? String {
               ret["data"] = data
             }else {
-              // try decoding using NSCSupabaseJSONValue
+              // fallback to JSONSerialization
               do {
                 let decoder = JSONDecoder()
                 let json = try decoder.decode(NSCSupabaseJSONValue.self, from: result.data)
                 ret["data"] = json.value
               }catch {
-                // fallback to JSONSerialization
-                do {
-                  let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
-                  if(isSingle){
-                    ret["data"] = json as? [String: Any?]
-                  }else {
-                    ret["data"] = json as? [[String: Any?]]
-                  }
-                }catch {
-                  ret["data"] = result.value
-                }
+                ret["data"] = result.value
               }
             }
           }else if(isCVS){
             ret["data"] = result.string()
           }else {
-            let json = try JSONSerialization.jsonObject(with: result.data, options: [.allowFragments])
-            if(isSingle){
-              ret["data"] = json as? [String: Any?]
-            }else {
-              ret["data"] = json as? [[String: Any?]]
-            }
+            let decoder = JSONDecoder()
+            let json = try decoder.decode(NSCSupabaseJSONValue.self, from: result.data)
+            ret["data"] = json.value
           }
           
           ret["status"] = result.response.statusCode

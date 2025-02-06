@@ -22,6 +22,8 @@ extension JSONSerialization {
   }
 }
 
+typealias NSCSupabaseJSONObject = [String: NSCSupabaseJSONValue]
+typealias NSCSupabaseJSONArray = [NSCSupabaseJSONValue]
 
 
 @objcMembers
@@ -33,8 +35,8 @@ public class NSCSupabaseJSONValue: NSObject, Encodable, Decodable, URLQueryRepre
   var stringValue: String?
   var dateValue: Date?
   var dataValue: Data?
-  var arrayValue: [NSCSupabaseJSONValue]?
-  var objectValue: [String: NSCSupabaseJSONValue]?
+  var arrayValue: NSCSupabaseJSONArray?
+  var objectValue: NSCSupabaseJSONObject?
   
   var jsonValue: AnyJSON {
     if let boolValue = boolValue {
@@ -209,19 +211,19 @@ public class NSCSupabaseJSONValue: NSObject, Encodable, Decodable, URLQueryRepre
       if let arrayValue = arrayValue {
         return arrayValue.map({ value in
           if(value.value == nil){
-            NSNull()
+           return NSNull() as Any?
           }else {
-            value.value
+            return value.value
           }
-        })  as Any
+        }) as Any
       }
       
       if let objectValue = objectValue {
         return objectValue.mapValues({ value in
           if(value.value == nil){
-            NSNull()
+            return NSNull() as Any?
           }else {
-            value.value
+            return value.value
           }
         })  as Any
       }
@@ -236,346 +238,55 @@ public class NSCSupabaseJSONValue: NSObject, Encodable, Decodable, URLQueryRepre
   }
   
   
-  static func decode(from container: SingleValueDecodingContainer) throws -> Any {
-    if let value = try? container.decode(Bool.self) {
-      return value
-    }
-    if let value = try? container.decode(Int.self) {
-      return value
-    }
-    if let value = try? container.decode(Double.self) {
-      return value
-    }
-    if let value = try? container.decode(String.self) {
-      return value
-    }
-    
-    if let value = try? container.decode(Date.self) {
-      return value
-    }
-    
-    if let value = try? container.decode(Data.self) {
-      return value
-    }
-    
-    if let value = try? container.decode(NSCSupabaseJSONValue.self) {
-      return value
-    }
-    
-    if container.decodeNil() {
-      return NSCSupabaseJSONValue()
-    }
-    throw decodingError(forCodingPath: container.codingPath)
-  }
-  
-  static func decode(from container: inout UnkeyedDecodingContainer) throws -> Any{
-    if let value = try? container.decode(Bool.self) {
-      return value
-    }
-    if let value = try? container.decode(Int.self) {
-      return value
-    }
-    if let value = try? container.decode(Double.self) {
-      return value
-    }
-    if let value = try? container.decode(String.self) {
-      return value
-    }
-    
-    if let value = try? container.decode(Date.self) {
-      return value
-    }
-    
-    if let value = try? container.decode(Data.self) {
-      return value
-    }
-    
-    if let value = try? container.decode(NSCSupabaseJSONValue.self) {
-      return value
-    }
-    
-    if let value = try? container.decodeNil() {
-      if value {
-        return NSCSupabaseJSONValue()
-      }
-    }
-    if var container = try? container.nestedUnkeyedContainer() {
-      return try decodeArray(from: &container)
-    }
-    if var container = try? container.nestedContainer(keyedBy: MyCodingKey.self) {
-      return try decodeDictionary(from: &container)
-    }
-    throw decodingError(forCodingPath: container.codingPath)
-  }
-  
-  static func decode(from container: inout KeyedDecodingContainer<MyCodingKey>, forKey key: MyCodingKey) throws -> Any {
-    if let value = try? container.decode(Bool.self, forKey: key) {
-      return NSCSupabaseJSONValue(boolean: value)
-    }
-    if let value = try? container.decode(Int.self, forKey: key) {
-      return NSCSupabaseJSONValue(integer: value)
-    }
-    if let value = try? container.decode(Double.self, forKey: key) {
-      return NSCSupabaseJSONValue(double: value)
-    }
-    if let value = try? container.decode(String.self, forKey: key) {
-      return NSCSupabaseJSONValue(string: value)
-    }
-    
-    if let value = try? container.decode(Date.self, forKey: key) {
-      return NSCSupabaseJSONValue(date: value)
-    }
-    
-    if let value = try? container.decode(Data.self, forKey: key) {
-      return NSCSupabaseJSONValue(data: value)
-    }
-    
-    if let value = try? container.decodeNil(forKey: key) {
-      if value {
-        return NSCSupabaseJSONValue()
-      }
-    }
-    
-    if var container = try? container.nestedUnkeyedContainer(forKey: key) {
-      return try decodeArray(from: &container)
-    }
-    
-    if var container = try? container.nestedContainer(keyedBy: MyCodingKey.self, forKey: key) {
-      return try decodeDictionary(from: &container)
-    }
-    
-    throw decodingError(forCodingPath: container.codingPath)
-  }
-  
-  
-  static func decodeArray(from container: inout UnkeyedDecodingContainer) throws -> [Any] {
-    var arr: [Any] = []
-    while !container.isAtEnd {
-      let value = try decode(from: &container)
-      arr.append(value)
-    }
-    return arr
-  }
-  
-  static func decodeDictionary(from container: inout KeyedDecodingContainer<MyCodingKey>) throws -> [String: Any] {
-    var dict = [String: Any]()
-    for key in container.allKeys {
-      let value = try decode(from: &container, forKey: key)
-      dict[key.stringValue] = value
-    }
-    return dict
-  }
-  
   
   required public init(from decoder: any Decoder) throws {
-    if var arrayContainer = try? decoder.unkeyedContainer() {
-      var arr: [Any] = []
-      while !arrayContainer.isAtEnd {
-        let value = try NSCSupabaseJSONValue.decode(from: &arrayContainer)
-        arr.append(value)
-      }
-      self.arrayValue = arr as? [NSCSupabaseJSONValue]
-      
-    } else if var container = try? decoder.container(keyedBy: MyCodingKey.self) {
-      var dict = [String: Any]()
-      for key in container.allKeys {
-        let value = try NSCSupabaseJSONValue.decode(from: &container, forKey: key)
-        dict[key.stringValue] = value
-      }
-      self.objectValue = dict as? [String: NSCSupabaseJSONValue]
+    let container = try decoder.singleValueContainer()
+    if container.decodeNil() {
+      // noop
+    }else if let bool = try? container.decode(Bool.self) {
+      self.boolValue = bool
+    }else if let int = try? container.decode(Int.self) {
+      self.integerValue = int
+    }else if let double = try? container.decode(Double.self) {
+      self.doubleValue = double
+    }else if let string = try? container.decode(String.self) {
+      self.stringValue = string
+    }else if let date = try? container.decode(Date.self) {
+      self.dateValue = date
+    } else if let data = try? container.decode(Data.self) {
+      self.dataValue = data
+    }else if let array = try? container.decode(NSCSupabaseJSONArray.self) {
+      self.arrayValue = array
+    }else if let object = try? container.decode(NSCSupabaseJSONObject.self) {
+      self.objectValue = object
     }else {
-      if let bool = try? decoder.singleValueContainer().decode(Bool.self) {
-        self.boolValue = bool
-      }
-      
-      if let int = try? decoder.singleValueContainer().decode(Int.self) {
-        self.integerValue = int
-      }
-      
-      if let double = try? decoder.singleValueContainer().decode(Double.self) {
-        self.doubleValue = double
-      }
-      
-      if let string = try? decoder.singleValueContainer().decode(String.self) {
-        self.stringValue = string
-      }
-      
-      if let date = try? decoder.singleValueContainer().decode(Date.self) {
-        self.dateValue = date
-      }
-      
-      if let data = try? decoder.singleValueContainer().decode(Data.self) {
-        self.dataValue = data
-      }
+      throw NSCSupabaseJSONValue.decodingError(forCodingPath: container.codingPath)
     }
   }
   
   
-  static func encode(to container: inout SingleValueEncodingContainer, value: Any) throws {
-    if let value = value as? Bool {
-      try container.encode(value)
-    } else if let value = value as? Int {
-      try container.encode(value)
-    }else if let value = value as? Double {
-      try container.encode(value)
-    }else if let value = value as? String {
-      try container.encode(value)
-    }else if let value = value as? Data {
-      try container.encode(value)
-    }else if let value = value as? Date {
-      try container.encode(value)
-    } else if let _ = value as? NSNull {
-      try container.encodeNil()
-    }else if let value = value as? NSCSupabaseJSONValue {
-      if let bool = value.boolValue {
-        try container.encode(bool)
-      }else if let int = value.integerValue {
-        try container.encode(int)
-      }else if let double = value.doubleValue {
-        try container.encode(double)
-      }else if let string = value.stringValue {
-        try container.encode(string)
-      }else if let date = value.dateValue {
-        try container.encode(date)
-      }else if let data = value.dataValue {
-        try container.encode(data)
-      }else if (value.arrayValue != nil || value.objectValue != nil) {
-        throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [], debugDescription: "Unsupported type \(type(of: value))"))
-      }else {
-        try container.encodeNil()
-      }
-    }else {
-      throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [], debugDescription: "Unsupported type \(type(of: value))"))
-    }
-  }
-  
-  static func encode(to container: inout KeyedEncodingContainer<MyCodingKey>, dictionary: [String: Any]) throws {
-    for (key, value) in dictionary {
-      let key = MyCodingKey(stringValue: key)!
-      if let value = value as? Bool {
-        try container.encode(value, forKey: key)
-      } else if let value = value as? Int {
-        try container.encode(value, forKey: key)
-      }else if let value = value as? Double {
-        try container.encode(value, forKey: key)
-      }else if let value = value as? String {
-        try container.encode(value, forKey: key)
-      }else if let value = value as? Data {
-        try container.encode(value, forKey: key)
-      }else if let value = value as? Date {
-        try container.encode(value, forKey: key)
-      } else if let _ = value as? NSNull {
-        try container.encodeNil(forKey: key)
-      }else if let value = value as? NSCSupabaseJSONValue {
-        if let bool = value.boolValue {
-          try container.encode(bool, forKey: key)
-        }else if let int = value.integerValue {
-          try container.encode(int, forKey: key)
-        }else if let double = value.doubleValue {
-          try container.encode(double, forKey: key)
-        }else if let string = value.stringValue {
-          try container.encode(string, forKey: key)
-        }else if let date = value.dateValue {
-          try container.encode(date, forKey: key)
-        }else if let data = value.dataValue {
-          try container.encode(data, forKey: key)
-        }else if let array = value.arrayValue {
-          var container = container.nestedUnkeyedContainer(forKey: key)
-          try encode(to: &container, array: array)
-        }else if let object = value.objectValue {
-          var container = container.nestedContainer(keyedBy: MyCodingKey.self, forKey: key)
-          try encode(to: &container, dictionary: object)
-        }else {
-          try container.encodeNil(forKey: key)
-        }
-      } else if let value = value as? [Any] {
-        var container = container.nestedUnkeyedContainer(forKey: key)
-        try encode(to: &container, array: value)
-      }else if let value = value as? [String: Any] {
-        var container = container.nestedContainer(keyedBy: MyCodingKey.self, forKey: key)
-        try encode(to: &container, dictionary: value)
-      }else {
-        throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [], debugDescription: "Unsupported type \(type(of: value)) for key \(key)"))
-      }
-    }
-  }
-  
-  static func encode(to container: inout UnkeyedEncodingContainer, array: [Any]) throws {
-    for value in array {
-      if let value = value as? Bool {
-        try container.encode(value)
-      } else if let value = value as? Int {
-        try container.encode(value)
-      }else if let value = value as? Double {
-        try container.encode(value)
-      }else if let value = value as? String {
-        try container.encode(value)
-      }else if let value = value as? Data {
-        try container.encode(value)
-      }else if let value = value as? Date {
-        try container.encode(value)
-      } else if let _ = value as? NSNull {
-        try container.encodeNil()
-      }else if let value = value as? NSCSupabaseJSONValue {
-        if let bool = value.boolValue {
-          try container.encode(bool)
-        }else if let int = value.integerValue {
-          try container.encode(int)
-        }else if let double = value.doubleValue {
-          try container.encode(double)
-        }else if let string = value.stringValue {
-          try container.encode(string)
-        }else if let date = value.dateValue {
-          try container.encode(date)
-        }else if let data = value.dataValue {
-          try container.encode(data)
-        }else if let array = value.arrayValue {
-          var container = container.nestedUnkeyedContainer()
-          try encode(to: &container, array: array)
-        }else if let object = value.objectValue {
-          var container = container.nestedContainer(keyedBy: MyCodingKey.self)
-          try encode(to: &container, dictionary: object)
-        }else {
-          try container.encodeNil()
-        }
-      } else if let value = value as? [Any] {
-        var container = container.nestedUnkeyedContainer()
-        try encode(to: &container, array: value)
-      }else if let value = value as? [String: Any] {
-        var container = container.nestedContainer(keyedBy: MyCodingKey.self)
-        try encode(to: &container, dictionary: value)
-      }else {
-        throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [], debugDescription: "Unsupported type \(type(of: value))"))
-      }
-    }
-  }
+
   
   public func encode(to encoder: any Encoder) throws {
+    var container = encoder.singleValueContainer()
     if let arr = self.arrayValue {
-      var container = encoder.unkeyedContainer()
-      try NSCSupabaseJSONValue.encode(to: &container, array: arr)
+     try container.encode(arr)
     } else if let dict = self.objectValue {
-      var container = encoder.container(keyedBy: MyCodingKey.self)
-      try NSCSupabaseJSONValue.encode(to: &container, dictionary: dict)
-    } else {
-      var container = encoder.singleValueContainer()
-      
-      if let bool = self.boolValue {
-        try NSCSupabaseJSONValue.encode(to: &container, value: bool)
-      }else if let int = self.integerValue {
-        try NSCSupabaseJSONValue.encode(to: &container, value: int)
-      }else if let double = self.doubleValue {
-        try NSCSupabaseJSONValue.encode(to: &container, value: double)
-      }else if let string = self.stringValue {
-        try NSCSupabaseJSONValue.encode(to: &container, value: string)
-      }else if let date = self.dateValue {
-        try NSCSupabaseJSONValue.encode(to: &container, value: date)
-      }else if let data = self.dataValue {
-        try NSCSupabaseJSONValue.encode(to: &container, value: data)
-      }else {
-        try container.encodeNil()
-      }
-      
+      try container.encode(dict)
+    }else if let bool = self.boolValue {
+      try container.encode(bool)
+    }else if let int = self.integerValue {
+      try container.encode(int)
+    }else if let double = self.doubleValue {
+      try container.encode(double)
+    }else if let string = self.stringValue {
+      try container.encode(string)
+    }else if let date = self.dateValue {
+      try container.encode(date)
+    }else if let data = self.dataValue {
+      try container.encode(data)
+    }else {
+      try container.encodeNil()
     }
   }
 }
@@ -596,24 +307,24 @@ class NSCSupabaseHelpers {
       return value.stringValue
     case .object(_):
       return value.objectValue?.mapValues { value in
-        decodeValue(value)
+        return decodeValue(value)
       }
     case .array(_):
       return value.arrayValue?.map { value in
-        decodeValue(value)
+        return decodeValue(value)
       }
     }
   }
   
   static func decodeObject (_ value: [String: AnyJSON]?) -> [String: AnyHashable]? {
     return value?.mapValues { value in
-      decodeValue(value)
+      return decodeValue(value)
     }
   }
   
   static func decodeAraay (_ value: [AnyJSON]?) -> [AnyHashable]? {
     return value?.map { value in
-      decodeValue(value)
+      return decodeValue(value)
     }
   }
   
@@ -656,13 +367,13 @@ class NSCSupabaseHelpers {
   }
   static func encodeObject(_ object: [String: AnyHashable]?) -> [String: AnyJSON]? {
     object?.mapValues { value in
-      encodeValue(value)
+      return encodeValue(value)
     }
   }
   
   static func encodeArray(_ array: [AnyHashable]?) -> [AnyJSON]? {
     array?.map { value in
-      encodeValue(value)
+      return encodeValue(value)
     }
   }
   
