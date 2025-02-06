@@ -143,19 +143,36 @@ public class NSCSupabasePostgresTransformBuilder: NSObject {
       }catch {
         guard let postgresError = error as? PostgrestError else {
           do {
-            let httpError = error as! HTTPError
-            let errorResponse = try JSONSerialization.jsonObject(with: httpError.data, options: [.allowFragments])
-            ret["error"] = errorResponse as? [String: Any?]
-            ret["status"] = httpError.response.statusCode
-            ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: httpError.response.statusCode)
+            if let httpError = error as? HTTPError {
+              let errorResponse = try JSONSerialization.jsonObject(with: httpError.data, options: [.allowFragments])
+              ret["error"] = errorResponse as? [String: Any?]
+              ret["status"] = httpError.response.statusCode
+              ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: httpError.response.statusCode)
+            }else if let urlError = error as? URLError {
+              let status = NSCSupabaseHelpers.mapURLErrorToHTTPStatus(urlError)
+              ret["status"] = status
+              ret["statusCode"] = NSCSupabaseHelpers.localizedString(forStatusCode: status)
+              ret["error"] = [
+                "message": urlError.localizedDescription,
+                "hint": nil
+              ]
+            }else {
+              ret["status"] = 520
+              ret["statusCode"] = "Unknown error"
+              ret["error"] = [
+                "message": String(describing: error),
+                "hint": nil
+              ]
+            }
+    
             callback(ret, nil)
           }catch {
-            ret["status"] = 500
-            ret["statusCode"] = "Internal Server Error"
+            ret["status"] = 520
+            ret["statusCode"] = "Unknown error"
             ret["error"] = [
               "message": String(describing: error),
               "hint": nil
-            ];
+            ]
             
             callback(ret, nil)
           }

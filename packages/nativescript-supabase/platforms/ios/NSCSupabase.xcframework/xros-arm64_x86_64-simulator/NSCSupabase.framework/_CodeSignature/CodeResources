@@ -18,15 +18,15 @@
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/Project/arm64-apple-xros-simulator.swiftsourceinfo</key>
 		<data>
-		kjwTcR5fioJHK+H65/EH//sW5gI=
+		cnVlKAcj9QKM5mYWCcSQrI50uyU=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/Project/x86_64-apple-xros-simulator.swiftsourceinfo</key>
 		<data>
-		nCr4hqLzjyWYQq1aRzDrJ5hc3Sc=
+		lcsWRj6uLu4pq/1A1u+kAgOCWIM=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-xros-simulator.abi.json</key>
 		<data>
-		peFkUDZjh78vmwU4ESCWBKSeIP0=
+		irzesqUO1XX7PzeSW8oQyjBib6c=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-xros-simulator.private.swiftinterface</key>
 		<data>
@@ -42,11 +42,11 @@
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-xros-simulator.swiftmodule</key>
 		<data>
-		ESMZ5zvqprRdTv61749PzTlkv5E=
+		UJOLxykqxsks23RKicQJ+ayQ4KI=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-xros-simulator.abi.json</key>
 		<data>
-		peFkUDZjh78vmwU4ESCWBKSeIP0=
+		irzesqUO1XX7PzeSW8oQyjBib6c=
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-xros-simulator.private.swiftinterface</key>
 		<data>
@@ -62,7 +62,7 @@
 		</data>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-xros-simulator.swiftmodule</key>
 		<data>
-		UhlpH9Vo0t5JediFUs0vqCgu6Ak=
+		m2YbGrsEZrdmHOPD+Wry6eMVyFY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -89,21 +89,21 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			PZnkqudDkx2ZabXd5pNSyW1KU/VkoWAy1vWGvpLlpGY=
+			J8w19nX6iqwXsP9DOtZIDg8GjFxa8bBFT30RJ9LoQvQ=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/Project/x86_64-apple-xros-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			NOCBxaBX9rI9g1w51KCHwnAzb0B0S5y+UfBUvmatKOk=
+			eRWFRQAbycrFIMBiLoJcjM0MtREXT4L3KbBlsoxRMF0=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-xros-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			sJRJPGywfl5xEW69nl6lUcgbCx0a2CGX8gvE0rQxhgg=
+			85Ttlc5lcV4xwsECaiqOdJ+7MuXlt5jWTJP4ET7G40Q=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/arm64-apple-xros-simulator.private.swiftinterface</key>
@@ -131,14 +131,14 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			dbWqK9vTTdJgIQu0xb80T2m6ppvRXB9DH8h3B6xhF6E=
+			J+s7371ZOWY7N1vbl479o/htKzyBVdHg/NPPEBOjbzU=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-xros-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			sJRJPGywfl5xEW69nl6lUcgbCx0a2CGX8gvE0rQxhgg=
+			85Ttlc5lcV4xwsECaiqOdJ+7MuXlt5jWTJP4ET7G40Q=
 			</data>
 		</dict>
 		<key>Modules/NSCSupabase.swiftmodule/x86_64-apple-xros-simulator.private.swiftinterface</key>
@@ -166,7 +166,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			YSpsy8G05L++uWBCDOEnB1IqvnPyMRYnfpLXipxyCm4=
+			fmwqyft1nUvZ++Fm1e20nGWhW0S8QGzUd3nykgt3LJs=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

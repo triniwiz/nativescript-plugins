@@ -377,6 +377,51 @@ class NSCSupabaseHelpers {
     }
   }
   
+  static func mapURLErrorToHTTPStatus(_ error: URLError) -> Int {
+    switch error.code {
+    case .badURL:
+        return 400
+    case .unsupportedURL:
+        return 415
+    case .cannotFindHost:
+        return 404
+    case .cannotConnectToHost:
+        return 502
+    case .networkConnectionLost:
+        return 499
+    case .dnsLookupFailed:
+        return 502
+    case .httpTooManyRedirects:
+        return 310
+    case .resourceUnavailable:
+        return 503
+    case .notConnectedToInternet:
+        return 503
+    case .timedOut:
+        return 504
+    case .dataNotAllowed:
+        return 403
+    case .secureConnectionFailed:
+        return 525
+    case .appTransportSecurityRequiresSecureConnection:
+        return 497
+    case .requestBodyStreamExhausted:
+        return 400
+    case .clientCertificateRequired:
+        return 401
+    case .cannotLoadFromNetwork:
+        return 503
+    case .backgroundSessionInUseByAnotherProcess:
+        return 409
+    case .backgroundSessionWasDisconnected:
+        return 460
+    case .cancelled:
+        return 499
+    default:
+        return 520  // Unknown error
+    }
+}
+  
   
   static func localizedString(forStatusCode statusCode: Int) -> String {
     switch statusCode {
