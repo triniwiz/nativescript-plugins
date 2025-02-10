@@ -1,5 +1,5 @@
 import { Utils } from '@nativescript/core';
-import { startButNotStopped, stopButNotStarted, AccelerometerOptions, AccelerometerData, SensorDelay } from './common';
+import { AccelerometerOptions, AccelerometerData, SensorDelay } from './common';
 
 export { SensorDelay };
 declare const io;
@@ -40,7 +40,7 @@ export function startAccelerometerUpdates(callback: (data: AccelerometerData) =>
 					z: dataView[2],
 				});
 			},
-		}),
+		})
 	);
 	accelerometer.startAccelerometerUpdates();
 }
