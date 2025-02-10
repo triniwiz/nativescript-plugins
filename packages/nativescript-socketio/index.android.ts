@@ -1,5 +1,5 @@
 import { Common } from './common';
-
+import { Utils } from '@nativescript/core';
 declare const co: any, io: any, java: any, org: any, android: any;
 
 export class SocketIO extends Common {
@@ -16,6 +16,8 @@ export class SocketIO extends Common {
 				opts.setMultiplex(true);
 				const options = args[1];
 				const keys = Object.keys(options);
+				const headers = new java.util.HashMap();
+
 				for (let key of keys) {
 					if (key === 'query') {
 						const query = options[key];
@@ -39,6 +41,7 @@ export class SocketIO extends Common {
 						const transports = options[key];
 						if (Array.isArray(transports) && transports.length > 0) {
 							const array = (Array as any).create('java.lang.String', transports.length);
+
 							transports.forEach((item, index) => {
 								array[index] = item;
 							});
@@ -46,39 +49,43 @@ export class SocketIO extends Common {
 						}
 					} else if (key === 'auth') {
 						const authMap = new java.util.HashMap();
-						const cookies = options['cookie'];
-						const extraHeaders = options['extraHeaders'];
-						const headers = java.util.HashMap();
 
 						for (const [auth_key, auth_value] of Object.entries(options[key])) {
 							authMap.put(auth_key, auth_value);
 							this.auth_payload[auth_key] = auth_value;
 						}
 
-						if (cookies) {
-							if (headers && headers.put) {
-								const list = new java.util.ArrayList(java.util.Arrays.asList(cookies));
-								headers.put('Cookie', list);
-							}
-						}
-
-						if (extraHeaders) {
-							if (headers && headers.put) {
-								const keys = Object.keys(extraHeaders);
-								keys.forEach((key) => {
-									const value = extraHeaders[key];
-									const list = new java.util.ArrayList();
-									list.add(value);
-									headers.put(key, list);
-								});
-							}
-						}
-						if (!headers.isEmpty()) opts.setExtraHeaders(headers);
 						if (!authMap.isEmpty()) opts.setAuth(authMap);
+					} else if (key === 'cookie') {
+						const cookie = options['cookie'];
+						let cookies;
+						if (cookie && typeof cookie === 'string') {
+							cookies = cookie.split(';');
+						}
+						if (cookies) {
+							const list = new java.util.ArrayList(java.util.Arrays.asList(cookies));
+							headers.put('Cookie', list);
+						}
+					} else if (key === 'extraHeaders') {
+						const extraHeaders = options['extraHeaders'];
+
+						const keys = Object.keys(extraHeaders);
+						keys.forEach((key) => {
+							const value = extraHeaders[key];
+							const list = new java.util.ArrayList();
+							list.add(value);
+							headers.put(key, list);
+						});
+						if (!headers.isEmpty()) opts.setExtraHeaders(headers);
 					} else if (opts['set' + key[0].toUpperCase() + key.substring(1)]) {
-						opts['set' + key[0].toUpperCase() + key.substring(1)](options[key]); // for example transforms to setPath(options[path])
+						opts['set' + key[0].toUpperCase() + key.substring(1)](Utils.dataSerialize(options[key])); // for example transforms to setPath(options[path])
 					}
 				}
+
+				if (!headers.isEmpty()) {
+					opts.setExtraHeaders(headers);
+				}
+
 				this.socket = io.socket.client.IO.socket(args[0], opts.build());
 				break;
 			}
@@ -133,12 +140,58 @@ export class SocketIO extends Common {
 			},
 		});
 
-		// @ts-ignore
-		this.socket.on(event, listener);
+		let isManager = false;
+		let eventName = event;
+		switch (event) {
+			case 'connect':
+			case 'connecting':
+				eventName = io.socket.client.Socket.EVENT_CONNECT;
+				break;
+			case 'disconnect':
+				eventName = io.socket.client.Socket.EVENT_DISCONNECT;
+				break;
+			case 'error':
+				eventName = io.socket.client.Socket.EVENT_CONNECT_ERROR;
+				break;
+			case 'ping':
+			case 'pong':
+				isManager = true;
+				// eventName = io.socket.client.Manager.EVENT_PACKET;
+				break;
+			case 'reconnect':
+				isManager = true;
+				eventName = io.socket.client.Manager.EVENT_RECONNECT;
+				break;
+			case 'reconnectAttempt':
+				isManager = true;
+				eventName = io.socket.client.Manager.EVENT_RECONNECT_ATTEMPT;
+				break;
+			case 'statusChange':
+			case 'websocketUpgrade':
+				isManager = true;
+				// eventName = io.socket.client.Manager.EVENT_PACKET;
+				break;
+			default:
+				// noop
+				break;
+		}
+
+		if (isManager) {
+			// @ts-ignore
+			this.socket.io().on(eventName, listener);
+		} else {
+			// @ts-ignore
+			this.socket.on(eventName, listener);
+		}
 
 		return () => {
-			// @ts-ignore
-			this.socket.off(event, listener);
+			if (isManager) {
+				// @ts-ignore
+				this.socket.io().off(event, listener);
+			} else {
+				// @ts-ignore
+				this.socket.off(event, listener);
+			}
 		};
 	}
 
@@ -165,12 +218,58 @@ export class SocketIO extends Common {
 			},
 		});
 
-		// @ts-ignore
-		this.socket.once(event, listener);
+		let eventName = event;
+		let isManager = false;
+		switch (event) {
+			case 'connect':
+			case 'connecting':
+				eventName = io.socket.client.Socket.EVENT_CONNECT;
+				break;
+			case 'disconnect':
+				eventName = io.socket.client.Socket.EVENT_DISCONNECT;
+				break;
+			case 'error':
+				eventName = io.socket.client.Socket.EVENT_CONNECT_ERROR;
+				break;
+			case 'ping':
+			case 'pong':
+				isManager = true;
+				// eventName = io.socket.client.Manager.EVENT_PACKET;
+				break;
+			case 'reconnect':
+				isManager = true;
+				eventName = io.socket.client.Manager.EVENT_RECONNECT;
+				break;
+			case 'reconnectAttempt':
+				isManager = true;
+				eventName = io.socket.client.Manager.EVENT_RECONNECT_ATTEMPT;
+				break;
+			case 'statusChange':
+			case 'websocketUpgrade':
+				isManager = true;
+				// eventName = io.socket.client.Manager.EVENT_PACKET;
+				break;
+			default:
+				// noop
+				break;
+		}
+
+		if (isManager) {
+			// @ts-ignore
+			this.socket.io().once(eventName, listener);
+		} else {
+			// @ts-ignore
+			this.socket.once(eventName, listener);
+		}
 
 		return () => {
-			// @ts-ignore
-			this.socket.off(event, listener);
+			if (isManager) {
+				// @ts-ignore
+				this.socket.io().off(event, listener);
+			} else {
+				// @ts-ignore
+				this.socket.off(event, listener);
+			}
 		};
 	}
 
@@ -203,7 +302,7 @@ export class SocketIO extends Common {
 						args = Array.prototype.slice.call(args);
 						ack.apply(null, (<any[]>args).map(deserialize));
 					},
-				}),
+				})
 			);
 		}
 

@@ -1,13 +1,7 @@
 import { Common } from './common';
 
-// declare var SocketManager: any, NSURLComponents: any, NSURL: any, NSArray: any,
-//     NSDictionary: any, NSNull: any, SocketIOStatus: any, NSHTTPCookie: any, NSHTTPCookieSecure: any,
-//     NSHTTPCookiePath: any, NSHTTPCookieDomain: any, NSHTTPCookieExpires: any,
-//     NSHTTPCookieMaximumAge: any, NSHTTPCookieName: any, NSHTTPCookieValue: any;
-
 export class SocketIO extends Common {
-	protected socket: SocketIOClient;
-	manager: SocketManager;
+	protected socket: NSCSocketIO;
 
 	auth_payload?: unknown;
 
@@ -23,6 +17,7 @@ export class SocketIO extends Common {
 		let urlComponent;
 		let count;
 		let connectParams = {};
+		const config = NSCSocketIOConfiguration.new();
 		switch (args.length) {
 			case 2:
 				urlComponent = NSURLComponents.alloc().initWithString(args[0]);
@@ -66,7 +61,7 @@ export class SocketIO extends Common {
 					} else if (key === 'auth') {
 						this.auth_payload = obj[key];
 					} else if (key === 'debug' && obj[key]) {
-						opts['log'] = true;
+						config.log = true;
 					} else if (key === 'cookie') {
 						const cookie = obj[key] as string;
 						const properties = {};
@@ -112,15 +107,15 @@ export class SocketIO extends Common {
 						const props: NSDictionary<string, any> = NSDictionary.dictionaryWithDictionary(properties as any);
 						const native_cookie = NSHTTPCookie.cookieWithProperties(props);
 						if (native_cookie) {
-							opts['cookies'] = NSArray.arrayWithObject(native_cookie);
+							config.cookies = NSArray.arrayWithObject(native_cookie);
 						}
 					} else if (key === 'transports') {
 						const transports = obj[key];
 						if (Array.isArray(transports) && transports.length === 1) {
 							if (transports.indexOf('websocket') > -1) {
-								opts['forceWebsockets'] = true;
+								config.forceWebsockets = true;
 							} else if (transports.indexOf('polling') > -1) {
-								opts['forcePolling'] = true;
+								config.forcePolling = true;
 							}
 						}
 					} else {
@@ -132,13 +127,12 @@ export class SocketIO extends Common {
 				}
 
 				Object.assign(opts, { connectParams: connectParams });
+				config.connectParams = connectParams as never;
 
-				this.manager = SocketManager.alloc().initWithSocketURLConfig(NSURL.URLWithString(args[0]), opts);
-				this.socket = this.manager.defaultSocket;
+				this.socket = NSCSocketIO.alloc().init(args[0], config);
 				break;
 			case 3:
 				const s = args.pop();
-				this.manager = s.manager;
 				this.socket = s;
 				break;
 			default:
@@ -153,20 +147,17 @@ export class SocketIO extends Common {
 				}
 
 				if (urlComponent.queryItems) {
-					Object.assign(opts, {
-						connectParams: connectParams,
-					});
+					config.connectParams = connectParams as never;
 				}
 
-				this.manager = SocketManager.alloc().initWithSocketURLConfig(NSURL.URLWithString(args[0]), opts);
-				this.socket = this.manager.defaultSocket;
+				this.socket = this.socket = NSCSocketIO.alloc().init(args[0], config);
 				break;
 		}
 	}
 
 	connect() {
 		if (!this.connected) {
-			this.socket.connectWithPayload(this.auth_payload as any);
+			this.socket.connect(this.auth_payload as any);
 		}
 	}
 
@@ -175,11 +166,11 @@ export class SocketIO extends Common {
 	}
 
 	get connected(): boolean {
-		return this.socket.status === SocketIOStatus.Connected;
+		return this.socket.connected;
 	}
 
 	on(event: string, callback: (...payload) => void): () => void {
-		const uuid = this.socket.onCallback(event, (data, ack) => {
+		const off = this.socket.onCallback(event, (data, ack) => {
 			const d = deserialize(data);
 			if (Array.isArray(d)) {
 				data = d[0];
@@ -195,12 +186,12 @@ export class SocketIO extends Common {
 		});
 
 		return () => {
-			this.socket.offWithId(uuid);
+			off();
 		};
 	}
 
 	once(event: string, callback: (...payload) => void): () => void {
-		const uuid = this.socket.onceCallback(event, (data, ack) => {
+		const off = this.socket.onceCallback(event, (data, ack) => {
 			const d = deserialize(data);
 			if (Array.isArray(d)) {
 				data = d[0];
@@ -216,7 +207,7 @@ export class SocketIO extends Common {
 		});
 
 		return () => {
-			this.socket.offWithId(uuid);
+			off();
 		};
 	}
 
@@ -231,7 +222,6 @@ export class SocketIO extends Common {
 
 		// Check for ack callback
 		let ack = payload.pop();
-
 		// Remove ack if final argument is not a function
 		if (ack && typeof ack !== 'function') {
 			payload.push(ack);
@@ -245,18 +235,17 @@ export class SocketIO extends Common {
 			const _ack = function (args) {
 				ack.apply(null, deserialize(args));
 			};
-			const e = this.socket.rawEmitView.emitWithAckWith(event, final) as any;
-			if (e) {
-				e.timingOutAfterCallback(0, _ack);
-			}
+			this.socket.emit(event, final, (args) => {
+				_ack(args);
+			});
 		} else {
 			// Emit without Ack Callback
-			this.socket.rawEmitView.emitWith(event, final);
+			this.socket.emit(event, final, null);
 		}
 	}
 
 	joinNamespace(nsp: string): SocketIO {
-		return new SocketIO(null, null, this.manager.socketForNamespace(nsp));
+		return new SocketIO(null, null, this.socket.joinNamespaceWithNsp(nsp));
 	}
 
 	leaveNamespace(): void {
