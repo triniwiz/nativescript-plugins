@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-ffmpeg",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "FFmpeg for NativeScript",
   "main": "index",
   "typings": "index.d.ts",
