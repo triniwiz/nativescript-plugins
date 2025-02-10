@@ -19,6 +19,31 @@ export class DemoSharedNativescriptSocketio extends DemoSharedBase {
       }
     });
 
+    this.socketIO.on('connect', () => {
+      console.log('connected');
+    });
+
+    this.socketIO.on('disconnect', () => {
+      console.log('disconnect');
+    });
+
+    this.socketIO.on('reconnect', () => {
+      console.log('reconnect');
+    });
+
+    this.socketIO.on('ping', () => {
+      console.log('socket:ping');
+    });
+
+    this.socketIO.on('pong', () => {
+      console.log('socket:pong');
+    });
+
+    this.socketIO.on('reconnectAttempt', () => {
+      console.log('reconnectAttempt');
+    });
+    
+
     this.socketIO.on('login', (data) => {
       console.log('Login');
       Frame.topmost().navigate({
