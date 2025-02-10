@@ -1,7 +1,6 @@
 import {Observable} from '@nativescript/core';
 
 export abstract class DownloaderBase extends Observable {
-  downloads: Map<String, any>;
   downloadsData: Map<String, any>;
   /**
    * Native android instance
@@ -79,7 +78,7 @@ export enum StatusCode {
 export interface DownloadOptions {
   url: string;
   query?: Object | string;
-  headers?: Object;
+  headers?: Record<string, string>;
   path?: string;
   fileName?: string;
 }

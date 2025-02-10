@@ -1,11 +1,30 @@
 declare class NSCDownloader extends NSObject implements NSURLSessionDownloadDelegate {
+
 	static alloc(): NSCDownloader; // inherited from NSObject
+
+	static cancel(id: string): void;
+
+	static createDownload(url: string, path: string, fileName: string, headers: NSDictionary<string, string>, progress: (p1: string, p2: number, p3: number, p4: number, p5: number) => void, complete: (p1: string, p2: string, p3: string) => void): string;
+
+	static getPath(id: string): string;
+
+	static getStatus(id: string): StatusCode;
+
+	static has(id: string): boolean;
 
 	static new(): NSCDownloader; // inherited from NSObject
 
+	static pause(id: string): void;
+
+	static resume(id: string): void;
+
 	static setTimeOut(value: number): void;
 
+	static start(id: string): void;
+
 	static readonly config: NSURLSessionConfiguration;
+
+	static readonly instance: NSCDownloader;
 
 	static timeOut: number;
 
@@ -19,7 +38,7 @@ declare class NSCDownloader extends NSObject implements NSURLSessionDownloadDele
 
 	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	readonly; // inherited from NSObjectProtocol
+	readonly  // inherited from NSObjectProtocol
 
 	URLSessionDidBecomeInvalidWithError(session: NSURLSession, error: NSError): void;
 
@@ -76,23 +95,15 @@ declare class NSCDownloader extends NSObject implements NSURLSessionDownloadDele
 
 	URLSessionTaskWillPerformHTTPRedirectionNewRequestCompletionHandler(session: NSURLSession, task: NSURLSessionTask, response: NSHTTPURLResponse, request: NSURLRequest, completionHandler: (p1: NSURLRequest) => void): void;
 
-	cancel(id: string): void;
-
 	class(): typeof NSObject;
 
 	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
-
-	createDownloadComplete(url: string, path: string, fileName: string, headers: NSDictionary<string, string>, progress: (p1: number, p2: number, p3: number, p4: number) => void, complete: (p1: string, p2: string) => void): string;
-
-	getPath(id: string): string;
 
 	isEqual(object: any): boolean;
 
 	isKindOfClass(aClass: typeof NSObject): boolean;
 
 	isMemberOfClass(aClass: typeof NSObject): boolean;
-
-	pause(id: string): void;
 
 	performSelector(aSelector: string): any;
 
@@ -102,11 +113,7 @@ declare class NSCDownloader extends NSObject implements NSURLSessionDownloadDele
 
 	respondsToSelector(aSelector: string): boolean;
 
-	resume(id: string): void;
-
 	retainCount(): number;
 
 	self(): this;
-
-	start(id: string): void;
 }

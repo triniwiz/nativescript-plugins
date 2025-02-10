@@ -7,20 +7,56 @@
 import Foundation
 
 
-enum StatusCode {
+
+@objc(NSCDownloaderStatusCode)
+enum NSCDownloaderStatusCode: Int8, RawRepresentable {
     case PENDING
     case PAUSED
     case DOWNLOADING
     case COMPLETED
     case ERROR
+  typealias RawValue = Int8
+  
+  public init?(rawValue: Int) {
+          switch rawValue {
+          case 0:
+            self = .PENDING
+          case 1:
+            self = .PAUSED
+          case 2:
+            self = .DOWNLOADING
+          case 3:
+            self = .COMPLETED
+          case 4:
+            self = .ERROR
+          default:
+              return nil
+          }
+      }
+      
+      public var rawValue: Int {
+          switch self {
+          case .PENDING:
+            return 0
+          case .PAUSED:
+            return 1
+          case .DOWNLOADING:
+            return 2
+          case .COMPLETED:
+            return 3
+          case .ERROR:
+            return 4
+          }
+      }
+  
   }
 
 struct DownloadInfo {
     let path: String
     let url: String
-    var status: StatusCode
-    var progress: ((Double, Int, Int64, Int64) -> Void)?
-    var complete: ((String?,String?) -> Void)
+    var status: NSCDownloaderStatusCode
+    var progress: ((String, Double, Int, Int64, Int64) -> Void)?
+    var complete: ((String, String?,String?) -> Void)
 }
 
 struct Download {
@@ -36,7 +72,8 @@ struct LastData {
 @objcMembers
 @objc(NSCDownloader)
 public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
-    static let config = URLSessionConfiguration.background(withIdentifier: "NativeScript Downloader")
+  static let config = URLSessionConfiguration.background(withIdentifier: "NativeScript Downloader")
+  static let instance = NSCDownloader()
     static var timeOut: Int = 60 {
         didSet {
             config.timeoutIntervalForRequest = TimeInterval(timeOut)
@@ -48,10 +85,10 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
     private static var taskToUUID: [URLSessionDownloadTask?: String] = [:]
     private static var taskToRefreshTimeAndBytes: [URLSessionDownloadTask?: LastData] = [:]
     
-    func createDownload(_ url: String, _ path: String?, _ fileName: String?,_ headers: [String: String]?, _ progress: ((Double, Int, Int64, Int64) -> Void)?, complete: @escaping ((String?, String?) -> Void)) -> String {
+    static func createDownload(_ url: String, _ path: String?, _ fileName: String?,_ headers: [String: String]?, _ progress: ((String, Double, Int, Int64, Int64) -> Void)?, _ complete: @escaping ((String,String?, String?) -> Void)) -> String {
         let id = UUID().uuidString.lowercased()
         var request = URLRequest(url: URL(string: url)!, cachePolicy: .useProtocolCachePolicy, timeoutInterval: TimeInterval(NSCDownloader.timeOut))
-        let session = URLSession(configuration: NSCDownloader.config, delegate: self, delegateQueue: nil)
+      let session = URLSession(configuration: NSCDownloader.config, delegate: instance, delegateQueue: nil)
         
         if(headers != nil){
             for (_, value) in headers!.enumerated() {
@@ -82,22 +119,29 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
         
         return id
     }
+
+    static func has(_ id: String) -> Bool {
+        guard let task = NSCDownloader.downloads[id] else {
+            return false
+        }
+        return true
+    }
     
-    func start(_ id: String){
+    static func start(_ id: String){
         guard let task = NSCDownloader.downloads[id] else {
             return
         }
         task.task.resume()
     }
     
-    func getStatus(_ id: String) -> StatusCode {
+    static func getStatus(_ id: String) -> NSCDownloaderStatusCode {
         guard let task = NSCDownloader.downloads[id] else {
             return .PENDING
         }
         return task.info.status
     }
     
-    func pause(_ id: String){
+    static func pause(_ id: String){
         guard var task = NSCDownloader.downloads[id] else {
             return
         }
@@ -106,14 +150,14 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
         task.info.status = .PAUSED
     }
     
-    func resume(_ id: String){
+    static func resume(_ id: String){
         guard let task = NSCDownloader.downloads[id] else {
             return
         }
         task.task.resume()
     }
     
-    func cancel(_ id: String){
+    static func cancel(_ id: String){
         guard let task = NSCDownloader.downloads[id] else {
             return
         }
@@ -121,7 +165,7 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
         task.task.cancel()
     }
     
-    func getPath(_ id: String) -> String?{
+    static func getPath(_ id: String) -> String?{
         guard let task = NSCDownloader.downloads[id] else {
             return nil
         }
@@ -167,10 +211,7 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
             speed = Int(floor(round(Double(updateBytes / intervalTime))))
             
             
-            
-            
-            
-            download.info.progress?(current, speed, currentBytes, downloadTask.progress.totalUnitCount)
+            download.info.progress?(downloadId, current, speed, currentBytes, downloadTask.progress.totalUnitCount)
             last.time = Int(Date().timeIntervalSince1970 * 1000)
             last.write = currentBytes
             
@@ -184,7 +225,7 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
         guard let downloadTask = task as? URLSessionDownloadTask else {return}
         guard let downloadId = NSCDownloader.taskToUUID[downloadTask] else {return}
         guard let download = NSCDownloader.downloads[downloadId] else {return}
-        download.info.complete(nil, error?.localizedDescription)
+        download.info.complete(downloadId,nil, error?.localizedDescription)
     }
     
     public func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
@@ -194,9 +235,9 @@ public class NSCDownloader: NSObject, URLSessionDownloadDelegate {
         do {
                 let savedURL = URL(string: download.info.path)!
                 try FileManager.default.moveItem(at: location, to: savedURL)
-                download.info.complete(download.info.path, nil)
+                download.info.complete(downloadId, download.info.path, nil)
               } catch {
-                  download.info.complete(nil, "Failed to save file to path \(download.info.path)")
+                  download.info.complete(downloadId, nil, "Failed to save file to path \(download.info.path)")
               }
     }
 }
