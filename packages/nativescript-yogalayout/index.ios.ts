@@ -1,55 +1,8 @@
-import {
-	CSSType,
-	View as NSView,
-	PercentLength,
-	Length,
-	profile,
-	paddingTopProperty,
-	paddingRightProperty,
-	paddingBottomProperty,
-	paddingLeftProperty,
-	marginTopProperty,
-	marginRightProperty,
-	marginBottomProperty,
-	marginLeftProperty
-} from '@nativescript/core';
+import { CSSType, View as NSView, PercentLength, Length, profile, paddingTopProperty, paddingRightProperty, paddingBottomProperty, paddingLeftProperty, marginTopProperty, marginRightProperty, marginBottomProperty, marginLeftProperty } from '@nativescript/core';
 import { layout } from '@nativescript/core/utils';
-import {
-	maxHeightProperty,
-	maxWidthProperty,
-	SizeType,
-	ViewBase,
-	ParsedValueType,
-	FlexDirection,
-	FlexAlignItems,
-	Overflow,
-	Position,
-	alignItemsProperty,
-	overflowProperty,
-	positionProperty,
-	toYGValue,
-	FlexJustify,
-	FlexWrap,
-	FlexAlignSelf,
-	alignSelfProperty,
-	flexGrowProperty,
-	flexShrinkProperty,
-	flexBasisProperty,
-	flexProperty,
-	flexDirectionProperty,
-	FlexAlignContent,
-	alignContentProperty,
-	aspectRatioProperty,
-	Direction,
-	_toYGFlexAlignSelf,
-	_toYGDirection,
-	_toYGPosition,
-	_toNativeYG
-} from './common';
+import { maxHeightProperty, maxWidthProperty, SizeType, ViewBase, ParsedValueType, FlexDirection, FlexAlignItems, Overflow, Position, alignItemsProperty, overflowProperty, positionProperty, toYGValue, FlexJustify, FlexWrap, FlexAlignSelf, alignSelfProperty, flexGrowProperty, flexShrinkProperty, flexBasisProperty, flexProperty, flexDirectionProperty, FlexAlignContent, alignContentProperty, aspectRatioProperty, Direction, _toYGFlexAlignSelf, _toYGDirection, _toYGPosition, _toNativeYG } from './common';
 
-export {
-	FlexDirection, FlexAlignItems, FlexAlignSelf, FlexWrap, FlexJustify, Overflow, Position, Direction
-} from './common';
+export { FlexDirection, FlexAlignItems, FlexAlignSelf, FlexWrap, FlexJustify, Overflow, Position, Direction } from './common';
 
 declare class NSYogaView extends UIView {
 	readonly isYogaEnabled: boolean;
@@ -314,7 +267,6 @@ export class View extends ViewBase {
 		this._updateAlignItems(value);
 	}
 
-
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	set overflow(value) {
@@ -401,6 +353,7 @@ export class View extends ViewBase {
 		this._updateFlex(value);
 	}
 
+	// @ts-ignore
 	get flex() {
 		return this.style.flex;
 	}

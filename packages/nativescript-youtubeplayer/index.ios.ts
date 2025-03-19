@@ -1,6 +1,6 @@
 import { YoutubePlayerBase, YoutubePlayerErrors, YoutubePlayerInternalErrors, YoutubePlayerState, getPlayerData, videoIdProperty } from './common';
 
-export { YoutubePlayerBase };
+export { YoutubePlayerErrors, YoutubePlayerState, YoutubePlayerInternalErrors };
 
 import { Utils } from '@nativescript/core';
 @NativeClass

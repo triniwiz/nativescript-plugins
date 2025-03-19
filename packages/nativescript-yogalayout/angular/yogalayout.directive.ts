@@ -1,7 +1,7 @@
-import {Directive} from "@angular/core";
+import { Directive } from '@angular/core';
 
 @Directive({
-  selector: 'View'
+	selector: 'View',
+	standalone: false,
 })
-export class YogaLayoutItDirective {
-}
+export class YogaLayoutItDirective {}

@@ -1,9 +1,9 @@
-
-import { Directive } from "@angular/core";
+import { Directive } from '@angular/core';
 
 @Directive({
-    selector: "CreditCardView"
+	selector: 'CreditCardView',
+	standalone: false,
 })
-export class CreditCardViewDirective { }
+export class CreditCardViewDirective {}
 
 export const DIRECTIVES = CreditCardViewDirective;

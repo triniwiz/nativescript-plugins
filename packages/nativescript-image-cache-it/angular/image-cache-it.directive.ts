@@ -1,6 +1,7 @@
-import {Directive} from "@angular/core";
+import { Directive } from '@angular/core';
 
 @Directive({
-  selector: 'ImageCacheIt'
+	selector: 'ImageCacheIt',
+	standalone: false,
 })
 export class ImageCacheItDirective {}

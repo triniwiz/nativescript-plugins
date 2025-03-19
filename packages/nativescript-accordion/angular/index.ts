@@ -9,11 +9,24 @@ registerElement('Accordion', () => Accordion);
 const NG_VIEW = '_ngViewRef';
 
 export class ItemContext {
-	constructor(public $implicit?: any, public item?: any, public index?: number, public even?: boolean, public odd?: boolean) {}
+	constructor(
+		public $implicit?: any,
+		public item?: any,
+		public index?: number,
+		public even?: boolean,
+		public odd?: boolean,
+	) {}
 }
 
 export class ChildItemContext {
-	constructor(public $implicit?: any, public item?: any, public parentIndex?: number, public index?: number, public even?: boolean, public odd?: boolean) {}
+	constructor(
+		public $implicit?: any,
+		public item?: any,
+		public parentIndex?: number,
+		public index?: number,
+		public even?: boolean,
+		public odd?: boolean,
+	) {}
 }
 
 export interface SetupItemViewArgs {
@@ -109,7 +122,10 @@ export abstract class AccordionItemsComponent implements DoCheck, OnDestroy, Aft
 		this.accordionItemsView.items = this._items;
 	}
 
-	constructor(_elementRef: ElementRef, private _iterableDiffers: IterableDiffers) {
+	constructor(
+		_elementRef: ElementRef,
+		private _iterableDiffers: IterableDiffers,
+	) {
 		this.accordionItemsView = _elementRef.nativeElement;
 		this.accordionItemsView.on('headerLoading', this.onHeaderLoading, this);
 		this.accordionItemsView.on('itemHeaderLoading', this.onItemHeaderLoading, this);
@@ -466,9 +482,12 @@ export function getItemViewRoot(viewRef: ComponentView, rootLocator: RootLocator
 
 export const ACCORDION_ITEMS_COMPONENT = new InjectionToken<AccordionItemsView>('AccordionItemsComponent');
 
-@Directive({ selector: '[acTemplateKey]' })
+@Directive({ selector: '[acTemplateKey]', standalone: false })
 export class TemplateKeyDirective {
-	constructor(private templateRef: TemplateRef<any>, @Inject(ACCORDION_ITEMS_COMPONENT) @Host() private comp: AccordionItemsComponent) {}
+	constructor(
+		private templateRef: TemplateRef<any>,
+		@Inject(ACCORDION_ITEMS_COMPONENT) @Host() private comp: AccordionItemsComponent,
+	) {}
 
 	@Input()
 	set acTemplateKey(value: any) {
@@ -485,6 +504,7 @@ export class TemplateKeyDirective {
 	</DetachedContainer>`,
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	providers: [{ provide: ACCORDION_ITEMS_COMPONENT, useExisting: forwardRef(() => AccordionComponent) }],
+	standalone: false,
 })
 export class AccordionComponent extends AccordionItemsComponent {
 	public get nativeElement(): Accordion {
