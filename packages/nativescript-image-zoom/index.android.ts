@@ -131,6 +131,7 @@ export class ImageZoom extends ImageZoomBase {
 		this.builder?.into(this.nativeView);
 	}
 
+	// @ts-ignore
 	[resizeProperty.setNative](resize: string) {
 		if (!this.builder) {
 			return resize;
@@ -172,6 +173,7 @@ export class ImageZoom extends ImageZoomBase {
 		return 'aspectFit';
 	}
 
+	// @ts-ignore
 	[stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
 		if (!this.builder) return value;
 		this.resetImage(true);

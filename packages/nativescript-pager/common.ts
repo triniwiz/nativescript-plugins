@@ -1,29 +1,5 @@
-import {
-  AddChildFromBuilder,
-  addWeakEventListener,
-  Builder,
-  CoercibleProperty,
-  Color,
-  ContainerView,
-  CSSType,
-  GridLayout,
-  ItemsSource,
-  KeyedTemplate,
-  Label,
-  Length,
-  makeParser,
-  makeValidator,
-  PercentLength,
-  Property,
-  removeWeakEventListener,
-  Template,
-  Trace,
-  View,
-  ObservableArray,
-  Observable,
-  CoreTypes,
-  Utils
-} from "@nativescript/core";
+import { AddChildFromBuilder, addWeakEventListener, Builder, CoercibleProperty, Color, ContainerView, CSSType, GridLayout, KeyedTemplate, Label, Length, makeParser, makeValidator, PercentLength, Property, removeWeakEventListener, Template, Trace, View, ObservableArray, Observable, CoreTypes, Utils } from '@nativescript/core';
+import type { ItemsSource } from '@nativescript/core/ui/list-view';
 
 export type Orientation = 'horizontal' | 'vertical';
 

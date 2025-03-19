@@ -17,6 +17,7 @@ export { PagerItemDirective, TemplatedItemsComponent, TemplateKeyDirective } fro
 			useExisting: forwardRef(() => PagerComponent),
 		},
 	],
+	standalone: false,
 })
 export class PagerComponent extends TemplatedItemsComponent {
 	public get nativeElement(): Pager {

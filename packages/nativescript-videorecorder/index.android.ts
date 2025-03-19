@@ -1,5 +1,5 @@
 import { AndroidActivityResultEventData, AndroidApplication, Application, Device, Utils } from '@nativescript/core';
-import * as permissions from 'nativescript-permissions';
+import * as permissions from '@nativescript-community/perms';
 
 import { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType, VideoRecorderBase } from './common';
 
@@ -9,24 +9,30 @@ const RESULT_OK = -1;
 const REQUEST_VIDEO_CAPTURE = 999;
 
 export class VideoRecorder extends VideoRecorderBase {
-	public requestPermissions(explanation?: string): Promise<void> {
-		return permissions.requestPermissions([android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO], Utils.isNullOrUndefined(explanation) ? '' : explanation);
+	public requestPermissions(explanation?: string): Promise<permissions.Result> {
+		return permissions.request('camera').then(() => permissions.request('android.permission.RECORD_AUDIO'));
 	}
 
-	public hasCameraPermission(): boolean {
-		return permissions.hasPermission(android.Manifest.permission.CAMERA);
+	public hasCameraPermission(): Promise<permissions.Result> {
+		return permissions.check(android.Manifest.permission.CAMERA);
 	}
 
-	public hasAudioPermission(): boolean {
-		return permissions.hasPermission(android.Manifest.permission.RECORD_AUDIO);
+	public hasAudioPermission(): Promise<permissions.Result> {
+		return permissions.check(android.Manifest.permission.RECORD_AUDIO);
 	}
 
-	public hasStoragePermission(): boolean {
-		return permissions.hasPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) && permissions.hasPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE);
+	public hasStoragePermission(): Promise<permissions.Result> {
+		return permissions.check('storage', {
+			read: true,
+			write: true,
+		});
 	}
 
-	public requestStoragePermission(explanation?: string): Promise<any> {
-		return permissions.requestPermissions([android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE], Utils.isNullOrUndefined(explanation) ? '' : explanation);
+	public requestStoragePermission(explanation?: string): Promise<permissions.Result> {
+		return permissions.request('storage', {
+			read: true,
+			write: true,
+		});
 	}
 
 	public static isAvailable() {
@@ -34,7 +40,7 @@ export class VideoRecorder extends VideoRecorderBase {
 	}
 
 	protected _startRecording(options: Options = this.options): Promise<RecordResult> {
-    // eslint-disable-next-line no-async-promise-executor
+		// eslint-disable-next-line no-async-promise-executor
 		return new Promise(async (resolve, reject) => {
 			try {
 				const pkgName = Utils.ad.getApplication().getPackageName();
@@ -70,9 +76,10 @@ export class VideoRecorder extends VideoRecorderBase {
 				let tempPictureUri;
 
 				if (saveToGallery) {
-					await permissions.requestPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+					await this.requestStoragePermission();
 				}
-				if (!permissions.hasPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+				const hasPerm = await this.hasStoragePermission();
+				if (hasPerm[0] !== 'authorized') {
 					saveToGallery = false;
 				}
 				const createTmpFile = () => {
@@ -137,7 +144,7 @@ export class VideoRecorder extends VideoRecorderBase {
 								(com as any).github.triniwiz.videorecorder.Utils.copy(fis, fos);
 								if (sdkVersionInt >= 29) {
 									values.clear();
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore
 									values.put(android.provider.MediaStore.Video.Media.IS_PENDING, java.lang.Integer.valueOf(0));
 									Utils.android.getApplicationContext().getContentResolver().update(uri, values, null, null);

@@ -25,6 +25,7 @@
 			"@triniwiz/nativescript-accelerometer": ["packages/nativescript-accelerometer/index.d.ts"],
 			"@triniwiz/nativescript-accordion": ["packages/nativescript-accordion/index.d.ts"],
 			"@triniwiz/nativescript-accordion/angular": ["packages/nativescript-accordion/angular/index.ts"],
+			"@triniwiz/nativescript-appwrite": ["packages/nativescript-appwrite/index.d.ts"],
 			"@triniwiz/nativescript-autocomplete": ["packages/nativescript-autocomplete/index.d.ts"],
 			"@triniwiz/nativescript-awesome-loaders": ["packages/nativescript-awesome-loaders/index.d.ts"],
 			"@triniwiz/nativescript-aws-sdk": ["packages/nativescript-aws-sdk/index.d.ts"],
@@ -32,6 +33,7 @@
 			"@triniwiz/nativescript-card-io": ["packages/nativescript-card-io/index.d.ts"],
 			"@triniwiz/nativescript-couchbase": ["packages/nativescript-couchbase/index.d.ts"],
 			"@triniwiz/nativescript-ddp-login": ["packages/nativescript-ddp-login/index.d.ts"],
+			"@triniwiz/nativescript-descope": ["packages/nativescript-descope/index.d.ts"],
 			"@triniwiz/nativescript-downloader": ["packages/nativescript-downloader/index.d.ts"],
 			"@triniwiz/nativescript-fancy-camera": ["packages/nativescript-fancy-camera/index.d.ts"],
 			"@triniwiz/nativescript-fancy-list-view": ["packages/nativescript-fancy-list-view/index.d.ts"],
@@ -65,6 +67,7 @@
 			"@triniwiz/nativescript-stripe": ["packages/nativescript-stripe/index.d.ts"],
 			"@triniwiz/nativescript-stripe/angular": ["packages/nativescript-stripe/angular/index.ts"],
 			"@triniwiz/nativescript-supabase": ["packages/nativescript-supabase/index.ts"],
+			"@triniwiz/nativescript-supabase-auth": ["packages/nativescript-supabase-auth/index.d.ts"],
 			"@triniwiz/nativescript-supabase-functions": ["packages/nativescript-supabase-functions/index.d.ts"],
 			"@triniwiz/nativescript-supabase-gotrue": ["packages/nativescript-supabase-gotrue/index.ts"],
 			"@triniwiz/nativescript-supabase-postgrest": ["packages/nativescript-supabase-postgrest/index.ts"],
@@ -80,10 +83,7 @@
 			"@triniwiz/nativescript-yogalayout": ["packages/nativescript-yogalayout/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout/angular": ["packages/nativescript-yogalayout/angular/index.ts"],
 			"@triniwiz/nativescript-youtubeplayer": ["packages/nativescript-youtubeplayer/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"],
-			"@triniwiz/nativescript-descope": ["packages/nativescript-descope/index.d.ts"],
-			"@triniwiz/nativescript-appwrite": ["packages/nativescript-appwrite/index.d.ts"],
-			"@triniwiz/nativescript-supabase-auth": ["packages/nativescript-supabase-auth/index.d.ts"]
+			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

@@ -363,7 +363,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						this._createImageSourceFromSrc(source);
 					}
 				}
-			}
+			},
 		);
 	}
 
@@ -522,6 +522,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 		return 'aspectFit';
 	}
 
+	// @ts-ignore
 	[stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
 		this.setAspect(value);
 	}
@@ -667,7 +668,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 				(image) => {
 					setImage(image);
 				},
-				null
+				null,
 			);
 		} else {
 			if (NSThread.isMainThread) {
@@ -681,7 +682,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						(image) => {
 							setImage(image);
 						},
-						null
+						null,
 					);
 				} else {
 					setImage();
@@ -697,7 +698,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 						(image) => {
 							setImage(image);
 						},
-						null
+						null,
 					);
 				} else {
 					dispatch_async(main_queue, () => {
@@ -945,7 +946,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 									});
 								}
 							}
-						}
+						},
 					);
 				}
 			} else {
