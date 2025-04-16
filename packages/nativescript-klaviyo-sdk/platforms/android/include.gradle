@@ -1,0 +1,10 @@
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
+ dependencies {
+    api "com.github.klaviyo.klaviyo-android-sdk:analytics:3.3.0"
+    api "com.github.klaviyo.klaviyo-android-sdk:push-fcm:3.3.0"
+    api "com.github.klaviyo.klaviyo-android-sdk:forms:3.3.0"
+    implementation "com.github.klaviyo.klaviyo-android-sdk:core:3.3.0"
+ }

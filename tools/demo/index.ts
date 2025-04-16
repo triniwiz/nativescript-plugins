@@ -13,6 +13,7 @@ export * from './nativescript-here';
 export * from './nativescript-image-cache-it';
 export * from './nativescript-image-zoom';
 export * from './nativescript-imageoptimize';
+export * from './nativescript-klaviyo-sdk';
 export * from './nativescript-messenger';
 export * from './nativescript-nested-scrollview';
 export * from './nativescript-opentok';

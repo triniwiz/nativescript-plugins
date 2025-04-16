@@ -446,6 +446,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-supabase-auth: Build',
 				},
 			},
+			// @triniwiz/nativescript-klaviyo-sdk
+			'nativescript-klaviyo-sdk': {
+				build: {
+					script: 'nx run nativescript-klaviyo-sdk:build.all',
+					description: '@triniwiz/nativescript-klaviyo-sdk: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -675,6 +682,10 @@ module.exports = {
 			'nativescript-supabase-auth': {
 				script: 'nx run nativescript-supabase-auth:focus',
 				description: 'Focus on @triniwiz/nativescript-supabase-auth',
+			},
+			'nativescript-klaviyo-sdk': {
+				script: 'nx run nativescript-klaviyo-sdk:focus',
+				description: 'Focus on @triniwiz/nativescript-klaviyo-sdk',
 			},
 			reset: {
 				script: 'nx g @nativescript/plugin-tools:focus-packages',

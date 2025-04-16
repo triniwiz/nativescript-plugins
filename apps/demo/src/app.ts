@@ -1,6 +1,6 @@
 import { Application, Folder, knownFolders } from '@nativescript/core';
 import * as dateFns from 'date-fns';
-import { createClient, SupabaseClient } from '@triniwiz/nativescript-supabase';
+// import { createClient, SupabaseClient } from '@triniwiz/nativescript-supabase';
 const resources = Application.getResources();
 resources['timeFromNow'] = (date) => dateFns.formatRelative(date, new Date());
 Application.setResources(resources);
@@ -38,7 +38,7 @@ declare const io;
 // }
 
 try {
-	const client: SupabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+	// const client: SupabaseClient = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 	// (async function () {
 	// 	try {

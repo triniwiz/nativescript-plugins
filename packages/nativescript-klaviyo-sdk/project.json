@@ -1,0 +1,73 @@
+{
+  "name": "nativescript-klaviyo-sdk",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/nativescript-klaviyo-sdk",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "dist/packages/nativescript-klaviyo-sdk",
+        "tsConfig": "packages/nativescript-klaviyo-sdk/tsconfig.json",
+        "packageJson": "packages/nativescript-klaviyo-sdk/package.json",
+        "main": "packages/nativescript-klaviyo-sdk/index.d.ts",
+        "assets": [
+          "packages/nativescript-klaviyo-sdk/*.md",
+          "packages/nativescript-klaviyo-sdk/index.d.ts",
+          "LICENSE",
+          {
+            "glob": "**/*",
+            "input": "packages/nativescript-klaviyo-sdk/platforms/",
+            "output": "./platforms/"
+          }
+        ],
+        "dependsOn": [
+          {
+            "target": "build.all",
+            "projects": "dependencies"
+          }
+        ]
+      }
+    },
+    "build.all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "node tools/scripts/build-finish.ts nativescript-klaviyo-sdk"
+        ],
+        "parallel": false
+      },
+      "outputs": [
+        "{workspaceRoot}/dist/packages/nativescript-klaviyo-sdk"
+      ],
+      "dependsOn": [
+        {
+          "target": "build.all",
+          "projects": "dependencies"
+        },
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ]
+    },
+    "focus": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "nx g @nativescript/plugin-tools:focus-packages nativescript-klaviyo-sdk"
+        ],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:eslint",
+      "options": {
+        "lintFilePatterns": [
+          "packages/nativescript-klaviyo-sdk/**/*.ts"
+        ]
+      }
+    }
+  },
+  "tags": []
+}
