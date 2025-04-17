@@ -113,9 +113,8 @@ Klaviyo.createEvent({
 
 To display in-app forms, add the following code to your application
 
-```
-import { Klaviyo } from "klaviyo-react-native-sdk";
-...
+``` ts
+import { Klaviyo } from '@triniwiz/nativescript-klaviyo-sdk';
 
 // call this any time after initializing your public API key
 Klaviyo.registerForInAppForms();
