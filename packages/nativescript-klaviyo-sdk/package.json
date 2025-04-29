@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-klaviyo-sdk",
-  "version": "0.0.3-alpha.2",
+  "version": "0.0.3",
   "description": "Klaviyo NativeScript SDK",
   "main": "index",
   "types": "index.d.ts",
