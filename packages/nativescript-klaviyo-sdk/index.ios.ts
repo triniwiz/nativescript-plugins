@@ -15,12 +15,35 @@ export class Klaviyo {
 		this[native_] = NSCKlaviyo.alloc().initWithKey(key);
 	}
 
+	static handleIntent(value) {
+		// noop
+	}
+
+	static handleNotification(message: any, deepLink?: (string) => void): boolean {
+		return this.native.handleNotification(
+			message,
+			() => {},
+			(url: NSURL) => {
+				if (url) {
+					const urlString = url.absoluteString;
+					if (urlString) {
+						deepLink?.(urlString);
+					}
+				}
+			}
+		);
+	}
+
 	static registerForInAppForms() {
 		this.native.registerForInAppForms(() => {});
 	}
 
 	static setPushToken(token: string) {
-		this.native.setPushToken(token);
+		if (token && (token as any) instanceof NSData) {
+			this.native.setPushTokenWithToken(token as never);
+		} else {
+			this.native.setPushToken(token);
+		}
 	}
 
 	static getPushToken() {

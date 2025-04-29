@@ -131,6 +131,155 @@ Consider how often you want to register for forms. For example, registering from
 **Note**: At this time, when device orientation changes any currently visible form is closed and will not be re-displayed automatically.
 
 
+## Push Notifications
+
+### Prerequisites
+
+Integrating push notifications is highly platform-specific. Begin by thoroughly reviewing the setup
+instructions for Push Notifications in the README from each native Klaviyo SDK:
+
+- [Android](https://github.com/klaviyo/klaviyo-android-sdk#Push-Notifications)
+- [iOS](https://github.com/klaviyo/klaviyo-swift-sdk#Push-Notifications)
+
+### Setup
+
+Refer to the following README sections on push setup:
+
+- [Android](https://github.com/klaviyo/klaviyo-android-sdk#Setup)
+- [iOS](https://github.com/klaviyo/klaviyo-swift-sdk#Setup)
+
+### Collecting Push Tokens
+
+Push tokens can be collected either from your app's react native code or in the native code.
+Below sections discuss both approaches, and you are free to pick one that best suits your app's architecture.
+Note that doing this in one location is sufficient.
+
+#### Token Collection
+
+In order to collect the push token in your NativeScript app you need to:
+
+1. Import a library such as [`@triniwiz/nativescript-klaviyo-push-sdk`](https://www.npmjs.com/package/@triniwiz/nativescript-klaviyo-push-sdk)
+  
+
+     ```typescript
+	import { KlaviyoPush } from '@triniwiz/nativescript-klaviyo-push-sdk';
+	import { Klaviyo } from '@triniwiz/nativescript-klaviyo-sdk';
+   
+
+	KlaviyoPush.getInstance().onToken = (token) => {
+		  Klaviyo.setPushToken(token)
+	};
+   ```
+
+#### Notification Permission
+
+Requesting user permission to display notifications can be managed by doing the following
+
+
+   ```typescript
+   import { KlaviyoPush, AuthorizationStatus } from '@triniwiz/nativescript-klaviyo-push-sdk';
+async function requestUserPermission() {
+	const authStatus = await MessagingCore.getInstance().requestPermission({
+		ios: {
+			alert: true,
+		},
+	});
+	const enabled = authStatus === AuthorizationStatus.AUTHORIZED || authStatus === AuthorizationStatus.PROVISIONAL;
+
+	if (enabled) {
+		console.log('Authorization status:', authStatus);
+
+		const didRegister = await requestUserPermission.getInstance().registerDeviceForRemoteMessages();
+	}
+}
+   ```
+
+### Receiving Push Notifications
+
+You can send test notifications to a specific token using the
+[push notification preview](https://help.klaviyo.com/hc/en-us/articles/18011985278875)
+feature in order to test your integration.
+
+#### Rich Push
+
+[Rich Push](https://help.klaviyo.com/hc/en-us/articles/16917302437275) is the ability to add images to
+push notification messages. On iOS, you will need to implement an extension service to attach images to notifications.
+No additional setup is needed to support rich push on Android.
+
+- [Android](https://github.com/klaviyo/klaviyo-android-sdk#Rich-Push)
+- [iOS](https://github.com/klaviyo/klaviyo-swift-sdk#Rich-Push)
+
+#### Badge Count
+
+Klaviyo supports setting or incrementing the badge count on iOS when you send a push notification.
+To enable this functionality, you will need to implement a notification service extension and app group
+as detailed in the [Swift SDK installation instructions](https://github.com/klaviyo/klaviyo-swift-sdk?tab=readme-ov-file#installation).
+See the [badge count documentation](https://github.com/klaviyo/klaviyo-swift-sdk?tab=readme-ov-file#badge-count) for more details and the example app for reference.
+Android automatically handles badge counts, and no additional setup is needed.
+
+#### Tracking Open Events
+
+The Klaviyo NativeScript SDK handles tracking the events if it contains a deepLink the callback will be triggered
+
+  ```typescript
+import { registerUniversalLinkCallback } from "@nativescript-community/universal-links";
+
+
+ registerUniversalLinkCallback(ul => {
+
+    });
+
+
+	```
+
+#### Deep Linking
+
+[Deep Links](https://help.klaviyo.com/hc/en-us/articles/14750403974043) allow you to navigate to a particular
+page within your app in response to the user opening a notification. Familiarize yourself with the
+[React Native Guide](https://reactnative.dev/docs/linking) to deep linking, then read through the platform-specific
+instructions below.
+
+- [Android](https://github.com/klaviyo/klaviyo-android-sdk#Deep-Linking) instructions for handling intent filters
+- [iOS](https://github.com/klaviyo/klaviyo-swift-sdk#Deep-Linking)
+
+
+```typescript
+import { Linking } from 'react-native';
+
+import { registerUniversalLinkCallback, getUniversalLink } from "@nativescript-community/universal-links";
+
+
+ registerUniversalLinkCallback(ul => {
+
+    });
+
+
+//  last universal link which opened the app
+getUniversalLink()
+
+```
+
+#### Silent Push Notifications
+Silent push notifications (also known as background pushes) allow your app to receive payloads from Klaviyo without displaying a visible alert to the user. These are typically used to trigger background behavior, such as displaying content, personalizing the app interface, or downloading new information from a server. To receive silent push notifications, follow the platform-specific instructions below:
+- [Android](https://github.com/klaviyo/klaviyo-android-sdk#Silent-Push-Notifications)
+- [iOS](https://github.com/klaviyo/klaviyo-swift-sdk#Silent-Push-Notifications)
+
+#### Custom Data
+Klaviyo messages can also include key-value pairs (custom data) for both standard and silent push notifications. To receive custom data, follow the platform-specific instructions below:
+- [Android](https://github.com/klaviyo/klaviyo-android-sdk#Custom-Data)
+- [iOS](https://github.com/klaviyo/klaviyo-swift-sdk#Custom-Data)
+
+
+     ```typescript
+	import { KlaviyoPush } from '@triniwiz/nativescript-klaviyo-push-sdk';
+
+   
+	KlaviyoPush.getInstance().onKlaviyoCustomDataMessage = (data) => {
+		  console.log('custom data', data)
+	};
+   ```
+
+
 ## License
 
 Apache License Version 2.0

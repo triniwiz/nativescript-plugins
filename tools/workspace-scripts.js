@@ -453,6 +453,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-klaviyo-sdk: Build',
 				},
 			},
+			// @triniwiz/nativescript-klaviyo-push-sdk
+			'nativescript-klaviyo-push-sdk': {
+				build: {
+					script: 'nx run nativescript-klaviyo-push-sdk:build.all',
+					description: '@triniwiz/nativescript-klaviyo-push-sdk: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -686,6 +693,10 @@ module.exports = {
 			'nativescript-klaviyo-sdk': {
 				script: 'nx run nativescript-klaviyo-sdk:focus',
 				description: 'Focus on @triniwiz/nativescript-klaviyo-sdk',
+			},
+			'nativescript-klaviyo-push-sdk': {
+				script: 'nx run nativescript-klaviyo-push-sdk:focus',
+				description: 'Focus on @triniwiz/nativescript-klaviyo-push-sdk',
 			},
 			reset: {
 				script: 'nx g @nativescript/plugin-tools:focus-packages',

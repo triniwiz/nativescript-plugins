@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 import KlaviyoSwift
 import KlaviyoForms
 
@@ -215,6 +216,10 @@ public class NSCKlaviyo: NSObject {
   
   public func resetProfile() {
     klaviyo.resetProfile()
+  }
+
+  public func handleNotification(_ response: UNNotificationResponse, _ completionHandler: @escaping () -> Void, _ deepLinkHandler: ((URL) -> Void)? = nil) -> Bool{
+    return klaviyo.handle(notificationResponse: response, withCompletionHandler: completionHandler, deepLinkHandler: deepLinkHandler)
   }
   
   public func setProfileAttribute(_ key: NSCKlaviyoProfileKey, _ value: String, _ customKey: String? = nil) {

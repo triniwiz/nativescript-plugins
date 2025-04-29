@@ -49,6 +49,9 @@ export class HomeComponent {
 		name: 'nativescript-imageoptimize'
 	},
 	{
+		name: 'nativescript-klaviyo-push-sdk'
+	},
+	{
 		name: 'nativescript-klaviyo-sdk'
 	},
 	{

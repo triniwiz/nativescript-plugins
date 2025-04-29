@@ -21,6 +21,7 @@ const routes: Routes = [
 	{ path: 'nativescript-image-cache-it', loadChildren: () => import('./plugin-demos/nativescript-image-cache-it.module').then(m => m.NativescriptImageCacheItModule) },
 	{ path: 'nativescript-image-zoom', loadChildren: () => import('./plugin-demos/nativescript-image-zoom.module').then(m => m.NativescriptImageZoomModule) },
 	{ path: 'nativescript-imageoptimize', loadChildren: () => import('./plugin-demos/nativescript-imageoptimize.module').then(m => m.NativescriptImageoptimizeModule) },
+	{ path: 'nativescript-klaviyo-push-sdk', loadChildren: () => import('./plugin-demos/nativescript-klaviyo-push-sdk.module').then(m => m.NativescriptKlaviyoPushSdkModule) },
 	{ path: 'nativescript-klaviyo-sdk', loadChildren: () => import('./plugin-demos/nativescript-klaviyo-sdk.module').then(m => m.NativescriptKlaviyoSdkModule) },
 	{ path: 'nativescript-messenger', loadChildren: () => import('./plugin-demos/nativescript-messenger.module').then(m => m.NativescriptMessengerModule) },
 	{ path: 'nativescript-nested-scrollview', loadChildren: () => import('./plugin-demos/nativescript-nested-scrollview.module').then(m => m.NativescriptNestedScrollviewModule) },

@@ -27,6 +27,10 @@ export interface Profile {
 export class Klaviyo {
 	static initialize(key: string);
 
+	static handleIntent(value);
+
+	static handleNotification(message, deepLink?: (string) => void): boolean;
+
 	static registerForInAppForms();
 
 	static setPushToken(token: string);
@@ -34,7 +38,7 @@ export class Klaviyo {
 	static getPushToken(): string;
 
 	static setEmail(email: string);
-	
+
 	static getEmail(): string;
 
 	static setExternalId(externalId: string);

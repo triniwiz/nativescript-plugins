@@ -12,6 +12,7 @@
 - [@triniwiz/nativescript-image-cache-it](packages/nativescript-image-cache-it/README.md)
 - [@triniwiz/nativescript-image-zoom](packages/nativescript-image-zoom/README.md)
 - [@triniwiz/nativescript-imageoptimize](packages/nativescript-imageoptimize/README.md)
+- [@triniwiz/nativescript-klaviyo-push-sdk](packages/nativescript-klaviyo-push-sdk/README.md)
 - [@triniwiz/nativescript-klaviyo-sdk](packages/nativescript-klaviyo-sdk/README.md)
 - [@triniwiz/nativescript-messenger](packages/nativescript-messenger/README.md)
 - [@triniwiz/nativescript-nested-scrollview](packages/nativescript-nested-scrollview/README.md)

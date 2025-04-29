@@ -16,6 +16,8 @@ declare class NSCKlaviyo extends NSObject {
 
 	getPushToken(): string;
 
+	handleNotification(response: UNNotificationResponse, completionHandler: () => void, deepLinkHandler: (p1: NSURL) => void): boolean;
+
 	initWithKey(key: string): this;
 
 	registerForInAppForms(callback: () => void): void;
@@ -36,6 +38,7 @@ declare class NSCKlaviyo extends NSObject {
 
 	setPushTokenWithToken(token: NSData): void;
 }
+
 
 declare const enum NSCKlaviyoProfileKey {
 

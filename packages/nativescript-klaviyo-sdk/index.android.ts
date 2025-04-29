@@ -1,11 +1,31 @@
-import { Utils } from '@nativescript/core';
+import { AndroidActivityNewIntentEventData, Application, Utils } from '@nativescript/core';
 import { EventName, ProfileAttributeKey } from './common';
 import { Profile } from '.';
-declare const io: any;
+declare const io: any, com: any;
 export class Klaviyo {
 	static initialize(key: string) {
 		com.klaviyo.analytics.Klaviyo.INSTANCE.initialize(key, Utils.android.getApplicationContext());
 	}
+
+	static handleIntent(value) {
+		if (value?.intent) {
+			com.klaviyo.analytics.Klaviyo.INSTANCE.handlePush(value.intent);
+		} else {
+			com.klaviyo.analytics.Klaviyo.INSTANCE.handlePush(value);
+		}
+	}
+
+	static handleNotification(message, deepLink?: (string) => void): boolean {
+		try {
+			if (message instanceof com.google.firebase.messaging.RemoteMessage) {
+				const data = message.getData();
+				console.log('Klaviyo handleNotification', data);
+				// if(data?.get?.("_k") &&)
+			}
+		} catch (error) {}
+		return false;
+	}
+	// 		public getData(): java.util.Map<string,string>;
 
 	static registerForInAppForms() {
 		io.github.triniwiz.plugins.klaviyo.Klaviyo.registerForInAppForms();

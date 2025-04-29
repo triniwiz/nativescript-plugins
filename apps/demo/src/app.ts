@@ -1,10 +1,32 @@
 import { Application, Folder, knownFolders } from '@nativescript/core';
+import { Klaviyo } from '@triniwiz/nativescript-klaviyo-sdk';
 import * as dateFns from 'date-fns';
 // import { createClient, SupabaseClient } from '@triniwiz/nativescript-supabase';
 const resources = Application.getResources();
 resources['timeFromNow'] = (date) => dateFns.formatRelative(date, new Date());
 Application.setResources(resources);
 declare const io;
+
+Klaviyo.initialize('VNHUpS');
+console.log('Klaviyo initialized');
+Klaviyo.setProfile({
+	phoneNumber: '1868-123-4567',
+	email: 'fortune.osei@gmail.com',
+	externalId: '1234567890',
+	title: 'Mr',
+	firstName: 'Osei',
+	lastName: 'Fortune',
+	organization: 'FITCOM',
+})
+console.log('email', Klaviyo.getEmail());
+console.log('externalId', Klaviyo.getExternalId());
+console.log('phoneNumber', Klaviyo.getPhoneNumber());
+console.log('pushToken', Klaviyo.getPushToken());
+
+Klaviyo.setEmail('fortune.osei@gmail.com');
+Klaviyo.setExternalId('1234567890');
+console.log('email', Klaviyo.getEmail());
+console.log('externalId', Klaviyo.getExternalId());
 
 // NOTE: Uncomment to test the following plugins:
 // import { File } from '@triniwiz/nativescript-file-manager';

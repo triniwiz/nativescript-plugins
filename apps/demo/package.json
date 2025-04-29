@@ -51,7 +51,8 @@
     "@triniwiz/nativescript-webrtc": "file:../../packages/nativescript-webrtc",
     "@triniwiz/nativescript-yogalayout": "file:../../packages/nativescript-yogalayout",
     "@triniwiz/nativescript-youtubeplayer": "file:../../packages/nativescript-youtubeplayer",
-    "@triniwiz/nativescript-klaviyo-sdk": "file:../../packages/nativescript-klaviyo-sdk"
+    "@triniwiz/nativescript-klaviyo-sdk": "file:../../packages/nativescript-klaviyo-sdk",
+    "@triniwiz/nativescript-klaviyo-push-sdk": "file:../../packages/nativescript-klaviyo-push-sdk"
   },
   "devDependencies": {
     "@nativescript/android": "~8.9.0",
