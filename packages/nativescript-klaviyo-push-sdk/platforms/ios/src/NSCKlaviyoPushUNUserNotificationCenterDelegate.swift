@@ -3,7 +3,7 @@ import KlaviyoSwift
 import UIKit
 import NSCKlaviyoPush
 
-struct OriginalDelegateRespondsTo {
+struct KlaviyoOriginalDelegateRespondsTo {
   var willPresentNotification: Bool
   var didReceiveNotificationResponse:Bool
   var openSettingsForNotification: Bool
@@ -18,7 +18,7 @@ public class NSCKlaviyoPushUNUserNotificationCenterDelegate: NSObject, UNUserNot
   
   static var originalNotificationCenterDelegate: UNUserNotificationCenterDelegate? = nil
   
-  static var originalDelegateRespondsTo = OriginalDelegateRespondsTo(willPresentNotification: false, didReceiveNotificationResponse: false, openSettingsForNotification: false)
+  static var originalDelegateRespondsTo = KlaviyoOriginalDelegateRespondsTo(willPresentNotification: false, didReceiveNotificationResponse: false, openSettingsForNotification: false)
   
   public static let sharedInstance = NSCKlaviyoPushUNUserNotificationCenterDelegate()
   
