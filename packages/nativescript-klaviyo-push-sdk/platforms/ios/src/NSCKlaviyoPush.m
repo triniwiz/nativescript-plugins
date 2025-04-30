@@ -1,13 +1,13 @@
 #import "NSCKlaviyoPush.h"
 @implementation NSCKlaviyoPush
 
-BOOL ShowNotificationsWhenInForeground = NO;
-BoolCallback RegisterDeviceForRemoteMessagesCallback = nil;
-CompletableResponseCallback OnMessageCallback = nil;
-CompletableResponseCallback OnNonKlaviyoMessageCallback = nil;
-StringCallback OnTokenCallback = nil;
-DeepLinkCallback OnDeepLinkCallback = nil;
-CustomDataCallback OnCustomDataMessageCallback = nil;
+BOOL NSCKlaviyoShowNotificationsWhenInForeground = NO;
+BoolCallback NSCKlaviyoRegisterDeviceForRemoteMessagesCallback = nil;
+CompletableResponseCallback NSCKlaviyoOnMessageCallback = nil;
+CompletableResponseCallback NSCKlaviyoOnNonKlaviyoMessageCallback = nil;
+StringCallback NSCKlaviyoOnTokenCallback = nil;
+DeepLinkCallback NSCKlaviyoOnDeepLinkCallback = nil;
+CustomDataCallback NSCKlaviyoOnCustomDataMessageCallback = nil;
 
 
 +(BOOL) isSimulator {
@@ -19,62 +19,62 @@ CustomDataCallback OnCustomDataMessageCallback = nil;
 }
 
 + (void)setShowNotificationsWhenInForeground:(BOOL)showNotificationsWhenInForeground {
-    ShowNotificationsWhenInForeground = showNotificationsWhenInForeground;
+    NSCKlaviyoShowNotificationsWhenInForeground = showNotificationsWhenInForeground;
 }
 
 + (BOOL)showNotificationsWhenInForeground {
-    return ShowNotificationsWhenInForeground;
+    return NSCKlaviyoShowNotificationsWhenInForeground;
 }
 
 + (BoolCallback)registerDeviceForRemoteMessagesCallback {
-    return RegisterDeviceForRemoteMessagesCallback;
+    return NSCKlaviyoRegisterDeviceForRemoteMessagesCallback;
 }
 
 + (void)setRegisterDeviceForRemoteMessagesCallback:(BoolCallback)callback {
-    RegisterDeviceForRemoteMessagesCallback = callback;
+    NSCKlaviyoRegisterDeviceForRemoteMessagesCallback = callback;
 }
 
 
 + (CompletableResponseCallback)onMessageCallback {
-    return OnMessageCallback;
+    return NSCKlaviyoOnMessageCallback;
 }
 
 + (void)setOnMessageCallback:(CompletableResponseCallback)callback {
-    OnMessageCallback = callback;
+    NSCKlaviyoOnMessageCallback = callback;
 }
 
 + (CompletableResponseCallback)onNonKlaviyMessageCallback {
-    return OnNonKlaviyoMessageCallback;
+    return NSCKlaviyoOnNonKlaviyoMessageCallback;
 }
 
 + (void)setOnNonKlaviyMessageCallback:(CompletableResponseCallback)callback {
-  OnNonKlaviyoMessageCallback = callback;
+  NSCKlaviyoOnNonKlaviyoMessageCallback = callback;
 }
 
 
 + (DeepLinkCallback)onDeepLinkCallback {
-    return OnDeepLinkCallback;
+    return NSCKlaviyoOnDeepLinkCallback;
 }
 
 + (void)setOnDeepLinkCallback:(DeepLinkCallback)callback {
-    OnDeepLinkCallback = callback;
+    NSCKlaviyoOnDeepLinkCallback = callback;
 }
 
 
 + (StringCallback)onTokenCallback {
-    return OnTokenCallback;
+    return NSCKlaviyoOnTokenCallback;
 }
 
 + (void)setOnTokenCallback:(StringCallback)callback {
-    OnTokenCallback = callback;
+    NSCKlaviyoOnTokenCallback = callback;
 }
 
 + (CustomDataCallback)onCustomDataMessageCallback {
-    return OnCustomDataMessageCallback;
+    return NSCKlaviyoOnCustomDataMessageCallback;
 }
 
 + (void)setOnCustomDataMessageCallback:(CustomDataCallback)callback {
-    OnCustomDataMessageCallback = callback;
+    NSCKlaviyoOnCustomDataMessageCallback = callback;
 }
 
 

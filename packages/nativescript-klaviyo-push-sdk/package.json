@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-klaviyo-push-sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Klaviyo NativeScript Push Notifications SDK",
   "main": "index",
   "types": "index.d.ts",
