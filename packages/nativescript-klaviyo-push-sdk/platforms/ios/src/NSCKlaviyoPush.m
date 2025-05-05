@@ -81,14 +81,7 @@ CustomDataCallback NSCKlaviyoOnCustomDataMessageCallback = nil;
 
 
 + (NSString *)APNSTokenToString:(NSData *)tokenData {
-    const char *data = [tokenData bytes];
-
-    NSMutableString *token = [NSMutableString string];
-    for (NSInteger i = 0; i < tokenData.length; i++) {
-      [token appendFormat:@"%02.2hhX", data[i]];
-    }
-
-    return [token copy];
+    return [tokenData base64EncodedStringWithOptions:0];
 }
 @end
 
