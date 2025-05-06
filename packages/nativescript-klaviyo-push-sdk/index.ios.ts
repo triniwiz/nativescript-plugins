@@ -11,8 +11,6 @@ export class KlaviyoPush {
 	private static _onNonKlaviyoMessageListener;
 	private static _onKlaviyoCustomDataMessage;
 
-	private _APNSToken;
-
 	private _APNSTokenString: string;
 
 	onToken?: (token: string) => void;
@@ -189,8 +187,7 @@ export class KlaviyoPush {
 		const ref = new WeakRef(instance);
 		if (!KlaviyoPush._onToken) {
 			KlaviyoPush._onToken = (token) => {
-				instance._APNSToken = token;
-				instance._APNSTokenString = NSCKlaviyoPush.APNSTokenToString(token);
+				instance._APNSTokenString = token;
 				const owner = ref.deref();
 				if (owner && owner.onToken) {
 					owner.onToken(instance._APNSTokenString);
