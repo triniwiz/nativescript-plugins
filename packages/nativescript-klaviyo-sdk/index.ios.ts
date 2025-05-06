@@ -42,7 +42,7 @@ export class Klaviyo {
 		if (token && (token as any) instanceof NSData) {
 			this.native.setPushTokenWithToken(token as never);
 		} else {
-			this.native.setPushToken(token);
+			this.native.setBase64PushToken(token);
 		}
 	}
 

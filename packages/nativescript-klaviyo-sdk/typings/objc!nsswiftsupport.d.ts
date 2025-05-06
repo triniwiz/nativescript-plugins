@@ -37,6 +37,8 @@ declare class NSCKlaviyo extends NSObject {
 	setPushToken(token: string): void;
 
 	setPushTokenWithToken(token: NSData): void;
+
+	setBase64PushToken(token: string): void;
 }
 
 

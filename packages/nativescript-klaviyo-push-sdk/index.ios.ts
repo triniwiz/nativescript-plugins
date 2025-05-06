@@ -13,6 +13,8 @@ export class KlaviyoPush {
 
 	private _APNSToken;
 
+	private _APNSTokenString: string;
+
 	onToken?: (token: string) => void;
 	onMessage?: (message: any, nativeMessage: any) => void;
 	onNonKlaviyoMessageListener?: (message: any) => void;
@@ -170,7 +172,7 @@ export class KlaviyoPush {
 				reject(new Error('You must be registered for remote messages before calling getToken, see MessagingCore.getInstance().registerDeviceForRemoteMessages()'));
 				return;
 			}
-			if (!this._APNSToken) {
+			if (!this._APNSTokenString) {
 				if ((await this.hasPermission()) === AuthorizationStatus.DENIED) {
 					reject(new Error('Device is unauthorized to receive an APNSToken token.'));
 					return;
@@ -178,7 +180,7 @@ export class KlaviyoPush {
 				this._getTokenQeueue.push({ resolve, reject });
 				return;
 			}
-			resolve(this._APNSToken);
+			resolve(this._APNSTokenString);
 		});
 	}
 
@@ -188,14 +190,15 @@ export class KlaviyoPush {
 		if (!KlaviyoPush._onToken) {
 			KlaviyoPush._onToken = (token) => {
 				instance._APNSToken = token;
+				instance._APNSTokenString = NSCKlaviyoPush.APNSTokenToString(token);
 				const owner = ref.deref();
 				if (owner && owner.onToken) {
-					owner.onToken(token);
+					owner.onToken(instance._APNSTokenString);
 				}
 
 				if (instance._getTokenQeueue.length > 0) {
 					instance._getTokenQeueue.forEach((item) => {
-						item.resolve(token);
+						item.resolve(instance._APNSTokenString);
 					});
 					instance._getTokenQeueue.splice(0);
 				}
@@ -247,6 +250,5 @@ export class KlaviyoPush {
 		return instance;
 	}
 }
-
 
 export { AuthorizationStatus } from './common';

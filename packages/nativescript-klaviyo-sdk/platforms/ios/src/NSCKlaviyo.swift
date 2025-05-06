@@ -155,6 +155,12 @@ public class NSCKlaviyo: NSObject {
     }
   }
   
+  public func setBase64PushToken(_ token: String){
+    if let data = Data(base64Encoded: token) {
+      klaviyo.set(pushToken: data)
+    }
+ }
+  
   public func getPushToken()-> String? {
     return klaviyo.pushToken
   }
