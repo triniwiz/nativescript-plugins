@@ -1,2 +1,1 @@
-
-# pod 'SDWebImage', '>= 5.20.0'
+pod 'SDWebImage', '>= 5.21.1'

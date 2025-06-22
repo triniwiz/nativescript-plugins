@@ -1,13 +1,5 @@
-import { fallbackProperty, filterProperty, headersProperty, ImageCacheItBase, imageSourceProperty, overlayColorProperty, Priority, priorityProperty, srcProperty, stretchProperty, tintColorProperty } from './common';
+import { fallbackProperty, filterProperty, headersProperty, ImageCacheItBase, imageSourceProperty, loadModeProperty, overlayColorProperty, Priority, priorityProperty, srcProperty, stretchProperty, tintColorProperty } from './common';
 import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Application, Screen, Utils } from '@nativescript/core';
-
-const main_queue = dispatch_get_current_queue();
-let concurrentQueue;
-
-interface CacheItem {
-	headers: Map<string, string>;
-	url: string;
-}
 
 export class ImageCacheItError extends Error {
 	_native: NSError;
@@ -46,99 +38,58 @@ export class ImageCacheItError extends Error {
 }
 
 export class ImageCacheIt extends ImageCacheItBase {
-	nativeViewProtected: SDAnimatedImageView;
-	private ctx;
-	private static cacheHeaders = new Map<string, CacheItem>();
-	private static hasModifier = false;
-	private uuid: string;
-	private _imageSourceAffectsLayout = true;
-	private filterQueue;
-
+	nativeViewProtected: NSCImageCacheItView;
+	_imageSourceAffectsLayout = true;
 	constructor() {
 		super();
 	}
 
 	public static get maxDiskCacheSize() {
-		return SDImageCache.sharedImageCache.config.maxDiskSize;
+		return NSCImageCacheItView.maxDiskCacheSize;
 	}
 
 	public static set maxDiskCacheSize(size: number) {
-		SDImageCache.sharedImageCache.config.maxDiskSize = size;
+		NSCImageCacheItView.maxDiskCacheSize = size;
 	}
 
 	public static set maxMemoryCacheSize(size: number) {
-		SDImageCache.sharedImageCache.config.maxMemoryCost = size;
+		NSCImageCacheItView.maxMemoryCacheSize = size;
 	}
 
 	public static get maxMemoryCacheSize(): number {
-		return SDImageCache.sharedImageCache.config.maxMemoryCost;
+		return NSCImageCacheItView.maxMemoryCacheSize;
 	}
 
 	public static get maxDiskCacheAge(): number {
-		return SDImageCache.sharedImageCache.config.maxDiskAge;
+		return NSCImageCacheItView.maxDiskCacheAge;
 	}
 
 	public static set maxDiskCacheAge(age: number) {
-		SDImageCache.sharedImageCache.config.maxDiskAge = age;
-	}
-
-	private static setModifier() {
-		if (!ImageCacheIt.hasModifier) {
-			SDWebImageDownloader.sharedDownloader.requestModifier = SDWebImageDownloaderRequestModifier.requestModifierWithBlock((request: NSURLRequest): NSURLRequest => {
-				const uuid = (request as any)?.URL?.uuid;
-				if (ImageCacheIt.cacheHeaders.has(uuid)) {
-					const cachedHeader = ImageCacheIt.cacheHeaders.get(uuid);
-					if (cachedHeader.url === request.URL.absoluteString) {
-						const newRequest = request.mutableCopy() as NSMutableURLRequest;
-						if (cachedHeader.headers) {
-							cachedHeader.headers.forEach((value, key) => {
-								newRequest.addValueForHTTPHeaderField(value, key);
-							});
-						}
-						return newRequest.copy();
-					}
-				}
-				return request;
-			});
-			ImageCacheIt.hasModifier = true;
-		}
+		NSCImageCacheItView.maxDiskCacheAge = age;
 	}
 
 	public createNativeView() {
-		this.uuid = NSUUID.UUID().UUIDString;
-		this.filterQueue = ImageCacheItUtils.createConcurrentQueue('TNSImageOptimizeQueue');
-		ImageCacheIt.setModifier();
-		const nativeView = SDAnimatedImageView.new();
-		nativeView.contentMode = UIViewContentMode.ScaleAspectFit;
-		nativeView.userInteractionEnabled = true;
-		nativeView.clipsToBounds = true;
-		this.ctx = (ImageCacheItUtils as any).createContext();
-		// const metalDevice = MTLCreateSystemDefaultDevice() || null;
-		// if (metalDevice) {
-		// 	this.ctx = CIContext.contextWithMTLDevice(metalDevice);
-		// } else {
-		// 	// EAGLRenderingAPI.kEAGLRenderingAPIOpenGLES3
-		// 	let context = EAGLContext.alloc().initWithAPI(3);
-		// 	if (!context) {
-		// 		context = EAGLContext.alloc().initWithAPI(2);
-		// 	}
-		// 	if (context) {
-		// 		this.ctx = CIContext.contextWithEAGLContext(context);
-		// 	} else {
-		// 		this.ctx = new CIContext(null);
-		// 	}
-		// }
-		return nativeView;
+		return NSCImageCacheItView.new();
 	}
 
-	public initNativeView() {
+	initNativeView(): void {
 		super.initNativeView();
-		this._setNativeClipToBounds();
-	}
-
-	_setNativeClipToBounds() {
-		// Always set clipsToBounds for images
-		this.nativeView.clipsToBounds = true;
+		const nativeView = this.nativeViewProtected;
+		nativeView.loadStart = (src) => {
+			this.notify({ eventName: ImageCacheItBase.onLoadStartEvent, object: this, src });
+		};
+		nativeView.onLoadEnd = (src, image) => {
+			this.notify({ eventName: ImageCacheItBase.onLoadEndEvent, object: this, src, image });
+		};
+		nativeView.onError = (src, error) => {
+			this.notify({ eventName: ImageCacheItBase.onErrorEvent, object: this, src, error });
+		};
+		nativeView.onProgress = (current, total, progress, src) => {
+			this.notify({ eventName: ImageCacheItBase.onProgressEvent, object: this, current, total, progress, src });
+		};
+		this.nativeViewProtected.runLayout = () => {
+			this.requestLayout();
+		};
 	}
 
 	public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
@@ -205,166 +156,14 @@ export class ImageCacheIt extends ImageCacheItBase {
 		return { width: scaleW, height: scaleH };
 	}
 
-	private _priority = 0;
-
 	[headersProperty.getDefault](): Map<string, string> {
 		return new Map<string, string>();
 	}
 
 	[headersProperty.setNative](value: Map<string, string>) {
-		if (this.uuid) {
-			const data = ImageCacheIt.cacheHeaders.get(this.uuid) || { url: undefined, headers: undefined };
-			data.headers = value;
-			ImageCacheIt.cacheHeaders.set(this.uuid, data);
+		if (this.nativeView && value) {
+			this.nativeViewProtected.headers = value as never;
 		}
-	}
-
-	private _loadStarted = false;
-
-	private _handlePlaceholder(src: any): UIImage | null {
-		let placeHolder = null;
-		if (typeof src === 'string') {
-			try {
-				if (Utils.isFileOrResourcePath(src)) {
-					if (src.indexOf(Utils.RESOURCE_PREFIX) === 0) {
-						const resPath = src.substring(Utils.RESOURCE_PREFIX.length);
-						placeHolder = ImageSource.fromResourceSync(resPath);
-					} else {
-						placeHolder = ImageSource.fromFileSync(src);
-					}
-				} else if (Utils.isDataURI(src)) {
-					const base64Data = src.split(',')[1];
-					if (base64Data !== undefined) {
-						placeHolder = ImageSource.fromBase64Sync(base64Data);
-					}
-				} else if (Utils.isFontIconURI(src)) {
-					const fontIconCode = src.split('//')[1];
-					if (fontIconCode !== undefined) {
-						// support sync mode only
-						const font = this.style.fontInternal;
-						const color = this.style.color;
-						placeHolder = ImageSource.fromFontIconCodeSync(fontIconCode, font, color);
-					}
-				}
-				placeHolder = placeHolder && placeHolder.ios;
-			} catch (err) {
-				this.isLoading = false;
-				if (Trace.isEnabled()) {
-					if (typeof err === 'object' && err.message) {
-						err = err.message;
-					}
-					Trace.write(err, Trace.categories.Debug);
-				}
-			}
-		} else if (src instanceof UIImage) {
-			placeHolder = src;
-		} else if (src instanceof ImageSource) {
-			placeHolder = src.ios;
-		}
-		return placeHolder;
-	}
-
-	private async _loadImage(src: any) {
-		this._loadStarted = true;
-		if (this.hasListeners(ImageCacheItBase.onLoadStartEvent)) {
-			this._emitLoadStartEvent(src);
-		}
-		this.progress = 0;
-		const ref = new WeakRef(this);
-		if (this.nativeView && (<any>this.nativeView).sd_cancelCurrentImageLoad) {
-			(<any>this.nativeView).sd_cancelCurrentImageLoad();
-		}
-		// AvoidAutoSetImage | RetryFailed | ScaleDownLargeImages | LowPriority || HighPriority
-		const options = 1024 | 1 | 2048 | this._priority;
-		this.isLoading = true;
-		const context = {};
-		const placeHolder = this._handlePlaceholder(this.placeHolder);
-		const url = NSURL.URLWithString(src);
-		const urlAbsoluteString = url.absoluteString;
-		if (!url) {
-			this._handleFallbackImage();
-			return;
-		}
-		// store arbitrary value to track on NSURL
-		(<any>url).uuid = this.uuid;
-		(<any>this.nativeView).sd_setImageWithURLPlaceholderImageOptionsContextProgressCompleted(
-			url,
-			placeHolder,
-			options,
-			context,
-			(p1: number, p2: number, p3: NSURL) => {
-				const owner = ref.get();
-				if (owner) {
-					let progress = 0;
-					if (p2 !== 0) {
-						progress = p1 / p2;
-					} else {
-						progress = 1;
-					}
-					progress = Math.max(Math.min(progress, 1), 0) * 100;
-					dispatch_async(main_queue, () => {
-						const absoluteString = p3?.absoluteString;
-						const url = absoluteString ? absoluteString : urlAbsoluteString ? urlAbsoluteString : src;
-						if (!owner._loadStarted) {
-							if (owner.hasListeners(ImageCacheItBase.onLoadStartEvent)) {
-								owner._emitLoadStartEvent(url);
-							}
-							owner._loadStarted = true;
-						}
-						owner.progress = progress;
-						if (owner.hasListeners(ImageCacheItBase.onProgressEvent)) {
-							owner._emitProgressEvent(p1, p2, progress, url);
-						}
-					});
-				}
-			},
-			(p1: UIImage, p2: NSError, p3: any, p4: NSURL) => {
-				const owner = ref.get();
-				if (owner) {
-					owner.isLoading = false;
-					if (p2) {
-						owner._emitErrorEvent(p2.localizedDescription, p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
-						owner._emitLoadEndEvent(p4?.absoluteString ? p4.absoluteString : url?.absoluteString ? url.absoluteString : src);
-						if (owner.errorHolder) {
-							if (owner.nativeView) {
-								const errorHolder = this._handlePlaceholder(this.errorHolder);
-								owner.imageSource = new ImageSource(errorHolder);
-								// extra guard ??
-								if (owner.nativeView) {
-									owner.nativeView.image = errorHolder;
-								}
-							}
-							owner.setTintColor(owner.style.tintColor);
-							// Fade ?
-							// this.nativeView.alpha = 0;
-							// UIView.animateWithDurationAnimations(1, ()=>{
-							//     this.nativeView.alpha = 1;
-							// })
-						}
-					} else if (p3 !== SDImageCacheType.Memory && owner.transition) {
-						switch (owner.transition) {
-							case 'fade':
-								if (owner.nativeView) {
-									owner.nativeView.alpha = 0;
-									UIView.animateWithDurationAnimations(1, () => {
-										owner.nativeView.alpha = 1;
-										owner._emitLoadEndEvent(p4 && p4.absoluteString ? p4.absoluteString : url && url.absoluteString ? url.absoluteString : src);
-									});
-								}
-								break;
-							default:
-								break;
-						}
-					}
-
-					if (p1) {
-						const source = new ImageSource(p1);
-						//source.ios = p1;
-						this._createImageSourceFromSrc(source);
-					}
-				}
-			},
-		);
 	}
 
 	getFileName(path: string): string {
@@ -376,144 +175,42 @@ export class ImageCacheIt extends ImageCacheItBase {
 		return fileName;
 	}
 
-	private static _getMagicBytes(bytes: Uint8Array) {
-		let signature = '';
-		for (let i = 0; i < bytes.length; i++) {
-			signature += bytes[i].toString(16);
+	[fallbackProperty.setNative](src: any) {
+		if (src === undefined || src === null) {
 		}
-		switch (signature) {
-			case '89504E47':
-				return 'image/png';
-			case '47494638':
-				return 'image/gif';
-			case '25504446':
-				return 'application/pdf';
-			case 'FFD8FFDB':
-			case 'FFD8FFE0':
-			case 'FFD8FFE1':
-				return 'image/jpeg';
-			case '504B0304':
-				return 'application/zip';
-			default:
-				return 'application/octet-stream';
+		if (src instanceof ImageSource) {
+			this.nativeViewProtected.fallback = src.ios;
+		} else if (src instanceof UIImage) {
+			this.nativeViewProtected.fallback = src;
+		} else if (typeof src === 'string') {
+			this.nativeViewProtected.fallback = ImageSource.fromFileOrResourceSync(this.getFileName(src))?.ios ?? null;
 		}
 	}
-
-	private async _handleFallbackImage() {
-		this.nativeViewProtected.image = this._handlePlaceholder(this.fallback);
-	}
-
-	[fallbackProperty.setNative](src: any) {}
 
 	[srcProperty.setNative](src: any) {
-		if (typeof src === 'string' && src.startsWith('http')) {
-			const data = ImageCacheIt.cacheHeaders.get(this.uuid) || { url: undefined, headers: undefined };
-			data['url'] = src;
-			ImageCacheIt.cacheHeaders.set(this.uuid, data);
-			this._loadImage(src);
-		} else {
-			if (Utils.isNullOrUndefined(src)) {
-				this._handleFallbackImage();
-				return;
+		if (!this.nativeViewProtected) {
+			return;
+		}
+		if (typeof src === 'string') {
+			if (src.startsWith('~/')) {
+				this.nativeViewProtected.src = this.getFileName(src);
+			} else {
+				this.nativeViewProtected.src = src;
 			}
-			const sync = this.loadMode === 'sync';
-			try {
-				if (Utils.isFileOrResourcePath(src)) {
-					if (src.indexOf(Utils.RESOURCE_PREFIX) === 0) {
-						const resPath = src.substr(Utils.RESOURCE_PREFIX.length);
-						const loadResImage = () => {
-							const url = NSBundle.mainBundle.URLForResourceWithExtension(resPath, 'gif');
-							let image;
-							if (url) {
-								const data = NSData.dataWithContentsOfURL(url);
-								if (data) {
-									image = SDAnimatedImage.alloc().initWithData(data);
-								}
-							}
-							if (!image) {
-								image = UIImage.imageNamed(resPath);
-							}
-							return image;
-						};
-
-						const setResImage = (image) => {
-							let source;
-							if (image instanceof SDAnimatedImage) {
-								source = new ImageSource();
-								source.ios = image;
-							} else {
-								source = new ImageSource(image);
-							}
-							this._createImageSourceFromSrc(source);
-						};
-						if (sync) {
-							setResImage(loadResImage());
-						} else {
-							dispatch_async(this.filterQueue, () => {
-								const image = loadResImage();
-								dispatch_async(main_queue, () => {
-									setResImage(image);
-								});
-							});
-						}
-					} else {
-						const getImage = () => {
-							const data = NSData.dataWithContentsOfURL(NSURL.fileURLWithPath(this.getFileName(src)));
-							if (!data) {
-								return [null, ''];
-							}
-							const buffer = interop.bufferFromData(data);
-							const array = new Uint8Array(buffer);
-							const type = ImageCacheIt._getMagicBytes(array.subarray(0, 4));
-							return [data, type];
-						};
-
-						const setImage = (data) => {
-							if (!data[0]) {
-								this._handleFallbackImage();
-								return;
-							}
-							if (data[1].indexOf('gif') > -1) {
-								const source = new ImageSource();
-								source.ios = SDAnimatedImage.alloc().initWithData(data[0]);
-								this._createImageSourceFromSrc(source);
-							} else {
-								this._createImageSourceFromSrc(new ImageSource(UIImage.alloc().initWithData(data[0])));
-							}
-						};
-
-						if (sync) {
-							setImage(getImage());
-						} else {
-							dispatch_async(this.filterQueue, () => {
-								const data: any = getImage();
-								dispatch_async(main_queue, () => {
-									setImage(data);
-								});
-							});
-						}
-					}
-				} else {
-					this._createImageSourceFromSrc(src);
-				}
-			} catch (e) {}
 		}
 	}
 
-	private setAspect(value: string) {
+	[loadModeProperty.setNative](value) {
+		if (!this.nativeViewProtected) {
+			return;
+		}
 		switch (value) {
-			case 'aspectFit':
-				this.nativeView.contentMode = UIViewContentMode.ScaleAspectFit;
+			case 'sync':
+				this.nativeViewProtected.loadMode = NSCImageCacheItLoadMode.Sync;
 				break;
-			case 'aspectFill':
-				this.nativeView.contentMode = UIViewContentMode.ScaleAspectFill;
-				break;
-			case 'fill':
-				this.nativeView.contentMode = UIViewContentMode.ScaleToFill;
-				break;
-			case 'none':
+			case 'async':
 			default:
-				this.nativeView.contentMode = UIViewContentMode.TopLeft;
+				this.nativeViewProtected.loadMode = NSCImageCacheItLoadMode.Async;
 				break;
 		}
 	}
@@ -522,466 +219,116 @@ export class ImageCacheIt extends ImageCacheItBase {
 		return 'aspectFit';
 	}
 
-	// @ts-ignore
-	[stretchProperty.setNative](value: 'none' | 'aspectFill' | 'aspectFit' | 'fill') {
-		this.setAspect(value);
+	[stretchProperty.setNative](value) {
+		switch (value) {
+			case 'aspectFit':
+				this.nativeViewProtected.stretch = NSCImageCacheItStretch.AspectFit;
+				break;
+			case 'aspectFill':
+				this.nativeViewProtected.stretch = NSCImageCacheItStretch.AspectFill;
+				break;
+			case 'fill':
+				this.nativeViewProtected.stretch = NSCImageCacheItStretch.Fill;
+				break;
+			case 'none':
+			default:
+				this.nativeViewProtected.stretch = NSCImageCacheItStretch.None;
+				break;
+		}
 	}
 
 	[filterProperty.setNative](filter: any) {
-		this.filter = filter;
-		if (this.nativeViewProtected.image) {
-			this._setNativeImage(this.nativeViewProtected.image);
-		}
+		this.nativeViewProtected.filter = filter;
 	}
-
-	private _templateImageWasCreated: boolean;
 
 	[tintColorProperty.setNative](value: any) {
-		this.setTintColor(value);
-	}
-
-	private static _getFilterByName(value: string, image: UIImage) {
-		let filter: CIFilter;
-		if (!ImageCacheIt.ciFilterMap[value]) {
-			ImageCacheIt.ciFilterMap[value] = CIFilter.filterWithName(value);
-		}
-
-		filter = ImageCacheIt.ciFilterMap[value];
-		filter.setDefaults();
-		if (image && image.CIImage) {
-			filter.setValueForKey(image.CIImage, kCIInputImageKey);
-			filter.setValueForKey(NSNull, kCIImageColorSpace);
+		if (typeof value === 'string') {
+			this.nativeViewProtected.imageTint = new Color(value).ios;
 		} else {
-			if (image && image.CGImage) {
-				filter.setValueForKey(CIImage.imageWithCGImage(image.CGImage), kCIInputImageKey);
-			}
+			this.nativeViewProtected.imageTint = value?.ios ?? null;
 		}
-		return filter;
-	}
-
-	private setTintColor(value: Color | string) {
-		if (typeof value === 'string') {
-			value = new Color(value);
-		}
-		if (value && this.nativeViewProtected.image && !this._templateImageWasCreated) {
-			this.nativeViewProtected.image = this.nativeViewProtected.image.imageWithRenderingMode(UIImageRenderingMode.AlwaysTemplate);
-			this._templateImageWasCreated = true;
-		} else if (!value && this.nativeViewProtected.image && this._templateImageWasCreated) {
-			this._templateImageWasCreated = false;
-			this.nativeViewProtected.image = this.nativeViewProtected.image.imageWithRenderingMode(UIImageRenderingMode.Automatic);
-		}
-		this.nativeViewProtected.tintColor = value ? value.ios : null;
-	}
-
-	private _setOverlayColor(value: Color | string, image: UIImage) {
-		if (!image) {
-			return image;
-		}
-		if (typeof value === 'string') {
-			value = new Color(value);
-		}
-		if (value) {
-			/* const rect = CGRectMake(0, 0, this.imageSource.width, this.imageSource.height);
-       UIGraphicsBeginImageContextWithOptions(rect.size, false, 0);
-       const context = UIGraphicsGetCurrentContext();
-
-       image.drawAtPoint(CGPointZero);
-
-       const maskImage = image.CGImage;
-       CGContextClipToMask(context, rect, maskImage);
-
-       CGContextSetRGBFillColor(context, value.r / 255, value.g / 255, value.b / 255, value.a / 255);
-       CGContextFillRect(context, rect);
-
-       const overlayedImg = UIGraphicsGetImageFromCurrentImageContext();
-       UIGraphicsEndImageContext();
-       return overlayedImg;
-
-       */
-			return ImageCacheItUtils.createImageOverlayColors(image, this.imageSource.width, this.imageSource.height, value.r / 255, value.g / 255, value.b / 255, value.a / 255);
-		}
-		return image;
 	}
 
 	[overlayColorProperty.setNative](value: any) {
-		if (this.imageSource) {
-			this._setNativeImage(this.imageSource.ios);
+		if (typeof value === 'string') {
+			this.nativeViewProtected.overlayColor = new Color(value).ios;
+		} else {
+			this.nativeViewProtected.imageTint = value?.ios ?? null;
 		}
 	}
 
 	[priorityProperty.setNative](value: any) {
+		if (!this.nativeViewProtected) {
+			return;
+		}
 		switch (value) {
 			case Priority.High:
-				this._priority = 128;
+				this.nativeViewProtected.priority = NSCImageCacheItPriority.High;
 				break;
 			case Priority.Low:
-				this._priority = 2;
+				this.nativeViewProtected.priority = NSCImageCacheItPriority.Low;
 				break;
 			default:
-				this._priority = 0;
+				this.nativeViewProtected.priority = NSCImageCacheItPriority.Normal;
 				break;
-		}
-	}
-
-	public _setNativeImage(nativeImage: UIImage) {
-		const setImage = (image?) => {
-			this.nativeViewProtected.image = image || nativeImage;
-			this._templateImageWasCreated = false;
-			this.isLoading = false;
-			this.setTintColor(this.style.tintColor);
-			if (this._imageSourceAffectsLayout) {
-				this.requestLayout();
-			}
-		};
-
-		let overlayColor = this.overlayColor;
-		if (typeof overlayColor === 'string') {
-			overlayColor = new Color(overlayColor);
-		}
-
-		if (overlayColor instanceof Color) {
-			overlayColor = `rgba(${overlayColor.r},${overlayColor.g},${overlayColor.b},${overlayColor.a / 255})`;
-		} else {
-			overlayColor = null;
-		}
-		if (this.filter) {
-			// const options = {
-			// 	filter: this.filter,
-			// 	overlayColor: overlayColor,
-			// };
-
-			// if (!overlayColor) {
-			// 	delete options.overlayColor;
-			// }
-
-			const options = NSMutableDictionary.new();
-			options.setObjectForKey(this.filter, 'filter');
-
-			if (overlayColor) {
-				options.setObjectForKey(overlayColor, 'overlayColor');
-			}
-
-			ImageCacheItUtils.applyProcessing(
-				this.ctx,
-				nativeImage,
-				<any>options,
-				(image) => {
-					setImage(image);
-				},
-				null,
-			);
-		} else {
-			if (NSThread.isMainThread) {
-				if (this.overlayColor) {
-					const options = NSMutableDictionary.new<string, any>();
-					options.setObjectForKey(overlayColor, 'overlayColor');
-					ImageCacheItUtils.applyProcessing(
-						this.ctx,
-						nativeImage,
-						options,
-						(image) => {
-							setImage(image);
-						},
-						null,
-					);
-				} else {
-					setImage();
-				}
-			} else {
-				if (this.overlayColor) {
-					const options = NSMutableDictionary.new<string, any>();
-					options.setObjectForKey(overlayColor, 'overlayColor');
-					ImageCacheItUtils.applyProcessing(
-						this.ctx,
-						nativeImage,
-						options,
-						(image) => {
-							setImage(image);
-						},
-						null,
-					);
-				} else {
-					dispatch_async(main_queue, () => {
-						setImage();
-					});
-				}
-			}
 		}
 	}
 
 	[imageSourceProperty.setNative](value: any) {
-		this._setNativeImage(value ? value.ios : null);
-	}
-
-	private static ciFilterMap = {};
-
-	private _setupFilter(image) {
-		if (Utils.isNullOrUndefined(image)) {
-			return image;
-		}
-		const getValue = (value: string) => {
-			return value.substring(value.indexOf('(') + 1, value.indexOf(')'));
-		};
-		const createFilterWithName = (value: string) => {
-			return ImageCacheIt._getFilterByName(value, image);
-		};
-
-		if (this.filter) {
-			if (image) {
-				const filters = this.filter ? this.filter.split(' ') : [];
-				filters.forEach((filter: any) => {
-					let value = getValue(filter) as any;
-					if (filter.indexOf('blur') > -1) {
-						let width = -1;
-						if (value.indexOf('%') > -1) {
-							value = Length.parse(value);
-							width = image.size.width * value;
-						} else if (value.indexOf('px')) {
-							width = parseInt(value.replace('px', ''), 10);
-						} else if (value.indexOf('dip')) {
-							width = parseInt(value.replace('dip', ''), 10) * Screen.mainScreen.scale;
-						} else if (typeof value === 'number') {
-							width = value;
-						}
-
-						if (width > 25) {
-							width = 25;
-						}
-
-						if (width > -1) {
-							const blurFilter = createFilterWithName('CIGaussianBlur');
-							blurFilter.setValueForKey(width, kCIInputRadiusKey);
-							const blurredImg = blurFilter.valueForKey(kCIOutputImageKey);
-							if (blurredImg && blurredImg.extent) {
-								const cgiImage = this.ctx.createCGImageFromRect(blurredImg, blurredImg.extent);
-								image = UIImage.imageWithCGImage(cgiImage);
-							}
-						}
-					} else if (filter.indexOf('contrast') > -1) {
-						if (value.indexOf('%')) {
-							const contrast = parseFloat(value.replace('%', '')) / 100;
-							const contrastFilter = createFilterWithName('CIColorControls');
-							contrastFilter.setValueForKey(contrast, kCIInputContrastKey);
-							const contrastImg: CIImage = contrastFilter.valueForKey(kCIOutputImageKey);
-							if (contrastImg && contrastImg.extent) {
-								const cgiImage = this.ctx.createCGImageFromRect(contrastImg, contrastImg.extent);
-								image = UIImage.imageWithCGImage(cgiImage);
-							}
-						}
-					} else if (filter.indexOf('brightness') > -1) {
-						if (value.indexOf('%')) {
-							let brightness = parseFloat(value.replace('%', '')) / 100;
-							/* if (brightness >= 0 && brightness < 1) {
-                   brightness = -1 + brightness;
-               }*/
-
-							const brightnessFilter = createFilterWithName('CIColorControls');
-							brightnessFilter.setValueForKey(brightness, kCIInputContrastKey);
-							const contrastImg = brightnessFilter.valueForKey(kCIOutputImageKey);
-							if (contrastImg && contrastImg.extent) {
-								const cgiImage = this.ctx.createCGImageFromRect(contrastImg, contrastImg.extent);
-								image = UIImage.imageWithCGImage(cgiImage);
-							}
-						}
-					} else if (filter.indexOf('grayscale') > -1 || filter.indexOf('greyscale') > -1) {
-						let grayscale: number;
-						if (value.indexOf('%') > -1) {
-							grayscale = parseFloat(value.replace('%', '')) / 100;
-						} else if (value.indexOf('.') > -1) {
-							grayscale = parseFloat(value);
-						} else {
-							grayscale = parseInt(value, 10);
-						}
-
-						if (grayscale > 1) {
-							grayscale = 1;
-						}
-
-						grayscale = 1 - grayscale;
-
-						const grayscaleFilter = createFilterWithName('CIColorControls');
-						grayscaleFilter.setValueForKey(grayscale, kCIInputSaturationKey);
-						const grayscaleImg = grayscaleFilter.valueForKey(kCIOutputImageKey);
-						if (grayscaleImg && grayscaleImg.extent) {
-							const cgiImage = this.ctx.createCGImageFromRect(grayscaleImg, grayscaleImg.extent);
-							image = UIImage.imageWithCGImage(cgiImage);
-						}
-					} else if (filter.indexOf('invert') > -1) {
-						// TODO handle value
-						const invertFilter = createFilterWithName('CIColorInvert');
-						const invertImg = invertFilter.valueForKey(kCIOutputImageKey);
-						if (invertImg && invertImg.extent) {
-							const cgiImage = this.ctx.createCGImageFromRect(invertImg, invertImg.extent);
-							image = UIImage.imageWithCGImage(cgiImage);
-						}
-					} else if (filter.indexOf('sepia') > -1) {
-						const sepia = parseFloat(value.replace('%', '')) / 100;
-						const sepiaFilter = createFilterWithName('CISepiaTone');
-						sepiaFilter.setValueForKey(sepia, kCIInputIntensityKey);
-						const sepiaImg = sepiaFilter.valueForKey(kCIOutputImageKey);
-						if (sepiaImg && sepiaImg.extent) {
-							const cgiImage = this.ctx.createCGImageFromRect(sepiaImg, sepiaImg.extent);
-							image = UIImage.imageWithCGImage(cgiImage);
-						}
-					} else if (filter.indexOf('opacity') > -1) {
-						let alpha: number;
-						if (value.indexOf('%') > -1) {
-							alpha = parseInt(value.replace('%', ''), 10) / 100;
-						} else if (value.indexOf('.') > -1) {
-							alpha = parseFloat(value);
-						} else {
-							alpha = parseInt(value, 10);
-						}
-						UIGraphicsBeginImageContextWithOptions(image.size, false, image.scale);
-						image.drawAtPointBlendModeAlpha(CGPointZero, 0, alpha);
-						image = UIGraphicsGetImageFromCurrentImageContext();
-						UIGraphicsEndImageContext();
-					} else if (filter.indexOf('hue') > -1) {
-						const hueFilter = createFilterWithName('CIHueAdjust');
-						let hue = 0;
-						if (value.indexOf('deg') > -1) {
-							hue = parseInt(value.replace('deg', ''), 10);
-						} else if (value.indexOf('turn') > -1) {
-							hue = parseInt(value.replace('turn', ''), 10) * 360;
-						}
-						hueFilter.setValueForKey(hue, kCIInputAngleKey);
-
-						const hueImg = hueFilter.valueForKey(kCIOutputImageKey);
-						if (hueImg && hueImg.extent) {
-							const cgiImage = this.ctx.createCGImageFromRect(hueImg, hueImg.extent);
-							image = UIImage.imageWithCGImage(cgiImage);
-						}
-					} else if (filter.indexOf('saturate') > -1) {
-						const saturateFilter = createFilterWithName('CIColorControls');
-						let saturate: number;
-						if (value.indexOf('%') > -1) {
-							saturate = parseInt(value.replace('%', ''), 10) / 100;
-						} else if (value.indexOf('.') > -1) {
-							saturate = parseFloat(value);
-						} else {
-							saturate = parseInt(value, 10);
-						}
-						saturateFilter.setValueForKey(saturate, kCIInputSaturationKey);
-						const saturateImg = saturateFilter.valueForKey(kCIOutputImageKey);
-						if (saturateImg && saturateImg.extent) {
-							const cgiImage = this.ctx.createCGImageFromRect(saturateImg, saturateImg.extent);
-							image = UIImage.imageWithCGImage(cgiImage);
-						}
-					}
-				});
-			}
-			return image;
-		} else {
-			return image;
+		if (this.nativeViewProtected && value?.ios) {
+			this.nativeViewProtected.setImageSource(value.ios);
 		}
 	}
 
 	public static hasItem(src: string): Promise<any> {
 		return new Promise<any>((resolve, reject) => {
-			const manager = SDWebImageManager.sharedManager;
-			if (manager) {
-				const key = manager.cacheKeyForURL(NSURL.URLWithString(src));
-				manager.imageCache.containsImageForKeyCacheTypeCompletion(key, 3 /* All */, (type) => {
-					if (type > 0) {
-						resolve(undefined);
-					} else {
-						reject();
-					}
-				});
-			} else {
-				reject();
-			}
+			NSCImageCacheItView.hasItem(src, (has) => {
+				if (has) {
+					resolve(undefined);
+				} else {
+					reject();
+				}
+			});
 		});
 	}
 
 	public static deleteItem(src: string): Promise<any> {
 		return new Promise<any>((resolve, reject) => {
-			const manager = SDWebImageManager.sharedManager;
-			if (manager) {
-				const key = manager.cacheKeyForURL(NSURL.URLWithString(src));
-				(<SDImageCache>manager.imageCache).removeImageForKeyFromDiskWithCompletion(key, true, () => {
+			NSCImageCacheItView.deleteItem(src, (error) => {
+				if (error) {
+					reject(ImageCacheItError.fromNative(error));
+				} else {
 					resolve(undefined);
-				});
-			} else {
-				reject();
-			}
+				}
+			});
 		});
 	}
 
 	public static getItem(src: string, headers: Map<string, string>): Promise<any> {
-		ImageCacheIt.setModifier();
 		return new Promise<any>((resolve, reject) => {
-			const manager = SDWebImageManager.sharedManager;
-			if (manager) {
-				if (src && src.indexOf('http') > -1) {
-					const nativeSrc = NSURL.URLWithString(src);
-
-					if (headers) {
-						const uuid = NSUUID.UUID().UUIDString;
-						(<any>nativeSrc).uuid = uuid;
-						const data = ImageCacheIt.cacheHeaders.get(uuid) || { url: undefined, headers: undefined };
-						data.headers = headers;
-						data.url = src;
-						ImageCacheIt.cacheHeaders.set(uuid, data);
-					}
-
-					manager.loadImageWithURLOptionsProgressCompleted(
-						nativeSrc,
-						SDWebImageOptions.ScaleDownLargeImages,
-						(receivedSize: number, expectedSize: number, path: NSURL) => {},
-						(image, data, error, type, finished, completedUrl) => {
-							if (image === null && error !== null && data === null) {
-								reject(ImageCacheItError.fromNative(error));
-							} else if (finished && completedUrl != null) {
-								if (type === SDImageCacheType.Disk) {
-									const key = manager.cacheKeyForURL(completedUrl);
-									const source = (<SDImageCache>manager.imageCache).cachePathForKey(key);
-									resolve(source);
-								} else {
-									const sharedCache = SDImageCache.sharedImageCache;
-									sharedCache.storeImageForKeyCompletion(image, completedUrl.absoluteString, () => {
-										const key = manager.cacheKeyForURL(completedUrl);
-										const source = (<SDImageCache>manager.imageCache).cachePathForKey(key);
-										resolve(source);
-									});
-								}
-							}
-						},
-					);
+			NSCImageCacheItView.getItem(src, (headers as any) ?? {}, (error, data) => {
+				if (error) {
+					reject(ImageCacheItError.fromNative(error));
+				} else {
+					resolve(data);
 				}
-			} else {
-				reject();
-			}
+			});
 		});
 	}
 
 	public static clear(): Promise<any> {
 		return new Promise((resolve, reject) => {
-			const manager = SDWebImageManager.sharedManager;
-			if (manager) {
-				(<SDImageCache>manager.imageCache).clearMemory();
-				(<SDImageCache>manager.imageCache).clearDiskOnCompletion(() => {
-					resolve(undefined);
-				});
-			}
+			NSCImageCacheItView.clear(() => {
+				resolve(undefined);
+			});
 		});
 	}
 
-	private static autoMMCallback;
-
 	public static enableAutoMM() {
-		ImageCacheIt.autoMMCallback = (args) => {
-			const manager = SDWebImageManager.sharedManager;
-			if (manager) {
-				(<SDImageCache>manager.imageCache).clearMemory();
-			}
-		};
-		Application.on(Application.lowMemoryEvent as any, ImageCacheIt.autoMMCallback);
+		ImageCacheIt.enableAutoMM();
 	}
 
 	public static disableAutoMM() {
-		if (ImageCacheIt.autoMMCallback) {
-			Application.off(Application.lowMemoryEvent as any, ImageCacheIt.autoMMCallback);
-		}
+		ImageCacheIt.disableAutoMM();
 	}
 }
