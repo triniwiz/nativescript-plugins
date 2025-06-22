@@ -1,3 +1,3 @@
 platform :ios, '12.0'
 
-pod 'CouchbaseLite', '~> 3.2.1'
+pod 'CouchbaseLite', '~> 3.2.4'
