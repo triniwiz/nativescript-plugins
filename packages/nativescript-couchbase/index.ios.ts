@@ -1138,7 +1138,7 @@ export class Collection {
 		return Listener.fromNative(
 			this.native.addChangeListenerWithQueueListener(this._queue, (change) => {
 				callback(this, Utils.ios.collections.nsArrayToJSArray(change.documentIDs));
-			})
+			}),
 		);
 	}
 
@@ -1152,7 +1152,7 @@ export class Collection {
 				if (owner) {
 					callback(id, owner);
 				}
-			})
+			}),
 		);
 	}
 
@@ -1228,6 +1228,8 @@ const fromISO8601UTC = function (date: string) {
 		dateFormatter = NSDateFormatter.new();
 	}
 	dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	dateFormatter.locale = NSLocale.localeWithLocaleIdentifier('en_US_POSIX');
+	dateFormatter.timeZone = NSTimeZone.timeZoneForSecondsFromGMT(0);
 	return dateFormatter.dateFromString(date);
 };
 
@@ -1631,7 +1633,7 @@ export class Query {
 		return Listener.fromNative(
 			this.native.addChangeListenerWithQueueListener(this._queue, (change) => {
 				callback(this, ResultSet.fromNative(change.results), change.error);
-			})
+			}),
 		);
 	}
 
@@ -1697,7 +1699,7 @@ export class Replicator {
 			const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
 			newConfig.addCollectionsConfig(
 				collections.map((collection) => collection.native),
-				newConfig
+				newConfig,
 			);
 			this._native = CBLReplicator.alloc().initWithConfig(newConfig);
 		}
