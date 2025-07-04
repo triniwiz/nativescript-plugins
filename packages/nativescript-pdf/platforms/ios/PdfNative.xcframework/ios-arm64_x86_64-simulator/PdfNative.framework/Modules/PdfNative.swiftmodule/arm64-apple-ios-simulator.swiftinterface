@@ -1,0 +1,468 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 6.0.2 effective-5.10 (swiftlang-6.0.2.1.2 clang-1600.0.26.4)
+// swift-module-flags: -target arm64-apple-ios11.1-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name PdfNative
+// swift-module-flags-ignorable: -no-verify-emitted-module-interface
+import CoreGraphics
+import CoreImage
+import Foundation
+@_exported import PdfNative
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+@_inheritsConvenienceInitializers @objc(NSCPdf) @objcMembers public class NSCPdf : ObjectiveC.NSObject {
+  @objc public static let instance: PdfNative.NSCPdf
+  @objc override dynamic public init()
+  @objc public func loadFromPath(path: Swift.String, password: Swift.String? = nil) -> PdfNative.NSCPdfDocument?
+  @objc public func loadFromBytes(bytes: Foundation.NSData, password: Swift.String? = nil) -> PdfNative.NSCPdfDocument?
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCPdfCellWidth) public class NSCPdfCellWidth : ObjectiveC.NSObject {
+  @objc public static let Auto: PdfNative.NSCPdfCellWidth
+  @objc public static let Wrap: PdfNative.NSCPdfCellWidth
+  @objc public static func Fixed(_ value: Swift.Float) -> PdfNative.NSCPdfCellWidth
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers @objc(NSCPdfDocument) public class NSCPdfDocument : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc public init(config: PdfNative.NSCPdfDocumentConfig)
+  @objc deinit
+  @objc public var count: Swift.Int {
+    @objc get
+  }
+  @objc public var width: Swift.Float {
+    @objc get
+  }
+  @objc public var height: Swift.Float {
+    @objc get
+  }
+  @objc public var fontSize: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public func setFontColor(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32, a: Swift.Int32)
+  @objc public func setFontColor(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32)
+  @objc public func setDrawColor(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32, a: Swift.Int32)
+  @objc public func setDrawColor(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32)
+  @objc public func setFillColor(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32, a: Swift.Int32)
+  @objc public func setFillColor(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32)
+  @objc public var lineWidth: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public func addPage()
+  @objc public func addPage(size: PdfNative.NSCPdfPagerSize = .a4(), orientation: PdfNative.NSCPdfOrientation = .Portrait)
+  @objc public func addText(_ text: Swift.String, _ x: Swift.Float, _ y: Swift.Float, _ options: PdfNative.NSCPdfTextOptions? = nil)
+  @objc public func addImage(_ image: UIKit.UIImage, _ x: Swift.Float, _ y: Swift.Float)
+  @objc public func addImage(_ image: UIKit.UIImage, _ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float)
+  @objc public func addImage(data: Foundation.NSData, _ x: Swift.Float, _ y: Swift.Float)
+  @objc public func addImage(data: Foundation.NSData, _ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float)
+  @objc public func circle(_ x: Swift.Float, _ y: Swift.Float, _ r: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
+  @objc public func ellipse(_ x: Swift.Float, _ y: Swift.Float, _ rx: Swift.Float, _ ry: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
+  @objc public func rect(_ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
+  @objc public func renderToBuffer(_ index: Swift.Int32, _ buffer: Foundation.NSMutableData, _ width: Swift.Int32, _ height: Swift.Int32)
+  @objc public func renderToCGImage(_ index: Swift.Int32, _ width: Swift.Int32, _ height: Swift.Int32)
+  @objc public func renderToCGContext(_ index: Swift.Int32, _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, in context: CoreGraphics.CGContext)
+  @objc public func renderToCGContextImage(_ index: Swift.Int32, _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, _ scaleX: CoreFoundation.CGFloat, _ scaleY: CoreFoundation.CGFloat, _ withScale: Swift.Bool = true) -> CoreGraphics.CGImage?
+  @objc public func roundedRect(_ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float, _ rx: Swift.Float, _ ry: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
+  @objc public func table(_ config: PdfNative.NSCPdfTable)
+}
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCPdfDocumentConfig) public class NSCPdfDocumentConfig : ObjectiveC.NSObject {
+  @objc public var orientation: PdfNative.NSCPdfOrientation
+  @objc public var size: PdfNative.NSCPdfPagerSize
+  @objc public var units: PdfNative.NSCPdfUnit
+  @objc public var deviceScale: Swift.Float
+  @objc override dynamic public init()
+  @objc public init(_ orientation: PdfNative.NSCPdfOrientation, _ size: PdfNative.NSCPdfPagerSize, _ units: PdfNative.NSCPdfUnit, _ deviceScale: Swift.Float)
+  @objc deinit
+}
+@objc(NSCPdfFontFamily) public enum NSCPdfFontFamily : Swift.Int, Swift.RawRepresentable {
+  case helvetica
+  case times
+  case courier
+  public typealias RawValue = Swift.Int32
+  public static func `default`() -> PdfNative.NSCPdfFontFamily
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfFontStyle) public enum NSCPdfFontStyle : Swift.Int, Swift.RawRepresentable {
+  case normal
+  case bold
+  case italic
+  case boldItalic
+  public typealias RawValue = Swift.Int32
+  public static func `default`() -> PdfNative.NSCPdfFontStyle
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfHorizontalAlign) public enum NSCPdfHorizontalAlign : Swift.Int, Swift.RawRepresentable {
+  case left
+  case center
+  case right
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfOrientation) public enum NSCPdfOrientation : Swift.Int32, Swift.RawRepresentable {
+  case Landscape
+  case Portrait
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfOverflow) public enum NSCPdfOverflow : Swift.Int, Swift.RawRepresentable {
+  case lineBreak
+  case ellipsize
+  case visible
+  case hidden
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+  public static func `default`() -> PdfNative.NSCPdfOverflow
+}
+@objcMembers @objc(NSCPdfPadding) public class NSCPdfPadding : ObjectiveC.NSObject {
+  @objc public var top: Swift.Float
+  @objc public var left: Swift.Float
+  @objc public var bottom: Swift.Float
+  @objc public var right: Swift.Float
+  @objc public init(_ top: Swift.Float, _ left: Swift.Float, _ bottom: Swift.Float, _ right: Swift.Float)
+  @objc public init(uniform: Swift.Float)
+  @objc deinit
+}
+@objc(NSCPdfPageBreak) public enum NSCPdfPageBreak : Swift.Int, Swift.RawRepresentable {
+  case auto
+  case avoid
+  case always
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+  public static func `default`() -> PdfNative.NSCPdfPageBreak
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCPdfPagerSize) public class NSCPdfPagerSize : ObjectiveC.NSObject {
+  @objc public static func custom(_ width: Swift.Float, _ height: Swift.Float) -> PdfNative.NSCPdfPagerSize
+  @objc public static func standard(_ value: PdfNative.NSCPdfStandardPaperSize) -> PdfNative.NSCPdfPagerSize
+  @objc public static func a4() -> PdfNative.NSCPdfPagerSize
+  @objc deinit
+}
+@objc(NSCPdfRotationDirection) public enum NSCPdfRotationDirection : Swift.Int, Swift.RawRepresentable {
+  case cw
+  case ccw
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCPdfRotationOrMatrix) public class NSCPdfRotationOrMatrix : ObjectiveC.NSObject {
+  @objc public static let zero: PdfNative.NSCPdfRotationOrMatrix
+  @objc public static func angle(_ deg: Swift.Float) -> PdfNative.NSCPdfRotationOrMatrix
+  @objc public static func matrix(_ a: Swift.Float, _ b: Swift.Float, _ c: Swift.Float, _ d: Swift.Float, _ e: Swift.Float, _ f: Swift.Float) -> PdfNative.NSCPdfRotationOrMatrix
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(NSCPdfShowFoot) public enum NSCPdfShowFoot : Swift.Int, Swift.RawRepresentable {
+  case everyPage
+  case lastPage
+  case never
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+  public static func `default`() -> PdfNative.NSCPdfShowFoot
+}
+@objc(NSCPdfShowHead) public enum NSCPdfShowHead : Swift.Int, Swift.RawRepresentable {
+  case everyPage
+  case firstPage
+  case never
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+  public static func `default`() -> PdfNative.NSCPdfShowHead
+}
+@objc(NSCPdfStandardPaperSize) public enum NSCPdfStandardPaperSize : Swift.UInt32, Swift.RawRepresentable {
+  case USLetterAnsiA
+  case USHalfLetter
+  case USGovernmentLetter
+  case USLegal
+  case USJuniorLegal
+  case USGovernmentLegal
+  case USLedgerTabloidAnsiB
+  case A0x4
+  case A0x2
+  case A0
+  case A1
+  case A2
+  case A3
+  case A4
+  case A4R
+  case A5
+  case A6
+  case A7
+  case A8
+  case A9
+  case A10
+  case B0
+  case B1
+  case B2
+  case B3
+  case B4
+  case B5
+  case B6
+  case B7
+  case B8
+  case B9
+  case B10
+  case C0
+  case C1
+  case C2
+  case C3
+  case C4
+  case C5
+  case C6
+  case C7
+  case C8
+  case C9
+  case C10
+  case AnsiBPlus
+  case AnsiC
+  case AnsiD
+  case AnsiE
+  case ArchA
+  case ArchB
+  case ArchC
+  case ArchD
+  case ArchE
+  public typealias RawValue = Swift.UInt32
+  public init?(rawValue: PdfNative.NSCPdfStandardPaperSize.RawValue)
+  public var rawValue: PdfNative.NSCPdfStandardPaperSize.RawValue {
+    get
+  }
+}
+@objc(NSCPdfStyle) public enum NSCPdfStyle : Swift.Int, Swift.RawRepresentable {
+  case s
+  case f
+  case df
+  case fd
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objcMembers @objc(NSCPdfColor) public class NSCPdfColor : ObjectiveC.NSObject {
+  @objc public var r: Swift.Int32
+  @objc public var g: Swift.Int32
+  @objc public var b: Swift.Int32
+  @objc public var a: Swift.Int32
+  @objc public init(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32)
+  @objc public init(_ r: Swift.Int32, _ g: Swift.Int32, _ b: Swift.Int32, a: Swift.Int32)
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc override dynamic public var hash: Swift.Int {
+    @objc get
+  }
+  @objc public static func gray(_ value: Swift.Int32) -> PdfNative.NSCPdfColor
+  @objc public static func grey(_ value: Swift.Int32) -> PdfNative.NSCPdfColor
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objcMembers @objc(NSCPdfStyleDef) public class NSCPdfStyleDef : ObjectiveC.NSObject {
+  @objc public var font: PdfNative.NSCPdfFontFamily
+  @objc public var fontStyle: PdfNative.NSCPdfFontStyle
+  @objc public var overflow: PdfNative.NSCPdfOverflow
+  @objc public var fillColor: PdfNative.NSCPdfColor?
+  @objc public var textColor: PdfNative.NSCPdfColor?
+  @objc public var cellWidth: PdfNative.NSCPdfCellWidth
+  public var minCellWidth: Swift.Float?
+  @objc public var minCellHeight: Swift.Float
+  @objc public var horizontalAlign: PdfNative.NSCPdfHorizontalAlign
+  @objc public var verticalAlign: PdfNative.NSCPdfVerticalAlign
+  @objc public var fontSize: Swift.Float
+  @objc public var cellPadding: PdfNative.NSCPdfPadding
+  @objc public var lineColor: PdfNative.NSCPdfColor
+  @objc public var lineWidth: Swift.Float
+  @objc public func updateMinCellWidth(_ value: Swift.Float)
+  @objc public func getMinCellWidth() -> Swift.Float
+  @objc public func clone() -> PdfNative.NSCPdfStyleDef
+  @objc public static func `default`() -> PdfNative.NSCPdfStyleDef
+  @objc deinit
+}
+@objcMembers @objc(NSCPdfColumnDef) public class NSCPdfColumnDef : ObjectiveC.NSObject {
+  @objc public var header: Swift.String {
+    @objc get
+    @objc set
+  }
+  @objc public var dataKey: Swift.String? {
+    @objc get
+    @objc set
+  }
+  @objc public init(header: Swift.String, dataKey: Swift.String? = nil)
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objc(NSCPdfColumnKey) public class NSCPdfColumnKey : ObjectiveC.NSObject {
+  public static func Index(_ value: Swift.Int) -> PdfNative.NSCPdfColumnKey
+  public static func DataKey(_ value: Swift.String) -> PdfNative.NSCPdfColumnKey
+  @objc deinit
+  @objc override dynamic public init()
+}
+@objcMembers @objc(NSCPdfTableCellOrString) public class NSCPdfTableCellOrString : ObjectiveC.NSObject {
+  @objc public init(string: Swift.String, cell: PdfNative.NSCPdfTableCell? = nil)
+  @objc public static func String(_ value: Swift.String) -> PdfNative.NSCPdfTableCellOrString
+  @objc public static func Cell(_ value: PdfNative.NSCPdfTableCell) -> PdfNative.NSCPdfTableCellOrString
+  @objc deinit
+}
+@objcMembers @objc(NSCPdfTableCell) public class NSCPdfTableCell : ObjectiveC.NSObject {
+  @objc public init(_ content: Swift.String, _ colSpan: Swift.Int, _ rowSpan: Swift.Int, _ style: PdfNative.NSCPdfStyleDef = NSCPdfStyleDef.default())
+  @objc deinit
+}
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCPdfTable) public class NSCPdfTable : ObjectiveC.NSObject {
+  @objc public var columns: Swift.Array<PdfNative.NSCPdfColumnDef>?
+  @objc public var columnStyles: Swift.Dictionary<PdfNative.NSCPdfColumnKey, PdfNative.NSCPdfStyleDef>?
+  @objc public var headStyles: PdfNative.NSCPdfStyleDef?
+  @objc public var bodyStyles: PdfNative.NSCPdfStyleDef?
+  @objc public var footStyles: PdfNative.NSCPdfStyleDef?
+  @objc public var head: [Swift.Array<PdfNative.NSCPdfTableCellOrString>]
+  @objc public var body: [Swift.Array<PdfNative.NSCPdfTableCellOrString>]
+  @objc public var foot: [Swift.Array<PdfNative.NSCPdfTableCellOrString>]
+  @objc public var position: [Swift.Float]
+  @objc public var theme: PdfNative.NSCPdfTableTheme
+  @objc public var pageBreak: PdfNative.NSCPdfPageBreak
+  @objc public var showHead: PdfNative.NSCPdfShowHead
+  @objc public var showFoot: PdfNative.NSCPdfShowFoot
+  @objc public func updatePosition(_ x: Swift.Float, _ y: Swift.Float)
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(NSCPdfTableTheme) public enum NSCPdfTableTheme : Swift.Int, Swift.RawRepresentable {
+  case striped
+  case grid
+  case plain
+  public typealias RawValue = Swift.Int32
+  public static func `default`() -> PdfNative.NSCPdfTableTheme
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfTextAlignment) public enum NSCPdfTextAlignment : Swift.Int, Swift.RawRepresentable {
+  case left
+  case center
+  case right
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfTextBaseline) public enum NSCPdfTextBaseline : Swift.Int, Swift.RawRepresentable {
+  case alphabetic
+  case ideographic
+  case bottom
+  case top
+  case middle
+  case hanging
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @objcMembers @objc(NSCPdfTextOptions) public class NSCPdfTextOptions : ObjectiveC.NSObject {
+  @objc public var align: PdfNative.NSCPdfTextAlignment
+  @objc public var baseline: PdfNative.NSCPdfTextBaseline
+  @objc public var angle: PdfNative.NSCPdfRotationOrMatrix
+  @objc public var rotationDirection: PdfNative.NSCPdfRotationDirection
+  @objc public var charSpace: Swift.Int
+  @objc public var horizontalScale: Swift.Float
+  @objc public var lineHeightFactor: Swift.Float
+  @objc public var maxWidth: Swift.Int
+  @objc public func pdfium() -> PdfNative.PdfNativeTextOptions
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc(NSCPdfUnit) public enum NSCPdfUnit : Swift.Int32, Swift.RawRepresentable {
+  case mm
+  case points
+  case cm
+  case inches
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@objc(NSCPdfVerticalAlign) public enum NSCPdfVerticalAlign : Swift.Int, Swift.RawRepresentable {
+  case top
+  case middle
+  case bottom
+  public typealias RawValue = Swift.Int32
+  public init?(rawValue: Swift.Int32)
+  public var rawValue: Swift.Int32 {
+    get
+  }
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(NSCPdfView) @objcMembers @_Concurrency.MainActor @preconcurrency public class NSCPdfView : UIKit.UIView, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout, UIKit.UICollectionViewDataSourcePrefetching {
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, prefetchItemsAt indexPaths: [Foundation.IndexPath])
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cancelPrefetchingForItemsAt indexPaths: [Foundation.IndexPath])
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
+  @objc @_Concurrency.MainActor @preconcurrency public var document: PdfNative.NSCPdfDocument? {
+    @objc get
+    @objc set
+  }
+  @objc @_Concurrency.MainActor @preconcurrency public var onLoaded: ((PdfNative.NSCPdfDocument) -> Swift.Void)?
+  @objc @_Concurrency.MainActor @preconcurrency public var onError: (((any Swift.Error)?) -> Swift.Void)?
+  @objc @_Concurrency.MainActor @preconcurrency public var onPageChange: ((Swift.Int) -> Swift.Void)?
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc @_Concurrency.MainActor @preconcurrency public func loadFromBytes(_ bytes: Foundation.NSData, _ password: Swift.String?)
+  @objc @_Concurrency.MainActor @preconcurrency public func loadFromPath(_ path: Swift.String, _ password: Swift.String?)
+  @objc @_Concurrency.MainActor @preconcurrency public func loadFromUrl(_ url: Swift.String, _ password: Swift.String?)
+  @objc deinit
+}
+extension PdfNative.NSCPdfFontFamily : Swift.Equatable {}
+extension PdfNative.NSCPdfFontFamily : Swift.Hashable {}
+extension PdfNative.NSCPdfFontStyle : Swift.Equatable {}
+extension PdfNative.NSCPdfFontStyle : Swift.Hashable {}
+extension PdfNative.NSCPdfHorizontalAlign : Swift.Equatable {}
+extension PdfNative.NSCPdfHorizontalAlign : Swift.Hashable {}
+extension PdfNative.NSCPdfOrientation : Swift.Equatable {}
+extension PdfNative.NSCPdfOrientation : Swift.Hashable {}
+extension PdfNative.NSCPdfOverflow : Swift.Equatable {}
+extension PdfNative.NSCPdfOverflow : Swift.Hashable {}
+extension PdfNative.NSCPdfPageBreak : Swift.Equatable {}
+extension PdfNative.NSCPdfPageBreak : Swift.Hashable {}
+extension PdfNative.NSCPdfRotationDirection : Swift.Equatable {}
+extension PdfNative.NSCPdfRotationDirection : Swift.Hashable {}
+extension PdfNative.NSCPdfShowFoot : Swift.Equatable {}
+extension PdfNative.NSCPdfShowFoot : Swift.Hashable {}
+extension PdfNative.NSCPdfShowHead : Swift.Equatable {}
+extension PdfNative.NSCPdfShowHead : Swift.Hashable {}
+extension PdfNative.NSCPdfStandardPaperSize : Swift.Equatable {}
+extension PdfNative.NSCPdfStandardPaperSize : Swift.Hashable {}
+extension PdfNative.NSCPdfStyle : Swift.Equatable {}
+extension PdfNative.NSCPdfStyle : Swift.Hashable {}
+extension PdfNative.NSCPdfTableTheme : Swift.Equatable {}
+extension PdfNative.NSCPdfTableTheme : Swift.Hashable {}
+extension PdfNative.NSCPdfTextAlignment : Swift.Equatable {}
+extension PdfNative.NSCPdfTextAlignment : Swift.Hashable {}
+extension PdfNative.NSCPdfTextBaseline : Swift.Equatable {}
+extension PdfNative.NSCPdfTextBaseline : Swift.Hashable {}
+extension PdfNative.NSCPdfUnit : Swift.Equatable {}
+extension PdfNative.NSCPdfUnit : Swift.Hashable {}
+extension PdfNative.NSCPdfVerticalAlign : Swift.Equatable {}
+extension PdfNative.NSCPdfVerticalAlign : Swift.Hashable {}

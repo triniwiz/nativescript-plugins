@@ -24,6 +24,7 @@
         <Button text="nativescript-opentok" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-pager" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-parsesdk" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
+        <Button text="nativescript-pdf" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-popup" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-pubnub" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-pusher-beams" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
@@ -50,7 +51,6 @@
         <Button text="nativescript-webrtc" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-yogalayout" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
         <Button text="nativescript-youtubeplayer" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
-<Button text="nativescript-descope" tap="{{ viewDemo }}" class="btn btn-primary view-demo"/>
       </StackLayout>
     </ScrollView>
   </StackLayout>

@@ -446,6 +446,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-supabase-auth: Build',
 				},
 			},
+			// @triniwiz/nativescript-pdf
+			'nativescript-pdf': {
+				build: {
+					script: 'nx run nativescript-pdf:build.all',
+					description: '@triniwiz/nativescript-pdf: Build',
+				},
+			},
 			'build-all': {
 				script: 'nx run-many --target=build.all --all',
 				description: 'Build all packages',
@@ -675,6 +682,10 @@ module.exports = {
 			'nativescript-supabase-auth': {
 				script: 'nx run nativescript-supabase-auth:focus',
 				description: 'Focus on @triniwiz/nativescript-supabase-auth',
+			},
+			'nativescript-pdf': {
+				script: 'nx run nativescript-pdf:focus',
+				description: 'Focus on @triniwiz/nativescript-pdf',
 			},
 			reset: {
 				script: 'nx g @nativescript/plugin-tools:focus-packages',

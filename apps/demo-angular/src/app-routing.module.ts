@@ -26,6 +26,7 @@ const routes: Routes = [
 	{ path: 'nativescript-opentok', loadChildren: () => import('./plugin-demos/nativescript-opentok.module').then(m => m.NativescriptOpentokModule) },
 	{ path: 'nativescript-pager', loadChildren: () => import('./plugin-demos/nativescript-pager.module').then(m => m.NativescriptPagerModule) },
 	{ path: 'nativescript-parsesdk', loadChildren: () => import('./plugin-demos/nativescript-parsesdk.module').then(m => m.NativescriptParsesdkModule) },
+	{ path: 'nativescript-pdf', loadChildren: () => import('./plugin-demos/nativescript-pdf.module').then(m => m.NativescriptPdfModule) },
 	{ path: 'nativescript-popup', loadChildren: () => import('./plugin-demos/nativescript-popup.module').then(m => m.NativescriptPopupModule) },
 	{ path: 'nativescript-pubnub', loadChildren: () => import('./plugin-demos/nativescript-pubnub.module').then(m => m.NativescriptPubnubModule) },
 	{ path: 'nativescript-pusher-beams', loadChildren: () => import('./plugin-demos/nativescript-pusher-beams.module').then(m => m.NativescriptPusherBeamsModule) },

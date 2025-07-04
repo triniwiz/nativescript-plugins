@@ -1,0 +1,11 @@
+framework module PdfNative {
+  umbrella header "PdfNative.h"
+  export *
+
+  module * { export * }
+}
+
+module PdfNative.Swift {
+  header "PdfNative-Swift.h"
+  requires objc
+}

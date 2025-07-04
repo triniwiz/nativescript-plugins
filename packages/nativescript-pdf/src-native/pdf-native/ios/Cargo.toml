@@ -1,0 +1,11 @@
+[package]
+name = "ios"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "pdfnative"
+crate-type = ["staticlib"]
+
+[dependencies]
+pdf-core = { path = "../core" }

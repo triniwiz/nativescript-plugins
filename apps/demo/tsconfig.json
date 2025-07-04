@@ -201,6 +201,9 @@
       ],
       "@triniwiz/nativescript-supabase-functions": [
         "../../packages/nativescript-supabase-functions/index.d.ts"
+      ],
+      "@triniwiz/nativescript-pdf": [
+        "../../packages/nativescript-pdf/index.d.ts"
       ]
     }
   }

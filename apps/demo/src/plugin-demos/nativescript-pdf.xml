@@ -1,0 +1,9 @@
+<Page xmlns="http://schemas.nativescript.org/tns.xsd" xmlns:ui="@triniwiz/nativescript-pdf" navigatingTo="navigatingTo" class="page">
+    <Page.actionBar>
+        <ActionBar title="nativescript-pdf" icon="" class="action-bar">
+        </ActionBar>
+    </Page.actionBar>
+    <StackLayout>
+        <ui:PDFView id="pdfView" class="pdf-view"  loaded="{{loaded}}"/>
+    </StackLayout>
+</Page>

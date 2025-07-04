@@ -48,7 +48,9 @@
     "**/packages/nativescript-webrtc": false,
     "**/packages/nativescript-yogalayout": false,
     "**/packages/nativescript-youtubeplayer": false,
-    "**/packages/nativescript-appwrite": false
+    "**/packages/nativescript-appwrite": false,
+    "**/packages/nativescript-klaviyo-push-sdk": false,
+    "**/packages/nativescript-pdf": false
   },
   "search.exclude": {
     "**/apps/demo": false,
@@ -99,6 +101,8 @@
     "**/packages/nativescript-webrtc": false,
     "**/packages/nativescript-yogalayout": false,
     "**/packages/nativescript-youtubeplayer": false,
-    "**/packages/nativescript-appwrite": false
+    "**/packages/nativescript-appwrite": false,
+    "**/packages/nativescript-klaviyo-push-sdk": false,
+    "**/packages/nativescript-pdf": false
   }
 }

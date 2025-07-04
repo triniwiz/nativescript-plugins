@@ -1,0 +1,3 @@
+dependencies {
+    implementation 'me.zhanghai.android.fastscroll:library:1.3.0'
+}

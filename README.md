@@ -17,6 +17,7 @@
 - [@triniwiz/nativescript-opentok](packages/nativescript-opentok/README.md)
 - [@triniwiz/nativescript-pager](packages/nativescript-pager/README.md)
 - [@triniwiz/nativescript-parsesdk](packages/nativescript-parsesdk/README.md)
+- [@triniwiz/nativescript-pdf](packages/nativescript-pdf/README.md)
 - [@triniwiz/nativescript-popup](packages/nativescript-popup/README.md)
 - [@triniwiz/nativescript-pubnub](packages/nativescript-pubnub/README.md)
 - [@triniwiz/nativescript-pusher-beams](packages/nativescript-pusher-beams/README.md)

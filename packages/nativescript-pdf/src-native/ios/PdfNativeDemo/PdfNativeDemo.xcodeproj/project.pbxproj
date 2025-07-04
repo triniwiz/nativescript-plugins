@@ -1,0 +1,605 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F1FBE8432E0C8C7E0088943A /* PdfNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F1FBE8422E0C8C7E0088943A /* PdfNative.framework */; };
+		F1FBE8442E0C8C7E0088943A /* PdfNative.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F1FBE8422E0C8C7E0088943A /* PdfNative.framework */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F1FBE8182E0C8C450088943A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1FBE7F92E0C8C440088943A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F1FBE8002E0C8C440088943A;
+			remoteInfo = PdfNativeDemo;
+		};
+		F1FBE8222E0C8C450088943A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1FBE7F92E0C8C440088943A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F1FBE8002E0C8C440088943A;
+			remoteInfo = PdfNativeDemo;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F1FBE8452E0C8C7E0088943A /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F1FBE8442E0C8C7E0088943A /* PdfNative.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		F1FBE8012E0C8C440088943A /* PdfNativeDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PdfNativeDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1FBE8172E0C8C450088943A /* PdfNativeDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PdfNativeDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1FBE8212E0C8C450088943A /* PdfNativeDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PdfNativeDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F1FBE8422E0C8C7E0088943A /* PdfNative.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = PdfNative.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F1FBE8292E0C8C450088943A /* Exceptions for "PdfNativeDemo" folder in "PdfNativeDemo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F1FBE8002E0C8C440088943A /* PdfNativeDemo */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F1FBE8032E0C8C440088943A /* PdfNativeDemo */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F1FBE8292E0C8C450088943A /* Exceptions for "PdfNativeDemo" folder in "PdfNativeDemo" target */,
+			);
+			path = PdfNativeDemo;
+			sourceTree = "<group>";
+		};
+		F1FBE81A2E0C8C450088943A /* PdfNativeDemoTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PdfNativeDemoTests;
+			sourceTree = "<group>";
+		};
+		F1FBE8242E0C8C450088943A /* PdfNativeDemoUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = PdfNativeDemoUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F1FBE7FE2E0C8C440088943A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F1FBE8432E0C8C7E0088943A /* PdfNative.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1FBE8142E0C8C450088943A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1FBE81E2E0C8C450088943A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F1FBE7F82E0C8C440088943A = {
+			isa = PBXGroup;
+			children = (
+				F1FBE8032E0C8C440088943A /* PdfNativeDemo */,
+				F1FBE81A2E0C8C450088943A /* PdfNativeDemoTests */,
+				F1FBE8242E0C8C450088943A /* PdfNativeDemoUITests */,
+				F1FBE8412E0C8C7E0088943A /* Frameworks */,
+				F1FBE8022E0C8C440088943A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F1FBE8022E0C8C440088943A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F1FBE8012E0C8C440088943A /* PdfNativeDemo.app */,
+				F1FBE8172E0C8C450088943A /* PdfNativeDemoTests.xctest */,
+				F1FBE8212E0C8C450088943A /* PdfNativeDemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F1FBE8412E0C8C7E0088943A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F1FBE8422E0C8C7E0088943A /* PdfNative.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F1FBE8002E0C8C440088943A /* PdfNativeDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F1FBE82A2E0C8C450088943A /* Build configuration list for PBXNativeTarget "PdfNativeDemo" */;
+			buildPhases = (
+				F1FBE7FD2E0C8C440088943A /* Sources */,
+				F1FBE7FE2E0C8C440088943A /* Frameworks */,
+				F1FBE7FF2E0C8C440088943A /* Resources */,
+				F1FBE8452E0C8C7E0088943A /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F1FBE8032E0C8C440088943A /* PdfNativeDemo */,
+			);
+			name = PdfNativeDemo;
+			packageProductDependencies = (
+			);
+			productName = PdfNativeDemo;
+			productReference = F1FBE8012E0C8C440088943A /* PdfNativeDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F1FBE8162E0C8C450088943A /* PdfNativeDemoTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F1FBE82F2E0C8C450088943A /* Build configuration list for PBXNativeTarget "PdfNativeDemoTests" */;
+			buildPhases = (
+				F1FBE8132E0C8C450088943A /* Sources */,
+				F1FBE8142E0C8C450088943A /* Frameworks */,
+				F1FBE8152E0C8C450088943A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F1FBE8192E0C8C450088943A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F1FBE81A2E0C8C450088943A /* PdfNativeDemoTests */,
+			);
+			name = PdfNativeDemoTests;
+			packageProductDependencies = (
+			);
+			productName = PdfNativeDemoTests;
+			productReference = F1FBE8172E0C8C450088943A /* PdfNativeDemoTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F1FBE8202E0C8C450088943A /* PdfNativeDemoUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F1FBE8322E0C8C450088943A /* Build configuration list for PBXNativeTarget "PdfNativeDemoUITests" */;
+			buildPhases = (
+				F1FBE81D2E0C8C450088943A /* Sources */,
+				F1FBE81E2E0C8C450088943A /* Frameworks */,
+				F1FBE81F2E0C8C450088943A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F1FBE8232E0C8C450088943A /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F1FBE8242E0C8C450088943A /* PdfNativeDemoUITests */,
+			);
+			name = PdfNativeDemoUITests;
+			packageProductDependencies = (
+			);
+			productName = PdfNativeDemoUITests;
+			productReference = F1FBE8212E0C8C450088943A /* PdfNativeDemoUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F1FBE7F92E0C8C440088943A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1610;
+				LastUpgradeCheck = 1610;
+				TargetAttributes = {
+					F1FBE8002E0C8C440088943A = {
+						CreatedOnToolsVersion = 16.1;
+					};
+					F1FBE8162E0C8C450088943A = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = F1FBE8002E0C8C440088943A;
+					};
+					F1FBE8202E0C8C450088943A = {
+						CreatedOnToolsVersion = 16.1;
+						TestTargetID = F1FBE8002E0C8C440088943A;
+					};
+				};
+			};
+			buildConfigurationList = F1FBE7FC2E0C8C440088943A /* Build configuration list for PBXProject "PdfNativeDemo" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F1FBE7F82E0C8C440088943A;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F1FBE8022E0C8C440088943A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F1FBE8002E0C8C440088943A /* PdfNativeDemo */,
+				F1FBE8162E0C8C450088943A /* PdfNativeDemoTests */,
+				F1FBE8202E0C8C450088943A /* PdfNativeDemoUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F1FBE7FF2E0C8C440088943A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1FBE8152E0C8C450088943A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1FBE81F2E0C8C450088943A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F1FBE7FD2E0C8C440088943A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1FBE8132E0C8C450088943A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F1FBE81D2E0C8C450088943A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F1FBE8192E0C8C450088943A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F1FBE8002E0C8C440088943A /* PdfNativeDemo */;
+			targetProxy = F1FBE8182E0C8C450088943A /* PBXContainerItemProxy */;
+		};
+		F1FBE8232E0C8C450088943A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F1FBE8002E0C8C440088943A /* PdfNativeDemo */;
+			targetProxy = F1FBE8222E0C8C450088943A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F1FBE82B2E0C8C450088943A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PdfNativeDemo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.triniwiz.nativescript.plugindemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F1FBE82C2E0C8C450088943A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PdfNativeDemo/Info.plist;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.triniwiz.nativescript.plugindemo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		F1FBE82D2E0C8C450088943A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F1FBE82E2E0C8C450088943A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F1FBE8302E0C8C450088943A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.triniwiz.plugins.pdf.PdfNativeDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PdfNativeDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PdfNativeDemo";
+			};
+			name = Debug;
+		};
+		F1FBE8312E0C8C450088943A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.triniwiz.plugins.pdf.PdfNativeDemoTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PdfNativeDemo.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/PdfNativeDemo";
+			};
+			name = Release;
+		};
+		F1FBE8332E0C8C450088943A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.triniwiz.plugins.pdf.PdfNativeDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PdfNativeDemo;
+			};
+			name = Debug;
+		};
+		F1FBE8342E0C8C450088943A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.github.triniwiz.plugins.pdf.PdfNativeDemoUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = PdfNativeDemo;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F1FBE7FC2E0C8C440088943A /* Build configuration list for PBXProject "PdfNativeDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1FBE82D2E0C8C450088943A /* Debug */,
+				F1FBE82E2E0C8C450088943A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F1FBE82A2E0C8C450088943A /* Build configuration list for PBXNativeTarget "PdfNativeDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1FBE82B2E0C8C450088943A /* Debug */,
+				F1FBE82C2E0C8C450088943A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F1FBE82F2E0C8C450088943A /* Build configuration list for PBXNativeTarget "PdfNativeDemoTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1FBE8302E0C8C450088943A /* Debug */,
+				F1FBE8312E0C8C450088943A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F1FBE8322E0C8C450088943A /* Build configuration list for PBXNativeTarget "PdfNativeDemoUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F1FBE8332E0C8C450088943A /* Debug */,
+				F1FBE8342E0C8C450088943A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F1FBE7F92E0C8C440088943A /* Project object */;
+}
