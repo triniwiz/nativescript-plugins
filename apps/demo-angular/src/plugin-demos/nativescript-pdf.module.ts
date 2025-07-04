@@ -4,7 +4,7 @@ import { NativescriptPdfComponent } from './nativescript-pdf.component';
 
 @NgModule({
 	imports: [NativeScriptCommonModule, NativeScriptRouterModule.forChild([{ path: '', component: NativescriptPdfComponent }])],
-  declarations: [NativescriptPdfComponent],
-  schemas: [ NO_ERRORS_SCHEMA]
+	declarations: [NativescriptPdfComponent],
+	schemas: [NO_ERRORS_SCHEMA],
 })
 export class NativescriptPdfModule {}

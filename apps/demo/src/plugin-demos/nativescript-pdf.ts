@@ -13,7 +13,7 @@ export class DemoModel extends DemoSharedNativescriptPdf {
 		const pdfView = args.object as never as PDFView;
 		const document = new PDFDocument();
 
-	//	this.renderDocument(document, pdfView);
+		//	this.renderDocument(document, pdfView);
 		this.renderTable(document, pdfView);
 	}
 

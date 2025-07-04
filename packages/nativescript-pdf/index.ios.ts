@@ -622,11 +622,11 @@ export class PDFDocument implements IPDFDocument {
 				opts.footStyles = parseStyleDef(options.footStyles);
 			}
 
-				opts.head = parseTableCellOrString(options.head) as never;
+			opts.head = parseTableCellOrString(options.head) as never;
 
-				opts.body = parseTableCellOrString(options.body) as never;
+			opts.body = parseTableCellOrString(options.body) as never;
 
-				opts.foot = parseTableCellOrString(options.foot) as never;
+			opts.foot = parseTableCellOrString(options.foot) as never;
 
 			if (Array.isArray(options.position)) {
 				opts.updatePosition(options.position[0] ?? 0, options.position[1] ?? 0);

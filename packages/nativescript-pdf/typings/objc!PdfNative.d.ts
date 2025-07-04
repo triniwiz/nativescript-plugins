@@ -1,4 +1,3 @@
-
 interface CCellWidth {
 	type_: CCellWidthType;
 	value: CPdfNativePoints;
@@ -6,12 +5,11 @@ interface CCellWidth {
 declare var CCellWidth: interop.StructType<CCellWidth>;
 
 declare const enum CCellWidthType {
-
 	Auto = 0,
 
 	Wrap = 1,
 
-	Fixed = 2
+	Fixed = 2,
 }
 
 interface CColumnDef {
@@ -28,19 +26,17 @@ interface CColumnKey {
 declare var CColumnKey: interop.StructType<CColumnKey>;
 
 declare const enum CColumnKeyType {
-
 	Index = 0,
 
-	DataKey = 1
+	DataKey = 1,
 }
 
 declare const enum CHorizontalAlign {
-
 	Left = 0,
 
 	Center = 1,
 
-	Right = 2
+	Right = 2,
 }
 
 interface CPdfNativeColor {
@@ -52,10 +48,9 @@ interface CPdfNativeColor {
 declare var CPdfNativeColor: interop.StructType<CPdfNativeColor>;
 
 declare const enum CPdfNativeColorOptionalType {
-
 	None = 0,
 
-	Some = 1
+	Some = 1,
 }
 
 interface CPdfNativePadding {
@@ -73,23 +68,20 @@ interface CPdfNativePoints {
 declare var CPdfNativePoints: interop.StructType<CPdfNativePoints>;
 
 declare const enum CPdfNativePointsOptionalType {
-
 	None = 0,
 
-	Some = 1
+	Some = 1,
 }
 
 declare const enum CVerticalAlign {
-
 	Top = 0,
 
 	Middle = 1,
 
-	Bottom = 2
+	Bottom = 2,
 }
 
 declare class NSCPdf extends NSObject {
-
 	static alloc(): NSCPdf; // inherited from NSObject
 
 	static new(): NSCPdf; // inherited from NSObject
@@ -102,7 +94,6 @@ declare class NSCPdf extends NSObject {
 }
 
 declare class NSCPdfCellWidth extends NSObject {
-
 	static Fixed(value: number): NSCPdfCellWidth;
 
 	static alloc(): NSCPdfCellWidth; // inherited from NSObject
@@ -115,7 +106,6 @@ declare class NSCPdfCellWidth extends NSObject {
 }
 
 declare class NSCPdfColor extends NSObject {
-
 	static alloc(): NSCPdfColor; // inherited from NSObject
 
 	static gray(value: number): NSCPdfColor;
@@ -134,7 +124,7 @@ declare class NSCPdfColor extends NSObject {
 
 	constructor();
 
-	constructor(o: { a: number; });
+	constructor(o: { a: number });
 
 	init(r: number, g: number, b: number): this;
 
@@ -142,7 +132,6 @@ declare class NSCPdfColor extends NSObject {
 }
 
 declare class NSCPdfColumnDef extends NSObject {
-
 	static alloc(): NSCPdfColumnDef; // inherited from NSObject
 
 	static new(): NSCPdfColumnDef; // inherited from NSObject
@@ -151,20 +140,18 @@ declare class NSCPdfColumnDef extends NSObject {
 
 	header: string;
 
-	constructor(o: { header: string; dataKey: string; });
+	constructor(o: { header: string; dataKey: string });
 
 	initWithHeaderDataKey(header: string, dataKey: string): this;
 }
 
 declare class NSCPdfColumnKey extends NSObject {
-
 	static alloc(): NSCPdfColumnKey; // inherited from NSObject
 
 	static new(): NSCPdfColumnKey; // inherited from NSObject
 }
 
 declare class NSCPdfDocument extends NSObject {
-
 	static alloc(): NSCPdfDocument; // inherited from NSObject
 
 	static new(): NSCPdfDocument; // inherited from NSObject
@@ -179,7 +166,7 @@ declare class NSCPdfDocument extends NSObject {
 
 	readonly width: number;
 
-	constructor(o: { config: NSCPdfDocumentConfig; });
+	constructor(o: { config: NSCPdfDocumentConfig });
 
 	addImage(image: UIImage, x: number, y: number, width: number, height: number): void;
 
@@ -225,7 +212,6 @@ declare class NSCPdfDocument extends NSObject {
 }
 
 declare class NSCPdfDocumentConfig extends NSObject {
-
 	static alloc(): NSCPdfDocumentConfig; // inherited from NSObject
 
 	static new(): NSCPdfDocumentConfig; // inherited from NSObject
@@ -244,54 +230,48 @@ declare class NSCPdfDocumentConfig extends NSObject {
 }
 
 declare const enum NSCPdfFontFamily {
-
 	Helvetica = 0,
 
 	Times = 1,
 
-	Courier = 2
+	Courier = 2,
 }
 
 declare const enum NSCPdfFontStyle {
-
 	Normal = 0,
 
 	Bold = 1,
 
 	Italic = 2,
 
-	BoldItalic = 3
+	BoldItalic = 3,
 }
 
 declare const enum NSCPdfHorizontalAlign {
-
 	Left = 0,
 
 	Center = 1,
 
-	Right = 2
+	Right = 2,
 }
 
 declare const enum NSCPdfOrientation {
-
 	Landscape = 0,
 
-	Portrait = 1
+	Portrait = 1,
 }
 
 declare const enum NSCPdfOverflow {
-
 	LineBreak = 0,
 
 	Ellipsize = 1,
 
 	Visible = 2,
 
-	Hidden = 3
+	Hidden = 3,
 }
 
 declare class NSCPdfPadding extends NSObject {
-
 	static alloc(): NSCPdfPadding; // inherited from NSObject
 
 	static new(): NSCPdfPadding; // inherited from NSObject
@@ -306,7 +286,7 @@ declare class NSCPdfPadding extends NSObject {
 
 	constructor();
 
-	constructor(o: { uniform: number; });
+	constructor(o: { uniform: number });
 
 	init(top: number, left: number, bottom: number, right: number): this;
 
@@ -314,16 +294,14 @@ declare class NSCPdfPadding extends NSObject {
 }
 
 declare const enum NSCPdfPageBreak {
-
 	Auto = 0,
 
 	Avoid = 1,
 
-	Always = 2
+	Always = 2,
 }
 
 declare class NSCPdfPagerSize extends NSObject {
-
 	static a4(): NSCPdfPagerSize;
 
 	static alloc(): NSCPdfPagerSize; // inherited from NSObject
@@ -336,14 +314,12 @@ declare class NSCPdfPagerSize extends NSObject {
 }
 
 declare const enum NSCPdfRotationDirection {
-
 	Cw = 0,
 
-	Ccw = 1
+	Ccw = 1,
 }
 
 declare class NSCPdfRotationOrMatrix extends NSObject {
-
 	static alloc(): NSCPdfRotationOrMatrix; // inherited from NSObject
 
 	static angle(deg: number): NSCPdfRotationOrMatrix;
@@ -356,25 +332,22 @@ declare class NSCPdfRotationOrMatrix extends NSObject {
 }
 
 declare const enum NSCPdfShowFoot {
-
 	EveryPage = 0,
 
 	LastPage = 1,
 
-	Never = 2
+	Never = 2,
 }
 
 declare const enum NSCPdfShowHead {
-
 	EveryPage = 0,
 
 	FirstPage = 1,
 
-	Never = 2
+	Never = 2,
 }
 
 declare const enum NSCPdfStandardPaperSize {
-
 	USLetterAnsiA = 0,
 
 	USHalfLetter = 1,
@@ -477,22 +450,20 @@ declare const enum NSCPdfStandardPaperSize {
 
 	ArchD = 50,
 
-	ArchE = 51
+	ArchE = 51,
 }
 
 declare const enum NSCPdfStyle {
-
 	S = 0,
 
 	F = 1,
 
 	Df = 2,
 
-	Fd = 3
+	Fd = 3,
 }
 
 declare class NSCPdfStyleDef extends NSObject {
-
 	static alloc(): NSCPdfStyleDef; // inherited from NSObject
 
 	static default(): NSCPdfStyleDef;
@@ -533,7 +504,6 @@ declare class NSCPdfStyleDef extends NSObject {
 }
 
 declare class NSCPdfTable extends NSObject {
-
 	static alloc(): NSCPdfTable; // inherited from NSObject
 
 	static new(): NSCPdfTable; // inherited from NSObject
@@ -568,7 +538,6 @@ declare class NSCPdfTable extends NSObject {
 }
 
 declare class NSCPdfTableCell extends NSObject {
-
 	static alloc(): NSCPdfTableCell; // inherited from NSObject
 
 	static new(): NSCPdfTableCell; // inherited from NSObject
@@ -579,38 +548,34 @@ declare class NSCPdfTableCell extends NSObject {
 }
 
 declare class NSCPdfTableCellOrString extends NSObject {
-
 	static Cell(value: NSCPdfTableCell): NSCPdfTableCellOrString;
 
 	static alloc(): NSCPdfTableCellOrString; // inherited from NSObject
 
 	static new(): NSCPdfTableCellOrString; // inherited from NSObject
 
-	constructor(o: { string: string; cell: NSCPdfTableCell; });
+	constructor(o: { string: string; cell: NSCPdfTableCell });
 
 	initWithStringCell(string: string, cell: NSCPdfTableCell): this;
 }
 
 declare const enum NSCPdfTableTheme {
-
 	Striped = 0,
 
 	Grid = 1,
 
-	Plain = 2
+	Plain = 2,
 }
 
 declare const enum NSCPdfTextAlignment {
-
 	Left = 0,
 
 	Center = 1,
 
-	Right = 2
+	Right = 2,
 }
 
 declare const enum NSCPdfTextBaseline {
-
 	Alphabetic = 0,
 
 	Ideographic = 1,
@@ -621,11 +586,10 @@ declare const enum NSCPdfTextBaseline {
 
 	Middle = 4,
 
-	Hanging = 5
+	Hanging = 5,
 }
 
 declare class NSCPdfTextOptions extends NSObject {
-
 	static alloc(): NSCPdfTextOptions; // inherited from NSObject
 
 	static new(): NSCPdfTextOptions; // inherited from NSObject
@@ -648,27 +612,24 @@ declare class NSCPdfTextOptions extends NSObject {
 }
 
 declare const enum NSCPdfUnit {
-
 	Mm = 0,
 
 	Points = 1,
 
 	Cm = 2,
 
-	Inches = 3
+	Inches = 3,
 }
 
 declare const enum NSCPdfVerticalAlign {
-
 	Top = 0,
 
 	Middle = 1,
 
-	Bottom = 2
+	Bottom = 2,
 }
 
 declare class NSCPdfView extends UIView implements UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout {
-
 	static alloc(): NSCPdfView; // inherited from NSObject
 
 	static appearance(): NSCPdfView; // inherited from UIAppearance
@@ -687,7 +648,7 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 	/**
 	 * @since 9.0
 	 */
-	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): NSCPdfView; // inherited from UIAppearance
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfView; // inherited from UIAppearance
 
 	/**
 	 * @since 5.0
@@ -698,7 +659,7 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 	/**
 	 * @since 9.0
 	 */
-	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | typeof NSObject[]): NSCPdfView; // inherited from UIAppearance
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfView; // inherited from UIAppearance
 
 	static new(): NSCPdfView; // inherited from NSObject
 
@@ -720,7 +681,7 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 
 	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
 
-	readonly  // inherited from NSObjectProtocol
+	readonly; // inherited from NSObjectProtocol
 
 	class(): typeof NSObject;
 
@@ -1019,50 +980,45 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 }
 
 declare const enum PdfNativeFontFamily {
-
 	Helvetica = 0,
 
 	Times = 1,
 
-	Courier = 2
+	Courier = 2,
 }
 
 declare const enum PdfNativeFontStyle {
-
 	Normal = 0,
 
 	Bold = 1,
 
 	Italic = 2,
 
-	BoldItalic = 3
+	BoldItalic = 3,
 }
 
 declare const enum PdfNativeOrientation {
-
 	Landscape = 0,
 
-	Portrait = 1
+	Portrait = 1,
 }
 
 declare const enum PdfNativeOverflow {
-
 	LineBreak = 0,
 
 	Ellipsize = 1,
 
 	Visible = 2,
 
-	Hidden = 3
+	Hidden = 3,
 }
 
 declare const enum PdfNativePageBreak {
-
 	Auto = 0,
 
 	Avoid = 1,
 
-	Always = 2
+	Always = 2,
 }
 
 interface PdfNativePaperSize_Custom_Body {
@@ -1072,46 +1028,40 @@ interface PdfNativePaperSize_Custom_Body {
 declare var PdfNativePaperSize_Custom_Body: interop.StructType<PdfNativePaperSize_Custom_Body>;
 
 declare const enum PdfNativePaperSize_Tag {
-
 	StandardPaper = 0,
 
-	Custom = 1
+	Custom = 1,
 }
 
 declare const enum PdfNativeRotationDirection {
-
 	CW = 0,
 
-	CCW = 1
+	CCW = 1,
 }
 
 declare const enum PdfNativeRotationOrMatrixKind {
-
 	Rotation = 0,
 
-	Matrix = 1
+	Matrix = 1,
 }
 
 declare const enum PdfNativeShowFoot {
-
 	EveryPage = 0,
 
 	LastPage = 1,
 
-	Never = 2
+	Never = 2,
 }
 
 declare const enum PdfNativeShowHead {
-
 	EveryPage = 0,
 
 	FirstPage = 1,
 
-	Never = 2
+	Never = 2,
 }
 
 declare const enum PdfNativeStandardPaperSize {
-
 	USLetterAnsiA = 0,
 
 	USHalfLetter = 1,
@@ -1214,42 +1164,38 @@ declare const enum PdfNativeStandardPaperSize {
 
 	ArchD = 50,
 
-	ArchE = 51
+	ArchE = 51,
 }
 
 declare const enum PdfNativeStyle {
-
 	S = 0,
 
 	F = 1,
 
 	DF = 2,
 
-	FD = 3
+	FD = 3,
 }
 
 declare const enum PdfNativeTableTheme {
-
 	Striped = 0,
 
 	Grid = 1,
 
-	Plain = 2
+	Plain = 2,
 }
 
 declare const enum PdfNativeTextAlignment {
-
 	Left = 0,
 
 	Center = 1,
 
 	Right = 2,
 
-	Justify = 3
+	Justify = 3,
 }
 
 declare const enum PdfNativeTextBaseline {
-
 	Alphabetic = 0,
 
 	Ideographic = 1,
@@ -1260,18 +1206,17 @@ declare const enum PdfNativeTextBaseline {
 
 	Middle = 4,
 
-	Hanging = 5
+	Hanging = 5,
 }
 
 declare const enum PdfNativeUnit {
-
 	Mm = 0,
 
 	Points = 1,
 
 	Cm = 2,
 
-	Inches = 3
+	Inches = 3,
 }
 
 declare var PdfNativeVersionNumber: number;

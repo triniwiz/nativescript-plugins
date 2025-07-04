@@ -25,7 +25,7 @@ export class PDFView extends PDFViewBase {
 							return;
 						}
 						const view = ref.get();
-						view._document = new PDFDocument(document);
+						view._document = new PDFDocument(document as never);
 						view.notify({ eventName: 'documentLoaded', object: view });
 					},
 					onError(error) {
@@ -42,7 +42,7 @@ export class PDFView extends PDFViewBase {
 						const view = ref.get();
 						view.notify({ eventName: 'pageChanged', object: view, currentPage: index });
 					},
-				})
+				}),
 			);
 		}
 	}

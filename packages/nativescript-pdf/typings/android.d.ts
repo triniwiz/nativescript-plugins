@@ -486,7 +486,7 @@ declare module io {
 						public onAttachedToWindow(): void;
 						public loadFromBytes(bytes: androidNative.Array<number>, password: string): void;
 						public loadFromUrl(url: string, password: string): void;
-						public getCache(): androidx.collection.LruCache<java.lang.Integer,globalAndroid.graphics.Bitmap>;
+						public getCache(): androidx.collection.LruCache<java.lang.Integer, globalAndroid.graphics.Bitmap>;
 						public getHandlerThread$pdf_release(): globalAndroid.os.HandlerThread;
 						public setDocument(this_: io.github.triniwiz.plugins.pdf.PdfDocument): void;
 						public getCacheSize(): number;
@@ -512,11 +512,7 @@ declare module io {
 							/**
 							 * Constructs a new instance of the io.github.triniwiz.plugins.pdf.PdfView$Listener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								onError(param0: java.lang.Exception): void;
-								onLoad(param0: io.github.triniwiz.plugins.pdf.PdfDocument): void;
-								onPageChange(param0: number): void;
-							});
+							public constructor(implementation: { onError(param0: java.lang.Exception): void; onLoad(param0: io.github.triniwiz.plugins.pdf.PdfDocument): void; onPageChange(param0: number): void });
 							public constructor();
 							public onLoad(param0: io.github.triniwiz.plugins.pdf.PdfDocument): void;
 							public onError(param0: java.lang.Exception): void;
@@ -839,7 +835,7 @@ declare module io {
 							public setTheme(value: io.github.triniwiz.plugins.pdf.table.TableTheme): void;
 							public getFootStyles(): io.github.triniwiz.plugins.pdf.table.StyleDef;
 							public getFoot(): androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>;
-							public setColumnStyles(value: java.util.Map<io.github.triniwiz.plugins.pdf.table.ColumnKey,io.github.triniwiz.plugins.pdf.table.StyleDef>): void;
+							public setColumnStyles(value: java.util.Map<io.github.triniwiz.plugins.pdf.table.ColumnKey, io.github.triniwiz.plugins.pdf.table.StyleDef>): void;
 							public setColumns(value: androidNative.Array<io.github.triniwiz.plugins.pdf.table.ColumnDef>): void;
 							public setHead(value: androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>): void;
 							public setBody(value: androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>): void;
@@ -853,14 +849,14 @@ declare module io {
 							public setPosition(value: any): void;
 							public getPageBreak(): io.github.triniwiz.plugins.pdf.table.PageBreak;
 							public getShowFoot(): io.github.triniwiz.plugins.pdf.table.ShowFoot;
-							public getColumnStyles(): java.util.Map<io.github.triniwiz.plugins.pdf.table.ColumnKey,io.github.triniwiz.plugins.pdf.table.StyleDef>;
+							public getColumnStyles(): java.util.Map<io.github.triniwiz.plugins.pdf.table.ColumnKey, io.github.triniwiz.plugins.pdf.table.StyleDef>;
 							public setBodyStyles(value: io.github.triniwiz.plugins.pdf.table.StyleDef): void;
 							public getHead(): androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>;
 							public getHeadStyles(): io.github.triniwiz.plugins.pdf.table.StyleDef;
 							public getTheme(): io.github.triniwiz.plugins.pdf.table.TableTheme;
 							public setShowHead(value: io.github.triniwiz.plugins.pdf.table.ShowHead): void;
 							public getBody(): androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>;
-							public getPosition(): any
+							public getPosition(): any;
 						}
 					}
 				}
@@ -974,7 +970,22 @@ declare module io {
 							public getFontValue(): number;
 							public setFillColor(value: io.github.triniwiz.plugins.pdf.Color): void;
 							public getVerticalAlignValue(): number;
-							public constructor(font: io.github.triniwiz.plugins.pdf.table.FontFamily, fontStyle: io.github.triniwiz.plugins.pdf.table.FontStyle, overflow: io.github.triniwiz.plugins.pdf.table.Overflow, fillColor: io.github.triniwiz.plugins.pdf.Color, textColor: io.github.triniwiz.plugins.pdf.Color, cellWidth: io.github.triniwiz.plugins.pdf.table.CellWidth, minCellWidth: java.lang.Float, minCellHeight: number, horizontalAlign: io.github.triniwiz.plugins.pdf.table.HorizontalAlign, verticalAlign: io.github.triniwiz.plugins.pdf.table.VerticalAlign, fontSize: number, cellPadding: io.github.triniwiz.plugins.pdf.table.Padding, lineColor: io.github.triniwiz.plugins.pdf.Color, lineWidth: number);
+							public constructor(
+								font: io.github.triniwiz.plugins.pdf.table.FontFamily,
+								fontStyle: io.github.triniwiz.plugins.pdf.table.FontStyle,
+								overflow: io.github.triniwiz.plugins.pdf.table.Overflow,
+								fillColor: io.github.triniwiz.plugins.pdf.Color,
+								textColor: io.github.triniwiz.plugins.pdf.Color,
+								cellWidth: io.github.triniwiz.plugins.pdf.table.CellWidth,
+								minCellWidth: java.lang.Float,
+								minCellHeight: number,
+								horizontalAlign: io.github.triniwiz.plugins.pdf.table.HorizontalAlign,
+								verticalAlign: io.github.triniwiz.plugins.pdf.table.VerticalAlign,
+								fontSize: number,
+								cellPadding: io.github.triniwiz.plugins.pdf.table.Padding,
+								lineColor: io.github.triniwiz.plugins.pdf.Color,
+								lineWidth: number,
+							);
 							public static default(): io.github.triniwiz.plugins.pdf.table.StyleDef;
 							public getHorizontalAlign(): io.github.triniwiz.plugins.pdf.table.HorizontalAlign;
 							public getTextColor(): io.github.triniwiz.plugins.pdf.Color;
@@ -1125,4 +1136,3 @@ declare module io {
 }
 
 //Generics information:
-
