@@ -46,6 +46,7 @@ class Pdf {
     fun loadLib() {
       if (!isLibraryLoaded) {
         try {
+          System.loadLibrary("pdfium")
           System.loadLibrary("pdfnative")
           isLibraryLoaded = true
           PDFInstance = nativeInit()

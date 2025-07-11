@@ -1,6 +1,7 @@
 package io.github.triniwiz.plugins.pdf
 
 import android.graphics.Bitmap
+import android.graphics.Rect
 import io.github.triniwiz.plugins.pdf.table.ColumnDef
 import io.github.triniwiz.plugins.pdf.table.ColumnKey
 import io.github.triniwiz.plugins.pdf.table.PdfTable
@@ -189,8 +190,22 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
   }
 
 
-  fun renderToBitmap(page: Int, bitmap: Bitmap) {
-    nativeRenderToBitmap(nativeDocument, page, bitmap)
+  @JvmOverloads
+  fun renderToBitmap(page: Int, bitmap: Bitmap, rect: Rect? = null, scale: Float = 1f) {
+    if (rect != null) {
+      nativeRenderToBitmapWithRect(
+        nativeDocument,
+        page,
+        bitmap,
+        rect.left,
+        rect.top,
+        rect.width(),
+        rect.height(),
+        scale
+      )
+    } else {
+      nativeRenderToBitmap(nativeDocument, page, bitmap)
+    }
   }
 
   fun table(config: PdfTable) {
@@ -364,6 +379,18 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       instance: Long,
       index: Int,
       bitmap: Bitmap,
+    )
+
+    @JvmStatic
+    private external fun nativeRenderToBitmapWithRect(
+      instance: Long,
+      index: Int,
+      bitmap: Bitmap,
+      x: Int,
+      y: Int,
+      width: Int,
+      height: Int,
+      scale: Float,
     )
 
 

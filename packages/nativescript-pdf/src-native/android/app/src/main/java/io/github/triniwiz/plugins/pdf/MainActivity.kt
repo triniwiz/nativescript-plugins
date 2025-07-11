@@ -192,14 +192,14 @@ class MainActivity : AppCompatActivity() {
 
       runOnUiThread {
         var task: TimerTask? = null
-        pdfView.document = document
-//        task = object : TimerTask() {
-//          override fun run() {
-//            task?.cancel()
-//            pdfView.loadFromUrl("https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf")
-//          }
-//        }
-//        Timer().schedule(task, 5000L)
+       // pdfView.document = document
+        task = object : TimerTask() {
+          override fun run() {
+            task?.cancel()
+            pdfView.loadFromUrl("https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf")
+          }
+        }
+        Timer().schedule(task, 5000L)
 
       }
     }

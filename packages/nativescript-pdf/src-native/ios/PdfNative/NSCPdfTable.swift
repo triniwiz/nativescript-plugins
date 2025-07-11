@@ -110,6 +110,24 @@ public class NSCPdfTableCellOrString: NSObject {
     return NSCPdfTableCellOrString(string: "", cell: value)
   }
   
+  deinit {
+    if let ptr = stringC {
+      free(ptr)
+    }
+    if let cellPtr = pdfium?.cell {
+      if let content = cellPtr.pointee.content {
+        free(UnsafeMutablePointer(mutating: content))
+      }
+      if let style = cellPtr.pointee.style {
+        let mutableStyle = UnsafeMutablePointer(mutating: style)
+        mutableStyle.deinitialize(count: 1)
+        mutableStyle.deallocate()
+      }
+      cellPtr.deallocate()
+    }
+  }
+
+  
   func pdfium(_ unit: NSCPdfUnit) -> CTableCellOrString {
     if let cell = cell {
       let cc = UnsafeMutablePointer<CTableCell>.allocate(capacity: 1)
@@ -163,6 +181,59 @@ public class NSCPdfTable: NSObject {
   public var showFoot = NSCPdfShowFoot.default()
   
   
+  private var columnStylesKeysBuffer: UnsafeMutablePointer<CColumnKey>?
+  private var columnStylesValuesBuffer: UnsafeMutablePointer<CStyleDef>?
+
+  private var headRowsBuffer: UnsafeMutablePointer<UnsafePointer<CTableCellOrString>?>?
+  private var headSizesBuffer: UnsafeMutablePointer<UInt>?
+
+  private var bodyRowsBuffer: UnsafeMutablePointer<UnsafePointer<CTableCellOrString>?>?
+  private var bodySizesBuffer: UnsafeMutablePointer<UInt>?
+
+  private var footRowsBuffer: UnsafeMutablePointer<UnsafePointer<CTableCellOrString>?>?
+  private var footSizesBuffer: UnsafeMutablePointer<UInt>?
+
+  private var columnsBuffer: UnsafeMutablePointer<CColumnDef>?
+  
+  private var headRowPointers: [UnsafeMutablePointer<CTableCellOrString>] = []
+  
+  private var bodyRowPointers: [UnsafeMutablePointer<CTableCellOrString>] = []
+  
+  private var footRowPointers: [UnsafeMutablePointer<CTableCellOrString>] = []
+  
+  
+  deinit {
+    columnStylesKeysBuffer?.deallocate()
+    columnStylesValuesBuffer?.deallocate()
+    
+    for row in headRowPointers {
+       row.deallocate()
+    }
+    headRowsBuffer?.deallocate()
+    headSizesBuffer?.deallocate()
+    
+  
+    for row in bodyRowPointers {
+       row.deallocate()
+     }
+    
+    bodyRowsBuffer?.deallocate()
+    bodySizesBuffer?.deallocate()
+    
+   
+    for row in footRowPointers {
+       row.deallocate()
+     }
+    footRowsBuffer?.deallocate()
+    footSizesBuffer?.deallocate()
+    
+    columnsBuffer?.deallocate()
+    
+ 
+    
+  }
+  
+  
   
   public func updatePosition(_ x: Float, _ y: Float){
     position[0] = x
@@ -195,13 +266,16 @@ public class NSCPdfTable: NSObject {
   
   
   static func parseTableData(_ value: Array<Array<NSCPdfTableCellOrString>>, _ unit: NSCPdfUnit) -> (
-    UnsafePointer<UnsafePointer<CTableCellOrString>?>, UInt, UnsafePointer<UInt>
+    UnsafeMutablePointer<UnsafePointer<CTableCellOrString>?>,
+     UInt,
+     UnsafeMutablePointer<UInt>,
+    [UnsafeMutablePointer<CTableCellOrString>]
   ) {
     let rowCount = value.count
 
-
+    var rowPointers: [UnsafeMutablePointer<CTableCellOrString>] = []
     let outerPtr = UnsafeMutablePointer<UnsafePointer<CTableCellOrString>?>.allocate(capacity: rowCount)
-    var countPtr = UnsafeMutablePointer<UInt>.allocate(capacity: rowCount)
+    let countPtr = UnsafeMutablePointer<UInt>.allocate(capacity: rowCount)
       for (i, row) in value.enumerated() {
           let colCount = row.count
         countPtr[i] = UInt(colCount)
@@ -213,10 +287,11 @@ public class NSCPdfTable: NSObject {
           }
 
         outerPtr[i] = UnsafePointer(rowPtr)
+        rowPointers.append(rowPtr)
       }
     
   
-    return (UnsafePointer(outerPtr), UInt(rowCount), UnsafePointer(countPtr))
+    return (outerPtr, UInt(rowCount), countPtr, rowPointers)
   }
   
   
@@ -228,20 +303,36 @@ public class NSCPdfTable: NSObject {
       for (i, col) in columns.enumerated() {
         array[i] = col.pdfium
       }
+      columnsCArray = array
     }
     
     let (column_styles_keys, column_styles_keys_size, column_styles_values, column_styles_values_size) = NSCPdfTable.parseColumnStyles(columnStyles, unit)
-
     
-    var (head, headCount, headInner) = NSCPdfTable.parseTableData(head, unit)
     
-    var (body, bodyCount, bodyInner) = NSCPdfTable.parseTableData(body, unit)
+    let (head, headCount, headInner, headRows) = NSCPdfTable.parseTableData(head, unit)
     
-    var (foot, footCount, footInner) = NSCPdfTable.parseTableData(foot, unit)
+    let (body, bodyCount, bodyInner, bodyRows) = NSCPdfTable.parseTableData(body, unit)
+    
+    let (foot, footCount, footInner, footRows) = NSCPdfTable.parseTableData(foot, unit)
     
     var table = CPdfTable()
     table.columns = UnsafePointer(columnsCArray)
     table.columns_size = UInt(columns?.count ?? 0)
+    
+    
+    if let columns = columns {
+        let array = UnsafeMutablePointer<CColumnDef>.allocate(capacity: columns.count)
+        for (i, col) in columns.enumerated() { array[i] = col.pdfium }
+        self.columnsBuffer = array
+        table.columns = UnsafePointer(array)
+        table.columns_size = UInt(columns.count)
+    }
+    
+    
+    self.columnStylesKeysBuffer   = column_styles_keys
+    self.columnStylesValuesBuffer = column_styles_values
+
+    
     
     table.column_styles_keys = UnsafePointer(column_styles_keys)
     table.column_styles_keys_size = column_styles_keys_size
@@ -253,21 +344,38 @@ public class NSCPdfTable: NSObject {
     table.body_styles = bodyStyles?.pdfiumRaw(unit)
     table.foot_styles = footStyles?.pdfiumRaw(unit)
     
-    table.head = head
+    
+    self.headRowPointers  = headRows
+    table.head = UnsafePointer(head)
     table.head_size = headCount
-    table.header_inner_sizes = headInner
+    table.header_inner_sizes = UnsafePointer(headInner)
     table.header_inner_size = headCount
     
-    table.body = body
+    self.bodyRowPointers  = bodyRows
+    table.body = UnsafePointer(body)
     table.body_size = bodyCount
-    table.body_inner_sizes = bodyInner
+    table.body_inner_sizes = UnsafePointer(bodyInner)
     table.body_inner_size = bodyCount
     
-    
-    table.foot = foot
+    self.footRowPointers  = footRows
+    table.foot = UnsafePointer(foot)
     table.foot_size = headCount
-    table.foot_inner_sizes = footInner
+    table.foot_inner_sizes = UnsafePointer(footInner)
     table.foot_inner_size = footCount
+    
+  
+    self.headRowsBuffer  = head
+    self.headSizesBuffer = headInner
+
+   
+    self.bodyRowsBuffer  = body
+    self.bodySizesBuffer = bodyInner
+
+    
+    self.footRowsBuffer  = foot
+    self.footSizesBuffer = footInner
+    
+    
     
     table.position_x =  CPdfNativePoints(value: position[0], unit: unit.pdfium)
     table.position_y =  CPdfNativePoints(value: position[1], unit: unit.pdfium)

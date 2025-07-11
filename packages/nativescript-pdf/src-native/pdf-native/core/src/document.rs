@@ -8,6 +8,7 @@ use std::collections::HashMap;
 use std::ffi::{c_int, c_uint};
 use std::fmt::{Debug, Formatter};
 use std::path::PathBuf;
+use log::log;
 
 const BEZIER_KAPPA: f32 = 0.552284749831;
 
@@ -672,6 +673,15 @@ impl<'a> PdfNativeDocument<'a> {
         })
     }
 
+    pub fn save_to_file(&self, file: &str) -> Result<(), PdfiumError> {
+        let path = PathBuf::from(file);
+        self.document.save_to_file(&path)
+    }
+
+    pub fn save_to_bytes(&self) -> Result<Vec<u8>, PdfiumError> {
+        self.document.save_to_bytes()
+    }
+
     pub fn add_page(
         &mut self,
         size: Option<PdfNativePaperSize>,
@@ -1070,10 +1080,10 @@ impl<'a> PdfNativeDocument<'a> {
 
         let image_height = image_obj.height()?;
         let _ = image_obj.translate(PdfPoints::new(x), y - image_height)?;
+        page.regenerate_content()?;
         page.set_content_regeneration_strategy(
             PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
         );
-        page.regenerate_content()?;
 
         Ok(())
     }
@@ -1144,7 +1154,7 @@ impl<'a> PdfNativeDocument<'a> {
                 self.document
                     .pages()
                     .get(index)
-                    .map(|page| page.height().value * density / 72.)
+                    .map(|page| page.height().value * density)
                     .unwrap_or_default()
             })
     }
@@ -1155,7 +1165,7 @@ impl<'a> PdfNativeDocument<'a> {
                 self.document
                     .pages()
                     .get(index)
-                    .map(|page| page.width().value * density / 72.)
+                    .map(|page| page.width().value * density)
                     .unwrap_or_default()
             })
     }
@@ -1340,6 +1350,65 @@ impl<'a> PdfNativeDocument<'a> {
         Ok(())
     }
 
+    pub fn render_with_rect(
+        &self,
+        index: c_int,
+        viewport_width: i32,   // Size of Android bitmap (output)
+        viewport_height: i32,
+        x: i32,                // Region of the PDF to show
+        y: i32,
+        width: i32,
+        height: i32,
+        scale: f32,            // Zoom level
+        buffer: &mut [u8],
+    ) -> Result<(), PdfiumError> {
+        let pages = self.document.pages();
+        let index = PdfPageIndex::try_from(index).map_err(|_| PdfiumError::PageIndexOutOfBounds)?;
+        let page = pages.get(index)?;
+
+        let device_scale = self.data.lock().device_scale;
+
+
+        let pdf_to_px_x = scale * device_scale;
+        let pdf_to_px_y = scale * device_scale;
+
+
+        let transform = PdfMatrix::new(
+            pdf_to_px_x, 0.0,
+            0.0, pdf_to_px_y,
+            -x as f32 * pdf_to_px_x,
+            -y as f32 * pdf_to_px_y,
+        );
+
+
+        let mut config = PdfRenderConfig::default()
+            .set_target_size(viewport_width, viewport_height)
+            .apply_matrix(transform)?
+            .render_form_data(true)
+            .render_annotations(true)
+            .use_lcd_text_rendering(true)
+            .clear_before_rendering(true)
+            .clip(0, 0, viewport_width, viewport_height);
+
+        #[cfg(target_os = "ios")]
+        {
+            config = config.set_reverse_byte_order(false);
+        }
+
+        let mut bitmap = unsafe {
+            PdfBitmap::from_bytes(
+                viewport_width,
+                viewport_height,
+                PdfBitmapFormat::default(),
+                buffer,
+                self.pdf_.pdf.bindings(),
+            )?
+        };
+
+        page.render_into_bitmap_with_config(&mut bitmap, &config)?;
+        Ok(())
+    }
+
     pub fn render(&self, index: c_int, width: i32, height: i32, buffer: &mut [u8]) {
         if let Ok(page) = PdfPageIndex::try_from(index)
             .map_err(|_| PdfiumError::PageIndexOutOfBounds)
@@ -1372,6 +1441,58 @@ impl<'a> PdfNativeDocument<'a> {
         }
     }
 
+    pub fn render_to_buffer(
+        &self,
+        index: c_int,
+        width: i32,
+        height: i32,
+        flip_vertical: bool,
+        flip_horizontal: bool,
+    ) -> Result<(u32, u32, Vec<u8>), PdfiumError> {
+        let pages = self.document.pages();
+        let index = PdfPageIndex::try_from(index).map_err(|_| PdfiumError::PageIndexOutOfBounds)?;
+        let page = pages.get(index)?;
+
+        let mut config = PdfRenderConfig::default()
+            .set_target_size(width, height)
+            .render_form_data(true)
+            .clear_before_rendering(true);
+
+        if flip_horizontal {
+            config = config.flip_horizontally()?
+        }
+
+        if flip_vertical {
+            config = config.flip_vertically()?
+        }
+
+        // ensure it uses rgba for non ios
+        #[cfg(target_os = "ios")]
+        {
+            config = config.set_reverse_byte_order(false);
+        }
+
+        let mut buffer = vec![255_u8; width as usize * height as usize * 4];
+
+        {
+            let bitmap = unsafe {
+                PdfBitmap::from_bytes(
+                    width,
+                    height,
+                    PdfBitmapFormat::default(),
+                    buffer.as_mut_slice(),
+                    self.pdf_.pdf.bindings(),
+                )
+            };
+
+            if let Ok(mut bitmap) = bitmap {
+                let _ = page.render_into_bitmap_with_config(&mut bitmap, &config);
+            }
+        }
+
+        Ok((width as u32, height as u32, buffer))
+    }
+
     pub fn render_with_size(
         &self,
         index: c_int,
@@ -1383,56 +1504,134 @@ impl<'a> PdfNativeDocument<'a> {
         y: f32,
         width: f32,
         height: f32,
-        scaled_x: f32,
-        scaled_y: f32,
-        scaled_width: f32,
-        scaled_height: f32,
         buffer: &mut [u8],
-    ) {
-        if let Ok(page) = PdfPageIndex::try_from(index)
-            .map_err(|_| PdfiumError::PageIndexOutOfBounds)
-            .and_then(|index| self.document.pages().get(index))
+    ) -> Result<(), PdfiumError> {
+        let pages = self.document.pages();
+        let index = PdfPageIndex::try_from(index).map_err(|_| PdfiumError::PageIndexOutOfBounds)?;
+        let page = pages.get(index)?;
+
+        let logical_to_pdf_scale_x = page.width().value / viewport_width;
+        let logical_to_pdf_scale_y = page.height().value / viewport_height;
+
+        let px_width = (width * scale_x).round() as i32;
+        let px_height = (height * scale_y).round() as i32;
+
+        let transform = PdfMatrix::new(scale_x, 0.0, 0.0, scale_y, -x * scale_x, -y * scale_y);
+
+        let mut config = PdfRenderConfig::default()
+            .scale_page_width_by_factor(logical_to_pdf_scale_x)
+            .scale_page_height_by_factor(logical_to_pdf_scale_y)
+            .apply_matrix(transform)?
+            .render_form_data(false)
+            .render_annotations(true)
+            .use_lcd_text_rendering(true)
+            .clear_before_rendering(true)
+            .clip(0, 0, px_width, px_height);
+
+        // ensure it uses rgba for non ios
+        #[cfg(target_os = "ios")]
         {
-            let width_px = scaled_width as i32;
-            let height_px = scaled_height as i32;
+            config = config.set_reverse_byte_order(false);
+        }
 
+        let mut bitmap = unsafe {
+            PdfBitmap::from_bytes(
+                px_width,
+                px_height,
+                PdfBitmapFormat::default(),
+                buffer,
+                self.pdf_.pdf.bindings(),
+            )?
+        };
 
-            let matrix = PdfMatrix::identity()
-                .translate(PdfPoints::new(x), PdfPoints::new(y))
-                .unwrap()
-                .scale(scale_x, scale_y)
-                .unwrap();
+        page.render_into_bitmap_with_config(&mut bitmap, &config)?;
+        Ok(())
+    }
 
+    pub fn render_with_size_to_buffer(
+        &self,
+        index: c_int,
+        viewport_width: f32,
+        viewport_height: f32,
+        scale_x: f32,
+        scale_y: f32,
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+        flip_vertical: bool,
+        flip_horizontal: bool,
+    ) -> Result<(u32, u32, Vec<u8>), PdfiumError> {
+        let pages = self.document.pages();
+        let index = PdfPageIndex::try_from(index).map_err(|_| PdfiumError::PageIndexOutOfBounds)?;
+        let page = pages.get(index)?;
 
+        let pdf_scale_x = page.width().value / viewport_width;
+        let pdf_scale_y = page.height().value / viewport_height;
 
-            let mut config = PdfRenderConfig::default()
-                .render_form_data(false)
-                .render_annotations(true)
-                .use_lcd_text_rendering(true)
-                .clear_before_rendering(true)
-                .apply_matrix(matrix)
-                .unwrap()
-                .clip(0, 0, width_px, height_px);
+        let pdf_x = x * pdf_scale_x;
+        let pdf_y = y * pdf_scale_y;
 
-            // ensure it uses rgba for non ios
-            #[cfg(target_os = "ios")]
-            {
-                config = config.set_reverse_byte_order(false);
-            }
+        let pdf_width = width * pdf_scale_x;
+        let pdf_height = height * pdf_scale_y;
 
-            let bitmap = unsafe {
+        let px_width = (pdf_width * scale_x).round() as i32;
+        let px_height = (pdf_height * scale_y).round() as i32;
+
+        let mut buffer = vec![255_u8; px_width as usize * px_height as usize * 4];
+
+        let mut flip_scale_x = scale_x;
+        let mut flip_scale_y = scale_y;
+
+        if flip_horizontal {
+            flip_scale_x = -scale_x;
+        }
+
+        if flip_vertical {
+            flip_scale_y = -scale_y;
+        }
+
+        let transform = PdfMatrix::new(
+            flip_scale_x,
+            0.0,
+            0.0,
+            flip_scale_y,
+            -pdf_x * scale_x,
+            if flip_scale_y < 0.0 {
+                -pdf_y * scale_y + pdf_height
+            } else {
+                -pdf_y * scale_y
+            },
+        );
+
+        let mut config = PdfRenderConfig::default()
+            .apply_matrix(transform)?
+            .render_form_data(false)
+            .render_annotations(true)
+            .use_lcd_text_rendering(true)
+            .clear_before_rendering(true)
+            .clip(0, 0, px_width, px_height);
+
+        // ensure it uses rgba for non ios
+        #[cfg(target_os = "ios")]
+        {
+            config = config.set_reverse_byte_order(false);
+        }
+
+        {
+            let mut bitmap = unsafe {
                 PdfBitmap::from_bytes(
-                    width_px,
-                    height_px,
+                    px_width,
+                    px_height,
                     PdfBitmapFormat::default(),
-                    buffer,
+                    buffer.as_mut_slice(),
                     self.pdf_.pdf.bindings(),
-                )
+                )?
             };
 
-            if let Ok(mut bitmap) = bitmap {
-                let _ = page.render_into_bitmap_with_config(&mut bitmap, &config);
-            }
+            page.render_into_bitmap_with_config(&mut bitmap, &config)?;
         }
+
+        Ok((px_width as u32, px_height as u32, buffer))
     }
 }

@@ -9,17 +9,16 @@ import android.graphics.Rect
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
+import android.util.Log
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import androidx.collection.LruCache
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
-import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -39,6 +38,7 @@ class PdfView @JvmOverloads constructor(
   private var adapter = PdfViewAdapter(this)
   private var layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
   private val snapHelper = PagerSnapHelper()
+  var useTiles = false
   var document: PdfDocument? = null
     set(value) {
       val count = field?.count() ?: 0
@@ -138,8 +138,12 @@ class PdfView @JvmOverloads constructor(
     }
   }
 
-  class PdfViewHolder(root: View, val imageView: ImageView, val spinner: ProgressBar) :
+  class PdfViewHolder(root: View, val pageView: PdfPageView, val spinner: ProgressBar) :
     ViewHolder(root)
+
+  class PdfTileViewHolder(root: View, val pageView: PdfTilePageView, val spinner: ProgressBar) :
+    ViewHolder(root)
+
 
   class PdfViewAdapter(val pdfView: PdfView) : RecyclerView.Adapter<PdfViewHolder>() {
 
@@ -153,13 +157,12 @@ class PdfView @JvmOverloads constructor(
         LayoutParams.MATCH_PARENT
       )
 
-      val imgView = ImageView(parent.context)
+      val pageView = PdfPageView(parent.context)
 
-      imgView.layoutParams = ViewGroup.LayoutParams(
+      pageView.layoutParams = ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT,
         ViewGroup.LayoutParams.MATCH_PARENT
       )
-      imgView.scaleType = ImageView.ScaleType.FIT_CENTER
 
       val spinner = ProgressBar(parent.context)
       spinner.isIndeterminate = true
@@ -175,11 +178,9 @@ class PdfView @JvmOverloads constructor(
 
       root.addView(spinner, layout)
 
+      root.addView(pageView)
 
-      root.addView(imgView)
-
-
-      return PdfViewHolder(root, imgView, spinner)
+      return PdfViewHolder(root, pageView, spinner)
     }
 
     override fun getItemCount(): Int {
@@ -189,28 +190,88 @@ class PdfView @JvmOverloads constructor(
     override fun onBindViewHolder(holder: PdfViewHolder, position: Int) {
       val cached = pdfView.cache[position]
       if (cached != null) {
-        holder.spinner.visibility = View.GONE
-        holder.imageView.setImageBitmap(cached)
-      } else {
-        holder.spinner.visibility = View.VISIBLE
-        holder.imageView.setImageBitmap(null)
-        if (pdfView.width <= 0 || pdfView.height <= 0) {
-          return
-        }
-        pdfView.handler.post {
-          val bm = createBitmap(pdfView.width, pdfView.height)
-          pdfView.document?.renderToBitmap(position, bm)
-          pdfView.cache.put(position, bm)
+        holder.pageView.pageIndex = position
+        holder.pageView.bitmap = cached
+        holder.pageView.invalidate()
+        return
+      }
 
-          if (holder.getBindingAdapterPosition() == position) {
-            holder.imageView.post {
-              holder.imageView.setImageBitmap(bm)
-              holder.spinner.visibility = View.GONE
+      val width = holder.pageView.width
+      val height = holder.pageView.height
+
+      if ( width <= 0 ||  height <= 0){
+        // todo
+        return
+      }
+
+      holder.pageView.pdfView?.let { pdfView ->
+        pdfView.handler.post {
+          pdfView.document?.let { document ->
+            val bitmap = createBitmap(width, height)
+            document.renderToBitmap(bitmap)
+
+            if (holder.getBindingAdapterPosition() == position) {
+              holder.itemView.invalidate()
             }
           }
-
         }
       }
+
+    }
+
+    override fun onViewRecycled(holder: PdfViewHolder) {
+      super.onViewRecycled(holder)
+    }
+  }
+
+  class PdfTileViewAdapter(val pdfView: PdfView) : RecyclerView.Adapter<PdfTileViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PdfTileViewHolder {
+      val root = RelativeLayout(parent.context)
+      root.setBackgroundColor(Color.WHITE)
+      root.elevation = 4f
+
+      root.layoutParams = LayoutParams(
+        LayoutParams.MATCH_PARENT,
+        LayoutParams.MATCH_PARENT
+      )
+
+      val pageView = PdfTilePageView(parent.context)
+
+      pageView.layoutParams = ViewGroup.LayoutParams(
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT
+      )
+
+      val spinner = ProgressBar(parent.context)
+      spinner.isIndeterminate = true
+
+      val layout = RelativeLayout.LayoutParams(
+        RelativeLayout.LayoutParams.WRAP_CONTENT,
+        RelativeLayout.LayoutParams.WRAP_CONTENT
+      )
+      layout.alignWithParent = true
+      layout.addRule(
+        RelativeLayout.CENTER_IN_PARENT
+      )
+
+      root.addView(spinner, layout)
+
+      root.addView(pageView)
+
+      return PdfTileViewHolder(root, pageView, spinner)
+    }
+
+    override fun getItemCount(): Int {
+      return pdfView.document?.count() ?: 0
+    }
+
+    override fun onBindViewHolder(holder: PdfTileViewHolder, position: Int) {
+
+    }
+
+    override fun onViewRecycled(holder: PdfTileViewHolder) {
+      super.onViewRecycled(holder)
     }
   }
 

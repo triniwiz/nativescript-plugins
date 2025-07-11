@@ -38,6 +38,41 @@ public class NSCPdfDocument: NSObject {
     super.init()
   }
   
+  public func saveSync(to file: String) -> NSError? {
+    let error = pdf_native_document_save_to_file(pdfDocument, file)
+    if(error !=  nil){
+      let msg = String(cString: error!)
+      let err = NSError(
+          domain: "PdfView",
+          code: 1,
+          userInfo: [NSLocalizedDescriptionKey: msg]
+      )
+      
+      pdf_native_string_release(error)
+      return err
+    }
+    return nil
+  }
+  
+  public func save(to file: String, callback: @escaping(NSError?) -> Void) {
+    DispatchQueue.global().async {
+      let error = pdf_native_document_save_to_file(self.pdfDocument, file)
+      if(error !=  nil){
+        let msg = String(cString: error!)
+        let err = NSError(
+            domain: "PdfView",
+            code: 1,
+            userInfo: [NSLocalizedDescriptionKey: msg]
+        )
+        
+        pdf_native_string_release(error)
+        callback(err)
+        return
+      }
+      callback(nil)
+    }
+  }
+  
   public var count: Int {
     return Int(pdf_native_document_count(pdfDocument))
   }
@@ -133,20 +168,20 @@ public class NSCPdfDocument: NSObject {
   
   
   public func circle(_ x: Float, _ y: Float, _ r: Float, _ style: NSCPdfStyle = NSCPdfStyle.s) {
-      pdf_native_document_circle(pdfDocument, x, y, r, style.pdfium)
-    }
-
-
+    pdf_native_document_circle(pdfDocument, x, y, r, style.pdfium)
+  }
+  
+  
   public func ellipse(_ x: Float, _ y: Float, _ rx: Float, _ ry: Float, _ style: NSCPdfStyle = NSCPdfStyle.s) {
-      pdf_native_document_ellipse(pdfDocument, x, y, rx, ry, style.pdfium)
-    }
-
-
+    pdf_native_document_ellipse(pdfDocument, x, y, rx, ry, style.pdfium)
+  }
+  
+  
   public func rect(_ x: Float, _ y: Float, _ width: Float, _ height: Float, _ style: NSCPdfStyle = NSCPdfStyle.s) {
-      pdf_native_document_rect(pdfDocument, x, y, width, height, style.pdfium)
-    }
-
-
+    pdf_native_document_rect(pdfDocument, x, y, width, height, style.pdfium)
+  }
+  
+  
   
   public func renderToBuffer(
     _ index: Int32,
@@ -154,130 +189,127 @@ public class NSCPdfDocument: NSObject {
     _ width: Int32,
     _ height: Int32
   ) {
-    pdf_native_document_render_to_buffer(pdfDocument, index, UInt32(width), UInt32(height), buffer.mutableBytes, UInt(buffer.count))
+    pdf_native_document_render_into_buffer(pdfDocument,index, buffer.mutableBytes, UInt(buffer.length), UInt32(width), UInt32(height))
   }
   
-  public func renderToCGImage(_ index: Int32, _ width: Int32,
-                              _ height: Int32){
-    
-    
-  }
   
   public func renderToCGContext(_ index: Int32, _ width: CGFloat, _ height: CGFloat, _ rect: CGRect, in context: CGContext){
     let scaleX: CGFloat = sqrt(context.ctm.a * context.ctm.a + context.ctm.c * context.ctm.c)
     let scaleY: CGFloat = sqrt(context.ctm.b * context.ctm.b + context.ctm.d * context.ctm.d)
     
     
-    let scaledX = Float(Int(ceil(rect.origin.x * scaleX)))
-    let scaledY = Float(Int(ceil(rect.origin.y * scaleY)))
-    let bufferWidth = Int(ceil(rect.width * scaleX))
-    let bufferHeight = Int(ceil(rect.height * scaleY))
+    
+    guard let info = pdf_native_document_render_to_buffer_with_scale(pdfDocument, index, Float(width), Float(height),Float(scaleX), Float(scaleY),  Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height), false, false) else {return}
     
     
-    let bufferSize = bufferWidth * bufferHeight * 4
-    let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
-    buffer.initialize(repeating: 255, count: bufferSize)
+    let bufferWidth = Int(info.pointee.width)
+    let bufferHeight = Int(info.pointee.height)
+    let dataPtr: Unmanaged<NSData> = Unmanaged.fromOpaque(info.pointee.data)
+    let data = dataPtr.takeRetainedValue()
     
     
-    pdf_native_document_render_with_buffer_size(pdfDocument, index, buffer, UInt(bufferSize), Float(width), Float(height),Float(scaleX), Float(scaleY),  Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height),scaledX, scaledY, Float(bufferWidth), Float(bufferHeight))
-    
-    
-    if let provider = CGDataProvider(dataInfo: nil, data: buffer, size: bufferSize, releaseData: { _, data, _ in
-      data.deallocate()
-    }) {
-      let cgImage = CGImage(
-        width: bufferWidth,
-        height: bufferHeight,
-        bitsPerComponent: 8,
-        bitsPerPixel: 32,
-        bytesPerRow: bufferWidth * 4,
-        space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
-        provider: provider,
-        decode: nil,
-        shouldInterpolate: true,
-        intent: .defaultIntent
-      )
-      
-      if let image = cgImage {
-        context.saveGState()
-        context.translateBy(x: rect.origin.x, y: rect.origin.y + rect.height)
-        context.scaleBy(x: 1.0, y: -1.0)
-        context.draw(image, in: CGRect(origin: .zero, size: rect.size))
-        context.restoreGState()
-      }
+    guard let provider = CGDataProvider(data: data) else {
+      pdf_native_render_info_release(info)
+      return
     }
+    
+    
+    
+    let cgImage = CGImage(
+      width: bufferWidth,
+      height: bufferHeight,
+      bitsPerComponent: 8,
+      bitsPerPixel: 32,
+      bytesPerRow: bufferWidth * 4,
+      space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
+      provider: provider,
+      decode: nil,
+      shouldInterpolate: true,
+      intent: .defaultIntent
+    )
+    
+    if let image = cgImage {
+      context.saveGState()
+      context.translateBy(x: rect.origin.x, y: rect.origin.y + rect.height)
+      context.scaleBy(x: 1.0, y: -1.0)
+      context.draw(image, in: CGRect(origin: .zero, size: rect.size))
+      context.restoreGState()
+    }
+    
+    pdf_native_render_info_release(info)
     
     
   }
   
   
-  public func renderToCGContextImage(_ index: Int32, _ width: CGFloat, _ height: CGFloat, _ rect: CGRect, _ scaleX: CGFloat, _ scaleY: CGFloat, _ withScale: Bool = true) -> CGImage? {
-    
-    var sx = scaleX
-    var sy = scaleY
-    if(!withScale){
-      sx = 1
-      sy = 1
-    }
-  
-    
-    let scaledX = Float(ceil(rect.origin.x * sx))
-    let scaledY = Float(ceil(rect.origin.y * sy))
-    let bufferWidth = Int(ceil(rect.width * sx))
-    let bufferHeight = Int(ceil(rect.height * sy))
+  public func renderToCGContextImage(_ index: Int32, _ width: CGFloat, _ height: CGFloat, _ rect: CGRect, _ scaleX: CGFloat, _ scaleY: CGFloat, _ withScale: Bool = true, _ flipVertical: Bool = false, _ flipHorizontal: Bool = false) -> CGImage? {
     
     
     
-    let bufferSize = bufferWidth * bufferHeight * 4
-    let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bufferSize)
-    buffer.initialize(repeating: 255, count: bufferSize)
     
-
-    if(withScale){
-      pdf_native_document_render_with_buffer_size(pdfDocument, index, buffer, UInt(bufferSize), Float(width), Float(height),Float(sx), Float(sy), Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height),scaledX, scaledY, Float(bufferWidth), Float(bufferHeight))
+    
+    let info = if(withScale){
+      pdf_native_document_render_to_buffer_with_scale(pdfDocument,
+                                                      index,
+                                                      Float(width), Float(height),
+                                                      Float(scaleX), Float(scaleY),
+                                                      Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height), flipVertical, flipHorizontal)
     }else {
-      pdf_native_document_render_to_buffer(pdfDocument, index, UInt32(width), UInt32(height), buffer, UInt(bufferSize))
-    }
-
-    
-    if let provider = CGDataProvider(dataInfo: nil, data: buffer, size: bufferSize, releaseData: { _, data, _ in
-      data.deallocate()
-    }) {
-      let cgImage = CGImage(
-        width: bufferWidth,
-        height: bufferHeight,
-        bitsPerComponent: 8,
-        bitsPerPixel: 32,
-        bytesPerRow: bufferWidth * 4,
-        space: CGColorSpaceCreateDeviceRGB(),
-        bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
-        provider: provider,
-        decode: nil,
-        shouldInterpolate: true,
-        intent: .defaultIntent
-      )
-      
-      return cgImage
+      pdf_native_document_render_to_buffer(pdfDocument, index, UInt32(width), UInt32(height), flipVertical, flipHorizontal)
     }
     
-    return nil
+    
+    guard let info = info else {
+      return nil
+    }
+    
+    
+    let bufferWidth = Int(info.pointee.width)
+    let bufferHeight = Int(info.pointee.height)
+    let dataPtr: Unmanaged<NSData> = Unmanaged.fromOpaque(info.pointee.data)
+    let data = dataPtr.takeRetainedValue()
+    
+    
+    guard let provider = CGDataProvider(data: data) else {
+      pdf_native_render_info_release(info)
+      return nil
+    }
+    
+    
+    let cgImage = CGImage(
+      width: bufferWidth,
+      height: bufferHeight,
+      bitsPerComponent: 8,
+      bitsPerPixel: 32,
+      bytesPerRow: bufferWidth * 4,
+      space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
+      provider: provider,
+      decode: nil,
+      shouldInterpolate: true,
+      intent: .defaultIntent
+    )
+    
+    pdf_native_render_info_release(info)
+    
+    return cgImage
   }
   
   
   
   public func roundedRect(
-      _ x: Float,
-      _ y: Float,
-      _ width: Float,
-      _ height: Float,
-      _ rx: Float,
-      _ ry: Float,
-      _ style: NSCPdfStyle = NSCPdfStyle.s
-    ) {
-      pdf_native_document_rounded_rect(pdfDocument, x, y, width, height, rx, ry, style.pdfium)
-    }
-
+    _ x: Float,
+    _ y: Float,
+    _ width: Float,
+    _ height: Float,
+    _ rx: Float,
+    _ ry: Float,
+    _ style: NSCPdfStyle = NSCPdfStyle.s
+  ) {
+    pdf_native_document_rounded_rect(pdfDocument, x, y, width, height, rx, ry, style.pdfium)
+  }
+  
   
   
   public func table(_ config: NSCPdfTable){
@@ -287,27 +319,27 @@ public class NSCPdfDocument: NSObject {
   
   
   static func getBytesFromUIImage(_ image: UIImage) -> NSMutableData? {
-          var cgImage = image.cgImage
-          
-          if(cgImage == nil && image.ciImage != nil){
-              let context = CIContext()
-              cgImage = context.createCGImage(image.ciImage!, from: image.ciImage!.extent)
-          }
-          
-          guard let cgImage = cgImage else {
-              return nil
-          }
-         
-          let width = cgImage.width
-          let height = cgImage.height
-          let bytesPerRow = width * 4
-          let size = width * height * 4
-          let buffer = NSMutableData(length: size)
-          let colorSpace = CGColorSpaceCreateDeviceRGB()
-          let ctx = CGContext(data: buffer?.mutableBytes, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
-          
-          ctx?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-          
-          return buffer!
-      }
+    var cgImage = image.cgImage
+    
+    if(cgImage == nil && image.ciImage != nil){
+      let context = CIContext()
+      cgImage = context.createCGImage(image.ciImage!, from: image.ciImage!.extent)
+    }
+    
+    guard let cgImage = cgImage else {
+      return nil
+    }
+    
+    let width = cgImage.width
+    let height = cgImage.height
+    let bytesPerRow = width * 4
+    let size = width * height * 4
+    let buffer = NSMutableData(length: size)
+    let colorSpace = CGColorSpaceCreateDeviceRGB()
+    let ctx = CGContext(data: buffer?.mutableBytes, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
+    
+    ctx?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+    
+    return buffer!
+  }
 }

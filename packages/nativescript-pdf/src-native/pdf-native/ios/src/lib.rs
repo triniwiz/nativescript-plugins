@@ -2,7 +2,7 @@ mod document;
 
 use crate::document::CPdfNativeDocument;
 use pdf_core::PdfNative;
-use std::ffi::{c_char, CStr};
+use std::ffi::{c_char, CStr, CString};
 
 pub struct CPdfNative(PdfNative);
 #[unsafe(no_mangle)]
@@ -17,6 +17,16 @@ pub extern "C" fn pdf_native_release(instance: *mut CPdfNative) {
     }
     unsafe {
         let _ = Box::from_raw(instance);
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_string_release(string: *const c_char) {
+    if string.is_null() {
+        return;
+    }
+    unsafe {
+        let _ = CString::from_raw(string as *mut c_char);
     }
 }
 

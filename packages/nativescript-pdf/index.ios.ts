@@ -46,17 +46,16 @@ export class PDFView extends PDFViewBase {
 				view.notify({ eventName: 'pageChanged', object: view, currentPage: index });
 			};
 		}
-		console.log(nativeView, 'PDFView initialized');
 	}
 
-	public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
-		const nativeView = this.nativeView;
-		if (nativeView) {
-			const width = Utils.layout.getMeasureSpecSize(widthMeasureSpec);
-			const height = Utils.layout.getMeasureSpecSize(heightMeasureSpec);
-			this.setMeasuredDimension(width, height);
-		}
-	}
+	// public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number) {
+	// 	const nativeView = this.nativeView;
+	// 	if (nativeView) {
+	// 		const width = Utils.layout.getMeasureSpecSize(widthMeasureSpec);
+	// 		const height = Utils.layout.getMeasureSpecSize(heightMeasureSpec);
+	// 		this.setMeasuredDimension(width, height);
+	// 	}
+	// }
 
 	private _document: PDFDocument;
 

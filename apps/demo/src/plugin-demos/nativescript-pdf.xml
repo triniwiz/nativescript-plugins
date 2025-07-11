@@ -4,6 +4,6 @@
         </ActionBar>
     </Page.actionBar>
     <StackLayout>
-        <ui:PDFView id="pdfView" class="pdf-view"  loaded="{{loaded}}"/>
+        <ui:PDFView id="pdfView" class="pdf-view"  loaded="{{loaded}}" width="100%" height="100%"/>
     </StackLayout>
 </Page>

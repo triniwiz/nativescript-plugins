@@ -1,12 +1,20 @@
 use crate::CPdfNative;
+use objc2_foundation::NSData;
 use pdf_core::document::{
     PdfNativeDocument, PdfNativeDocumentConfig, PdfNativeOrientation, PdfNativePaperSize,
     PdfNativeRotationOrMatrix, PdfNativeStyle, PdfNativeTextOptions,
 };
 use pdf_core::table::CPdfTable;
-use std::ffi::{c_char, c_int, c_uint, CStr};
+use std::ffi::{c_char, c_int, c_uint, c_void, CStr, CString};
 
 pub struct CPdfNativeDocument(pub(crate) PdfNativeDocument<'static>);
+
+#[repr(C)]
+pub struct CPdfNativeRenderInfo {
+    pub data: *const c_void,
+    pub width: u32,
+    pub height: u32,
+}
 
 #[unsafe(no_mangle)]
 pub extern "C" fn pdf_native_document_init(
@@ -40,6 +48,31 @@ pub extern "C" fn pdf_native_document_release(instance: *mut CPdfNativeDocument)
         }
 
         let _ = Box::from_raw(instance);
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_save_to_file(
+    instance: *mut CPdfNativeDocument,
+    file: *const c_char,
+) -> *const c_char {
+    unsafe {
+        if instance.is_null() {
+            return CString::new("Invalid document").unwrap().into_raw();
+        }
+
+        if file.is_null() {
+            return CString::new("Invalid file path").unwrap().into_raw();
+        }
+
+        let instance = &*(instance);
+
+        let file = CStr::from_ptr(file);
+        let file = file.to_string_lossy();
+        match instance.0.save_to_file(file.as_ref()) {
+            Ok(_) => 0 as _,
+            Err(error) => CString::new(format!("{}", error)).unwrap().into_raw(),
+        }
     }
 }
 
@@ -401,20 +434,22 @@ pub extern "C" fn pdf_native_document_table(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn pdf_native_document_render_to_buffer(
+pub extern "C" fn pdf_native_document_render_into_buffer(
     instance: *mut CPdfNativeDocument,
     index: c_int,
+    buffer: *mut u8,
+    buffer_size: usize,
     width: c_uint,
     height: c_uint,
-    buffer: *mut u8,
-    size: usize,
 ) {
     unsafe {
-        if instance.is_null() {
+        if instance.is_null() || buffer.is_null() {
             return;
         }
+
         let instance = &*(instance);
-        let buffer = std::slice::from_raw_parts_mut(buffer, size);
+
+        let buffer = std::slice::from_raw_parts_mut(buffer, buffer_size);
 
         instance
             .0
@@ -423,11 +458,9 @@ pub extern "C" fn pdf_native_document_render_to_buffer(
 }
 
 #[unsafe(no_mangle)]
-pub extern "C" fn pdf_native_document_render_with_buffer_size(
+pub extern "C" fn pdf_native_document_render_into_buffer_with_scale(
     instance: *mut CPdfNativeDocument,
     index: c_int,
-    buffer: *mut u8,
-    size: usize,
     viewport_width: f32,
     viewport_height: f32,
     scale_x: f32,
@@ -436,19 +469,17 @@ pub extern "C" fn pdf_native_document_render_with_buffer_size(
     y: f32,
     width: f32,
     height: f32,
-    scaled_x: f32,
-    scaled_y: f32,
-    scaled_width: f32,
-    scaled_height: f32,
+    buffer: *mut u8,
+    buffer_size: usize,
 ) {
     unsafe {
-        if instance.is_null() {
+        if instance.is_null() || buffer.is_null() {
             return;
         }
         let instance = &*(instance);
-        let buffer = std::slice::from_raw_parts_mut(buffer, size);
+        let buffer = std::slice::from_raw_parts_mut(buffer, buffer_size);
 
-        instance.0.render_with_size(
+        let _ = instance.0.render_with_size(
             index,
             viewport_width,
             viewport_height,
@@ -458,11 +489,107 @@ pub extern "C" fn pdf_native_document_render_with_buffer_size(
             y,
             width,
             height,
-            scaled_x,
-            scaled_y,
-            scaled_width,
-            scaled_height,
             buffer,
         );
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_render_to_buffer(
+    instance: *mut CPdfNativeDocument,
+    index: c_int,
+    width: c_uint,
+    height: c_uint,
+    flip_vertical: bool,
+    flip_horizontal: bool,
+) -> *mut CPdfNativeRenderInfo {
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+
+        let instance = &*(instance);
+
+        instance
+            .0
+            .render_to_buffer(
+                index,
+                width as i32,
+                height as i32,
+                flip_vertical,
+                flip_horizontal,
+            )
+            .map(|(width, height, buffer)| {
+                let data = NSData::from_vec(buffer);
+                let data = objc2::rc::Retained::into_raw(data) as *const c_void;
+
+                Box::into_raw(Box::new(CPdfNativeRenderInfo {
+                    data,
+                    width,
+                    height,
+                }))
+            })
+            .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_render_to_buffer_with_scale(
+    instance: *mut CPdfNativeDocument,
+    index: c_int,
+    viewport_width: f32,
+    viewport_height: f32,
+    scale_x: f32,
+    scale_y: f32,
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+    flip_vertical: bool,
+    flip_horizontal: bool,
+) -> *mut CPdfNativeRenderInfo {
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+        let instance = &*(instance);
+
+        instance
+            .0
+            .render_with_size_to_buffer(
+                index,
+                viewport_width,
+                viewport_height,
+                scale_x,
+                scale_y,
+                x,
+                y,
+                width,
+                height,
+                flip_vertical,
+                flip_horizontal,
+            )
+            .map(|(width, height, buffer)| {
+                let data = NSData::from_vec(buffer);
+                let data = objc2::rc::Retained::into_raw(data) as *const c_void;
+
+                Box::into_raw(Box::new(CPdfNativeRenderInfo {
+                    data,
+                    width,
+                    height,
+                }))
+            })
+            .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_render_info_release(instance: *mut CPdfNativeRenderInfo) {
+    unsafe {
+        if instance.is_null() {
+            return;
+        }
+
+        let _ = Box::from_raw(instance);
     }
 }

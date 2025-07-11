@@ -6,14 +6,6 @@
 		"children": [
 			{
 				"kind": "Import",
-				"name": "CoreGraphics",
-				"printedName": "CoreGraphics",
-				"declKind": "Import",
-				"moduleName": "PdfNative",
-				"declAttributes": ["RawDocComment"]
-			},
-			{
-				"kind": "Import",
 				"name": "Foundation",
 				"printedName": "Foundation",
 				"declKind": "Import",
@@ -261,6 +253,21 @@
 						"mangledName": "$ss28CustomDebugStringConvertibleP"
 					}
 				]
+			},
+			{
+				"kind": "Import",
+				"name": "CoreGraphics",
+				"printedName": "CoreGraphics",
+				"declKind": "Import",
+				"moduleName": "PdfNative",
+				"declAttributes": ["RawDocComment"]
+			},
+			{
+				"kind": "Import",
+				"name": "UIKit",
+				"printedName": "UIKit",
+				"declKind": "Import",
+				"moduleName": "PdfNative"
 			},
 			{
 				"kind": "TypeDecl",
@@ -551,6 +558,89 @@
 						"moduleName": "PdfNative",
 						"declAttributes": ["AccessControl", "ObjC"],
 						"init_kind": "Designated"
+					},
+					{
+						"kind": "Function",
+						"name": "saveSync",
+						"printedName": "saveSync(to:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "Foundation.NSError?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "NSError",
+										"printedName": "Foundation.NSError",
+										"usr": "c:objc(cs)NSError"
+									}
+								],
+								"usr": "s:Sq"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)saveSyncTo:",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC8saveSync2toSo7NSErrorCSgSS_tF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "save",
+						"printedName": "save(to:callback:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeFunc",
+								"name": "Function",
+								"printedName": "(Foundation.NSError?) -> ()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "Foundation.NSError?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSError",
+												"printedName": "Foundation.NSError",
+												"usr": "c:objc(cs)NSError"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								]
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)saveTo:callback:",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC4save2to8callbackySS_ySo7NSErrorCSgctF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
 					},
 					{
 						"kind": "Var",
@@ -1519,42 +1609,6 @@
 					},
 					{
 						"kind": "Function",
-						"name": "renderToCGImage",
-						"printedName": "renderToCGImage(_:_:_:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Int32",
-								"printedName": "Swift.Int32",
-								"usr": "s:s5Int32V"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Int32",
-								"printedName": "Swift.Int32",
-								"usr": "s:s5Int32V"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Int32",
-								"printedName": "Swift.Int32",
-								"usr": "s:s5Int32V"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)renderToCGImage:::",
-						"mangledName": "$s9PdfNative14NSCPdfDocumentC15renderToCGImageyys5Int32V_A2FtF",
-						"moduleName": "PdfNative",
-						"declAttributes": ["AccessControl", "ObjC"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
 						"name": "renderToCGContext",
 						"printedName": "renderToCGContext(_:_:_:_:in:)",
 						"children": [
@@ -1604,7 +1658,7 @@
 					{
 						"kind": "Function",
 						"name": "renderToCGContextImage",
-						"printedName": "renderToCGContextImage(_:_:_:_:_:_:_:)",
+						"printedName": "renderToCGContextImage(_:_:_:_:_:_:_:_:_:)",
 						"children": [
 							{
 								"kind": "TypeNominal",
@@ -1662,11 +1716,25 @@
 								"printedName": "Swift.Bool",
 								"hasDefaultArg": true,
 								"usr": "s:Sb"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Bool",
+								"printedName": "Swift.Bool",
+								"hasDefaultArg": true,
+								"usr": "s:Sb"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Bool",
+								"printedName": "Swift.Bool",
+								"hasDefaultArg": true,
+								"usr": "s:Sb"
 							}
 						],
 						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)renderToCGContextImage:::::::",
-						"mangledName": "$s9PdfNative14NSCPdfDocumentC22renderToCGContextImageySo10CGImageRefaSgs5Int32V_12CoreGraphics7CGFloatVALSo6CGRectVA2LSbtF",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)renderToCGContextImage:::::::::",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC22renderToCGContextImageySo10CGImageRefaSgs5Int32V_12CoreGraphics7CGFloatVALSo6CGRectVA2LS3btF",
 						"moduleName": "PdfNative",
 						"declAttributes": ["AccessControl", "ObjC"],
 						"funcSelfKind": "NonMutating"
@@ -14850,186 +14918,6 @@
 				"printedName": "NSCPdfView",
 				"children": [
 					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:prefetchItemsAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Array",
-								"printedName": "[Foundation.IndexPath]",
-								"children": [
-									{
-										"kind": "TypeNominal",
-										"name": "IndexPath",
-										"printedName": "Foundation.IndexPath",
-										"usr": "s:10Foundation9IndexPathV"
-									}
-								],
-								"usr": "s:Sa"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:prefetchItemsAtIndexPaths:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_15prefetchItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:prefetchItemsAtIndexPaths:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:cancelPrefetchingForItemsAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Array",
-								"printedName": "[Foundation.IndexPath]",
-								"children": [
-									{
-										"kind": "TypeNominal",
-										"name": "IndexPath",
-										"printedName": "Foundation.IndexPath",
-										"usr": "s:10Foundation9IndexPathV"
-									}
-								],
-								"usr": "s:Sa"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cancelPrefetchingForItemsAtIndexPaths:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_27cancelPrefetchingForItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:cancelPrefetchingForItemsAtIndexPaths:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:numberOfItemsInSection:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Int",
-								"printedName": "Swift.Int",
-								"usr": "s:Si"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Int",
-								"printedName": "Swift.Int",
-								"usr": "s:Si"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:numberOfItemsInSection:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_22numberOfItemsInSectionSiSo012UICollectionD0C_SitF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:numberOfItemsInSection:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:cellForItemAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionViewCell",
-								"printedName": "UIKit.UICollectionViewCell",
-								"usr": "c:objc(cs)UICollectionViewCell"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "IndexPath",
-								"printedName": "Foundation.IndexPath",
-								"usr": "s:10Foundation9IndexPathV"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cellForItemAtIndexPath:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_13cellForItemAtSo012UICollectionD4CellCSo0jD0C_10Foundation9IndexPathVtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:cellForItemAtIndexPath:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:layout:sizeForItemAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "CGSize",
-								"printedName": "CoreFoundation.CGSize",
-								"usr": "c:@S@CGSize"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionViewLayout",
-								"printedName": "UIKit.UICollectionViewLayout",
-								"usr": "c:objc(cs)UICollectionViewLayout"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "IndexPath",
-								"printedName": "Foundation.IndexPath",
-								"usr": "s:10Foundation9IndexPathV"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:layout:sizeForItemAtIndexPath:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_6layout13sizeForItemAtSo6CGSizeVSo012UICollectionD0C_So0lD6LayoutC10Foundation9IndexPathVtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:layout:sizeForItemAtIndexPath:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
 						"kind": "Var",
 						"name": "document",
 						"printedName": "document",
@@ -15173,7 +15061,7 @@
 						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(py)onLoaded",
 						"mangledName": "$s9PdfNative10NSCPdfViewC8onLoadedyAA0C8DocumentCcSgvp",
 						"moduleName": "PdfNative",
-						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "ObjC"],
+						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "RawDocComment", "ObjC"],
 						"hasStorage": true,
 						"accessors": [
 							{
@@ -15622,6 +15510,64 @@
 					},
 					{
 						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:layout:sizeForItemAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "CGSize",
+								"printedName": "CoreFoundation.CGSize",
+								"usr": "c:@S@CGSize"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionViewLayout",
+								"printedName": "UIKit.UICollectionViewLayout",
+								"usr": "c:objc(cs)UICollectionViewLayout"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "IndexPath",
+								"printedName": "Foundation.IndexPath",
+								"usr": "s:10Foundation9IndexPathV"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:layout:sizeForItemAtIndexPath:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_6layout13sizeForItemAtSo6CGSizeVSo012UICollectionD0C_So0lD6LayoutC10Foundation9IndexPathVtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:layout:sizeForItemAtIndexPath:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "layoutSubviews",
+						"printedName": "layoutSubviews()",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)layoutSubviews",
+						"mangledName": "$s9PdfNative10NSCPdfViewC14layoutSubviewsyyF",
+						"moduleName": "PdfNative",
+						"overriding": true,
+						"objc_name": "layoutSubviews",
+						"declAttributes": ["Dynamic", "ObjC", "Preconcurrency", "Custom", "Override", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
 						"name": "loadFromBytes",
 						"printedName": "loadFromBytes(_:_:)",
 						"children": [
@@ -15733,6 +15679,148 @@
 						"moduleName": "PdfNative",
 						"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
 						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:prefetchItemsAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Array",
+								"printedName": "[Foundation.IndexPath]",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "IndexPath",
+										"printedName": "Foundation.IndexPath",
+										"usr": "s:10Foundation9IndexPathV"
+									}
+								],
+								"usr": "s:Sa"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:prefetchItemsAtIndexPaths:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_15prefetchItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:prefetchItemsAtIndexPaths:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:cancelPrefetchingForItemsAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Array",
+								"printedName": "[Foundation.IndexPath]",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "IndexPath",
+										"printedName": "Foundation.IndexPath",
+										"usr": "s:10Foundation9IndexPathV"
+									}
+								],
+								"usr": "s:Sa"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cancelPrefetchingForItemsAtIndexPaths:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_27cancelPrefetchingForItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:cancelPrefetchingForItemsAtIndexPaths:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:numberOfItemsInSection:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Int",
+								"printedName": "Swift.Int",
+								"usr": "s:Si"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Int",
+								"printedName": "Swift.Int",
+								"usr": "s:Si"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:numberOfItemsInSection:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_22numberOfItemsInSectionSiSo012UICollectionD0C_SitF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:numberOfItemsInSection:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:cellForItemAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionViewCell",
+								"printedName": "UIKit.UICollectionViewCell",
+								"usr": "c:objc(cs)UICollectionViewCell"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "IndexPath",
+								"printedName": "Foundation.IndexPath",
+								"usr": "s:10Foundation9IndexPathV"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cellForItemAtIndexPath:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_13cellForItemAtSo012UICollectionD4CellCSo0jD0C_10Foundation9IndexPathVtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:cellForItemAtIndexPath:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
 					}
 				],
 				"declKind": "Class",
@@ -15830,11 +15918,11 @@
 	},
 	"ConstValues": [
 		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/Cache.swift",
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfCache.swift",
 			"kind": "IntegerLiteral",
-			"offset": 249,
+			"offset": 289,
 			"length": 3,
-			"value": "512"
+			"value": "256"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfCellWidth.swift",
@@ -15860,9 +15948,23 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7109,
+			"offset": 7674,
 			"length": 4,
 			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
+			"kind": "BooleanLiteral",
+			"offset": 7703,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
+			"kind": "BooleanLiteral",
+			"offset": 7735,
+			"length": 5,
+			"value": "false"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfFontFamily.swift",
@@ -16469,30 +16571,51 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4190,
+			"offset": 4634,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4252,
+			"offset": 4696,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4314,
+			"offset": 4758,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4350,
+			"offset": 4794,
 			"length": 5,
 			"value": "[0, 0]"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
+			"kind": "Array",
+			"offset": 5735,
+			"length": 2,
+			"value": "[]"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
+			"kind": "Array",
+			"offset": 5817,
+			"length": 2,
+			"value": "[]"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
+			"kind": "Array",
+			"offset": 5899,
+			"length": 2,
+			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTableTheme.swift",
@@ -16622,64 +16745,29 @@
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "BooleanLiteral",
-			"offset": 292,
-			"length": 4,
-			"value": "true"
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
 			"kind": "Dictionary",
-			"offset": 2819,
+			"offset": 393,
 			"length": 3,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "StringLiteral",
-			"offset": 3073,
-			"length": 18,
-			"value": "\"NSCPdfView-Queue\""
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
 			"kind": "Dictionary",
-			"offset": 3489,
+			"offset": 1071,
 			"length": 3,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
 			"kind": "IntegerLiteral",
-			"offset": 3526,
+			"offset": 1112,
 			"length": 1,
 			"value": "0"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
 			"kind": "BooleanLiteral",
-			"offset": 3567,
-			"length": 5,
-			"value": "false"
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "IntegerLiteral",
-			"offset": 3605,
-			"length": 1,
-			"value": "0"
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "BooleanLiteral",
-			"offset": 3626,
-			"length": 5,
-			"value": "false"
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "BooleanLiteral",
-			"offset": 7081,
+			"offset": 4934,
 			"length": 5,
 			"value": "false"
 		}

@@ -28,6 +28,8 @@ import _SwiftConcurrencyShims
   @objc override dynamic public init()
   @objc public init(config: PdfNative.NSCPdfDocumentConfig)
   @objc deinit
+  @objc public func saveSync(to file: Swift.String) -> Foundation.NSError?
+  @objc public func save(to file: Swift.String, callback: @escaping (Foundation.NSError?) -> Swift.Void)
   @objc public var count: Swift.Int {
     @objc get
   }
@@ -62,9 +64,8 @@ import _SwiftConcurrencyShims
   @objc public func ellipse(_ x: Swift.Float, _ y: Swift.Float, _ rx: Swift.Float, _ ry: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
   @objc public func rect(_ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
   @objc public func renderToBuffer(_ index: Swift.Int32, _ buffer: Foundation.NSMutableData, _ width: Swift.Int32, _ height: Swift.Int32)
-  @objc public func renderToCGImage(_ index: Swift.Int32, _ width: Swift.Int32, _ height: Swift.Int32)
   @objc public func renderToCGContext(_ index: Swift.Int32, _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, in context: CoreGraphics.CGContext)
-  @objc public func renderToCGContextImage(_ index: Swift.Int32, _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, _ scaleX: CoreFoundation.CGFloat, _ scaleY: CoreFoundation.CGFloat, _ withScale: Swift.Bool = true) -> CoreGraphics.CGImage?
+  @objc public func renderToCGContextImage(_ index: Swift.Int32, _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, _ scaleX: CoreFoundation.CGFloat, _ scaleY: CoreFoundation.CGFloat, _ withScale: Swift.Bool = true, _ flipVertical: Swift.Bool = false, _ flipHorizontal: Swift.Bool = false) -> CoreGraphics.CGImage?
   @objc public func roundedRect(_ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float, _ rx: Swift.Float, _ ry: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
   @objc public func table(_ config: PdfNative.NSCPdfTable)
 }
@@ -343,9 +344,9 @@ import _SwiftConcurrencyShims
   @objc public var pageBreak: PdfNative.NSCPdfPageBreak
   @objc public var showHead: PdfNative.NSCPdfShowHead
   @objc public var showFoot: PdfNative.NSCPdfShowFoot
+  @objc deinit
   @objc public func updatePosition(_ x: Swift.Float, _ y: Swift.Float)
   @objc override dynamic public init()
-  @objc deinit
 }
 @objc(NSCPdfTableTheme) public enum NSCPdfTableTheme : Swift.Int, Swift.RawRepresentable {
   case striped
@@ -416,11 +417,6 @@ import _SwiftConcurrencyShims
   }
 }
 @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objc(NSCPdfView) @objcMembers @_Concurrency.MainActor @preconcurrency public class NSCPdfView : UIKit.UIView, UIKit.UICollectionViewDataSource, UIKit.UICollectionViewDelegateFlowLayout, UIKit.UICollectionViewDataSourcePrefetching {
-  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, prefetchItemsAt indexPaths: [Foundation.IndexPath])
-  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cancelPrefetchingForItemsAt indexPaths: [Foundation.IndexPath])
-  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
-  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
-  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
   @objc @_Concurrency.MainActor @preconcurrency public var document: PdfNative.NSCPdfDocument? {
     @objc get
     @objc set
@@ -429,9 +425,15 @@ import _SwiftConcurrencyShims
   @objc @_Concurrency.MainActor @preconcurrency public var onError: (((any Swift.Error)?) -> Swift.Void)?
   @objc @_Concurrency.MainActor @preconcurrency public var onPageChange: ((Swift.Int) -> Swift.Void)?
   @_Concurrency.MainActor @preconcurrency @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, layout collectionViewLayout: UIKit.UICollectionViewLayout, sizeForItemAt indexPath: Foundation.IndexPath) -> CoreFoundation.CGSize
+  @_Concurrency.MainActor @preconcurrency @objc override dynamic public func layoutSubviews()
   @objc @_Concurrency.MainActor @preconcurrency public func loadFromBytes(_ bytes: Foundation.NSData, _ password: Swift.String?)
   @objc @_Concurrency.MainActor @preconcurrency public func loadFromPath(_ path: Swift.String, _ password: Swift.String?)
   @objc @_Concurrency.MainActor @preconcurrency public func loadFromUrl(_ url: Swift.String, _ password: Swift.String?)
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, prefetchItemsAt indexPaths: [Foundation.IndexPath])
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cancelPrefetchingForItemsAt indexPaths: [Foundation.IndexPath])
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, numberOfItemsInSection section: Swift.Int) -> Swift.Int
+  @_Concurrency.MainActor @preconcurrency @objc public func collectionView(_ collectionView: UIKit.UICollectionView, cellForItemAt indexPath: Foundation.IndexPath) -> UIKit.UICollectionViewCell
   @objc deinit
 }
 extension PdfNative.NSCPdfFontFamily : Swift.Equatable {}

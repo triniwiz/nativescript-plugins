@@ -5,7 +5,7 @@ use crate::{
 use jni::objects::{
     JByteArray, JByteBuffer, JClass, JObject, JObjectArray, JString, JValue, ReleaseMode,
 };
-use jni::sys::{jfloat, jint, jlong, jobjectArray};
+use jni::sys::{jfloat, jint, jlong, jobjectArray, jstring};
 use jni::JNIEnv;
 use pdf_core::document::{
     PdfNativeDocument, PdfNativeDocumentConfig, PdfNativeOrientation, PdfNativePaperSize,
@@ -22,6 +22,7 @@ use pdf_core::table::{
 use pdf_core::utils::{read_float, read_int, to_points};
 use pdf_core::{PdfColor, PdfNative, PdfPoints};
 use std::collections::HashMap;
+use std::ffi::{c_char, CStr, CString};
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeInit(
@@ -87,6 +88,35 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeRel
             return;
         }
         let _ = Box::from_raw(instance as *mut PdfNativeDocument);
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeSaveToFile(
+    mut env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    file: JString,
+) -> jstring {
+    unsafe {
+        if instance == 0 {
+            return env
+                .new_string("Invalid document")
+                .map(|string| string.into_raw())
+                .unwrap_or(0 as _);
+        }
+
+        let instance = &*(instance as *mut PdfNativeDocument);
+
+        if let Ok(file) = env.get_string(&file) {
+            let file = file.to_string_lossy();
+            match instance.save_to_file(file.as_ref()) {
+                Ok(_) => 0 as _,
+                Err(error) => env.new_string(format!("{}", error)).unwrap().into_raw(),
+            }
+        } else {
+            0 as _
+        }
     }
 }
 
@@ -613,6 +643,45 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeRen
             let buffer = std::slice::from_raw_parts_mut(addr as *mut u8, size);
 
             instance.render(index, info.width() as i32, info.height() as i32, buffer);
+        }
+        let _ = bm.unlock_pixels();
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeRenderToBitmapWithRect(
+    env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    index: jint,
+    bitmap: JObject,
+    x: jint,
+    y: jint,
+    width: jint,
+    height: jint,
+    scale: jfloat,
+) {
+    unsafe {
+        if instance == 0 {
+            return;
+        }
+        let instance = &*(instance as *mut PdfNativeDocument);
+        let bm = ndk::bitmap::AndroidBitmap::from_jni(env.get_raw(), bitmap.as_raw());
+        if let (Ok(info), Ok(addr)) = (bm.get_info(), bm.lock_pixels()) {
+            let size = (info.height() * info.stride()) as usize;
+            let buffer = std::slice::from_raw_parts_mut(addr as *mut u8, size);
+
+            let _ = instance.render_with_rect(
+                index,
+                info.width() as i32,
+                info.height() as i32,
+                x,
+                y,
+                width,
+                height,
+                scale,
+                buffer,
+            );
         }
         let _ = bm.unlock_pixels();
     }

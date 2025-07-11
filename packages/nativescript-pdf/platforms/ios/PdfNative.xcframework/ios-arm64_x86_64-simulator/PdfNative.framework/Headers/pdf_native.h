@@ -12,11 +12,19 @@ typedef struct CPdfNative CPdfNative;
 
 typedef struct CPdfNativeDocument CPdfNativeDocument;
 
+typedef struct CPdfNativeRenderInfo {
+  const void *data;
+  uint32_t width;
+  uint32_t height;
+} CPdfNativeRenderInfo;
+
 typedef struct PdfNativeTextOptions PdfNativeTextOptions;
 
 struct CPdfNative *pdf_native_init(void);
 
 void pdf_native_release(struct CPdfNative *instance);
+
+void pdf_native_string_release(const char *string);
 
 struct CPdfNativeDocument *pdf_native_load_from_path(struct CPdfNative *instance,
                                                      const char *path,
@@ -31,6 +39,8 @@ struct CPdfNativeDocument *pdf_native_document_init(struct CPdfNative *instance,
                                                     const PdfNativeDocumentConfig *config);
 
 void pdf_native_document_release(struct CPdfNative *instance);
+
+const char *pdf_native_document_save_to_file(struct CPdfNativeDocument *instance, const char *file);
 
 int pdf_native_document_count(struct CPdfNativeDocument *instance);
 
@@ -131,27 +141,45 @@ void pdf_native_document_add_image(struct CPdfNativeDocument *instance,
 
 void pdf_native_document_table(struct CPdfNativeDocument *instance, const CPdfTable *config);
 
-void pdf_native_document_render_to_buffer(struct CPdfNativeDocument *instance,
-                                          int index,
-                                          unsigned int width,
-                                          unsigned int height,
-                                          uint8_t *buffer,
-                                          uintptr_t size);
+void pdf_native_document_render_into_buffer(struct CPdfNativeDocument *instance,
+                                            int index,
+                                            uint8_t *buffer,
+                                            uintptr_t buffer_size,
+                                            unsigned int width,
+                                            unsigned int height);
 
-void pdf_native_document_render_with_buffer_size(struct CPdfNativeDocument *instance,
-                                                 int index,
-                                                 uint8_t *buffer,
-                                                 uintptr_t size,
-                                                 float viewport_width,
-                                                 float viewport_height,
-                                                 float scale_x,
-                                                 float scale_y,
-                                                 float x,
-                                                 float y,
-                                                 float width,
-                                                 float height,
-                                                 float scaled_x,
-                                                 float scaled_y,
-                                                 float scaled_width,
-                                                 float scaled_height);
+void pdf_native_document_render_into_buffer_with_scale(struct CPdfNativeDocument *instance,
+                                                       int index,
+                                                       float viewport_width,
+                                                       float viewport_height,
+                                                       float scale_x,
+                                                       float scale_y,
+                                                       float x,
+                                                       float y,
+                                                       float width,
+                                                       float height,
+                                                       uint8_t *buffer,
+                                                       uintptr_t buffer_size);
+
+struct CPdfNativeRenderInfo *pdf_native_document_render_to_buffer(struct CPdfNativeDocument *instance,
+                                                                  int index,
+                                                                  unsigned int width,
+                                                                  unsigned int height,
+                                                                  bool flip_vertical,
+                                                                  bool flip_horizontal);
+
+struct CPdfNativeRenderInfo *pdf_native_document_render_to_buffer_with_scale(struct CPdfNativeDocument *instance,
+                                                                             int index,
+                                                                             float viewport_width,
+                                                                             float viewport_height,
+                                                                             float scale_x,
+                                                                             float scale_y,
+                                                                             float x,
+                                                                             float y,
+                                                                             float width,
+                                                                             float height,
+                                                                             bool flip_vertical,
+                                                                             bool flip_horizontal);
+
+void pdf_native_render_info_release(struct CPdfNativeRenderInfo *instance);
 

@@ -9,13 +9,13 @@ import UIKit
 import PdfNative
 
 class ViewController: UIViewController {
-
+  var pdf: NSCPdfView?
     override func viewDidLoad() {
       super.viewDidLoad()
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-      document.table(buildTable())
+     // document.table(buildTable())
       
       /*
      
@@ -101,15 +101,16 @@ class ViewController: UIViewController {
       
       
       */
-      let pdf = NSCPdfView(frame: view.bounds)
+      pdf = NSCPdfView(frame: view.bounds)
+
       
       
-      self.view.addSubview(pdf)
+      if let pdf = pdf {
+        self.view.addSubview(pdf)
+      }
       
       
-      pdf.document = document
-      
-      let doc = NSCPdfDocument()
+     // pdf.document = document
       
 
       
@@ -118,9 +119,11 @@ class ViewController: UIViewController {
       // large pdf https://research.nhm.org/pdfs/10840/10840.pdf
       // large 100 pages https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf
       
-     // pdf.loadFromUrl(url: "https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf")
+      pdf?.loadFromUrl( "https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf", nil)
+  
 
     }
+  
   
   func buildTable() -> NSCPdfTable{
 

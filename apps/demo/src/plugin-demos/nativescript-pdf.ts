@@ -12,9 +12,9 @@ export class DemoModel extends DemoSharedNativescriptPdf {
 	loaded(args: EventData) {
 		const pdfView = args.object as never as PDFView;
 		const document = new PDFDocument();
-
+		pdfView.src = this.src;
 		//	this.renderDocument(document, pdfView);
-		this.renderTable(document, pdfView);
+		//this.renderTable(document, pdfView);
 	}
 
 	renderTable(document: PDFDocument, pdfView: PDFView) {
