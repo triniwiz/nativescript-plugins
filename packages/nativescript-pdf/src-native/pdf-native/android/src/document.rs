@@ -1182,8 +1182,6 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
             table.show_foot = show_foot;
         }
 
-        log::info!(target: "com.test","table config ?? {:?}", &table);
-
         let _ = instance.table(&table);
     }
 }

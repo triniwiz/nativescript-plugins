@@ -17,7 +17,9 @@ class ViewController: UIViewController {
       let document = NSCPdfDocument()
      // document.table(buildTable())
       
-      /*
+      
+ 
+      
      
    
       document.fontSize = 32
@@ -26,7 +28,11 @@ class ViewController: UIViewController {
       options.baseline = NSCPdfTextBaseline.top
       options.align = NSCPdfTextAlignment.center
       document.addText("Hello World 1", (document.width / 2) - 250, 0, options)
-      //document.addImage(data: image!, 0, 0, 50, 50)
+      
+      do {
+        let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
+        document.addImage(image!, 0, 0, 100, 100)
+      }catch {}
            document.addPage()
            document.fontSize = 50
            document.setFontColor(
@@ -100,7 +106,7 @@ class ViewController: UIViewController {
          //  document.roundedRect(x, y, width, height, rx, ry, NSCPdfStyle.fd)
       
       
-      */
+      
       pdf = NSCPdfView(frame: view.bounds)
 
       
@@ -110,7 +116,7 @@ class ViewController: UIViewController {
       }
       
       
-     // pdf.document = document
+      pdf?.document = document
       
 
       
@@ -119,7 +125,15 @@ class ViewController: UIViewController {
       // large pdf https://research.nhm.org/pdfs/10840/10840.pdf
       // large 100 pages https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf
       
-      pdf?.loadFromUrl( "https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf", nil)
+//      pdf?.loadFromUrl( "https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf", nil)
+      
+      if let test = Bundle.main.url(forResource: "100MB-TESTFILE.ORG", withExtension: "pdf") {
+       // pdf?.loadFromPath(test.absoluteString, nil)
+      }else {
+        
+      }
+      
+
   
 
     }

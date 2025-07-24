@@ -308,6 +308,18 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 #if defined(__OBJC__)
+@class NSCoder;
+
+SWIFT_CLASS("_TtC9PdfNative12LDOTiledView")
+@interface LDOTiledView : UIView
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layerClass;)
++ (Class _Nonnull)layerClass SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (void)drawRect:(CGRect)rect;
+@end
+
 @class NSString;
 @class NSCPdfDocument;
 @class NSData;
@@ -440,6 +452,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfHorizontalAlign, "NSCPdfHorizontalAlig
   NSCPdfHorizontalAlignCenter = 1,
   NSCPdfHorizontalAlignRight = 2,
 };
+
+
+SWIFT_CLASS_NAMED("NSCPdfInfo")
+@interface NSCPdfInfo : NSObject
+- (nonnull instancetype)initWithWidth:(NSUInteger)width height:(NSUInteger)height data:(NSData * _Nonnull)data OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
 
 typedef SWIFT_ENUM_NAMED(int32_t, NSCPdfOrientation, "NSCPdfOrientation", open) {
   NSCPdfOrientationLandscape = 0,
@@ -726,6 +746,21 @@ SWIFT_CLASS_NAMED("NSCPdfTextOptions")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+SWIFT_CLASS_NAMED("NSCPdfTiledView")
+@interface NSCPdfTiledView : UIScrollView <UIScrollViewDelegate>
+@property (nonatomic, strong) NSCPdfDocument * _Nullable document;
+@property (nonatomic, copy) void (^ _Nullable onLoaded)(NSCPdfDocument * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onError)(NSError * _Nullable);
+@property (nonatomic, copy) void (^ _Nullable onPageChange)(NSInteger);
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (UIView * _Nullable)viewForZoomingInScrollView:(UIScrollView * _Nonnull)scrollView SWIFT_WARN_UNUSED_RESULT;
+- (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
+- (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
+- (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
+@end
+
 typedef SWIFT_ENUM_NAMED(int32_t, NSCPdfUnit, "NSCPdfUnit", open) {
   NSCPdfUnitMm = 0,
   NSCPdfUnitPoints = 1,
@@ -739,29 +774,28 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfVerticalAlign, "NSCPdfVerticalAlign", 
   NSCPdfVerticalAlignBottom = 2,
 };
 
-@class NSCoder;
 @class UICollectionView;
-@class UICollectionViewLayout;
 @class NSIndexPath;
 @class UICollectionViewCell;
+@class UICollectionViewLayout;
 
 SWIFT_CLASS_NAMED("NSCPdfView")
 @interface NSCPdfView : UIView <UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout>
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
+- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView numberOfItemsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (CGSize)collectionView:(UICollectionView * _Nonnull)collectionView layout:(UICollectionViewLayout * _Nonnull)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView willDisplayCell:(UICollectionViewCell * _Nonnull)cell forItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 @property (nonatomic, strong) NSCPdfDocument * _Nullable document;
 @property (nonatomic, copy) void (^ _Nullable onLoaded)(NSCPdfDocument * _Nonnull);
 @property (nonatomic, copy) void (^ _Nullable onError)(NSError * _Nullable);
 @property (nonatomic, copy) void (^ _Nullable onPageChange)(NSInteger);
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (CGSize)collectionView:(UICollectionView * _Nonnull)collectionView layout:(UICollectionViewLayout * _Nonnull)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
-- (void)layoutSubviews;
 - (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
 - (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
 - (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
-- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView numberOfItemsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
-- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 @end
 
 #endif
@@ -1082,6 +1116,18 @@ typedef unsigned int swift_uint4  __attribute__((__ext_vector_type__(4)));
 #endif
 
 #if defined(__OBJC__)
+@class NSCoder;
+
+SWIFT_CLASS("_TtC9PdfNative12LDOTiledView")
+@interface LDOTiledView : UIView
+SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly) Class _Nonnull layerClass;)
++ (Class _Nonnull)layerClass SWIFT_WARN_UNUSED_RESULT;
+@property (nonatomic, readonly) CGSize intrinsicContentSize;
+- (nonnull instancetype)initWithFrame:(CGRect)frame SWIFT_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (void)drawRect:(CGRect)rect;
+@end
+
 @class NSString;
 @class NSCPdfDocument;
 @class NSData;
@@ -1214,6 +1260,14 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfHorizontalAlign, "NSCPdfHorizontalAlig
   NSCPdfHorizontalAlignCenter = 1,
   NSCPdfHorizontalAlignRight = 2,
 };
+
+
+SWIFT_CLASS_NAMED("NSCPdfInfo")
+@interface NSCPdfInfo : NSObject
+- (nonnull instancetype)initWithWidth:(NSUInteger)width height:(NSUInteger)height data:(NSData * _Nonnull)data OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
 
 typedef SWIFT_ENUM_NAMED(int32_t, NSCPdfOrientation, "NSCPdfOrientation", open) {
   NSCPdfOrientationLandscape = 0,
@@ -1500,6 +1554,21 @@ SWIFT_CLASS_NAMED("NSCPdfTextOptions")
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
 
+
+SWIFT_CLASS_NAMED("NSCPdfTiledView")
+@interface NSCPdfTiledView : UIScrollView <UIScrollViewDelegate>
+@property (nonatomic, strong) NSCPdfDocument * _Nullable document;
+@property (nonatomic, copy) void (^ _Nullable onLoaded)(NSCPdfDocument * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onError)(NSError * _Nullable);
+@property (nonatomic, copy) void (^ _Nullable onPageChange)(NSInteger);
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (UIView * _Nullable)viewForZoomingInScrollView:(UIScrollView * _Nonnull)scrollView SWIFT_WARN_UNUSED_RESULT;
+- (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
+- (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
+- (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
+@end
+
 typedef SWIFT_ENUM_NAMED(int32_t, NSCPdfUnit, "NSCPdfUnit", open) {
   NSCPdfUnitMm = 0,
   NSCPdfUnitPoints = 1,
@@ -1513,29 +1582,28 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfVerticalAlign, "NSCPdfVerticalAlign", 
   NSCPdfVerticalAlignBottom = 2,
 };
 
-@class NSCoder;
 @class UICollectionView;
-@class UICollectionViewLayout;
 @class NSIndexPath;
 @class UICollectionViewCell;
+@class UICollectionViewLayout;
 
 SWIFT_CLASS_NAMED("NSCPdfView")
 @interface NSCPdfView : UIView <UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout>
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
+- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView numberOfItemsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
+- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (CGSize)collectionView:(UICollectionView * _Nonnull)collectionView layout:(UICollectionViewLayout * _Nonnull)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
+- (void)collectionView:(UICollectionView * _Nonnull)collectionView willDisplayCell:(UICollectionViewCell * _Nonnull)cell forItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
 @property (nonatomic, strong) NSCPdfDocument * _Nullable document;
 @property (nonatomic, copy) void (^ _Nullable onLoaded)(NSCPdfDocument * _Nonnull);
 @property (nonatomic, copy) void (^ _Nullable onError)(NSError * _Nullable);
 @property (nonatomic, copy) void (^ _Nullable onPageChange)(NSInteger);
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
-- (CGSize)collectionView:(UICollectionView * _Nonnull)collectionView layout:(UICollectionViewLayout * _Nonnull)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
-- (void)layoutSubviews;
 - (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
 - (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
 - (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
-- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView numberOfItemsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
-- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
 @end
 
 #endif

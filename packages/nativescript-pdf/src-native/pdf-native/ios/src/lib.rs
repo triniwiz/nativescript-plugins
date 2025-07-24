@@ -1,8 +1,38 @@
 mod document;
 
 use crate::document::CPdfNativeDocument;
+use objc2::rc::Retained;
+use objc2::runtime::NSObject;
+use objc2::{class, msg_send};
+use objc2_foundation::NSData;
 use pdf_core::PdfNative;
 use std::ffi::{c_char, CStr, CString};
+use std::ops::Deref;
+
+pub struct NSCPdfInfo(Retained<NSObject>);
+
+impl NSCPdfInfo {
+    pub fn new(width: u32, height: u32, data: Retained<NSData>) -> Self {
+        unsafe {
+            let instance: *mut NSObject = msg_send![class!(NSCPdfInfo), alloc];
+            let width: usize = width as usize;
+            let height: usize = height as usize;
+
+            let instance: *mut NSObject =
+                msg_send![instance, initWithWidth: width, height:height, data: &*data];
+            let id = Retained::from_raw(instance).unwrap();
+            Self(id)
+        }
+    }
+}
+
+impl Deref for NSCPdfInfo {
+    type Target = NSObject;
+
+    fn deref(&self) -> &Self::Target {
+        &*self.0
+    }
+}
 
 pub struct CPdfNative(PdfNative);
 #[unsafe(no_mangle)]

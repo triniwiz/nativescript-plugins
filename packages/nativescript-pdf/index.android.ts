@@ -58,7 +58,6 @@ export class PDFView extends PDFViewBase {
 			this._document = value;
 			const nativeView = this.nativeViewProtected as io.github.triniwiz.plugins.pdf.PdfView;
 			if (nativeView) {
-				console.log('Setting document on PDFView', value[native_]);
 				nativeView.setDocument(value[native_]);
 			}
 		}
@@ -556,12 +555,14 @@ export class PDFDocument implements IPDFDocument {
 			}
 
 			if (options.columnStyles) {
-				const columnStyles = new java.util.HashMap<string, io.github.triniwiz.plugins.pdf.table.StyleDef>();
-				Object.keys(options.columnStyles).forEach((key) => {
+				const keys = Object.keys(options.columnStyles);
+				const columnStyles = new java.util.HashMap<string, io.github.triniwiz.plugins.pdf.table.StyleDef>(keys.length);
+				for (const key of keys) {
 					const style = options.columnStyles[key];
 					const styleDef = parseStyleDef(style);
 					columnStyles.put(key, styleDef);
-				});
+				}
+
 				opts.setColumnStyles(columnStyles);
 			}
 

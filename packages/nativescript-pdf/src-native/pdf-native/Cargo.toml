@@ -15,3 +15,5 @@ opt-level = 3
 debug = false
 incremental = false
 strip = true
+debug-assertions = false
+overflow-checks = false

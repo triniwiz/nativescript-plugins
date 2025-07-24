@@ -415,11 +415,11 @@ function parseStyleDef(style: StyleDef) {
 function parseTableCellOrString(value: TableCellOrString[][]) {
 	if (Array.isArray(value)) {
 		const length = value.length;
-		const nativeArray = NSMutableArray.new();
+		const nativeArray = NSMutableArray.alloc().initWithCapacity(length);
 		for (let i = 0; i < length; i++) {
 			const innerArray = value[i];
 			const innerLength = innerArray.length ?? 0;
-			const nativeInnerArray = NSMutableArray.new();
+			const nativeInnerArray = NSMutableArray.alloc().initWithCapacity(innerLength);
 
 			for (let j = 0; j < innerLength; j++) {
 				const inner = innerArray[j];
@@ -590,7 +590,7 @@ export class PDFDocument implements IPDFDocument {
 		if (options) {
 			if (options.columns) {
 				const len = options.columns.length;
-				const columns = NSMutableArray.new();
+				const columns = NSMutableArray.alloc().initWithCapacity(len);
 				for (let i = 0; i < len; i++) {
 					const column = options.columns[i];
 					const newColumn = NSCPdfColumnDef.alloc().initWithHeaderDataKey(column.header, column.dataKey);
@@ -600,12 +600,13 @@ export class PDFDocument implements IPDFDocument {
 			}
 
 			if (options.columnStyles) {
-				const columnStyles = NSMutableDictionary.new();
-				Object.keys(options.columnStyles).forEach((key) => {
+				const keys = Object.keys(options.columnStyles);
+				const columnStyles = NSMutableDictionary.alloc().initWithCapacity(keys.length);
+				for (const key of keys) {
 					const style = options.columnStyles[key];
 					const styleDef = parseStyleDef(style);
 					columnStyles.setValueForKey(styleDef, key);
-				});
+				}
 				opts.columnStyles = columnStyles;
 			}
 

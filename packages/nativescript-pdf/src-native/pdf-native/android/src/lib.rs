@@ -104,6 +104,7 @@ const FLOAT_CLASS: &str = "java/lang/Float";
 #[unsafe(no_mangle)]
 pub extern "system" fn JNI_OnLoad(vm: JavaVM, _reserved: *const c_void) -> jint {
     android_logger::init_once(Config::default().with_max_level(LevelFilter::Info));
+
     if let Ok(mut env) = vm.get_env() {
         let index_class = env.find_class(COLUMN_KEY_INDEX_CLASS).unwrap();
         let index_id = env.get_field_id(&index_class, "index", "I").unwrap();

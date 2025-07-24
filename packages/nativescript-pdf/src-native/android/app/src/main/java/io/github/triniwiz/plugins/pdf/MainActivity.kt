@@ -1,5 +1,7 @@
 package io.github.triniwiz.plugins.pdf
 
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -14,7 +16,11 @@ import io.github.triniwiz.plugins.pdf.table.StyleDef
 import io.github.triniwiz.plugins.pdf.table.TableCell
 import io.github.triniwiz.plugins.pdf.table.TableCellOrString
 import io.github.triniwiz.plugins.pdf.table.VerticalAlign
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
 import java.net.URI
+import java.net.URL
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.Executors
@@ -65,12 +71,12 @@ class MainActivity : AppCompatActivity() {
     t = object : TimerTask() {
       override fun run() {
         t?.cancel()
-       runOnUiThread {
-         pdfView.layoutParams = ViewGroup.LayoutParams(
-           ViewGroup.LayoutParams.MATCH_PARENT,
-           0
-         )
-       }
+        runOnUiThread {
+          pdfView.layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            0
+          )
+        }
 
 
 
@@ -96,7 +102,7 @@ class MainActivity : AppCompatActivity() {
     executor.execute {
       val document = PdfDocument()
       val table = buildTable()
-      document.table(table)
+      //    document.table(table)
 
 //      val url =
 //        URI.create("https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")
@@ -190,18 +196,38 @@ class MainActivity : AppCompatActivity() {
 
       */
 
+      val doc = File(cacheDir, "10840.pdf")
+
+      if (doc.exists()) {
+        pdfView.loadFromPath(doc.absolutePath)
+      } else {
+        val pdf = URL("https://research.nhm.org/pdfs/10840/10840.pdf")
+        val os = FileOutputStream(doc)
+        val stream = pdf.openConnection().getInputStream()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+          stream.transferTo(os)
+        } else {
+          stream.copyTo(os)
+        }
+
+        pdfView.loadFromPath(doc.absolutePath)
+      }
+
+
+
       runOnUiThread {
         var task: TimerTask? = null
-       // pdfView.document = document
+        // pdfView.document = document
         task = object : TimerTask() {
           override fun run() {
             task?.cancel()
-            pdfView.loadFromUrl("https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf")
+            pdfView.loadFromUrl("https://raw.githubusercontent.com/ajrcarey/pdfium-render/master/test/image-test.pdf")
           }
         }
         Timer().schedule(task, 5000L)
 
       }
+
     }
 
     // https://raw.githubusercontent.com/ajrcarey/pdfium-render/master/test/image-test.pdf

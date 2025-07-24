@@ -1,5 +1,6 @@
-use crate::CPdfNative;
-use objc2_foundation::NSData;
+use crate::{CPdfNative, NSCPdfInfo};
+use objc2::__framework_prelude::Retained;
+use objc2_foundation::{NSArray, NSData};
 use pdf_core::document::{
     PdfNativeDocument, PdfNativeDocumentConfig, PdfNativeOrientation, PdfNativePaperSize,
     PdfNativeRotationOrMatrix, PdfNativeStyle, PdfNativeTextOptions,
@@ -418,6 +419,36 @@ pub extern "C" fn pdf_native_document_add_image(
 }
 
 #[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_add_raw_image(
+    instance: *mut CPdfNativeDocument,
+    image_data: *const u8,
+    image_size: c_uint,
+    image_width: u32,
+    image_height: u32,
+    x: f32,
+    y: f32,
+    width: i32,
+    height: i32,
+) {
+    unsafe {
+        if instance.is_null() || image_data.is_null() {
+            return;
+        }
+        let image_data = std::slice::from_raw_parts(image_data, image_size as usize);
+        let instance = &mut *(instance);
+        let _ = instance.0.add_image_raw(
+            image_data,
+            image_width,
+            image_height,
+            x,
+            y,
+            Some(width as f32),
+            Some(height as f32),
+        );
+    }
+}
+
+#[unsafe(no_mangle)]
 pub extern "C" fn pdf_native_document_table(
     instance: *mut CPdfNativeDocument,
     config: *const CPdfTable,
@@ -521,7 +552,7 @@ pub extern "C" fn pdf_native_document_render_to_buffer(
             )
             .map(|(width, height, buffer)| {
                 let data = NSData::from_vec(buffer);
-                let data = objc2::rc::Retained::into_raw(data) as *const c_void;
+                let data = Retained::into_raw(data) as *const c_void;
 
                 Box::into_raw(Box::new(CPdfNativeRenderInfo {
                     data,
@@ -571,7 +602,144 @@ pub extern "C" fn pdf_native_document_render_to_buffer_with_scale(
             )
             .map(|(width, height, buffer)| {
                 let data = NSData::from_vec(buffer);
-                let data = objc2::rc::Retained::into_raw(data) as *const c_void;
+                let data = Retained::into_raw(data) as *const c_void;
+
+                Box::into_raw(Box::new(CPdfNativeRenderInfo {
+                    data,
+                    width,
+                    height,
+                }))
+            })
+            .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_render_to_buffers(
+    instance: *mut CPdfNativeDocument,
+    indices: *const c_int,
+    indices_size: usize,
+    width: c_uint,
+    height: c_uint,
+    flip_vertical: bool,
+    flip_horizontal: bool,
+) -> *mut c_void {
+    unsafe {
+        if instance.is_null() || indices.is_null() || indices_size == 0 {
+            return 0 as _;
+        }
+        let instance = &*(instance);
+        let indices = std::slice::from_raw_parts(indices, indices_size);
+
+        instance
+            .0
+            .render_to_buffers(
+                indices,
+                width as i32,
+                height as i32,
+                flip_vertical,
+                flip_horizontal,
+            )
+            .map(|info| {
+                let buffer = info
+                    .into_iter()
+                    .map(|(width, height, buffer)| {
+                        let data = NSData::from_vec(buffer);
+                        NSCPdfInfo::new(width, height, data).0
+                    })
+                    .collect::<Vec<_>>();
+                let data = NSArray::from_retained_slice(buffer.as_slice());
+                Retained::into_raw(data) as _
+            })
+            .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_render_to_buffers_with_scale(
+    instance: *mut CPdfNativeDocument,
+    indices: *const c_int,
+    indices_size: usize,
+    viewport_width: f32,
+    viewport_height: f32,
+    scale_x: f32,
+    scale_y: f32,
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+    flip_vertical: bool,
+    flip_horizontal: bool,
+) -> *mut c_void {
+    unsafe {
+        if instance.is_null() || indices.is_null() || indices_size == 0 {
+            return 0 as _;
+        }
+        let instance = &*(instance);
+        let indices = std::slice::from_raw_parts(indices, indices_size);
+        instance
+            .0
+            .render_with_size_to_buffers(
+                indices,
+                viewport_width,
+                viewport_height,
+                scale_x,
+                scale_y,
+                x,
+                y,
+                width,
+                height,
+                flip_vertical,
+                flip_horizontal,
+            )
+            .map(|info| {
+                let buffer = info
+                    .into_iter()
+                    .map(|(width, height, buffer)| {
+                        let data = NSData::from_vec(buffer);
+                        NSCPdfInfo::new(width, height, data).0
+                    })
+                    .collect::<Vec<_>>();
+                let data = NSArray::from_retained_slice(buffer.as_slice());
+                Retained::into_raw(data) as _
+            })
+            .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_render_to_buffer_with_scale_and_tile(
+    instance: *mut CPdfNativeDocument,
+    index: c_int,
+    tile_width: c_uint,
+    tile_height: c_uint,
+    viewport_width: f32,
+    viewport_height: f32,
+    scale: f32,
+    row: c_uint,
+    column: c_uint,
+) -> *mut CPdfNativeRenderInfo {
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+        let instance = &*(instance);
+
+        instance
+            .0
+            .render_with_size_to_buffer_with_tile(
+                index,
+                tile_width,
+                tile_height,
+                viewport_width,
+                viewport_height,
+                scale,
+                row,
+                column,
+            )
+            .map(|(width, height, buffer)| {
+                let data = NSData::from_vec(buffer);
+                let data = Retained::into_raw(data) as *const c_void;
 
                 Box::into_raw(Box::new(CPdfNativeRenderInfo {
                     data,

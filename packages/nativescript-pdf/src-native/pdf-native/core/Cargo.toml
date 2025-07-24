@@ -5,7 +5,7 @@ edition = "2024"
 
 [dependencies]
 parking_lot = "0.12.4"
-image = { version = "0.25", features = ["jpeg"] }
+image = { version = "0.25", features = ["jpeg", "png"] }
 byteorder = "1"
-pdfium-render = { git = "https://github.com/ajrcarey/pdfium-render", rev = "045ef6ec8f50803d693b8831977a4b4d77f18616", features = ["image_025", "pdfium_7215", "thread_safe"] }
+pdfium-render = { git = "https://github.com/ajrcarey/pdfium-render", rev = "045ef6ec8f50803d693b8831977a4b4d77f18616", features = ["image_025", "pdfium_7215", "static", "thread_safe"] }
 log = "0.4.27"

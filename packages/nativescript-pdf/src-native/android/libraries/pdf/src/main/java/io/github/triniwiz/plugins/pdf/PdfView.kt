@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Rect
 import android.os.Handler
@@ -19,6 +20,7 @@ import android.widget.RelativeLayout
 import androidx.collection.LruCache
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
+import androidx.core.view.doOnNextLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -70,6 +72,7 @@ class PdfView @JvmOverloads constructor(
     start()
     handler = Handler(this.looper)
   }
+
   private var fastScroll = FastScrollerBuilder(list)
     .setPopupStyle {
       it.setTextColor(Color.BLACK)
@@ -95,12 +98,16 @@ class PdfView @JvmOverloads constructor(
   @SuppressLint("NotifyDataSetChanged")
   private fun updateCurrentOrientation(force: Boolean = false) {
     val deviceOrientation = resources.configuration.orientation
-    if (force || (currentOrientation != deviceOrientation && deviceOrientation == Configuration.ORIENTATION_LANDSCAPE || deviceOrientation == Configuration.ORIENTATION_PORTRAIT)) {
+    if (force || currentOrientation != deviceOrientation) {
+      if (deviceOrientation != Configuration.ORIENTATION_LANDSCAPE && deviceOrientation != Configuration.ORIENTATION_PORTRAIT) {
+        return
+      }
       currentOrientation = deviceOrientation
-      cache.evictAll()
-
-      post {
-        list.adapter?.notifyDataSetChanged()
+      list.adapter?.let {
+        cache.evictAll()
+        post {
+          it.notifyItemChanged(currentPage)
+        }
       }
     }
   }
@@ -158,6 +165,7 @@ class PdfView @JvmOverloads constructor(
       )
 
       val pageView = PdfPageView(parent.context)
+      pageView.pdfView = pdfView
 
       pageView.layoutParams = ViewGroup.LayoutParams(
         ViewGroup.LayoutParams.MATCH_PARENT,
@@ -190,29 +198,43 @@ class PdfView @JvmOverloads constructor(
     override fun onBindViewHolder(holder: PdfViewHolder, position: Int) {
       val cached = pdfView.cache[position]
       if (cached != null) {
+        holder.pageView.pdfView = pdfView
         holder.pageView.pageIndex = position
         holder.pageView.bitmap = cached
         holder.pageView.invalidate()
+        holder.spinner.visibility = View.INVISIBLE
         return
       }
 
-      val width = holder.pageView.width
-      val height = holder.pageView.height
+      val width = holder.itemView.width
+      val height = holder.itemView.height
 
-      if ( width <= 0 ||  height <= 0){
+      holder.spinner.visibility = VISIBLE
+
+
+      if (width <= 0 || height <= 0) {
+        holder.itemView.doOnNextLayout {
+          if (itemCount > 0) {
+            holder.itemView.post {
+              onBindViewHolder(holder, position)
+            }
+          }
+        }
         // todo
         return
       }
 
-      holder.pageView.pdfView?.let { pdfView ->
-        pdfView.handler.post {
-          pdfView.document?.let { document ->
-            val bitmap = createBitmap(width, height)
-            document.renderToBitmap(bitmap)
+      pdfView.handler.post {
+        pdfView.document?.let { document ->
+          val bitmap = createBitmap(width, height)
+          holder.pageView.pageIndex = position
+          holder.pageView.bitmap = bitmap
+          document.renderToBitmap(position, bitmap)
 
-            if (holder.getBindingAdapterPosition() == position) {
-              holder.itemView.invalidate()
-            }
+          if (holder.bindingAdapterPosition == position) {
+            pdfView.cache.put(position, bitmap)
+            holder.pageView.invalidate()
+            holder.spinner.visibility = View.INVISIBLE
           }
         }
       }
@@ -220,6 +242,7 @@ class PdfView @JvmOverloads constructor(
     }
 
     override fun onViewRecycled(holder: PdfViewHolder) {
+      holder.spinner.visibility = VISIBLE
       super.onViewRecycled(holder)
     }
   }

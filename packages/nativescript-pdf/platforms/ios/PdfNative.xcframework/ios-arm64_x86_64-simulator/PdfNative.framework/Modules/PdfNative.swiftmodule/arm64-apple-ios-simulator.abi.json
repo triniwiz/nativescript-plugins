@@ -6,6 +6,235 @@
 		"children": [
 			{
 				"kind": "Import",
+				"name": "UIKit",
+				"printedName": "UIKit",
+				"declKind": "Import",
+				"moduleName": "PdfNative",
+				"declAttributes": ["RawDocComment"]
+			},
+			{
+				"kind": "TypeDecl",
+				"name": "LDOTiledView",
+				"printedName": "LDOTiledView",
+				"children": [
+					{
+						"kind": "Var",
+						"name": "layerClass",
+						"printedName": "layerClass",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "ExistentialMetatype",
+								"printedName": "any AnyObject.Type",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "ProtocolComposition",
+										"printedName": "AnyObject"
+									}
+								]
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)LDOTiledView(cpy)layerClass",
+						"mangledName": "$s9PdfNative12LDOTiledViewC10layerClassyXlXpvpZ",
+						"moduleName": "PdfNative",
+						"static": true,
+						"overriding": true,
+						"objc_name": "layerClass",
+						"declAttributes": ["Dynamic", "ObjC", "Preconcurrency", "Custom", "Override", "AccessControl", "RawDocComment"],
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "ExistentialMetatype",
+										"printedName": "any AnyObject.Type",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "ProtocolComposition",
+												"printedName": "AnyObject"
+											}
+										]
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)LDOTiledView(cm)layerClass",
+								"mangledName": "$s9PdfNative12LDOTiledViewC10layerClassyXlXpvgZ",
+								"moduleName": "PdfNative",
+								"static": true,
+								"overriding": true,
+								"objc_name": "layerClass",
+								"declAttributes": ["Dynamic", "ObjC"],
+								"accessorKind": "get"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "intrinsicContentSize",
+						"printedName": "intrinsicContentSize",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "CGSize",
+								"printedName": "CoreFoundation.CGSize",
+								"usr": "c:@S@CGSize"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)LDOTiledView(py)intrinsicContentSize",
+						"mangledName": "$s9PdfNative12LDOTiledViewC20intrinsicContentSizeSo6CGSizeVvp",
+						"moduleName": "PdfNative",
+						"overriding": true,
+						"objc_name": "intrinsicContentSize",
+						"declAttributes": ["Dynamic", "ObjC", "Preconcurrency", "Custom", "Override", "AccessControl"],
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "CGSize",
+										"printedName": "CoreFoundation.CGSize",
+										"usr": "c:@S@CGSize"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)LDOTiledView(im)intrinsicContentSize",
+								"mangledName": "$s9PdfNative12LDOTiledViewC20intrinsicContentSizeSo6CGSizeVvg",
+								"moduleName": "PdfNative",
+								"overriding": true,
+								"objc_name": "intrinsicContentSize",
+								"declAttributes": ["Dynamic", "ObjC"],
+								"accessorKind": "get"
+							}
+						]
+					},
+					{
+						"kind": "Function",
+						"name": "draw",
+						"printedName": "draw(_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGRect",
+								"printedName": "CoreFoundation.CGRect",
+								"usr": "c:@S@CGRect"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)LDOTiledView(im)drawRect:",
+						"mangledName": "$s9PdfNative12LDOTiledViewC4drawyySo6CGRectVF",
+						"moduleName": "PdfNative",
+						"overriding": true,
+						"objc_name": "drawRect:",
+						"declAttributes": ["Dynamic", "ObjC", "Preconcurrency", "Custom", "Override", "AccessControl", "RawDocComment"],
+						"funcSelfKind": "NonMutating"
+					}
+				],
+				"declKind": "Class",
+				"usr": "c:@M@PdfNative@objc(cs)LDOTiledView",
+				"mangledName": "$s9PdfNative12LDOTiledViewC",
+				"moduleName": "PdfNative",
+				"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
+				"superclassUsr": "c:objc(cs)UIView",
+				"hasMissingDesignatedInitializers": true,
+				"inheritsConvenienceInitializers": true,
+				"superclassNames": ["UIKit.UIView", "UIKit.UIResponder", "ObjectiveC.NSObject"],
+				"conformances": [
+					{
+						"kind": "Conformance",
+						"name": "Copyable",
+						"printedName": "Copyable",
+						"usr": "s:s8CopyableP",
+						"mangledName": "$ss8CopyableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Escapable",
+						"printedName": "Escapable",
+						"usr": "s:s9EscapableP",
+						"mangledName": "$ss9EscapableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Equatable",
+						"printedName": "Equatable",
+						"usr": "s:SQ",
+						"mangledName": "$sSQ"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Hashable",
+						"printedName": "Hashable",
+						"usr": "s:SH",
+						"mangledName": "$sSH"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CVarArg",
+						"printedName": "CVarArg",
+						"usr": "s:s7CVarArgP",
+						"mangledName": "$ss7CVarArgP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObservingPublishing",
+						"printedName": "_KeyValueCodingAndObservingPublishing",
+						"usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+						"mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObserving",
+						"printedName": "_KeyValueCodingAndObserving",
+						"usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+						"mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomStringConvertible",
+						"printedName": "CustomStringConvertible",
+						"usr": "s:s23CustomStringConvertibleP",
+						"mangledName": "$ss23CustomStringConvertibleP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomDebugStringConvertible",
+						"printedName": "CustomDebugStringConvertible",
+						"usr": "s:s28CustomDebugStringConvertibleP",
+						"mangledName": "$ss28CustomDebugStringConvertibleP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "UITraitChangeObservable",
+						"printedName": "UITraitChangeObservable",
+						"usr": "s:5UIKit23UITraitChangeObservableP",
+						"mangledName": "$s5UIKit23UITraitChangeObservableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "__DefaultCustomPlaygroundQuickLookable",
+						"printedName": "__DefaultCustomPlaygroundQuickLookable",
+						"usr": "s:s38__DefaultCustomPlaygroundQuickLookableP",
+						"mangledName": "$ss38__DefaultCustomPlaygroundQuickLookableP"
+					}
+				]
+			},
+			{
+				"kind": "Import",
 				"name": "Foundation",
 				"printedName": "Foundation",
 				"declKind": "Import",
@@ -1741,6 +1970,114 @@
 					},
 					{
 						"kind": "Function",
+						"name": "renderToCGContextImages",
+						"printedName": "renderToCGContextImages(_:_:_:_:_:_:_:_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "[CoreGraphics.CGImage?]?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Array",
+										"printedName": "[CoreGraphics.CGImage?]",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "Optional",
+												"printedName": "CoreGraphics.CGImage?",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "CGImage",
+														"printedName": "CoreGraphics.CGImage",
+														"usr": "c:@T@CGImageRef"
+													}
+												],
+												"usr": "s:Sq"
+											}
+										],
+										"usr": "s:Sa"
+									}
+								],
+								"usr": "s:Sq"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Array",
+								"printedName": "[Swift.Int32]",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Int32",
+										"printedName": "Swift.Int32",
+										"usr": "s:s5Int32V"
+									}
+								],
+								"usr": "s:Sa"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGFloat",
+								"printedName": "CoreGraphics.CGFloat",
+								"usr": "s:14CoreFoundation7CGFloatV"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGFloat",
+								"printedName": "CoreGraphics.CGFloat",
+								"usr": "s:14CoreFoundation7CGFloatV"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGRect",
+								"printedName": "CoreFoundation.CGRect",
+								"usr": "c:@S@CGRect"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGFloat",
+								"printedName": "CoreGraphics.CGFloat",
+								"usr": "s:14CoreFoundation7CGFloatV"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGFloat",
+								"printedName": "CoreGraphics.CGFloat",
+								"usr": "s:14CoreFoundation7CGFloatV"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Bool",
+								"printedName": "Swift.Bool",
+								"hasDefaultArg": true,
+								"usr": "s:Sb"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Bool",
+								"printedName": "Swift.Bool",
+								"hasDefaultArg": true,
+								"usr": "s:Sb"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Bool",
+								"printedName": "Swift.Bool",
+								"hasDefaultArg": true,
+								"usr": "s:Sb"
+							}
+						],
+						"declKind": "Func",
+						"usr": "s:9PdfNative14NSCPdfDocumentC23renderToCGContextImagesySaySo10CGImageRefaSgGSgSays5Int32VG_14CoreFoundation7CGFloatVAOSo6CGRectVA2OS3btF",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC23renderToCGContextImagesySaySo10CGImageRefaSgGSgSays5Int32VG_12CoreGraphics7CGFloatVAOSo6CGRectVA2OS3btF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
 						"name": "roundedRect",
 						"printedName": "roundedRect(_:_:_:_:_:_:_:)",
 						"children": [
@@ -3238,6 +3575,145 @@
 				"declKind": "Import",
 				"moduleName": "PdfNative",
 				"declAttributes": ["RawDocComment"]
+			},
+			{
+				"kind": "TypeDecl",
+				"name": "NSCPdfInfo",
+				"printedName": "NSCPdfInfo",
+				"children": [
+					{
+						"kind": "Constructor",
+						"name": "init",
+						"printedName": "init(width:height:data:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfInfo",
+								"printedName": "PdfNative.NSCPdfInfo",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfInfo"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UInt",
+								"printedName": "Swift.UInt",
+								"usr": "s:Su"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UInt",
+								"printedName": "Swift.UInt",
+								"usr": "s:Su"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "NSData",
+								"printedName": "Foundation.NSData",
+								"usr": "c:objc(cs)NSData"
+							}
+						],
+						"declKind": "Constructor",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfInfo(im)initWithWidth:height:data:",
+						"mangledName": "$s9PdfNative10NSCPdfInfoC5width6height4dataACSu_SuSo6NSDataCtcfc",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"init_kind": "Designated"
+					},
+					{
+						"kind": "Constructor",
+						"name": "init",
+						"printedName": "init()",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfInfo",
+								"printedName": "PdfNative.NSCPdfInfo",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfInfo"
+							}
+						],
+						"declKind": "Constructor",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfInfo(im)init",
+						"mangledName": "$s9PdfNative10NSCPdfInfoCACycfc",
+						"moduleName": "PdfNative",
+						"overriding": true,
+						"implicit": true,
+						"objc_name": "init",
+						"declAttributes": ["Dynamic", "ObjC", "Override"],
+						"init_kind": "Designated"
+					}
+				],
+				"declKind": "Class",
+				"usr": "c:@M@PdfNative@objc(cs)NSCPdfInfo",
+				"mangledName": "$s9PdfNative10NSCPdfInfoC",
+				"moduleName": "PdfNative",
+				"objc_name": "NSCPdfInfo",
+				"declAttributes": ["AccessControl", "ObjC", "ObjCMembers", "RawDocComment"],
+				"superclassUsr": "c:objc(cs)NSObject",
+				"superclassNames": ["ObjectiveC.NSObject"],
+				"conformances": [
+					{
+						"kind": "Conformance",
+						"name": "Copyable",
+						"printedName": "Copyable",
+						"usr": "s:s8CopyableP",
+						"mangledName": "$ss8CopyableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Escapable",
+						"printedName": "Escapable",
+						"usr": "s:s9EscapableP",
+						"mangledName": "$ss9EscapableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Equatable",
+						"printedName": "Equatable",
+						"usr": "s:SQ",
+						"mangledName": "$sSQ"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Hashable",
+						"printedName": "Hashable",
+						"usr": "s:SH",
+						"mangledName": "$sSH"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CVarArg",
+						"printedName": "CVarArg",
+						"usr": "s:s7CVarArgP",
+						"mangledName": "$ss7CVarArgP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObservingPublishing",
+						"printedName": "_KeyValueCodingAndObservingPublishing",
+						"usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+						"mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObserving",
+						"printedName": "_KeyValueCodingAndObserving",
+						"usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+						"mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomStringConvertible",
+						"printedName": "CustomStringConvertible",
+						"usr": "s:s23CustomStringConvertibleP",
+						"mangledName": "$ss23CustomStringConvertibleP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomDebugStringConvertible",
+						"printedName": "CustomDebugStringConvertible",
+						"usr": "s:s28CustomDebugStringConvertibleP",
+						"mangledName": "$ss28CustomDebugStringConvertibleP"
+					}
+				]
 			},
 			{
 				"kind": "TypeDecl",
@@ -14358,6 +14834,856 @@
 				]
 			},
 			{
+				"kind": "Import",
+				"name": "UIKit",
+				"printedName": "UIKit",
+				"declKind": "Import",
+				"moduleName": "PdfNative",
+				"declAttributes": ["RawDocComment"]
+			},
+			{
+				"kind": "TypeDecl",
+				"name": "NSCPdfTiledView",
+				"printedName": "NSCPdfTiledView",
+				"children": [
+					{
+						"kind": "Var",
+						"name": "document",
+						"printedName": "document",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "PdfNative.NSCPdfDocument?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "NSCPdfDocument",
+										"printedName": "PdfNative.NSCPdfDocument",
+										"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument"
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(py)document",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC8documentAA0C8DocumentCSgvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfDocument?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfDocument",
+												"printedName": "PdfNative.NSCPdfDocument",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)document",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC8documentAA0C8DocumentCSgvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfDocument?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfDocument",
+												"printedName": "PdfNative.NSCPdfDocument",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)setDocument:",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC8documentAA0C8DocumentCSgvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative15NSCPdfTiledViewC8documentAA0C8DocumentCSgvM",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC8documentAA0C8DocumentCSgvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "onLoaded",
+						"printedName": "onLoaded",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "((PdfNative.NSCPdfDocument) -> ())?",
+								"children": [
+									{
+										"kind": "TypeFunc",
+										"name": "Function",
+										"printedName": "(PdfNative.NSCPdfDocument) -> ()",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "Void",
+												"printedName": "()"
+											},
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfDocument",
+												"printedName": "PdfNative.NSCPdfDocument",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument"
+											}
+										]
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(py)onLoaded",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC8onLoadedyAA0C8DocumentCcSgvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "((PdfNative.NSCPdfDocument) -> ())?",
+										"children": [
+											{
+												"kind": "TypeFunc",
+												"name": "Function",
+												"printedName": "(PdfNative.NSCPdfDocument) -> ()",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Void",
+														"printedName": "()"
+													},
+													{
+														"kind": "TypeNominal",
+														"name": "NSCPdfDocument",
+														"printedName": "PdfNative.NSCPdfDocument",
+														"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument"
+													}
+												]
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)onLoaded",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC8onLoadedyAA0C8DocumentCcSgvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "((PdfNative.NSCPdfDocument) -> ())?",
+										"children": [
+											{
+												"kind": "TypeFunc",
+												"name": "Function",
+												"printedName": "(PdfNative.NSCPdfDocument) -> ()",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Void",
+														"printedName": "()"
+													},
+													{
+														"kind": "TypeNominal",
+														"name": "NSCPdfDocument",
+														"printedName": "PdfNative.NSCPdfDocument",
+														"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument"
+													}
+												]
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)setOnLoaded:",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC8onLoadedyAA0C8DocumentCcSgvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative15NSCPdfTiledViewC8onLoadedyAA0C8DocumentCcSgvM",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC8onLoadedyAA0C8DocumentCcSgvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "onError",
+						"printedName": "onError",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "(((any Swift.Error)?) -> ())?",
+								"children": [
+									{
+										"kind": "TypeFunc",
+										"name": "Function",
+										"printedName": "((any Swift.Error)?) -> ()",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "Void",
+												"printedName": "()"
+											},
+											{
+												"kind": "TypeNominal",
+												"name": "Optional",
+												"printedName": "(any Swift.Error)?",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Error",
+														"printedName": "any Swift.Error",
+														"usr": "s:s5ErrorP"
+													}
+												],
+												"usr": "s:Sq"
+											}
+										]
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(py)onError",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC7onErrorys0G0_pSgcSgvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "(((any Swift.Error)?) -> ())?",
+										"children": [
+											{
+												"kind": "TypeFunc",
+												"name": "Function",
+												"printedName": "((any Swift.Error)?) -> ()",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Void",
+														"printedName": "()"
+													},
+													{
+														"kind": "TypeNominal",
+														"name": "Optional",
+														"printedName": "(any Swift.Error)?",
+														"children": [
+															{
+																"kind": "TypeNominal",
+																"name": "Error",
+																"printedName": "any Swift.Error",
+																"usr": "s:s5ErrorP"
+															}
+														],
+														"usr": "s:Sq"
+													}
+												]
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)onError",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC7onErrorys0G0_pSgcSgvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "(((any Swift.Error)?) -> ())?",
+										"children": [
+											{
+												"kind": "TypeFunc",
+												"name": "Function",
+												"printedName": "((any Swift.Error)?) -> ()",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Void",
+														"printedName": "()"
+													},
+													{
+														"kind": "TypeNominal",
+														"name": "Optional",
+														"printedName": "(any Swift.Error)?",
+														"children": [
+															{
+																"kind": "TypeNominal",
+																"name": "Error",
+																"printedName": "any Swift.Error",
+																"usr": "s:s5ErrorP"
+															}
+														],
+														"usr": "s:Sq"
+													}
+												]
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)setOnError:",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC7onErrorys0G0_pSgcSgvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative15NSCPdfTiledViewC7onErrorys0G0_pSgcSgvM",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC7onErrorys0G0_pSgcSgvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "onPageChange",
+						"printedName": "onPageChange",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "((Swift.Int) -> ())?",
+								"children": [
+									{
+										"kind": "TypeFunc",
+										"name": "Function",
+										"printedName": "(Swift.Int) -> ()",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "Void",
+												"printedName": "()"
+											},
+											{
+												"kind": "TypeNominal",
+												"name": "Int",
+												"printedName": "Swift.Int",
+												"usr": "s:Si"
+											}
+										]
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(py)onPageChange",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC12onPageChangeySicSgvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "((Swift.Int) -> ())?",
+										"children": [
+											{
+												"kind": "TypeFunc",
+												"name": "Function",
+												"printedName": "(Swift.Int) -> ()",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Void",
+														"printedName": "()"
+													},
+													{
+														"kind": "TypeNominal",
+														"name": "Int",
+														"printedName": "Swift.Int",
+														"usr": "s:Si"
+													}
+												]
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)onPageChange",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC12onPageChangeySicSgvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "((Swift.Int) -> ())?",
+										"children": [
+											{
+												"kind": "TypeFunc",
+												"name": "Function",
+												"printedName": "(Swift.Int) -> ()",
+												"children": [
+													{
+														"kind": "TypeNominal",
+														"name": "Void",
+														"printedName": "()"
+													},
+													{
+														"kind": "TypeNominal",
+														"name": "Int",
+														"printedName": "Swift.Int",
+														"usr": "s:Si"
+													}
+												]
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)setOnPageChange:",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC12onPageChangeySicSgvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative15NSCPdfTiledViewC12onPageChangeySicSgvM",
+								"mangledName": "$s9PdfNative15NSCPdfTiledViewC12onPageChangeySicSgvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Constructor",
+						"name": "init",
+						"printedName": "init(frame:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfTiledView",
+								"printedName": "PdfNative.NSCPdfTiledView",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "CGRect",
+								"printedName": "CoreFoundation.CGRect",
+								"usr": "c:@S@CGRect"
+							}
+						],
+						"declKind": "Constructor",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)initWithFrame:",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC5frameACSo6CGRectV_tcfc",
+						"moduleName": "PdfNative",
+						"overriding": true,
+						"objc_name": "initWithFrame:",
+						"declAttributes": ["Dynamic", "ObjC", "Preconcurrency", "Custom", "Override", "AccessControl"],
+						"init_kind": "Designated"
+					},
+					{
+						"kind": "Function",
+						"name": "viewForZooming",
+						"printedName": "viewForZooming(in:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "UIKit.UIView?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "UIView",
+										"printedName": "UIKit.UIView",
+										"usr": "c:objc(cs)UIView"
+									}
+								],
+								"usr": "s:Sq"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UIScrollView",
+								"printedName": "UIKit.UIScrollView",
+								"usr": "c:objc(cs)UIScrollView"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)viewForZoomingInScrollView:",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC14viewForZooming2inSo6UIViewCSgSo08UIScrollE0C_tF",
+						"moduleName": "PdfNative",
+						"objc_name": "viewForZoomingInScrollView:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "loadFromBytes",
+						"printedName": "loadFromBytes(_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "NSData",
+								"printedName": "Foundation.NSData",
+								"usr": "c:objc(cs)NSData"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "Swift.String?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "String",
+										"printedName": "Swift.String",
+										"usr": "s:SS"
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)loadFromBytes::",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC13loadFromBytesyySo6NSDataC_SSSgtF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "loadFromPath",
+						"printedName": "loadFromPath(_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "Swift.String?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "String",
+										"printedName": "Swift.String",
+										"usr": "s:SS"
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)loadFromPath::",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC12loadFromPathyySS_SSSgtF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "loadFromUrl",
+						"printedName": "loadFromUrl(_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "Swift.String?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "String",
+										"printedName": "Swift.String",
+										"usr": "s:SS"
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView(im)loadFromUrl::",
+						"mangledName": "$s9PdfNative15NSCPdfTiledViewC11loadFromUrlyySS_SSSgtF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					}
+				],
+				"declKind": "Class",
+				"usr": "c:@M@PdfNative@objc(cs)NSCPdfTiledView",
+				"mangledName": "$s9PdfNative15NSCPdfTiledViewC",
+				"moduleName": "PdfNative",
+				"objc_name": "NSCPdfTiledView",
+				"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjCMembers", "ObjC"],
+				"superclassUsr": "c:objc(cs)UIScrollView",
+				"hasMissingDesignatedInitializers": true,
+				"inheritsConvenienceInitializers": true,
+				"superclassNames": ["UIKit.UIScrollView", "UIKit.UIView", "UIKit.UIResponder", "ObjectiveC.NSObject"],
+				"conformances": [
+					{
+						"kind": "Conformance",
+						"name": "Copyable",
+						"printedName": "Copyable",
+						"usr": "s:s8CopyableP",
+						"mangledName": "$ss8CopyableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Escapable",
+						"printedName": "Escapable",
+						"usr": "s:s9EscapableP",
+						"mangledName": "$ss9EscapableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Equatable",
+						"printedName": "Equatable",
+						"usr": "s:SQ",
+						"mangledName": "$sSQ"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Hashable",
+						"printedName": "Hashable",
+						"usr": "s:SH",
+						"mangledName": "$sSH"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CVarArg",
+						"printedName": "CVarArg",
+						"usr": "s:s7CVarArgP",
+						"mangledName": "$ss7CVarArgP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObservingPublishing",
+						"printedName": "_KeyValueCodingAndObservingPublishing",
+						"usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+						"mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObserving",
+						"printedName": "_KeyValueCodingAndObserving",
+						"usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+						"mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomStringConvertible",
+						"printedName": "CustomStringConvertible",
+						"usr": "s:s23CustomStringConvertibleP",
+						"mangledName": "$ss23CustomStringConvertibleP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomDebugStringConvertible",
+						"printedName": "CustomDebugStringConvertible",
+						"usr": "s:s28CustomDebugStringConvertibleP",
+						"mangledName": "$ss28CustomDebugStringConvertibleP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "UITraitChangeObservable",
+						"printedName": "UITraitChangeObservable",
+						"usr": "s:5UIKit23UITraitChangeObservableP",
+						"mangledName": "$s5UIKit23UITraitChangeObservableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "__DefaultCustomPlaygroundQuickLookable",
+						"printedName": "__DefaultCustomPlaygroundQuickLookable",
+						"usr": "s:s38__DefaultCustomPlaygroundQuickLookableP",
+						"mangledName": "$ss38__DefaultCustomPlaygroundQuickLookableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Sendable",
+						"printedName": "Sendable",
+						"usr": "s:s8SendableP",
+						"mangledName": "$ss8SendableP"
+					}
+				]
+			},
+			{
 				"kind": "TypeDecl",
 				"name": "NSCPdfUnit",
 				"printedName": "NSCPdfUnit",
@@ -14918,6 +16244,223 @@
 				"printedName": "NSCPdfView",
 				"children": [
 					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:prefetchItemsAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Array",
+								"printedName": "[Foundation.IndexPath]",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "IndexPath",
+										"printedName": "Foundation.IndexPath",
+										"usr": "s:10Foundation9IndexPathV"
+									}
+								],
+								"usr": "s:Sa"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:prefetchItemsAtIndexPaths:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_15prefetchItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:prefetchItemsAtIndexPaths:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:cancelPrefetchingForItemsAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Array",
+								"printedName": "[Foundation.IndexPath]",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "IndexPath",
+										"printedName": "Foundation.IndexPath",
+										"usr": "s:10Foundation9IndexPathV"
+									}
+								],
+								"usr": "s:Sa"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cancelPrefetchingForItemsAtIndexPaths:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_27cancelPrefetchingForItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:cancelPrefetchingForItemsAtIndexPaths:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:numberOfItemsInSection:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Int",
+								"printedName": "Swift.Int",
+								"usr": "s:Si"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Int",
+								"printedName": "Swift.Int",
+								"usr": "s:Si"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:numberOfItemsInSection:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_22numberOfItemsInSectionSiSo012UICollectionD0C_SitF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:numberOfItemsInSection:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:cellForItemAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionViewCell",
+								"printedName": "UIKit.UICollectionViewCell",
+								"usr": "c:objc(cs)UICollectionViewCell"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "IndexPath",
+								"printedName": "Foundation.IndexPath",
+								"usr": "s:10Foundation9IndexPathV"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cellForItemAtIndexPath:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_13cellForItemAtSo012UICollectionD4CellCSo0jD0C_10Foundation9IndexPathVtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:cellForItemAtIndexPath:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:layout:sizeForItemAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "CGSize",
+								"printedName": "CoreFoundation.CGSize",
+								"usr": "c:@S@CGSize"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionViewLayout",
+								"printedName": "UIKit.UICollectionViewLayout",
+								"usr": "c:objc(cs)UICollectionViewLayout"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "IndexPath",
+								"printedName": "Foundation.IndexPath",
+								"usr": "s:10Foundation9IndexPathV"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:layout:sizeForItemAtIndexPath:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_6layout13sizeForItemAtSo6CGSizeVSo012UICollectionD0C_So0lD6LayoutC10Foundation9IndexPathVtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:layout:sizeForItemAtIndexPath:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "collectionView",
+						"printedName": "collectionView(_:willDisplay:forItemAt:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionView",
+								"printedName": "UIKit.UICollectionView",
+								"usr": "c:objc(cs)UICollectionView"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "UICollectionViewCell",
+								"printedName": "UIKit.UICollectionViewCell",
+								"usr": "c:objc(cs)UICollectionViewCell"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "IndexPath",
+								"printedName": "Foundation.IndexPath",
+								"usr": "s:10Foundation9IndexPathV"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:willDisplayCell:forItemAtIndexPath:",
+						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_11willDisplay9forItemAtySo012UICollectionD0C_So0kD4CellC10Foundation9IndexPathVtF",
+						"moduleName": "PdfNative",
+						"objc_name": "collectionView:willDisplayCell:forItemAtIndexPath:",
+						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
 						"kind": "Var",
 						"name": "document",
 						"printedName": "document",
@@ -15061,7 +16604,7 @@
 						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(py)onLoaded",
 						"mangledName": "$s9PdfNative10NSCPdfViewC8onLoadedyAA0C8DocumentCcSgvp",
 						"moduleName": "PdfNative",
-						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "RawDocComment", "ObjC"],
+						"declAttributes": ["HasInitialValue", "Preconcurrency", "Custom", "HasStorage", "AccessControl", "ObjC"],
 						"hasStorage": true,
 						"accessors": [
 							{
@@ -15510,64 +17053,6 @@
 					},
 					{
 						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:layout:sizeForItemAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "CGSize",
-								"printedName": "CoreFoundation.CGSize",
-								"usr": "c:@S@CGSize"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionViewLayout",
-								"printedName": "UIKit.UICollectionViewLayout",
-								"usr": "c:objc(cs)UICollectionViewLayout"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "IndexPath",
-								"printedName": "Foundation.IndexPath",
-								"usr": "s:10Foundation9IndexPathV"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:layout:sizeForItemAtIndexPath:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_6layout13sizeForItemAtSo6CGSizeVSo012UICollectionD0C_So0lD6LayoutC10Foundation9IndexPathVtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:layout:sizeForItemAtIndexPath:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "layoutSubviews",
-						"printedName": "layoutSubviews()",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)layoutSubviews",
-						"mangledName": "$s9PdfNative10NSCPdfViewC14layoutSubviewsyyF",
-						"moduleName": "PdfNative",
-						"overriding": true,
-						"objc_name": "layoutSubviews",
-						"declAttributes": ["Dynamic", "ObjC", "Preconcurrency", "Custom", "Override", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
 						"name": "loadFromBytes",
 						"printedName": "loadFromBytes(_:_:)",
 						"children": [
@@ -15679,148 +17164,6 @@
 						"moduleName": "PdfNative",
 						"declAttributes": ["Preconcurrency", "Custom", "AccessControl", "ObjC"],
 						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:prefetchItemsAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Array",
-								"printedName": "[Foundation.IndexPath]",
-								"children": [
-									{
-										"kind": "TypeNominal",
-										"name": "IndexPath",
-										"printedName": "Foundation.IndexPath",
-										"usr": "s:10Foundation9IndexPathV"
-									}
-								],
-								"usr": "s:Sa"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:prefetchItemsAtIndexPaths:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_15prefetchItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:prefetchItemsAtIndexPaths:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:cancelPrefetchingForItemsAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Array",
-								"printedName": "[Foundation.IndexPath]",
-								"children": [
-									{
-										"kind": "TypeNominal",
-										"name": "IndexPath",
-										"printedName": "Foundation.IndexPath",
-										"usr": "s:10Foundation9IndexPathV"
-									}
-								],
-								"usr": "s:Sa"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cancelPrefetchingForItemsAtIndexPaths:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_27cancelPrefetchingForItemsAtySo012UICollectionD0C_Say10Foundation9IndexPathVGtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:cancelPrefetchingForItemsAtIndexPaths:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:numberOfItemsInSection:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "Int",
-								"printedName": "Swift.Int",
-								"usr": "s:Si"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "Int",
-								"printedName": "Swift.Int",
-								"usr": "s:Si"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:numberOfItemsInSection:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_22numberOfItemsInSectionSiSo012UICollectionD0C_SitF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:numberOfItemsInSection:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
-					},
-					{
-						"kind": "Function",
-						"name": "collectionView",
-						"printedName": "collectionView(_:cellForItemAt:)",
-						"children": [
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionViewCell",
-								"printedName": "UIKit.UICollectionViewCell",
-								"usr": "c:objc(cs)UICollectionViewCell"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "UICollectionView",
-								"printedName": "UIKit.UICollectionView",
-								"usr": "c:objc(cs)UICollectionView"
-							},
-							{
-								"kind": "TypeNominal",
-								"name": "IndexPath",
-								"printedName": "Foundation.IndexPath",
-								"usr": "s:10Foundation9IndexPathV"
-							}
-						],
-						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfView(im)collectionView:cellForItemAtIndexPath:",
-						"mangledName": "$s9PdfNative10NSCPdfViewC010collectionD0_13cellForItemAtSo012UICollectionD4CellCSo0jD0C_10Foundation9IndexPathVtF",
-						"moduleName": "PdfNative",
-						"objc_name": "collectionView:cellForItemAtIndexPath:",
-						"declAttributes": ["ObjC", "Preconcurrency", "Custom", "AccessControl"],
-						"funcSelfKind": "NonMutating"
 					}
 				],
 				"declKind": "Class",
@@ -15910,6 +17253,13 @@
 						"printedName": "__DefaultCustomPlaygroundQuickLookable",
 						"usr": "s:s38__DefaultCustomPlaygroundQuickLookableP",
 						"mangledName": "$ss38__DefaultCustomPlaygroundQuickLookableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Sendable",
+						"printedName": "Sendable",
+						"usr": "s:s8SendableP",
+						"mangledName": "$ss8SendableP"
 					}
 				]
 			}
@@ -15918,9 +17268,37 @@
 	},
 	"ConstValues": [
 		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/LDOTiledView.swift",
+			"kind": "IntegerLiteral",
+			"offset": 535,
+			"length": 2,
+			"value": "-1"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/LDOTiledView.swift",
+			"kind": "IntegerLiteral",
+			"offset": 733,
+			"length": 3,
+			"value": "256"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/LDOTiledView.swift",
+			"kind": "IntegerLiteral",
+			"offset": 746,
+			"length": 3,
+			"value": "256"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/LDOTiledView.swift",
+			"kind": "BooleanLiteral",
+			"offset": 1573,
+			"length": 5,
+			"value": "false"
+		},
+		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfCache.swift",
 			"kind": "IntegerLiteral",
-			"offset": 289,
+			"offset": 392,
 			"length": 3,
 			"value": "256"
 		},
@@ -15948,21 +17326,42 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7674,
+			"offset": 7785,
 			"length": 4,
 			"value": "true"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7703,
+			"offset": 7814,
 			"length": 5,
 			"value": "false"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7735,
+			"offset": 7846,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
+			"kind": "BooleanLiteral",
+			"offset": 9662,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
+			"kind": "BooleanLiteral",
+			"offset": 9691,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
+			"kind": "BooleanLiteral",
+			"offset": 9723,
 			"length": 5,
 			"value": "false"
 		},
@@ -16709,6 +18108,27 @@
 			"value": "0"
 		},
 		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTiledView.swift",
+			"kind": "Dictionary",
+			"offset": 407,
+			"length": 3,
+			"value": "[]"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTiledView.swift",
+			"kind": "IntegerLiteral",
+			"offset": 5534,
+			"length": 1,
+			"value": "0"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTiledView.swift",
+			"kind": "FloatLiteral",
+			"offset": 5614,
+			"length": 3,
+			"value": "1.0"
+		},
+		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfUnit.swift",
 			"kind": "IntegerLiteral",
 			"offset": 173,
@@ -16746,30 +18166,16 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
 			"kind": "Dictionary",
-			"offset": 393,
-			"length": 3,
-			"value": "[]"
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "Dictionary",
-			"offset": 1071,
+			"offset": 4820,
 			"length": 3,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
 			"kind": "IntegerLiteral",
-			"offset": 1112,
+			"offset": 5308,
 			"length": 1,
 			"value": "0"
-		},
-		{
-			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfView.swift",
-			"kind": "BooleanLiteral",
-			"offset": 4934,
-			"length": 5,
-			"value": "false"
 		}
 	]
 }

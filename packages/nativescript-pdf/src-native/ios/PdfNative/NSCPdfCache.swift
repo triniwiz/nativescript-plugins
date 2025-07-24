@@ -8,6 +8,13 @@
 import CoreGraphics
 import UIKit
 
+
+internal enum PendingItemKey: Hashable {
+  case tile(TileKey)
+  case page(Int)
+  case pages([Int])
+}
+
 internal struct TileKey: Hashable {
   let index: Int
   let scale: Int

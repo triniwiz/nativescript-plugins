@@ -13,6 +13,11 @@ class PdfPageView @JvmOverloads constructor(
   internal var pageIndex: Int = -1
   internal var pdfView: PdfView? = null
 
+  init {
+    setWillNotDraw(false)
+  }
+
+
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
     bitmap?.let {

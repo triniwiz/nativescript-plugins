@@ -148,13 +148,13 @@ public class NSCPdfDocument: NSObject {
   
   public func addImage(_ image: UIImage, _ x: Float, _ y: Float){
     guard let data = NSCPdfDocument.getBytesFromUIImage(image) else {return}
-    pdf_native_document_add_image(pdfDocument, data.mutableBytes, UInt32(data.length), x, y, -1, -1)
+    pdf_native_document_add_raw_image(pdfDocument, data.mutableBytes, UInt32(data.length),UInt32(image.size.width),UInt32(image.size.height), x, y, -1, -1)
   }
   
   
   public func addImage(_ image: UIImage, _ x: Float, _ y: Float, _ width: Float, _ height: Float){
     guard let data = NSCPdfDocument.getBytesFromUIImage(image) else {return}
-    pdf_native_document_add_image(pdfDocument, data.mutableBytes, UInt32(data.length), x, y, Int32(ceil(width)),Int32(ceil(height)))
+    pdf_native_document_add_raw_image(pdfDocument, data.mutableBytes, UInt32(data.length), UInt32(image.size.width),UInt32(image.size.height), x, y, Int32(ceil(width)),Int32(ceil(height)))
   }
   
   public func addImage(data: NSData, _ x: Float, _ y: Float){
@@ -296,6 +296,60 @@ public class NSCPdfDocument: NSObject {
     return cgImage
   }
   
+  
+  
+  public func renderToCGContextImages(_ indices: [Int32], _ width: CGFloat, _ height: CGFloat, _ rect: CGRect, _ scaleX: CGFloat, _ scaleY: CGFloat, _ withScale: Bool = true, _ flipVertical: Bool = false, _ flipHorizontal: Bool = false) -> [CGImage?]? {
+    
+    
+    
+    let info = if(withScale){
+      pdf_native_document_render_to_buffers_with_scale(pdfDocument,
+                                                       indices,
+                                                      UInt(indices.count),
+                                                      Float(width), Float(height),
+                                                      Float(scaleX), Float(scaleY),
+                                                      Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height), flipVertical, flipHorizontal)
+    }else {
+      
+      pdf_native_document_render_to_buffers(pdfDocument,
+                                            indices,
+                                           UInt(indices.count), UInt32(width), UInt32(height), flipVertical, flipHorizontal)
+    }
+    
+    
+    guard let info = info else {
+      return nil
+    }
+    
+    let arrayPtr: Unmanaged<NSArray> = Unmanaged.fromOpaque(info)
+    let array = arrayPtr.takeRetainedValue()
+    
+  
+    return array.map { item in
+      guard let info = item as? NSCPdfInfo else {
+        return nil
+      }
+      
+      guard let provider = CGDataProvider(data: info.data) else {
+        return nil
+      }
+      
+      return CGImage(
+        width: Int(info.width),
+        height: Int(info.height),
+        bitsPerComponent: 8,
+        bitsPerPixel: 32,
+        bytesPerRow:  Int(info.width) * 4,
+        space: CGColorSpaceCreateDeviceRGB(),
+        bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
+        provider: provider,
+        decode: nil,
+        shouldInterpolate: true,
+        intent: .defaultIntent
+      )
+    }
+    
+  }
   
   
   public func roundedRect(
