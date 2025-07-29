@@ -636,8 +636,32 @@ export class PDFDocument implements IPDFDocument {
 
 			opts.foot = parseTableCellOrString(options.foot) as never;
 
+			let hasPosition = false;
+			const position = [0, 0];
+
+			if (typeof options.startX === 'number') {
+				position[0] = options.startX;
+				hasPosition = true;
+			}
+
+			if (typeof options.startY === 'number') {
+				position[1] = options.startY;
+				hasPosition = true;
+			}
+
 			if (Array.isArray(options.position)) {
-				opts.updatePosition(options.position[0] ?? 0, options.position[1] ?? 0);
+				if (typeof options.position[0] === 'number') {
+					position[0] = options.position[0];
+					hasPosition = true;
+				}
+				if (typeof options.position[1] === 'number') {
+					position[1] = options.position[1];
+					hasPosition = true;
+				}
+			}
+
+			if (hasPosition) {
+				opts.updatePosition(position[0], position[1]);
 			}
 
 			if (options.showHead) {

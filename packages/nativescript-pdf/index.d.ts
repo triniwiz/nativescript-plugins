@@ -96,6 +96,8 @@ interface TableOptions {
 	head?: TableCellOrString[][];
 	body?: TableCellOrString[][];
 	foot?: TableCellOrString[][];
+	startX?: number;
+	startY?: number;
 	position?: [number, number];
 	theme?: TableTheme;
 	pageBreak?: PageBreak;
