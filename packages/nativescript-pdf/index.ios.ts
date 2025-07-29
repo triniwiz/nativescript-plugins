@@ -695,4 +695,25 @@ export class PDFDocument implements IPDFDocument {
 
 		return { x: 0, y: 0 };
 	}
+
+	saveSync(path: string): boolean {
+		const err = this.native.saveSyncTo(path);
+		if (err) {
+			console.error('Error saving PDF document', err);
+			return false;
+		}
+		return true;
+	}
+
+	save(path: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this.native.saveToCallback(path, (error) => {
+				if (error == null) {
+					resolve();
+				} else {
+					reject(new Error(error.localizedDescription));
+				}
+			});
+		});
+	}
 }
