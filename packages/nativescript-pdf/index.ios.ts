@@ -483,7 +483,7 @@ export class PDFDocument implements IPDFDocument {
 		return this[native_].height;
 	}
 
-	addText(text: string, x: number, y: number, options?: TextOptions) {
+	text(text: string, x: number, y: number, options?: TextOptions) {
 		const opts = new NSCPdfTextOptions();
 		if (options) {
 			opts.align = parseTextAlignment(options?.align ?? 'left');
@@ -584,7 +584,7 @@ export class PDFDocument implements IPDFDocument {
 		return this;
 	}
 
-	table(options?: TableOptions) {
+	table(options?: TableOptions): { x: number; y: number } {
 		const opts = NSCPdfTable.new();
 
 		if (options) {
@@ -608,6 +608,14 @@ export class PDFDocument implements IPDFDocument {
 					columnStyles.setValueForKey(styleDef, key);
 				}
 				opts.columnStyles = columnStyles;
+			}
+
+			if (options.styles) {
+				opts.styles = parseStyleDef(options.styles);
+			}
+
+			if (options.alternateRowsStyles) {
+				opts.alternateRowsStyles = parseStyleDef(options.alternateRowsStyles);
 			}
 
 			if (options.headStyles) {
@@ -675,7 +683,16 @@ export class PDFDocument implements IPDFDocument {
 			}
 		}
 
-		this[native_].table(opts);
-		return this;
+		try {
+			let position = JSON.parse(this[native_].table(opts));
+
+			if (position.x !== -1 && position.y !== -1) {
+				return { x: position.x, y: position.y };
+			}
+		} catch (error) {
+			console.error('Error creating table');
+		}
+
+		return { x: 0, y: 0 };
 	}
 }

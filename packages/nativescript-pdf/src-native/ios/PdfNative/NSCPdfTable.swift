@@ -168,6 +168,8 @@ public class NSCPdfTableCell: NSObject {
 public class NSCPdfTable: NSObject {
   public var columns: Array<NSCPdfColumnDef>? = nil
   public var columnStyles: Dictionary<NSCPdfColumnKey, NSCPdfStyleDef>? = nil
+  public var styles: NSCPdfStyleDef? = nil
+  public var alternateRowsStyles: NSCPdfStyleDef? = nil
   public var headStyles: NSCPdfStyleDef? = nil
   public var bodyStyles: NSCPdfStyleDef? = nil
   public var footStyles: NSCPdfStyleDef? = nil
@@ -306,6 +308,8 @@ public class NSCPdfTable: NSObject {
       columnsCArray = array
     }
     
+    
+    
     let (column_styles_keys, column_styles_keys_size, column_styles_values, column_styles_values_size) = NSCPdfTable.parseColumnStyles(columnStyles, unit)
     
     
@@ -316,6 +320,8 @@ public class NSCPdfTable: NSObject {
     let (foot, footCount, footInner, footRows) = NSCPdfTable.parseTableData(foot, unit)
     
     var table = CPdfTable()
+    table.styles = styles?.pdfiumRaw(unit)
+    table.alternate_row_styles = alternateRowsStyles?.pdfiumRaw(unit)
     table.columns = UnsafePointer(columnsCArray)
     table.columns_size = UInt(columns?.count ?? 0)
     
@@ -377,8 +383,8 @@ public class NSCPdfTable: NSObject {
     
     
     
-    table.position_x =  CPdfNativePoints(value: position[0], unit: unit.pdfium)
-    table.position_y =  CPdfNativePoints(value: position[1], unit: unit.pdfium)
+    table.position_x =  CPdfNativePoints(value: position[0], unit: unit.pdfium, changed: true)
+    table.position_y =  CPdfNativePoints(value: position[1], unit: unit.pdfium, changed: true)
     
     table.theme = theme.pdfium
     table.page_break = pageBreak.pdfium

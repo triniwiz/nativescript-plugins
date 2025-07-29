@@ -6,7 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "pdf_core.h"
 
 typedef struct CPdfNative CPdfNative;
 
@@ -17,8 +16,6 @@ typedef struct CPdfNativeRenderInfo {
   uint32_t width;
   uint32_t height;
 } CPdfNativeRenderInfo;
-
-typedef struct PdfNativeTextOptions PdfNativeTextOptions;
 
 struct CPdfNative *pdf_native_init(void);
 
@@ -38,7 +35,7 @@ struct CPdfNativeDocument *pdf_native_load_from_bytes(struct CPdfNative *instanc
 struct CPdfNativeDocument *pdf_native_document_init(struct CPdfNative *instance,
                                                     const PdfNativeDocumentConfig *config);
 
-void pdf_native_document_release(struct CPdfNative *instance);
+void pdf_native_document_release(struct CPdfNativeDocument *instance);
 
 const char *pdf_native_document_save_to_file(struct CPdfNativeDocument *instance, const char *file);
 
@@ -139,19 +136,17 @@ void pdf_native_document_add_image(struct CPdfNativeDocument *instance,
                                    int32_t width,
                                    int32_t height);
 
-
 void pdf_native_document_add_raw_image(struct CPdfNativeDocument *instance,
-                                   const uint8_t *image_data,
-                                   unsigned int image_size,
-                                  unsigned int image_width,
-                                    unsigned int image_height,
-                                   float x,
-                                   float y,
-                                   int32_t width,
-                                   int32_t height);
+                                       const uint8_t *image_data,
+                                       unsigned int image_size,
+                                       uint32_t image_width,
+                                       uint32_t image_height,
+                                       float x,
+                                       float y,
+                                       int32_t width,
+                                       int32_t height);
 
-
-void pdf_native_document_table(struct CPdfNativeDocument *instance, const CPdfTable *config);
+int64_t pdf_native_document_table(struct CPdfNativeDocument *instance, const CPdfTable *config);
 
 void pdf_native_document_render_into_buffer(struct CPdfNativeDocument *instance,
                                             int index,
@@ -201,7 +196,6 @@ void *pdf_native_document_render_to_buffers(struct CPdfNativeDocument *instance,
                                             bool flip_vertical,
                                             bool flip_horizontal);
 
-
 void *pdf_native_document_render_to_buffers_with_scale(struct CPdfNativeDocument *instance,
                                                        const int *indices,
                                                        uintptr_t indices_size,
@@ -226,6 +220,4 @@ struct CPdfNativeRenderInfo *pdf_native_document_render_to_buffer_with_scale_and
                                                                                       unsigned int row,
                                                                                       unsigned int column);
 
-
 void pdf_native_render_info_release(struct CPdfNativeRenderInfo *instance);
-

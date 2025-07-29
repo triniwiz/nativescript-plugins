@@ -3,6 +3,8 @@ package io.github.triniwiz.plugins.pdf.table
 class PdfTable {
   var columns: Array<ColumnDef>? = null
   var columnStyles: Map<ColumnKey, StyleDef>? = null
+  var styles: StyleDef? = null
+  var alternateRowStyles: StyleDef? = null
   var headStyles: StyleDef? = null
   var bodyStyles: StyleDef? = null
   var footStyles: StyleDef? = null

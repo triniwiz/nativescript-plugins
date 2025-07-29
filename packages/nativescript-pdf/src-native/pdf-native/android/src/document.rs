@@ -22,7 +22,6 @@ use pdf_core::table::{
 use pdf_core::utils::{read_float, read_int, to_points};
 use pdf_core::{PdfColor, PdfNative, PdfPoints};
 use std::collections::HashMap;
-use std::ffi::{c_char, CStr, CString};
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeInit(
@@ -872,21 +871,25 @@ fn parse_style_def(env: &mut JNIEnv, value: &JObject, unit: PdfNativeUnit) -> Re
         std::ptr::write_bytes(value_buffer.as_mut_ptr(), 0, value_buffer.len());
     }
 
-    let _ = unsafe {
+    let has_line_color = unsafe {
         env.call_method_unchecked(
             &value,
             &style_def.line_color_id,
-            JAVA_VOID_TYPE,
+            JAVA_BOOLEAN_TYPE,
             &[JValue::from(&byte_buffer).as_jni()],
         )
+        .and_then(|value| value.z())
+        .map_err(|_| ())?
     };
 
-    style.line_color = PdfColor::new(
-        read_int(&value_buffer, 0_usize).clamp(0, 255) as u8,
-        read_int(&value_buffer, 4_usize).clamp(0, 255) as u8,
-        read_int(&value_buffer, 8_usize).clamp(0, 255) as u8,
-        read_int(&value_buffer, 12_usize).clamp(0, 255) as u8,
-    );
+    if has_line_color {
+        style.line_color = Some(PdfColor::new(
+            read_int(&value_buffer, 0_usize).clamp(0, 255) as u8,
+            read_int(&value_buffer, 4_usize).clamp(0, 255) as u8,
+            read_int(&value_buffer, 8_usize).clamp(0, 255) as u8,
+            read_int(&value_buffer, 12_usize).clamp(0, 255) as u8,
+        ));
+    }
 
     // reset buffer
     unsafe {
@@ -1057,6 +1060,12 @@ fn parse_table_data(
     Ok(ret)
 }
 
+fn make(width: f32, height: f32) -> i64 {
+    let w_bits = width.to_bits();
+    let h_bits = height.to_bits();
+    (w_bits as i64) << 32 | (h_bits as i64)
+}
+
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTable(
     mut env: JNIEnv,
@@ -1065,6 +1074,8 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
     columns: jobjectArray,
     column_styles_keys: jobjectArray,
     column_styles_value: jobjectArray,
+    styles: JObject,
+    alternate_row_styles: JObject,
     head_styles: JObject,
     body_styles: JObject,
     foot_styles: JObject,
@@ -1077,14 +1088,26 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
     page_break: jint,
     show_head: jint,
     show_foot: jint,
-) {
+) -> jlong {
     unsafe {
         if instance == 0 {
-            return;
+            return make(-1., -1.);
         }
         let instance = &mut *(instance as *mut PdfNativeDocument);
         let unit = instance.unit();
         let mut table = PdfTable::default();
+
+        if !styles.is_null() {
+            if let Ok(head_styles) = parse_style_def(&mut env, &styles, unit) {
+                table.styles = Some(head_styles);
+            }
+        }
+
+        if !alternate_row_styles.is_null() {
+            if let Ok(head_styles) = parse_style_def(&mut env, &alternate_row_styles, unit) {
+                table.alternate_row_styles = Some(head_styles);
+            }
+        }
 
         if !columns.is_null() {
             let columns = JObjectArray::from_raw(columns);
@@ -1182,6 +1205,27 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
             table.show_foot = show_foot;
         }
 
-        let _ = instance.table(&table);
+        let device_scale = instance.device_scale();
+
+        let (x, y) = instance
+            .table(&table)
+            .map(|(x, y)| {
+                let x = if x.value == 0.0 {
+                    0f32
+                } else {
+                    x.value * device_scale
+                };
+
+                let y = if y.value == 0.0 {
+                    0f32
+                } else {
+                    y.value * device_scale
+                };
+
+                (x, y)
+            })
+            .unwrap_or((-1., -1.));
+
+        make(x, y)
     }
 }

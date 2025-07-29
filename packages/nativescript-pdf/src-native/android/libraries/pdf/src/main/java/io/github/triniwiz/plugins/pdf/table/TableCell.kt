@@ -4,5 +4,5 @@ data class TableCell(
   val content: String,
   val rowSpan: Int,
   val colSpan: Int,
-  val style: StyleDef
+  val style: StyleDef = StyleDef.default()
 )

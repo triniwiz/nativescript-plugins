@@ -2144,8 +2144,9 @@
 						"children": [
 							{
 								"kind": "TypeNominal",
-								"name": "Void",
-								"printedName": "()"
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
 							},
 							{
 								"kind": "TypeNominal",
@@ -2156,7 +2157,7 @@
 						],
 						"declKind": "Func",
 						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)table:",
-						"mangledName": "$s9PdfNative14NSCPdfDocumentC5tableyyAA0C5TableCF",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC5tableySSAA0C5TableCF",
 						"moduleName": "PdfNative",
 						"declAttributes": ["AccessControl", "ObjC"],
 						"funcSelfKind": "NonMutating"
@@ -10391,16 +10392,24 @@
 						"children": [
 							{
 								"kind": "TypeNominal",
-								"name": "NSCPdfColor",
-								"printedName": "PdfNative.NSCPdfColor",
-								"usr": "c:@M@PdfNative@objc(cs)NSCPdfColor"
+								"name": "Optional",
+								"printedName": "PdfNative.NSCPdfColor?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "NSCPdfColor",
+										"printedName": "PdfNative.NSCPdfColor",
+										"usr": "c:@M@PdfNative@objc(cs)NSCPdfColor"
+									}
+								],
+								"usr": "s:Sq"
 							}
 						],
 						"declKind": "Var",
 						"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef(py)lineColor",
-						"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0Cvp",
+						"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CSgvp",
 						"moduleName": "PdfNative",
-						"declAttributes": ["HasStorage", "AccessControl", "ObjC"],
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
 						"hasStorage": true,
 						"accessors": [
 							{
@@ -10410,14 +10419,22 @@
 								"children": [
 									{
 										"kind": "TypeNominal",
-										"name": "NSCPdfColor",
-										"printedName": "PdfNative.NSCPdfColor",
-										"usr": "c:@M@PdfNative@objc(cs)NSCPdfColor"
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfColor?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfColor",
+												"printedName": "PdfNative.NSCPdfColor",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfColor"
+											}
+										],
+										"usr": "s:Sq"
 									}
 								],
 								"declKind": "Accessor",
 								"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef(im)lineColor",
-								"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0Cvg",
+								"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CSgvg",
 								"moduleName": "PdfNative",
 								"implicit": true,
 								"declAttributes": ["ObjC"],
@@ -10435,14 +10452,22 @@
 									},
 									{
 										"kind": "TypeNominal",
-										"name": "NSCPdfColor",
-										"printedName": "PdfNative.NSCPdfColor",
-										"usr": "c:@M@PdfNative@objc(cs)NSCPdfColor"
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfColor?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfColor",
+												"printedName": "PdfNative.NSCPdfColor",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfColor"
+											}
+										],
+										"usr": "s:Sq"
 									}
 								],
 								"declKind": "Accessor",
 								"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef(im)setLineColor:",
-								"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0Cvs",
+								"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CSgvs",
 								"moduleName": "PdfNative",
 								"implicit": true,
 								"declAttributes": ["ObjC"],
@@ -10460,8 +10485,8 @@
 									}
 								],
 								"declKind": "Accessor",
-								"usr": "s:9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CvM",
-								"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CvM",
+								"usr": "s:9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CSgvM",
+								"mangledName": "$s9PdfNative14NSCPdfStyleDefC9lineColorAA0cG0CSgvM",
 								"moduleName": "PdfNative",
 								"implicit": true,
 								"accessorKind": "_modify"
@@ -11842,6 +11867,222 @@
 								"declKind": "Accessor",
 								"usr": "s:9PdfNative11NSCPdfTableC12columnStylesSDyAA0C9ColumnKeyCAA0C8StyleDefCGSgvM",
 								"mangledName": "$s9PdfNative11NSCPdfTableC12columnStylesSDyAA0C9ColumnKeyCAA0C8StyleDefCGSgvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "styles",
+						"printedName": "styles",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "PdfNative.NSCPdfStyleDef?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "NSCPdfStyleDef",
+										"printedName": "PdfNative.NSCPdfStyleDef",
+										"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef"
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(py)styles",
+						"mangledName": "$s9PdfNative11NSCPdfTableC6stylesAA0C8StyleDefCSgvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfStyleDef?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfStyleDef",
+												"printedName": "PdfNative.NSCPdfStyleDef",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(im)styles",
+								"mangledName": "$s9PdfNative11NSCPdfTableC6stylesAA0C8StyleDefCSgvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfStyleDef?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfStyleDef",
+												"printedName": "PdfNative.NSCPdfStyleDef",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(im)setStyles:",
+								"mangledName": "$s9PdfNative11NSCPdfTableC6stylesAA0C8StyleDefCSgvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative11NSCPdfTableC6stylesAA0C8StyleDefCSgvM",
+								"mangledName": "$s9PdfNative11NSCPdfTableC6stylesAA0C8StyleDefCSgvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "alternateRowsStyles",
+						"printedName": "alternateRowsStyles",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Optional",
+								"printedName": "PdfNative.NSCPdfStyleDef?",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "NSCPdfStyleDef",
+										"printedName": "PdfNative.NSCPdfStyleDef",
+										"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef"
+									}
+								],
+								"usr": "s:Sq"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(py)alternateRowsStyles",
+						"mangledName": "$s9PdfNative11NSCPdfTableC19alternateRowsStylesAA0C8StyleDefCSgvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfStyleDef?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfStyleDef",
+												"printedName": "PdfNative.NSCPdfStyleDef",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(im)alternateRowsStyles",
+								"mangledName": "$s9PdfNative11NSCPdfTableC19alternateRowsStylesAA0C8StyleDefCSgvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Optional",
+										"printedName": "PdfNative.NSCPdfStyleDef?",
+										"children": [
+											{
+												"kind": "TypeNominal",
+												"name": "NSCPdfStyleDef",
+												"printedName": "PdfNative.NSCPdfStyleDef",
+												"usr": "c:@M@PdfNative@objc(cs)NSCPdfStyleDef"
+											}
+										],
+										"usr": "s:Sq"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(im)setAlternateRowsStyles:",
+								"mangledName": "$s9PdfNative11NSCPdfTableC19alternateRowsStylesAA0C8StyleDefCSgvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative11NSCPdfTableC19alternateRowsStylesAA0C8StyleDefCSgvM",
+								"mangledName": "$s9PdfNative11NSCPdfTableC19alternateRowsStylesAA0C8StyleDefCSgvM",
 								"moduleName": "PdfNative",
 								"implicit": true,
 								"accessorKind": "_modify"
@@ -17444,29 +17685,85 @@
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 183,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 209,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 237,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 264,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 335,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
 			"kind": "IntegerLiteral",
-			"offset": 190,
+			"offset": 299,
 			"length": 1,
 			"value": "0"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 416,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
 			"kind": "IntegerLiteral",
-			"offset": 219,
+			"offset": 380,
 			"length": 1,
 			"value": "0"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 498,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
 			"kind": "IntegerLiteral",
-			"offset": 250,
+			"offset": 460,
 			"length": 1,
 			"value": "0"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
+			"kind": "BooleanLiteral",
+			"offset": 578,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfPadding.swift",
 			"kind": "IntegerLiteral",
-			"offset": 280,
+			"offset": 541,
 			"length": 1,
 			"value": "0"
 		},
@@ -17926,6 +18223,20 @@
 			"value": "3"
 		},
 		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfStyleDef.swift",
+			"kind": "BooleanLiteral",
+			"offset": 1618,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfStyleDef.swift",
+			"kind": "BooleanLiteral",
+			"offset": 1702,
+			"length": 4,
+			"value": "true"
+		},
+		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "StringLiteral",
 			"offset": 196,
@@ -17970,49 +18281,49 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4634,
+			"offset": 4733,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4696,
+			"offset": 4795,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4758,
+			"offset": 4857,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4794,
+			"offset": 4893,
 			"length": 5,
 			"value": "[0, 0]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5735,
+			"offset": 5834,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5817,
+			"offset": 5916,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5899,
+			"offset": 5998,
 			"length": 2,
 			"value": "[]"
 		},

@@ -78,7 +78,7 @@ import _SwiftConcurrencyShims
   @objc public func renderToCGContextImage(_ index: Swift.Int32, _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, _ scaleX: CoreFoundation.CGFloat, _ scaleY: CoreFoundation.CGFloat, _ withScale: Swift.Bool = true, _ flipVertical: Swift.Bool = false, _ flipHorizontal: Swift.Bool = false) -> CoreGraphics.CGImage?
   public func renderToCGContextImages(_ indices: [Swift.Int32], _ width: CoreFoundation.CGFloat, _ height: CoreFoundation.CGFloat, _ rect: CoreFoundation.CGRect, _ scaleX: CoreFoundation.CGFloat, _ scaleY: CoreFoundation.CGFloat, _ withScale: Swift.Bool = true, _ flipVertical: Swift.Bool = false, _ flipHorizontal: Swift.Bool = false) -> [CoreGraphics.CGImage?]?
   @objc public func roundedRect(_ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float, _ rx: Swift.Float, _ ry: Swift.Float, _ style: PdfNative.NSCPdfStyle = NSCPdfStyle.s)
-  @objc public func table(_ config: PdfNative.NSCPdfTable)
+  @objc public func table(_ config: PdfNative.NSCPdfTable) -> Swift.String
 }
 @_inheritsConvenienceInitializers @objcMembers @objc(NSCPdfDocumentConfig) public class NSCPdfDocumentConfig : ObjectiveC.NSObject {
   @objc public var orientation: PdfNative.NSCPdfOrientation
@@ -148,10 +148,22 @@ import _SwiftConcurrencyShims
   public static func `default`() -> PdfNative.NSCPdfOverflow
 }
 @objcMembers @objc(NSCPdfPadding) public class NSCPdfPadding : ObjectiveC.NSObject {
-  @objc public var top: Swift.Float
-  @objc public var left: Swift.Float
-  @objc public var bottom: Swift.Float
-  @objc public var right: Swift.Float
+  @objc public var top: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public var left: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public var bottom: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public var right: Swift.Float {
+    @objc get
+    @objc set
+  }
   @objc public init(_ top: Swift.Float, _ left: Swift.Float, _ bottom: Swift.Float, _ right: Swift.Float)
   @objc public init(uniform: Swift.Float)
   @objc deinit
@@ -304,12 +316,15 @@ import _SwiftConcurrencyShims
   @objc public var textColor: PdfNative.NSCPdfColor?
   @objc public var cellWidth: PdfNative.NSCPdfCellWidth
   public var minCellWidth: Swift.Float?
-  @objc public var minCellHeight: Swift.Float
+  @objc public var minCellHeight: Swift.Float {
+    @objc get
+    @objc set
+  }
   @objc public var horizontalAlign: PdfNative.NSCPdfHorizontalAlign
   @objc public var verticalAlign: PdfNative.NSCPdfVerticalAlign
   @objc public var fontSize: Swift.Float
   @objc public var cellPadding: PdfNative.NSCPdfPadding
-  @objc public var lineColor: PdfNative.NSCPdfColor
+  @objc public var lineColor: PdfNative.NSCPdfColor?
   @objc public var lineWidth: Swift.Float
   @objc public func updateMinCellWidth(_ value: Swift.Float)
   @objc public func getMinCellWidth() -> Swift.Float
@@ -348,6 +363,8 @@ import _SwiftConcurrencyShims
 @_inheritsConvenienceInitializers @objcMembers @objc(NSCPdfTable) public class NSCPdfTable : ObjectiveC.NSObject {
   @objc public var columns: Swift.Array<PdfNative.NSCPdfColumnDef>?
   @objc public var columnStyles: Swift.Dictionary<PdfNative.NSCPdfColumnKey, PdfNative.NSCPdfStyleDef>?
+  @objc public var styles: PdfNative.NSCPdfStyleDef?
+  @objc public var alternateRowsStyles: PdfNative.NSCPdfStyleDef?
   @objc public var headStyles: PdfNative.NSCPdfStyleDef?
   @objc public var bodyStyles: PdfNative.NSCPdfStyleDef?
   @objc public var footStyles: PdfNative.NSCPdfStyleDef?

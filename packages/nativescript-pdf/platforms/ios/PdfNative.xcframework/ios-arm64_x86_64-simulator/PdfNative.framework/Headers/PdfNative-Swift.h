@@ -419,7 +419,7 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (void)renderToCGContext:(int32_t)index :(CGFloat)width :(CGFloat)height :(CGRect)rect in:(CGContextRef _Nonnull)context;
 - (CGImageRef _Nullable)renderToCGContextImage:(int32_t)index :(CGFloat)width :(CGFloat)height :(CGRect)rect :(CGFloat)scaleX :(CGFloat)scaleY :(BOOL)withScale :(BOOL)flipVertical :(BOOL)flipHorizontal SWIFT_WARN_UNUSED_RESULT;
 - (void)roundedRect:(float)x :(float)y :(float)width :(float)height :(float)rx :(float)ry :(enum NSCPdfStyle)style;
-- (void)table:(NSCPdfTable * _Nonnull)config;
+- (NSString * _Nonnull)table:(NSCPdfTable * _Nonnull)config SWIFT_WARN_UNUSED_RESULT;
 @end
 
 enum NSCPdfUnit : int32_t;
@@ -660,7 +660,7 @@ SWIFT_CLASS_NAMED("NSCPdfStyleDef")
 @property (nonatomic) enum NSCPdfVerticalAlign verticalAlign;
 @property (nonatomic) float fontSize;
 @property (nonatomic, strong) NSCPdfPadding * _Nonnull cellPadding;
-@property (nonatomic, strong) NSCPdfColor * _Nonnull lineColor;
+@property (nonatomic, strong) NSCPdfColor * _Nullable lineColor;
 @property (nonatomic) float lineWidth;
 - (void)updateMinCellWidth:(float)value;
 - (float)getMinCellWidth SWIFT_WARN_UNUSED_RESULT;
@@ -677,6 +677,8 @@ SWIFT_CLASS_NAMED("NSCPdfTable")
 @interface NSCPdfTable : NSObject
 @property (nonatomic, copy) NSArray<NSCPdfColumnDef *> * _Nullable columns;
 @property (nonatomic, copy) NSDictionary<NSCPdfColumnKey *, NSCPdfStyleDef *> * _Nullable columnStyles;
+@property (nonatomic, strong) NSCPdfStyleDef * _Nullable styles;
+@property (nonatomic, strong) NSCPdfStyleDef * _Nullable alternateRowsStyles;
 @property (nonatomic, strong) NSCPdfStyleDef * _Nullable headStyles;
 @property (nonatomic, strong) NSCPdfStyleDef * _Nullable bodyStyles;
 @property (nonatomic, strong) NSCPdfStyleDef * _Nullable footStyles;
@@ -1227,7 +1229,7 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (void)renderToCGContext:(int32_t)index :(CGFloat)width :(CGFloat)height :(CGRect)rect in:(CGContextRef _Nonnull)context;
 - (CGImageRef _Nullable)renderToCGContextImage:(int32_t)index :(CGFloat)width :(CGFloat)height :(CGRect)rect :(CGFloat)scaleX :(CGFloat)scaleY :(BOOL)withScale :(BOOL)flipVertical :(BOOL)flipHorizontal SWIFT_WARN_UNUSED_RESULT;
 - (void)roundedRect:(float)x :(float)y :(float)width :(float)height :(float)rx :(float)ry :(enum NSCPdfStyle)style;
-- (void)table:(NSCPdfTable * _Nonnull)config;
+- (NSString * _Nonnull)table:(NSCPdfTable * _Nonnull)config SWIFT_WARN_UNUSED_RESULT;
 @end
 
 enum NSCPdfUnit : int32_t;
@@ -1468,7 +1470,7 @@ SWIFT_CLASS_NAMED("NSCPdfStyleDef")
 @property (nonatomic) enum NSCPdfVerticalAlign verticalAlign;
 @property (nonatomic) float fontSize;
 @property (nonatomic, strong) NSCPdfPadding * _Nonnull cellPadding;
-@property (nonatomic, strong) NSCPdfColor * _Nonnull lineColor;
+@property (nonatomic, strong) NSCPdfColor * _Nullable lineColor;
 @property (nonatomic) float lineWidth;
 - (void)updateMinCellWidth:(float)value;
 - (float)getMinCellWidth SWIFT_WARN_UNUSED_RESULT;
@@ -1485,6 +1487,8 @@ SWIFT_CLASS_NAMED("NSCPdfTable")
 @interface NSCPdfTable : NSObject
 @property (nonatomic, copy) NSArray<NSCPdfColumnDef *> * _Nullable columns;
 @property (nonatomic, copy) NSDictionary<NSCPdfColumnKey *, NSCPdfStyleDef *> * _Nullable columnStyles;
+@property (nonatomic, strong) NSCPdfStyleDef * _Nullable styles;
+@property (nonatomic, strong) NSCPdfStyleDef * _Nullable alternateRowsStyles;
 @property (nonatomic, strong) NSCPdfStyleDef * _Nullable headStyles;
 @property (nonatomic, strong) NSCPdfStyleDef * _Nullable bodyStyles;
 @property (nonatomic, strong) NSCPdfStyleDef * _Nullable footStyles;

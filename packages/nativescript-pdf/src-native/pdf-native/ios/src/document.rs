@@ -448,19 +448,46 @@ pub extern "C" fn pdf_native_document_add_raw_image(
     }
 }
 
+fn make(width: f32, height: f32) -> i64 {
+    let w_bits = width.to_bits();
+    let h_bits = height.to_bits();
+    (w_bits as i64) << 32 | (h_bits as i64)
+}
+
 #[unsafe(no_mangle)]
 pub extern "C" fn pdf_native_document_table(
     instance: *mut CPdfNativeDocument,
     config: *const CPdfTable,
-) {
+) -> i64 {
     unsafe {
         if instance.is_null() || config.is_null() {
-            return;
+            return make(-1.0, -1.0);
         }
         let instance = &mut *(instance);
         let config = &*config;
         let config = config.into();
-        let _ = instance.0.table(&config);
+        let device_scale = instance.0.device_scale();
+        let (x, y) = instance
+            .0
+            .table(&config)
+            .map(|(x, y)| {
+                let x = if x.value == 0.0 {
+                    0f32
+                } else {
+                    x.value * device_scale
+                };
+
+                let y = if y.value == 0.0 {
+                    0f32
+                } else {
+                    y.value * device_scale
+                };
+
+                (x, y)
+            })
+            .unwrap_or((-1., -1.));
+
+        make(x, y)
     }
 }
 

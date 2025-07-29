@@ -398,6 +398,7 @@ typedef struct CPdfNativeColorOptional {
 typedef struct CPdfNativePoints {
   float value;
   enum PdfNativeUnit unit;
+  bool changed;
 } CPdfNativePoints;
 
 typedef struct CCellWidth {
@@ -434,7 +435,7 @@ typedef struct CStyleDef {
   enum CVerticalAlign vertical_align;
   float font_size;
   struct CPdfNativePadding cell_padding;
-  struct CPdfNativeColor line_color;
+  struct CPdfNativeColorOptional line_color;
   float line_width;
 } CStyleDef;
 
@@ -457,6 +458,8 @@ typedef struct CPdfTable {
   uintptr_t column_styles_keys_size;
   const struct CStyleDef *column_styles_values;
   uintptr_t column_styles_values_size;
+  const struct CStyleDef *styles;
+  const struct CStyleDef *alternate_row_styles;
   const struct CStyleDef *head_styles;
   const struct CStyleDef *body_styles;
   const struct CStyleDef *foot_styles;

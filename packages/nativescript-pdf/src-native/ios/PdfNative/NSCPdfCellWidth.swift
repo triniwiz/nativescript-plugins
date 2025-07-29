@@ -39,6 +39,6 @@ public class NSCPdfCellWidth: NSObject {
       type = CCellWidthType_Fixed
     }
     
-    return CCellWidth(type_: type, value: CPdfNativePoints(value: points, unit: unit.pdfium))
+    return CCellWidth(type_: type, value: CPdfNativePoints(value: points, unit: unit.pdfium, changed: true))
   }
 }

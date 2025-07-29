@@ -8,8 +8,10 @@ import io.github.triniwiz.plugins.pdf.table.PdfTable
 import io.github.triniwiz.plugins.pdf.table.StyleDef
 import io.github.triniwiz.plugins.pdf.table.TableCellOrString
 import java.nio.ByteBuffer
+import java.util.concurrent.Executors
 
 class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfig? = null) {
+  private val executor = Executors.newSingleThreadExecutor()
   var config = PdfDocumentConfig()
     private set
 
@@ -208,12 +210,23 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     }
   }
 
-  fun table(config: PdfTable) {
-    nativeTable(
+
+  private fun getWidth(measureOutput: Long): Float {
+    return java.lang.Float.intBitsToFloat(-0x1 and (measureOutput shr 32).toInt())
+  }
+
+  private fun getHeight(measureOutput: Long): Float {
+    return java.lang.Float.intBitsToFloat(-0x1 and measureOutput.toInt())
+  }
+
+  fun table(config: PdfTable): String {
+    val output = nativeTable(
       nativeDocument,
       config.columns,
       config.columnStyles?.keys?.toTypedArray(),
       config.columnStyles?.values?.toTypedArray(),
+      config.styles,
+      config.alternateRowStyles,
       config.headStyles,
       config.bodyStyles,
       config.footStyles,
@@ -227,6 +240,25 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       config.showHead.value,
       config.showFoot.value
     )
+    return "{width:${getWidth(output)}, height:${getHeight(output)} }"
+  }
+
+  fun saveSync(path: String) {
+    val msg = nativeSaveToFile(nativeDocument, path)
+    if (msg != null) {
+      throw Error(msg)
+    }
+  }
+
+  fun save(path: String, callback: (Error?) -> Void) {
+    executor.execute {
+      val msg = nativeSaveToFile(nativeDocument, path)
+      if (msg != null) {
+        callback(Error(msg))
+      } else {
+        callback(null)
+      }
+    }
   }
 
   companion object {
@@ -400,6 +432,8 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       columns: Array<ColumnDef>?,
       columnStylesKeys: Array<ColumnKey>?,
       columnStylesValue: Array<StyleDef>?,
+      styles: StyleDef?,
+      alternateRowStyles: StyleDef?,
       headStyles: StyleDef?,
       bodyStyles: StyleDef?,
       footStyles: StyleDef?,
@@ -412,8 +446,13 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       pageBreak: Int,
       showHead: Int,
       showFoot: Int,
-    )
+    ): Long
 
 
+    @JvmStatic
+    private external fun nativeSaveToFile(
+      instance: Long,
+      path: String
+    ): String?
   }
 }

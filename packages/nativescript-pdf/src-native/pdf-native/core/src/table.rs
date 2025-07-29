@@ -3,6 +3,7 @@ use crate::utils::get_y_points;
 use parking_lot::lock_api::MutexGuard;
 use parking_lot::RawMutex;
 use pdfium_render::prelude::*;
+use std::cmp::PartialEq;
 use std::collections::HashMap;
 use std::ffi::{c_char, CStr};
 use std::fmt::{Debug, Formatter};
@@ -136,11 +137,17 @@ impl From<TableCell> for TableCellOrString {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PdfNativeFontFamily {
     Helvetica,
     Times,
     Courier,
+}
+
+impl Default for PdfNativeFontFamily {
+    fn default() -> Self {
+        PdfNativeFontFamily::Helvetica
+    }
 }
 
 impl TryFrom<i32> for PdfNativeFontFamily {
@@ -157,7 +164,7 @@ impl TryFrom<i32> for PdfNativeFontFamily {
 }
 
 #[repr(C)]
-#[derive(Debug, Clone, Copy)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum PdfNativeFontStyle {
     Normal,
     Bold,
@@ -231,6 +238,7 @@ impl CCellWidth {
             value: CPdfNativePoints {
                 value: 0.0,
                 unit: PdfNativeUnit::Points,
+                changed: true,
             },
         }
     }
@@ -241,6 +249,7 @@ impl CCellWidth {
             value: CPdfNativePoints {
                 value: 0.0,
                 unit: PdfNativeUnit::Points,
+                changed: true,
             },
         }
     }
@@ -314,11 +323,16 @@ impl TryFrom<i32> for CVerticalAlign {
 pub struct CPdfNativePoints {
     pub value: f32,
     pub unit: PdfNativeUnit,
+    pub(crate) changed: bool,
 }
 
 impl CPdfNativePoints {
     pub fn new(value: f32, unit: PdfNativeUnit) -> Self {
-        CPdfNativePoints { value, unit }
+        CPdfNativePoints {
+            value,
+            unit,
+            changed: true,
+        }
     }
 }
 
@@ -396,6 +410,20 @@ impl CPdfNativePadding {
             right: p,
             bottom: p,
             left: p,
+        }
+    }
+    pub fn merge(&mut self, other: &CPdfNativePadding) {
+        if other.top.changed {
+            self.top = other.top;
+        }
+        if other.bottom.changed {
+            self.bottom = other.bottom;
+        }
+        if other.left.changed {
+            self.left = other.left;
+        }
+        if other.right.changed {
+            self.right = other.right;
         }
     }
 }
@@ -482,7 +510,7 @@ pub struct CStyleDef {
     pub vertical_align: CVerticalAlign,
     pub font_size: f32,
     pub cell_padding: CPdfNativePadding,
-    pub line_color: CPdfNativeColor,
+    pub line_color: CPdfNativeColorOptional,
     pub line_width: f32,
 }
 
@@ -542,8 +570,43 @@ pub struct StyleDef {
     pub vertical_align: CVerticalAlign,
     pub font_size: f32,
     pub cell_padding: CPdfNativePadding,
-    pub line_color: PdfColor,
+    pub line_color: Option<PdfColor>,
     pub line_width: f32,
+}
+
+impl StyleDef {
+    pub fn merge(&mut self, other: &StyleDef) {
+        if other.fill_color.is_some() {
+            self.fill_color = other.fill_color;
+        }
+        if other.text_color.is_some() {
+            self.text_color = other.text_color;
+        }
+        if other.line_width != 0.0 {
+            self.line_width = other.line_width;
+        }
+        if other.font_size != 0.0 {
+            self.font_size = other.font_size;
+        }
+        if other.text_color.is_some() {
+            self.text_color = other.text_color;
+        }
+
+        if other.font != PdfNativeFontFamily::default() {
+            self.font = other.font;
+        }
+
+        if other.font_style != PdfNativeFontStyle::Normal {
+            self.font_style = other.font_style;
+        }
+        self.horizontal_align = other.horizontal_align;
+        self.vertical_align = other.vertical_align;
+        self.cell_width = other.cell_width.clone();
+        if other.min_cell_width.is_some() {
+            self.min_cell_width = other.min_cell_width;
+        }
+        self.cell_padding.merge(&other.cell_padding);
+    }
 }
 
 impl Default for StyleDef {
@@ -560,11 +623,12 @@ impl Default for StyleDef {
             horizontal_align: CHorizontalAlign::Left,
             vertical_align: CVerticalAlign::Top,
             font_size: 16.0,
-            cell_padding: CPdfNativePadding::all(CPdfNativePoints::new(
-                10.0,
-                PdfNativeUnit::Points,
-            )),
-            line_color: PdfColor::new(10, 10, 10, 255),
+            cell_padding: CPdfNativePadding::all(CPdfNativePoints {
+                value: 10.0,
+                unit: PdfNativeUnit::Points,
+                changed: false,
+            }),
+            line_color: None,
             line_width: 0.0,
         }
     }
@@ -864,6 +928,8 @@ pub struct CPdfTable {
     pub column_styles_keys_size: usize,
     pub column_styles_values: *const CStyleDef,
     pub column_styles_values_size: usize,
+    pub styles: *const CStyleDef,
+    pub alternate_row_styles: *const CStyleDef,
     pub head_styles: *const CStyleDef,
     pub body_styles: *const CStyleDef,
     pub foot_styles: *const CStyleDef,
@@ -930,6 +996,8 @@ impl Into<PdfTable> for CPdfTable {
         }
 
         PdfTable {
+            styles: parse_style_def(self.styles),
+            alternate_row_styles: parse_style_def(self.alternate_row_styles),
             columns,
             column_styles,
             head_styles: parse_style_def(self.head_styles),
@@ -998,6 +1066,8 @@ impl From<&CPdfTable> for PdfTable {
         }
 
         PdfTable {
+            styles: parse_style_def(value.styles),
+            alternate_row_styles: parse_style_def(value.alternate_row_styles),
             columns,
             column_styles,
             head_styles: parse_style_def(value.head_styles),
@@ -1034,6 +1104,8 @@ impl From<&CPdfTable> for PdfTable {
 pub struct PdfTable {
     pub columns: Option<Vec<ColumnDef>>,
     pub column_styles: Option<HashMap<ColumnKey, StyleDef>>,
+    pub styles: Option<StyleDef>,
+    pub alternate_row_styles: Option<StyleDef>,
     pub head_styles: Option<StyleDef>,
     pub body_styles: Option<StyleDef>,
     pub foot_styles: Option<StyleDef>,
@@ -1050,6 +1122,8 @@ pub struct PdfTable {
 impl Default for PdfTable {
     fn default() -> Self {
         Self {
+            styles: None,
+            alternate_row_styles: None,
             columns: None,
             column_styles: None,
             head_styles: None,
@@ -1108,12 +1182,28 @@ fn resolve_column_style(
     key: &ColumnKey,
     section: Section,
     table: &PdfTable,
-    cell_default: &StyleDef,
+    base: &StyleDef,
+    row_idx: usize,
 ) -> StyleDef {
-    if let Some(column_styles) = &table.column_styles {
-        if let Some(style) = column_styles.get(key) {
-            return style.clone();
+    let mut style = StyleDef::default();
+    match table.theme {
+        PdfNativeTableTheme::Striped => {
+            if (section == Section::Body || section == Section::Footer) && row_idx % 2 == 1 {
+                style.fill_color = Some(PdfColor::new(240, 240, 240, 255));
+            }
+            style.line_width = 0.0;
         }
+        PdfNativeTableTheme::Grid => {
+            style.line_width = 0.5;
+            style.line_color = Some(PdfColor::new(200, 200, 200, 255));
+        }
+        PdfNativeTableTheme::Plain => {
+            style.line_width = 0.0;
+        }
+    };
+
+    if let Some(global) = &table.styles {
+        style.merge(global)
     }
 
     let section_style = match section {
@@ -1121,12 +1211,25 @@ fn resolve_column_style(
         Section::Body => table.body_styles.as_ref(),
         Section::Footer => table.foot_styles.as_ref(),
     };
-
-    if let Some(style) = section_style {
-        return style.clone();
+    if let Some(section) = section_style {
+        style.merge(section);
     }
 
-    cell_default.clone()
+    if matches!(section, Section::Body) && row_idx % 2 == 1 {
+        if let Some(alternate) = &table.alternate_row_styles {
+            style.merge(alternate);
+        }
+    }
+
+    if let Some(column_styles) = &table.column_styles {
+        if let Some(column_style) = column_styles.get(key) {
+            style.merge(column_style);
+        }
+    }
+
+    style.merge(base);
+
+    style
 }
 
 fn resolve_rows_2d(
@@ -1155,26 +1258,8 @@ fn resolve_rows_2d(
                         },
                     };
 
-                    let mut style = resolve_column_style(&key, section, table, &base_cell.style);
-
-                    match table.theme {
-                        PdfNativeTableTheme::Striped => {
-                            if (section == Section::Body || section == Section::Footer)
-                                && row_idx % 2 == 1
-                            {
-                                style.fill_color = Some(PdfColor::new(240, 240, 240, 255));
-                            }
-                            style.line_width = 0.0;
-                        }
-                        PdfNativeTableTheme::Grid => {
-                            style.line_width = style.line_width.max(0.5);
-                            style.line_color = PdfColor::new(200, 200, 200, 255);
-                        }
-                        PdfNativeTableTheme::Plain => {
-                            style.line_width = 0.0;
-                            style.fill_color = None;
-                        }
-                    }
+                    let style =
+                        resolve_column_style(&key, section, table, &base_cell.style, row_idx);
 
                     TableCell {
                         content: base_cell.content,
@@ -1358,7 +1443,7 @@ fn draw_row<'a>(
                 PdfPoints::ZERO,
                 PdfPoints::ZERO,
                 if style.line_width > 0.0 {
-                    Some(style.line_color)
+                    Some(style.line_color.unwrap_or(PdfColor::new(10, 10, 10, 255)))
                 } else {
                     None
                 },
@@ -1468,7 +1553,7 @@ pub fn draw_table<'a>(
     page: PdfPage<'a>,
     table: &PdfTable,
     data: &mut MutexGuard<RawMutex, PdfNativeDocumentData>,
-) -> Result<(), PdfiumError> {
+) -> Result<(PdfPoints, PdfPoints), PdfiumError> {
     let column_keys = resolve_columns(table);
 
     let head = resolve_rows_2d(&table.head, &column_keys, table, Section::Header);
@@ -1579,6 +1664,9 @@ pub fn draw_table<'a>(
         )?;
     }
 
+    let mut final_x = table.position.0;
+    let mut final_y = cursor_y;
+
     if matches!(
         table.show_foot,
         PdfNativeShowFoot::EveryPage | PdfNativeShowFoot::LastPage
@@ -1593,6 +1681,7 @@ pub fn draw_table<'a>(
                 table.position.0,
                 &scaled_widths,
             )?;
+            final_y = footer_cursor_y;
         }
     }
 
@@ -1601,5 +1690,5 @@ pub fn draw_table<'a>(
     );
     current_page.regenerate_content()?;
 
-    Ok(())
+    Ok((final_x, final_y))
 }

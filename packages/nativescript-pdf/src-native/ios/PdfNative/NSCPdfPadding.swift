@@ -8,10 +8,32 @@
 @objcMembers
 @objc(NSCPdfPadding)
 public class NSCPdfPadding: NSObject {
-  public var top: Float = 0
-  public var left: Float = 0
-  public var bottom: Float = 0
-  public var right: Float = 0
+  var topChanged = false
+  var leftChanged = false
+  var bottomChanged = false
+  var rightChanged = false
+  
+  public var top: Float = 0 {
+    didSet {
+      topChanged = true
+    }
+  }
+  
+  public var left: Float = 0{
+    didSet {
+      leftChanged = true
+    }
+  }
+  public var bottom: Float = 0{
+    didSet {
+      bottomChanged = true
+    }
+  }
+  public var right: Float = 0{
+    didSet {
+      rightChanged = true
+    }
+  }
   
   public init(_ top: Float, _ left: Float, _ bottom: Float, _ right: Float) {
     self.top = top
@@ -28,9 +50,9 @@ public class NSCPdfPadding: NSObject {
   }
   
   func pdfium(_ unit: NSCPdfUnit) -> CPdfNativePadding {
-    return CPdfNativePadding(top: CPdfNativePoints(value: top, unit: unit.pdfium),
-                             right: CPdfNativePoints(value: right, unit: unit.pdfium),
-                             bottom: CPdfNativePoints(value: bottom, unit: unit.pdfium),
-                             left: CPdfNativePoints(value: left, unit: unit.pdfium))
+    return CPdfNativePadding(top: CPdfNativePoints(value: top, unit: unit.pdfium, changed: topChanged),
+                             right: CPdfNativePoints(value: right, unit: unit.pdfium, changed: rightChanged),
+                             bottom: CPdfNativePoints(value: bottom, unit: unit.pdfium, changed: bottomChanged),
+                             left: CPdfNativePoints(value: left, unit: unit.pdfium, changed: leftChanged))
   }
 }

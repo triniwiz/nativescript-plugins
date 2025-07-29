@@ -15,97 +15,11 @@ class ViewController: UIViewController {
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-     // document.table(buildTable())
+      let output = document.table(buildTable())
       
+      print(output)
       
- 
-      
-     
-   
-      document.fontSize = 32
-      document.setFontColor(100, 100, 100)
-      let options = NSCPdfTextOptions()
-      options.baseline = NSCPdfTextBaseline.top
-      options.align = NSCPdfTextAlignment.center
-      document.addText("Hello World 1", (document.width / 2) - 250, 0, options)
-      
-      do {
-        let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
-        document.addImage(image!, 0, 0, 100, 100)
-      }catch {}
-           document.addPage()
-           document.fontSize = 50
-           document.setFontColor(
-             255,
-             0,
-             0
-           )
-           document.addText("Hello World 2", 10, 100)
-           document.addPage()
-           document.setFontColor(
-             0,
-             0,
-             0
-           )
-           document.addText("Hello World 3", 10, 100)
-           document.addPage()
-
-
-           document.ellipse(40, 20, 10, 5)
-
-           document.setFillColor(0, 0, 255)
-           document.ellipse(80, 20, 10, 5, NSCPdfStyle.f)
-
-           document.lineWidth = 1
-           document.setDrawColor(0, 0, 0)
-           document.setFillColor(255, 0, 0)
-           document.circle(120, 20, 5, NSCPdfStyle.fd)
-
-
-           document.addPage()
-      
-      
-      // Empty square
-           document.rect(20, 20, 10, 10)
-
-
-     // Filled square
-           document.rect(40, 20, 10, 10, NSCPdfStyle.f)
-
-     // Empty red square
-           document.setDrawColor(255, 0, 0)
-           document.rect(60, 20, 10, 10)
-
-     // Filled square with red borders
-           document.setDrawColor(255, 0, 0);
-           document.rect(80, 20, 10, 10, NSCPdfStyle.fd)
-
-     // Filled red square
-           document.setDrawColor(0, 0, 0)
-           document.setFillColor(255, 0, 0)
-           document.rect(100, 20, 10, 10, NSCPdfStyle.f)
-
-     // Filled red square with black borders
-           document.setDrawColor(0, 0, 0)
-           document.setFillColor(255, 0, 0);
-           document.rect(120, 20, 10, 10, NSCPdfStyle.fd)
-
-     // Black square with rounded corners
-           document.setDrawColor(0, 0, 0)
-           document.setFillColor(255, 255, 255)
-     //      document.roundedRect(140f, 20f, 10f, 10f, 3f, 3f, PdfStyle.FD)
-
-
-      let x: Float = 100.0 / 2
-      let y: Float = 100.0 / 2
-      let width: Float = 200.0 / 2
-      let height: Float = 100.0 / 2
-      let rx: Float = 20.0
-      let ry: Float = 20.0
-
-         //  document.roundedRect(x, y, width, height, rx, ry, NSCPdfStyle.fd)
-      
-      
+    
       
       pdf = NSCPdfView(frame: view.bounds)
 
@@ -127,11 +41,11 @@ class ViewController: UIViewController {
       
 //      pdf?.loadFromUrl( "https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf", nil)
       
-      if let test = Bundle.main.url(forResource: "100MB-TESTFILE.ORG", withExtension: "pdf") {
-       // pdf?.loadFromPath(test.absoluteString, nil)
-      }else {
-        
-      }
+//      if let test = Bundle.main.url(forResource: "100MB-TESTFILE.ORG", withExtension: "pdf") {
+//       // pdf?.loadFromPath(test.absoluteString, nil)
+//      }else {
+//        
+//      }
       
 
   
@@ -153,8 +67,7 @@ class ViewController: UIViewController {
           NSCPdfTableCell(
             "First Name",
             1,
-            1,
-            style.clone()
+            1
           )
         )
 
@@ -162,16 +75,22 @@ class ViewController: UIViewController {
           NSCPdfTableCell(
             "Last Name",
             1,
-            1,
-            style.clone()
+            1
           )
         )
+    
+    
+        let bodyStyle = style.clone()
 
-        style.fontStyle = NSCPdfFontStyle.normal
-        style.fontSize = 18
-        style.fillColor = nil
+    bodyStyle.fontStyle = NSCPdfFontStyle.normal
+    bodyStyle.fontSize = 18
+    bodyStyle.fillColor = nil
 
-        style.horizontalAlign = NSCPdfHorizontalAlign.center
+    bodyStyle.horizontalAlign = NSCPdfHorizontalAlign.center
+    
+    let altStyle = bodyStyle.clone()
+    altStyle.fillColor = NSCPdfColor(0, 255, 0)
+    bodyStyle.fontStyle = NSCPdfFontStyle.italic
 
         let foot_style = NSCPdfStyleDef.default()
         foot_style.fillColor = NSCPdfColor(41, 128, 185)
@@ -180,7 +99,10 @@ class ViewController: UIViewController {
         foot_style.fontSize = 24
 
         let tab = NSCPdfTable()
-        tab.bodyStyles = style
+        //tab.styles = style
+        tab.styles = bodyStyle
+        tab.alternateRowsStyles = altStyle
+        tab.headStyles = style
         tab.footStyles = foot_style
         tab.head = [[first, last]]
         tab.foot = tab.head
@@ -292,6 +214,94 @@ class ViewController: UIViewController {
 
         return tab
       
+  }
+  
+  func buildDoc(document: NSCPdfDocument){
+    
+    document.fontSize = 32
+    document.setFontColor(100, 100, 100)
+    let options = NSCPdfTextOptions()
+    options.baseline = NSCPdfTextBaseline.top
+    options.align = NSCPdfTextAlignment.center
+    document.addText("Hello World 1", (document.width / 2) - 250, 0, options)
+    
+    do {
+      let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
+      document.addImage(image!, 0, 0, 100, 100)
+    }catch {}
+         document.addPage()
+         document.fontSize = 50
+         document.setFontColor(
+           255,
+           0,
+           0
+         )
+         document.addText("Hello World 2", 10, 100)
+         document.addPage()
+         document.setFontColor(
+           0,
+           0,
+           0
+         )
+         document.addText("Hello World 3", 10, 100)
+         document.addPage()
+
+
+         document.ellipse(40, 20, 10, 5)
+
+         document.setFillColor(0, 0, 255)
+         document.ellipse(80, 20, 10, 5, NSCPdfStyle.f)
+
+         document.lineWidth = 1
+         document.setDrawColor(0, 0, 0)
+         document.setFillColor(255, 0, 0)
+         document.circle(120, 20, 5, NSCPdfStyle.fd)
+
+
+         document.addPage()
+    
+    
+    // Empty square
+         document.rect(20, 20, 10, 10)
+
+
+   // Filled square
+         document.rect(40, 20, 10, 10, NSCPdfStyle.f)
+
+   // Empty red square
+         document.setDrawColor(255, 0, 0)
+         document.rect(60, 20, 10, 10)
+
+   // Filled square with red borders
+         document.setDrawColor(255, 0, 0);
+         document.rect(80, 20, 10, 10, NSCPdfStyle.fd)
+
+   // Filled red square
+         document.setDrawColor(0, 0, 0)
+         document.setFillColor(255, 0, 0)
+         document.rect(100, 20, 10, 10, NSCPdfStyle.f)
+
+   // Filled red square with black borders
+         document.setDrawColor(0, 0, 0)
+         document.setFillColor(255, 0, 0);
+         document.rect(120, 20, 10, 10, NSCPdfStyle.fd)
+
+   // Black square with rounded corners
+         document.setDrawColor(0, 0, 0)
+         document.setFillColor(255, 255, 255)
+   //      document.roundedRect(140f, 20f, 10f, 10f, 3f, 3f, PdfStyle.FD)
+
+
+    let x: Float = 100.0 / 2
+    let y: Float = 100.0 / 2
+    let width: Float = 200.0 / 2
+    let height: Float = 100.0 / 2
+    let rx: Float = 20.0
+    let ry: Float = 20.0
+
+       //  document.roundedRect(x, y, width, height, rx, ry, NSCPdfStyle.fd)
+    
+    
   }
 
 

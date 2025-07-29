@@ -64,6 +64,7 @@ declare var CPdfNativePadding: interop.StructType<CPdfNativePadding>;
 interface CPdfNativePoints {
 	value: number;
 	unit: PdfNativeUnit;
+	changed: boolean;
 }
 declare var CPdfNativePoints: interop.StructType<CPdfNativePoints>;
 
@@ -73,12 +74,56 @@ declare const enum CPdfNativePointsOptionalType {
 	Some = 1,
 }
 
+interface CPdfNativeRenderInfo {
+	data: interop.Pointer | interop.Reference<any>;
+	width: number;
+	height: number;
+}
+declare var CPdfNativeRenderInfo: interop.StructType<CPdfNativeRenderInfo>;
+
 declare const enum CVerticalAlign {
 	Top = 0,
 
 	Middle = 1,
 
 	Bottom = 2,
+}
+
+declare class LDOTiledView extends UIView {
+	static alloc(): LDOTiledView; // inherited from NSObject
+
+	static appearance(): LDOTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 */
+	static appearanceForTraitCollection(trait: UITraitCollection): LDOTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 * @deprecated 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): LDOTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): LDOTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 5.0
+	 * @deprecated 9.0
+	 */
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): LDOTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): LDOTiledView; // inherited from UIAppearance
+
+	static layerClass(): typeof NSObject;
+
+	static new(): LDOTiledView; // inherited from NSObject
 }
 
 declare class NSCPdf extends NSObject {
@@ -188,13 +233,15 @@ declare class NSCPdfDocument extends NSObject {
 
 	renderToBuffer(index: number, buffer: NSMutableData, width: number, height: number): void;
 
-	renderToCGContextImage(index: number, width: number, height: number, rect: CGRect, scaleX: number, scaleY: number, withScale: boolean): any;
+	renderToCGContextImage(index: number, width: number, height: number, rect: CGRect, scaleX: number, scaleY: number, withScale: boolean, flipVertical: boolean, flipHorizontal: boolean): any;
 
 	renderToCGContextIn(index: number, width: number, height: number, rect: CGRect, context: any): void;
 
-	renderToCGImage(index: number, width: number, height: number): void;
-
 	roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number, style: NSCPdfStyle): void;
+
+	saveSyncTo(file: string): NSError;
+
+	saveToCallback(file: string, callback: (p1: NSError) => void): void;
 
 	setDrawColor(r: number, g: number, b: number): void;
 
@@ -208,7 +255,7 @@ declare class NSCPdfDocument extends NSObject {
 
 	setFontColorA(r: number, g: number, b: number, a: number): void;
 
-	table(config: NSCPdfTable): void;
+	table(config: NSCPdfTable): string;
 }
 
 declare class NSCPdfDocumentConfig extends NSObject {
@@ -253,6 +300,16 @@ declare const enum NSCPdfHorizontalAlign {
 	Center = 1,
 
 	Right = 2,
+}
+
+declare class NSCPdfInfo extends NSObject {
+	static alloc(): NSCPdfInfo; // inherited from NSObject
+
+	static new(): NSCPdfInfo; // inherited from NSObject
+
+	constructor(o: { width: number; height: number; data: NSData });
+
+	initWithWidthHeightData(width: number, height: number, data: NSData): this;
 }
 
 declare const enum NSCPdfOrientation {
@@ -508,6 +565,8 @@ declare class NSCPdfTable extends NSObject {
 
 	static new(): NSCPdfTable; // inherited from NSObject
 
+	alternateRowsStyles: NSCPdfStyleDef;
+
 	body: NSArray<NSArray<NSCPdfTableCellOrString>>;
 
 	bodyStyles: NSCPdfStyleDef;
@@ -531,6 +590,8 @@ declare class NSCPdfTable extends NSObject {
 	showFoot: NSCPdfShowFoot;
 
 	showHead: NSCPdfShowHead;
+
+	styles: NSCPdfStyleDef;
 
 	theme: NSCPdfTableTheme;
 
@@ -609,6 +670,129 @@ declare class NSCPdfTextOptions extends NSObject {
 	maxWidth: number;
 
 	rotationDirection: NSCPdfRotationDirection;
+}
+
+declare class NSCPdfTiledView extends UIScrollView implements UIScrollViewDelegate {
+	static alloc(): NSCPdfTiledView; // inherited from NSObject
+
+	static appearance(): NSCPdfTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 */
+	static appearanceForTraitCollection(trait: UITraitCollection): NSCPdfTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 * @deprecated 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): NSCPdfTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 5.0
+	 * @deprecated 9.0
+	 */
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): NSCPdfTiledView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfTiledView; // inherited from UIAppearance
+
+	static new(): NSCPdfTiledView; // inherited from NSObject
+
+	document: NSCPdfDocument;
+
+	onError: (p1: NSError) => void;
+
+	onLoaded: (p1: NSCPdfDocument) => void;
+
+	onPageChange: (p1: number) => void;
+
+	readonly debugDescription: string; // inherited from NSObjectProtocol
+
+	readonly description: string; // inherited from NSObjectProtocol
+
+	readonly hash: number; // inherited from NSObjectProtocol
+
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+	readonly; // inherited from NSObjectProtocol
+
+	class(): typeof NSObject;
+
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	loadFromBytes(bytes: NSData, password: string): void;
+
+	loadFromPath(path: string, password: string): void;
+
+	loadFromUrl(url: string, password: string): void;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	/**
+	 * @since 11.0
+	 */
+	scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
+
+	scrollViewDidEndDecelerating(scrollView: UIScrollView): void;
+
+	scrollViewDidEndDraggingWillDecelerate(scrollView: UIScrollView, decelerate: boolean): void;
+
+	scrollViewDidEndScrollingAnimation(scrollView: UIScrollView): void;
+
+	scrollViewDidEndZoomingWithViewAtScale(scrollView: UIScrollView, view: UIView, scale: number): void;
+
+	scrollViewDidScroll(scrollView: UIScrollView): void;
+
+	scrollViewDidScrollToTop(scrollView: UIScrollView): void;
+
+	/**
+	 * @since 3.2
+	 */
+	scrollViewDidZoom(scrollView: UIScrollView): void;
+
+	scrollViewShouldScrollToTop(scrollView: UIScrollView): boolean;
+
+	scrollViewWillBeginDecelerating(scrollView: UIScrollView): void;
+
+	scrollViewWillBeginDragging(scrollView: UIScrollView): void;
+
+	/**
+	 * @since 3.2
+	 */
+	scrollViewWillBeginZoomingWithView(scrollView: UIScrollView, view: UIView): void;
+
+	/**
+	 * @since 5.0
+	 */
+	scrollViewWillEndDraggingWithVelocityTargetContentOffset(scrollView: UIScrollView, velocity: CGPoint, targetContentOffset: interop.Pointer | interop.Reference<CGPoint>): void;
+
+	self(): this;
+
+	viewForZoomingInScrollView(scrollView: UIScrollView): UIView;
 }
 
 declare const enum NSCPdfUnit {
@@ -1225,6 +1409,8 @@ declare var PdfNativeVersionString: interop.Reference<number>;
 
 declare function pdf_native_document_add_image(instance: interop.Pointer | interop.Reference<any>, image_data: string | interop.Pointer | interop.Reference<any>, image_size: number, x: number, y: number, width: number, height: number): void;
 
+declare function pdf_native_document_add_raw_image(instance: interop.Pointer | interop.Reference<any>, image_data: string | interop.Pointer | interop.Reference<any>, image_size: number, image_width: number, image_height: number, x: number, y: number, width: number, height: number): void;
+
 declare function pdf_native_document_circle(instance: interop.Pointer | interop.Reference<any>, x: number, y: number, r: number, style: PdfNativeStyle): void;
 
 declare function pdf_native_document_count(instance: interop.Pointer | interop.Reference<any>): number;
@@ -1245,11 +1431,23 @@ declare function pdf_native_document_rect(instance: interop.Pointer | interop.Re
 
 declare function pdf_native_document_release(instance: interop.Pointer | interop.Reference<any>): void;
 
-declare function pdf_native_document_render_to_buffer(instance: interop.Pointer | interop.Reference<any>, index: number, width: number, height: number, buffer: string | interop.Pointer | interop.Reference<any>, size: number): void;
+declare function pdf_native_document_render_into_buffer(instance: interop.Pointer | interop.Reference<any>, index: number, buffer: string | interop.Pointer | interop.Reference<any>, buffer_size: number, width: number, height: number): void;
 
-declare function pdf_native_document_render_with_buffer_size(instance: interop.Pointer | interop.Reference<any>, index: number, buffer: string | interop.Pointer | interop.Reference<any>, size: number, viewport_width: number, viewport_height: number, scale_x: number, scale_y: number, x: number, y: number, width: number, height: number, scaled_x: number, scaled_y: number, scaled_width: number, scaled_height: number): void;
+declare function pdf_native_document_render_into_buffer_with_scale(instance: interop.Pointer | interop.Reference<any>, index: number, viewport_width: number, viewport_height: number, scale_x: number, scale_y: number, x: number, y: number, width: number, height: number, buffer: string | interop.Pointer | interop.Reference<any>, buffer_size: number): void;
+
+declare function pdf_native_document_render_to_buffer(instance: interop.Pointer | interop.Reference<any>, index: number, width: number, height: number, flip_vertical: boolean, flip_horizontal: boolean): interop.Pointer | interop.Reference<CPdfNativeRenderInfo>;
+
+declare function pdf_native_document_render_to_buffer_with_scale(instance: interop.Pointer | interop.Reference<any>, index: number, viewport_width: number, viewport_height: number, scale_x: number, scale_y: number, x: number, y: number, width: number, height: number, flip_vertical: boolean, flip_horizontal: boolean): interop.Pointer | interop.Reference<CPdfNativeRenderInfo>;
+
+declare function pdf_native_document_render_to_buffer_with_scale_and_tile(instance: interop.Pointer | interop.Reference<any>, index: number, tile_width: number, tile_height: number, viewport_width: number, viewport_height: number, scale: number, row: number, column: number): interop.Pointer | interop.Reference<CPdfNativeRenderInfo>;
+
+declare function pdf_native_document_render_to_buffers(instance: interop.Pointer | interop.Reference<any>, indices: interop.Pointer | interop.Reference<number>, indices_size: number, width: number, height: number, flip_vertical: boolean, flip_horizontal: boolean): interop.Pointer | interop.Reference<any>;
+
+declare function pdf_native_document_render_to_buffers_with_scale(instance: interop.Pointer | interop.Reference<any>, indices: interop.Pointer | interop.Reference<number>, indices_size: number, viewport_width: number, viewport_height: number, scale_x: number, scale_y: number, x: number, y: number, width: number, height: number, flip_vertical: boolean, flip_horizontal: boolean): interop.Pointer | interop.Reference<any>;
 
 declare function pdf_native_document_rounded_rect(instance: interop.Pointer | interop.Reference<any>, x: number, y: number, width: number, height: number, rx: number, ry: number, style: PdfNativeStyle): void;
+
+declare function pdf_native_document_save_to_file(instance: interop.Pointer | interop.Reference<any>, file: string | interop.Pointer | interop.Reference<any>): interop.Pointer | interop.Reference<any>;
 
 declare function pdf_native_document_set_draw_color(instance: interop.Pointer | interop.Reference<any>, r: number, g: number, b: number, a: number): void;
 
@@ -1272,3 +1470,7 @@ declare function pdf_native_load_from_bytes(instance: interop.Pointer | interop.
 declare function pdf_native_load_from_path(instance: interop.Pointer | interop.Reference<any>, path: string | interop.Pointer | interop.Reference<any>, password: string | interop.Pointer | interop.Reference<any>): interop.Pointer | interop.Reference<any>;
 
 declare function pdf_native_release(instance: interop.Pointer | interop.Reference<any>): void;
+
+declare function pdf_native_render_info_release(instance: interop.Pointer | interop.Reference<CPdfNativeRenderInfo>): void;
+
+declare function pdf_native_string_release(string: string | interop.Pointer | interop.Reference<any>): void;

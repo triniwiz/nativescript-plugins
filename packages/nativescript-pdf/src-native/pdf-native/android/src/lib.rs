@@ -155,6 +155,12 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _reserved: *const c_void) -> jint 
             .get_method_id(&style_def_class, "getFillColorValue", "(Ljava/nio/ByteBuffer;)Z")
             .unwrap();
 
+
+        let line_color_id = env
+            .get_method_id(&style_def_class, "getLineColorValue", "(Ljava/nio/ByteBuffer;)Z")
+            .unwrap();
+
+
         let text_color_id = env
             .get_method_id(&style_def_class, "getTextColorValue", "(Ljava/nio/ByteBuffer;)Z")
             .unwrap();
@@ -183,10 +189,6 @@ pub extern "system" fn JNI_OnLoad(vm: JavaVM, _reserved: *const c_void) -> jint 
 
         let cell_padding_id = env
             .get_method_id(&style_def_class, "getCellPadding", "(Ljava/nio/ByteBuffer;)V")
-            .unwrap();
-
-        let line_color_id = env
-            .get_method_id(&style_def_class, "getLineColorValue", "(Ljava/nio/ByteBuffer;)V")
             .unwrap();
 
         let line_width_id = env

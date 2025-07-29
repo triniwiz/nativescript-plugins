@@ -1,7 +1,5 @@
 package io.github.triniwiz.plugins.pdf
 
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -16,17 +14,10 @@ import io.github.triniwiz.plugins.pdf.table.StyleDef
 import io.github.triniwiz.plugins.pdf.table.TableCell
 import io.github.triniwiz.plugins.pdf.table.TableCellOrString
 import io.github.triniwiz.plugins.pdf.table.VerticalAlign
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.net.URI
-import java.net.URL
+import org.json.JSONObject
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import kotlin.concurrent.schedule
-import kotlin.concurrent.scheduleAtFixedRate
 
 class MainActivity : AppCompatActivity() {
   val executor = Executors.newSingleThreadScheduledExecutor()
@@ -102,7 +93,8 @@ class MainActivity : AppCompatActivity() {
     executor.execute {
       val document = PdfDocument()
       val table = buildTable()
-      //    document.table(table)
+      val output = document.table(table)
+      Log.d("com.test", "output ${JSONObject(output)}")
 
 //      val url =
 //        URI.create("https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")
@@ -195,7 +187,9 @@ class MainActivity : AppCompatActivity() {
       document.roundedRect(x, y, width, height, rx, ry, PdfStyle.FD)
 
       */
+      pdfView.document = document
 
+      /*
       val doc = File(cacheDir, "10840.pdf")
 
       if (doc.exists()) {
@@ -228,6 +222,7 @@ class MainActivity : AppCompatActivity() {
 
       }
 
+      */
     }
 
     // https://raw.githubusercontent.com/ajrcarey/pdfium-render/master/test/image-test.pdf
@@ -239,18 +234,17 @@ class MainActivity : AppCompatActivity() {
 
   fun buildTable(): PdfTable {
     val style = StyleDef.default()
+    style.fillColor = Color(41, 128, 185)
     style.fontStyle = FontStyle.Bold
     style.fontSize = 24f
     style.verticalAlign = VerticalAlign.Middle
-    style.fillColor = Color(41, 128, 185)
     style.lineColor = Color.red
 
     val first = TableCellOrString.Cell(
       TableCell(
         "First Name",
         1,
-        1,
-        style.clone(),
+        1
       )
     )
 
@@ -258,16 +252,24 @@ class MainActivity : AppCompatActivity() {
       TableCell(
         "Last Name",
         1,
-        1,
-        style.clone(),
+        1
       )
     )
 
-    style.fontStyle = FontStyle.Normal
-    style.fontSize = 18f
-    style.fillColor = null
+    val tab = PdfTable()
+    tab.styles = StyleDef.default()
+    tab.headStyles = style
+    tab.styles?.fontStyle = FontStyle.Normal
+    tab.styles?.fontSize = 18f
+    tab.styles?.fillColor = null
+    tab.styles?.horizontalAlign = HorizontalAlign.Center
 
-    style.horizontalAlign = HorizontalAlign.Center
+    val alternateRowStyles = style.clone()
+    alternateRowStyles.fillColor = Color.green
+
+    tab.alternateRowStyles = alternateRowStyles
+
+
 
     val foot_style = StyleDef.default()
     foot_style.fillColor = Color(41, 128, 185)
@@ -275,8 +277,6 @@ class MainActivity : AppCompatActivity() {
     foot_style.fontStyle = FontStyle.Bold
     foot_style.fontSize = 24f
 
-    val tab = PdfTable()
-    tab.bodyStyles = style
     tab.footStyles = foot_style
     tab.head = arrayOf(arrayOf(first, last))
     tab.foot = tab.head

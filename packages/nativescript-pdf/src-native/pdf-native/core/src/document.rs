@@ -595,6 +595,10 @@ pub struct PdfNativeDocumentConfig {
 }
 
 impl PdfNativeDocumentConfig {
+    pub fn device_scale(&self) -> f32 {
+        self.device_scale
+    }
+
     pub fn set_orientation(&mut self, orientation: PdfNativeOrientation) {
         self.orientation = orientation;
     }
@@ -670,6 +674,10 @@ impl<'a> PdfNativeDocument<'a> {
             document,
             data: Mutex::new(data),
         })
+    }
+
+    pub fn device_scale(&self) -> f32 {
+        self.data.lock().device_scale
     }
 
     pub fn save_to_file(&self, file: &str) -> Result<(), PdfiumError> {
@@ -1340,13 +1348,12 @@ impl<'a> PdfNativeDocument<'a> {
         Ok(())
     }
 
-    pub fn table(&mut self, options: &PdfTable) -> Result<(), PdfiumError> {
+    pub fn table(&mut self, options: &PdfTable) -> Result<(PdfPoints, PdfPoints), PdfiumError> {
         let mut data = self.data.lock();
         let index = data.current_page;
         let document = &mut self.document;
         let page = document.pages_mut().get(index)?;
-        draw_table(document, page, &options, &mut data)?;
-        Ok(())
+        draw_table(document, page, &options, &mut data)
     }
 
     pub fn render_with_rect(
@@ -1513,8 +1520,7 @@ impl<'a> PdfNativeDocument<'a> {
         page_indices?
             .into_iter()
             .map(|index| {
-                let page = pages
-                    .get(index)?;
+                let page = pages.get(index)?;
 
                 let mut config = PdfRenderConfig::default()
                     .set_target_size(width, height)
@@ -1726,8 +1732,7 @@ impl<'a> PdfNativeDocument<'a> {
         page_indices?
             .into_iter()
             .map(|index| {
-                let page = pages
-                    .get(index)?;
+                let page = pages.get(index)?;
 
                 let pdf_scale_x = page.width().value / viewport_width;
                 let pdf_scale_y = page.height().value / viewport_height;
@@ -1800,10 +1805,6 @@ impl<'a> PdfNativeDocument<'a> {
             .collect::<Result<Vec<_>, PdfiumError>>()
     }
 
-
-
-
-
     pub fn render_with_size_to_buffer_with_tile(
         &self,
         index: c_int,
@@ -1850,7 +1851,7 @@ impl<'a> PdfNativeDocument<'a> {
             scale, // scaleX
             0.0,
             0.0,
-            scale, // scaleY
+            scale,          // scaleY
             -pdf_x * scale, // translateX
             -pdf_y * scale, // translateY
         );
@@ -1884,5 +1885,4 @@ impl<'a> PdfNativeDocument<'a> {
 
         Ok((px_width as u32, px_height as u32, buffer))
     }
-
 }

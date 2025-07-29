@@ -69,12 +69,18 @@ public class NSCPdfStyleDef:NSObject {
   public var textColor: NSCPdfColor?
   public var cellWidth: NSCPdfCellWidth
   public var minCellWidth: Float?
-  public var minCellHeight: Float
+  var minCellHeightChanged = false
+  public var minCellHeight: Float {
+    didSet {
+      minCellHeightChanged = true
+    }
+  }
+  
   public var horizontalAlign: NSCPdfHorizontalAlign
   public var verticalAlign: NSCPdfVerticalAlign
   public var fontSize: Float
   public var cellPadding: NSCPdfPadding
-  public var lineColor: NSCPdfColor
+  public var lineColor: NSCPdfColor?
   public var lineWidth: Float
   
   
@@ -91,7 +97,7 @@ public class NSCPdfStyleDef:NSObject {
     return minCellWidth ?? -1
   }
   
-  init(font: NSCPdfFontFamily, fontStyle: NSCPdfFontStyle, overflow: NSCPdfOverflow, fillColor: NSCPdfColor? = nil, textColor: NSCPdfColor? = nil, cellWidth: NSCPdfCellWidth, minCellWidth: Float? = nil, minCellHeight: Float, horizontalAlign: NSCPdfHorizontalAlign, verticalAlign: NSCPdfVerticalAlign, fontSize: Float, cellPadding: NSCPdfPadding, lineColor: NSCPdfColor, lineWidth: Float) {
+  init(font: NSCPdfFontFamily, fontStyle: NSCPdfFontStyle, overflow: NSCPdfOverflow, fillColor: NSCPdfColor? = nil, textColor: NSCPdfColor? = nil, cellWidth: NSCPdfCellWidth, minCellWidth: Float? = nil, minCellHeight: Float, horizontalAlign: NSCPdfHorizontalAlign, verticalAlign: NSCPdfVerticalAlign, fontSize: Float, cellPadding: NSCPdfPadding, lineColor: NSCPdfColor?, lineWidth: Float) {
     self.font = font
     self.fontStyle = fontStyle
     self.overflow = overflow
@@ -100,6 +106,9 @@ public class NSCPdfStyleDef:NSObject {
     self.cellWidth = cellWidth
     self.minCellWidth = minCellWidth
     self.minCellHeight = minCellHeight
+    if(minCellHeight == 0){
+      minCellHeightChanged = false
+    }
     self.horizontalAlign = horizontalAlign
     self.verticalAlign = verticalAlign
     self.fontSize = fontSize
@@ -132,13 +141,19 @@ public class NSCPdfStyleDef:NSObject {
     }
     
     let minCellWidth = if let minCellWidth {
-      CPdfNativePointsOptional(kind: CPdfNativePointsOptionalType_Some, data: CPdfNativePointsOptionalData(value: CPdfNativePoints(value: minCellWidth, unit: unit.pdfium)))
+      CPdfNativePointsOptional(kind: CPdfNativePointsOptionalType_Some, data: CPdfNativePointsOptionalData(value: CPdfNativePoints(value: minCellWidth, unit: unit.pdfium, changed: true)))
     } else {
       CPdfNativePointsOptional(kind: CPdfNativePointsOptionalType_None, data: CPdfNativePointsOptionalData())
     }
     
+    let lineColor = if let lineColor = self.lineColor {
+      CPdfNativeColorOptional(kind: CPdfNativeColorOptionalType_Some, data: CPdfNativeColorOptionalData(value: lineColor.pdfium))
+    }else {
+      CPdfNativeColorOptional(kind: CPdfNativeColorOptionalType_None, data: CPdfNativeColorOptionalData())
+    }
     
-    return CStyleDef(font: font.pdfium, font_style: fontStyle.pdfium, overflow: overflow.pdfium, fill_color: fillColor, text_color: textColor, cell_width: cellWidth.pdfium(unit), min_cell_width: minCellWidth, min_cell_height: CPdfNativePoints(value: minCellHeight, unit: unit.pdfium), horizontal_align: horizontalAlign.pdfium, vertical_align: verticalAlign.pdfium, font_size: fontSize, cell_padding: cellPadding.pdfium(unit), line_color: lineColor.pdfium, line_width: lineWidth)
+    
+    return CStyleDef(font: font.pdfium, font_style: fontStyle.pdfium, overflow: overflow.pdfium, fill_color: fillColor, text_color: textColor, cell_width: cellWidth.pdfium(unit), min_cell_width: minCellWidth, min_cell_height: CPdfNativePoints(value: minCellHeight, unit: unit.pdfium, changed: minCellHeightChanged), horizontal_align: horizontalAlign.pdfium, vertical_align: verticalAlign.pdfium, font_size: fontSize, cell_padding: cellPadding.pdfium(unit), line_color: lineColor, line_width: lineWidth)
   }
   
   func pdfiumRaw(_ unit:  NSCPdfUnit) -> UnsafePointer<CStyleDef> {
@@ -157,13 +172,19 @@ public class NSCPdfStyleDef:NSObject {
     }
     
     let minCellWidth = if let minCellWidth {
-      CPdfNativePointsOptional(kind: CPdfNativePointsOptionalType_Some, data: CPdfNativePointsOptionalData(value: CPdfNativePoints(value: minCellWidth, unit: unit.pdfium)))
+      CPdfNativePointsOptional(kind: CPdfNativePointsOptionalType_Some, data: CPdfNativePointsOptionalData(value: CPdfNativePoints(value: minCellWidth, unit: unit.pdfium, changed: true)))
     } else {
       CPdfNativePointsOptional(kind: CPdfNativePointsOptionalType_None, data: CPdfNativePointsOptionalData())
     }
     
+    let lineColor = if let lineColor = self.lineColor {
+      CPdfNativeColorOptional(kind: CPdfNativeColorOptionalType_Some, data: CPdfNativeColorOptionalData(value: lineColor.pdfium))
+    }else {
+      CPdfNativeColorOptional(kind: CPdfNativeColorOptionalType_None, data: CPdfNativeColorOptionalData())
+    }
     
-    let value = CStyleDef(font: font.pdfium, font_style: fontStyle.pdfium, overflow: overflow.pdfium, fill_color: fillColor, text_color: textColor, cell_width: cellWidth.pdfium(unit), min_cell_width: minCellWidth, min_cell_height: CPdfNativePoints(value: minCellHeight, unit: unit.pdfium), horizontal_align: horizontalAlign.pdfium, vertical_align: verticalAlign.pdfium, font_size: fontSize, cell_padding: cellPadding.pdfium(unit), line_color: lineColor.pdfium, line_width: lineWidth)
+    
+    let value = CStyleDef(font: font.pdfium, font_style: fontStyle.pdfium, overflow: overflow.pdfium, fill_color: fillColor, text_color: textColor, cell_width: cellWidth.pdfium(unit), min_cell_width: minCellWidth, min_cell_height: CPdfNativePoints(value: minCellHeight, unit: unit.pdfium, changed: minCellHeightChanged), horizontal_align: horizontalAlign.pdfium, vertical_align: verticalAlign.pdfium, font_size: fontSize, cell_padding: cellPadding.pdfium(unit), line_color: lineColor, line_width: lineWidth)
     
     let ret = UnsafeMutablePointer<CStyleDef>.allocate(capacity: 1)
     ret.initialize(to: value)

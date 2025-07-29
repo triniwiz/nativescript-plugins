@@ -1,6 +1,7 @@
 import { Image, ImageSource, knownFolders, View } from '@nativescript/core';
 import { PageBreak, PDFViewBase, srcProperty, TextAlignment, TextBaseline } from './common';
 import { IPDFDocument, PageSize, StyleDef, TableCell, TableCellOrString, TableOptions, TextOptions } from '.';
+declare const kotlin: any;
 const native_ = Symbol('[[native]]');
 
 export class PDFView extends PDFViewBase {
@@ -448,7 +449,7 @@ export class PDFDocument implements IPDFDocument {
 		return this[native_].getHeight();
 	}
 
-	addText(text: string, x: number, y: number, options?: TextOptions) {
+	text(text: string, x: number, y: number, options?: TextOptions) {
 		const opts = new io.github.triniwiz.plugins.pdf.PdfTextOptions();
 		if (options) {
 			opts.setAlign(parseTextAlignment(options?.align ?? 'left'));
@@ -631,7 +632,40 @@ export class PDFDocument implements IPDFDocument {
 			}
 		}
 
-		this[native_].table(opts);
-		return this;
+		try {
+			const pos = JSON.parse(this[native_].table(opts));
+			return { x: pos.x as number, y: pos.y as number };
+		} catch (error) {
+			console.error('Error rendering table');
+		}
+
+		return { x: 0, y: 0 };
+	}
+
+	saveSync(path: string): boolean {
+		try {
+			this.native.saveSync(path);
+			return true;
+		} catch (error) {
+			console.error('Error saving PDF document', error);
+			return false;
+		}
+	}
+
+	save(path: string): Promise<void> {
+		return new Promise((resolve, reject) => {
+			this.native.save(
+				path,
+				new kotlin.jvm.functions.Function1({
+					invoke(result) {
+						if (result == null) {
+							resolve();
+						} else {
+							reject(new Error(result.toString()));
+						}
+					},
+				}),
+			);
+		});
 	}
 }

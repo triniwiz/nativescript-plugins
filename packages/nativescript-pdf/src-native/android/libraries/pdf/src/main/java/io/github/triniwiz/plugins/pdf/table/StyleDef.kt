@@ -1,6 +1,5 @@
 package io.github.triniwiz.plugins.pdf.table
 
-import android.util.Log
 import io.github.triniwiz.plugins.pdf.Color
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -18,7 +17,7 @@ class StyleDef(
   var verticalAlign: VerticalAlign,
   var fontSize: Float,
   var cellPadding: Padding,
-  var lineColor: Color,
+  var lineColor: Color?,
   var lineWidth: Float
 ) {
 
@@ -234,14 +233,17 @@ class StyleDef(
       .put(3, cellPadding.bottom)
   }
 
-  fun getLineColorValue(value: ByteBuffer) {
+  fun getLineColorValue(value: ByteBuffer): Boolean {
     value.order(ByteOrder.nativeOrder())
-    value
-      .asIntBuffer()
-      .put(0, lineColor.r)
-      .put(1, lineColor.g)
-      .put(2, lineColor.b)
-      .put(3, lineColor.a)
+    return lineColor?.let {
+      value
+        .asIntBuffer()
+        .put(0, it.r)
+        .put(1, it.g)
+        .put(2, it.b)
+        .put(3, it.a)
+      true
+    } ?: false
   }
 
   fun clone(): StyleDef {

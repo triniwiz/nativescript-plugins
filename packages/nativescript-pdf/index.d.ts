@@ -86,6 +86,8 @@ type ShowHead = 'everyPage' | 'firstPage' | 'never';
 type ShowFoot = 'everyPage' | 'lastPage' | 'never';
 
 interface TableOptions {
+	styles?: StyleDef;
+	alternateRowsStyles?: StyleDef;
 	columns?: Array<ColumnDef>;
 	columnStyles?: Record<ColumnKey, StyleDef>;
 	headStyles?: StyleDef;
@@ -102,7 +104,7 @@ interface TableOptions {
 }
 
 export class IPDFDocument {
-	addText(text: string, x: number, y: number, options?: TextOptions): this;
+	text(text: string, x: number, y: number, options?: TextOptions): this;
 
 	roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number, style?: 'S' | 'F' | 'DF' | 'FD'): this;
 
@@ -126,7 +128,7 @@ export class IPDFDocument {
 
 	getFontSize(): number;
 
-	table(): this;
+	table(): { x: number; y: number };
 
 	count(): number;
 
@@ -134,7 +136,7 @@ export class IPDFDocument {
 
 	setLineWidth(value: number): this;
 
-	table(options: TableOptions): this;
+	table(options: TableOptions): { x: number; y: number };
 }
 
 export class PDFDocument extends IPDFDocument {

@@ -365,10 +365,19 @@ public class NSCPdfDocument: NSObject {
   }
   
   
+  static func getWidth(_ measureOutput: Int64) -> Float {
+        return Float(bitPattern: UInt32(0xFFFFFFFF & (measureOutput  >> 32)))
+    }
+    
+    static  func getHeight(_ measureOutput: Int64) -> Float {
+        return Float(bitPattern: UInt32(0xFFFFFFFF & measureOutput))
+    }
   
-  public func table(_ config: NSCPdfTable){
+  
+  public func table(_ config: NSCPdfTable) -> String{
     var pdfium = config.pdfium(self.config.units)
-    pdf_native_document_table(pdfDocument, &pdfium)
+    let output = pdf_native_document_table(pdfDocument, &pdfium)
+    return "{ width: \(NSCPdfDocument.getWidth(output)) , height: \(NSCPdfDocument.getHeight(output)) }"
   }
   
   
