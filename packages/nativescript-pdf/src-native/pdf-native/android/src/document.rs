@@ -264,7 +264,7 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeGet
             return 0.;
         }
         let instance = &*(instance as *mut PdfNativeDocument);
-        instance.current_page_width_point()
+        instance.current_page_width()
     }
 }
 
@@ -279,7 +279,7 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeGet
             return 0.;
         }
         let instance = &*(instance as *mut PdfNativeDocument);
-        instance.current_page_height_point()
+        instance.current_page_height()
     }
 }
 

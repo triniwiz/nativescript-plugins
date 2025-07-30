@@ -1,5 +1,5 @@
 use crate::document::{PdfNativeDocumentData, PdfNativeUnit};
-use crate::utils::{get_y_points, to_points};
+use crate::utils::get_y_points;
 use parking_lot::lock_api::MutexGuard;
 use parking_lot::RawMutex;
 use pdfium_render::prelude::*;
@@ -531,6 +531,7 @@ impl Into<StyleDef> for CStyleDef {
             cell_padding: self.cell_padding.into(),
             line_color: self.line_color.into(),
             line_width: self.line_width,
+            font_changed: self.font_size != 16.,
         }
     }
 }
@@ -552,6 +553,7 @@ impl From<&CStyleDef> for StyleDef {
             cell_padding: value.cell_padding.into(),
             line_color: value.line_color.into(),
             line_width: value.line_width,
+            font_changed: value.font_size != 16.,
         }
     }
 }
@@ -572,6 +574,7 @@ pub struct StyleDef {
     pub cell_padding: CPdfNativePadding,
     pub line_color: Option<PdfColor>,
     pub line_width: f32,
+    font_changed: bool,
 }
 
 impl StyleDef {
@@ -585,7 +588,7 @@ impl StyleDef {
         if other.line_width != 0.0 {
             self.line_width = other.line_width;
         }
-        if other.font_size != 0.0 {
+        if other.font_changed && other.font_size != 0.0 {
             self.font_size = other.font_size;
         }
         if other.text_color.is_some() {
@@ -630,6 +633,7 @@ impl Default for StyleDef {
             }),
             line_color: None,
             line_width: 0.0,
+            font_changed: false,
         }
     }
 }
@@ -1188,16 +1192,31 @@ fn resolve_column_style(
     let mut style = StyleDef::default();
     match table.theme {
         PdfNativeTableTheme::Striped => {
+            if section == Section::Header || section == Section::Footer {
+                style.text_color = Some(PdfColor::WHITE);
+            }
+
             if (section == Section::Body || section == Section::Footer) && row_idx % 2 == 1 {
                 style.fill_color = Some(PdfColor::new(240, 240, 240, 255));
             }
             style.line_width = 0.0;
         }
         PdfNativeTableTheme::Grid => {
-            style.line_width = 0.5;
+            if section == Section::Header || section == Section::Footer {
+                style.text_color = Some(PdfColor::WHITE);
+                style.font_style = PdfNativeFontStyle::Bold;
+                style.fill_color = Some(PdfColor::new(26, 188, 156, 255));
+                style.line_width = 0.;
+            } else {
+                style.line_width = 0.5;
+            }
+
             style.line_color = Some(PdfColor::new(200, 200, 200, 255));
         }
         PdfNativeTableTheme::Plain => {
+            if section == Section::Header || section == Section::Footer {
+                style.font_style = PdfNativeFontStyle::Bold;
+            }
             style.line_width = 0.0;
         }
     };

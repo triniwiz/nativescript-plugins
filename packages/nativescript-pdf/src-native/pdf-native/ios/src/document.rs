@@ -96,7 +96,7 @@ pub extern "C" fn pdf_native_document_width(instance: *mut CPdfNativeDocument) -
             return 0.;
         }
         let instance = &*(instance);
-        instance.0.current_page_width_point()
+        instance.0.current_page_width()
     }
 }
 
@@ -107,7 +107,7 @@ pub extern "C" fn pdf_native_document_height(instance: *mut CPdfNativeDocument) 
             return 0.;
         }
         let instance = &*(instance);
-        instance.0.current_page_height_point()
+        instance.0.current_page_height()
     }
 }
 

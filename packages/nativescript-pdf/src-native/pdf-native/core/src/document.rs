@@ -1,5 +1,5 @@
 use crate::table::{draw_table, PdfTable};
-use crate::utils::{get_y, to_points};
+use crate::utils::{get_y, to_points, to_unit};
 use crate::PdfNative;
 use image::GenericImageView;
 use parking_lot::Mutex;
@@ -923,6 +923,7 @@ impl<'a> PdfNativeDocument<'a> {
             .fonts_mut()
             .get(font)
             .and_then(|font| Some((font.ascent(font_size).ok()?, font.descent(font_size).ok()?)));
+
         if let Some((ascent, descent)) = font_data {
             let mut page = document.pages_mut().get(index)?;
             page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
@@ -1136,21 +1137,27 @@ impl<'a> PdfNativeDocument<'a> {
         Ok(())
     }
 
-    pub fn current_page_width_point(&self) -> f32 {
-        let index = self.data.lock().current_page;
+    pub fn current_page_width(&self) -> f32 {
+        let (index, unit) = {
+            let data = self.data.lock();
+            (data.current_page, data.units)
+        };
         self.document
             .pages()
             .get(index)
-            .map(|value| value.width().value)
+            .map(|value| to_unit(value.width(), unit))
             .unwrap_or_default()
     }
 
-    pub fn current_page_height_point(&self) -> f32 {
-        let index = self.data.lock().current_page;
+    pub fn current_page_height(&self) -> f32 {
+        let (index, unit) = {
+            let data = self.data.lock();
+            (data.current_page, data.units)
+        };
         self.document
             .pages()
             .get(index)
-            .map(|value| value.height().value)
+            .map(|value| to_unit(value.height(), unit))
             .unwrap_or_default()
     }
 

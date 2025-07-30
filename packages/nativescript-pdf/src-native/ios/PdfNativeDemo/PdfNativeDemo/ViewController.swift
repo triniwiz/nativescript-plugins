@@ -223,19 +223,19 @@ class ViewController: UIViewController {
   
   func buildDoc(document: NSCPdfDocument){
     
-    document.fontSize = 32
+    document.fontSize = 20
     document.setFontColor(100, 100, 100)
     let options = NSCPdfTextOptions()
     options.baseline = NSCPdfTextBaseline.top
-    options.align = NSCPdfTextAlignment.left
-    document.addText("Hello World 1", (document.width / 2) - 250, 0, options)
+    options.align = NSCPdfTextAlignment.center
+    document.addText("Hello World 1", (document.width / 2), 20, options)
     
     document.addText("Hello World 2", 120, 50)
     
-//    do {
-//      let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
-//      document.addImage(image!, 0, 0, 100, 100)
-//    }catch {}
+    do {
+      let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
+      document.addImage(image!, 0, 100, 100, 100)
+    }catch {}
          document.addPage()
          document.fontSize = 50
          document.setFontColor(
