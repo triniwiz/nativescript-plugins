@@ -1205,25 +1205,9 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
             table.show_foot = show_foot;
         }
 
-        let device_scale = instance.device_scale();
-
         let (x, y) = instance
             .table(&table)
-            .map(|(x, y)| {
-                let x = if x.value == 0.0 {
-                    0f32
-                } else {
-                    x.value * device_scale
-                };
-
-                let y = if y.value == 0.0 {
-                    0f32
-                } else {
-                    y.value * device_scale
-                };
-
-                (x, y)
-            })
+            .map(|(x, y)| (x.value, y.value))
             .unwrap_or((-1., -1.));
 
         make(x, y)

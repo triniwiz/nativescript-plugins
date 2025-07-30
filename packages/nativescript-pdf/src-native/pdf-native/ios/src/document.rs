@@ -466,25 +466,10 @@ pub extern "C" fn pdf_native_document_table(
         let instance = &mut *(instance);
         let config = &*config;
         let config = config.into();
-        let device_scale = instance.0.device_scale();
         let (x, y) = instance
             .0
             .table(&config)
-            .map(|(x, y)| {
-                let x = if x.value == 0.0 {
-                    0f32
-                } else {
-                    x.value * device_scale
-                };
-
-                let y = if y.value == 0.0 {
-                    0f32
-                } else {
-                    y.value * device_scale
-                };
-
-                (x, y)
-            })
+            .map(|(x, y)| (x.value, y.value))
             .unwrap_or((-1., -1.));
 
         make(x, y)

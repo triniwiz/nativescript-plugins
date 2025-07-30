@@ -1319,6 +1319,10 @@ fn compute_auto_column_widths<'a>(
 ) -> Result<Vec<PdfPoints>, PdfiumError> {
     let mut max_widths = vec![PdfPoints::ZERO; column_count];
 
+    if column_count == 0 {
+        return Ok(vec![]);
+    }
+
     for row in rows {
         for (i, cell) in row.cells.iter().enumerate().take(column_count) {
             let style = &cell.style;
@@ -1397,7 +1401,10 @@ fn compute_row_height<'a>(
 
         let available_width = match style.cell_width {
             CellWidth::Fixed(w) => w,
-            _ => scaled_widths[i],
+            _ => scaled_widths
+                .get(i)
+                .copied()
+                .unwrap_or(PdfPoints::new(10.0)),
         } - style.cell_padding.left.into()
             - style.cell_padding.right.into();
 
@@ -1592,6 +1599,7 @@ pub fn draw_table<'a>(
         .try_fold(PdfPoints::ZERO, |acc, h| h.map(|h| acc + h))?;
 
     let mut cursor_y = get_y_points(&current_page, table.position.1);
+    let page_height = current_page.height();
 
     current_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
@@ -1690,5 +1698,11 @@ pub fn draw_table<'a>(
     );
     current_page.regenerate_content()?;
 
-    Ok((final_x, final_y))
+    let mut y_device = page_height - final_y;
+
+    if y_device.value < 0f32 {
+        y_device.value = 0f32;
+    }
+
+    Ok((final_x, y_device))
 }

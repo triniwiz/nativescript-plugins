@@ -107,6 +107,8 @@ class ViewController: UIViewController {
         tab.head = [[first, last]]
         tab.foot = tab.head
         tab.position = [0, 10]
+    
+    /*
         tab.body = [
           [NSCPdfTableCellOrString.String("Osei"), NSCPdfTableCellOrString.String("Fortune")],
           [NSCPdfTableCellOrString.String("Liam"), NSCPdfTableCellOrString.String("Nguyen")],
@@ -211,6 +213,7 @@ class ViewController: UIViewController {
           [NSCPdfTableCellOrString.String("Leo"), NSCPdfTableCellOrString.String("Deng")],
           [NSCPdfTableCellOrString.String("Hailey"), NSCPdfTableCellOrString.String("Abebe")]
         ]
+    */
 
         return tab
       

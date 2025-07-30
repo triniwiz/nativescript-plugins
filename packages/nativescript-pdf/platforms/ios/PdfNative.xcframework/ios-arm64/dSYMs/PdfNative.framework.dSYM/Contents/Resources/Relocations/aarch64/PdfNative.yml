@@ -2,8 +2,8 @@
 triple:          'arm64-apple-darwin'
 binary-path:     '/Users/triniwiz/Desktop/oss/nativescript-plugins/packages/nativescript-pdf/src-native/ios/dist/Release-iphoneos/PdfNative.framework/PdfNative'
 relocations:
-  - { offset: 0x5A36E, size: 0x8, addend: 0x0, symName: _PdfNativeVersionString, symObjAddr: 0x0, symBinAddr: 0x10C790, symSize: 0x0 }
-  - { offset: 0x5A3A3, size: 0x8, addend: 0x0, symName: _PdfNativeVersionNumber, symObjAddr: 0x30, symBinAddr: 0x10C7C0, symSize: 0x0 }
+  - { offset: 0x5A36E, size: 0x8, addend: 0x0, symName: _PdfNativeVersionString, symObjAddr: 0x0, symBinAddr: 0x10C770, symSize: 0x0 }
+  - { offset: 0x5A3A3, size: 0x8, addend: 0x0, symName: _PdfNativeVersionNumber, symObjAddr: 0x30, symBinAddr: 0x10C7A0, symSize: 0x0 }
   - { offset: 0x5A6CE, size: 0x8, addend: 0x0, symName: '_$s9PdfNative13LDOTiledLayerCMa', symObjAddr: 0x258, symBinAddr: 0x4254, symSize: 0x20 }
   - { offset: 0x5A717, size: 0x8, addend: 0x0, symName: '_$s9PdfNative12LDOTiledViewCfETo', symObjAddr: 0x928, symBinAddr: 0x4910, symSize: 0x10 }
   - { offset: 0x5A83A, size: 0x8, addend: 0x0, symName: '_$s9PdfNative12LDOTiledViewCMa', symObjAddr: 0x1218, symBinAddr: 0x5154, symSize: 0x20 }
