@@ -139,6 +139,10 @@ export class IPDFDocument {
 	setLineWidth(value: number): this;
 
 	table(options: TableOptions): { x: number; y: number };
+
+	saveSync(path: string): boolean;
+
+	save(path: string): Promise<void>;
 }
 
 export class PDFDocument extends IPDFDocument {

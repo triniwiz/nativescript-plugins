@@ -43,7 +43,7 @@ export class PDFView extends PDFViewBase {
 						const view = ref.get();
 						view.notify({ eventName: 'pageChanged', object: view, currentPage: index });
 					},
-				})
+				}),
 			);
 		}
 	}
@@ -584,7 +584,7 @@ export class PDFDocument implements IPDFDocument {
 			opts.setBody(parseTableCellOrString(options.body));
 
 			opts.setFoot(parseTableCellOrString(options.foot));
-			
+
 			let hasPosition = false;
 			const position = [0, 0];
 
@@ -688,7 +688,7 @@ export class PDFDocument implements IPDFDocument {
 							reject(new Error(result.toString()));
 						}
 					},
-				})
+				}),
 			);
 		});
 	}
