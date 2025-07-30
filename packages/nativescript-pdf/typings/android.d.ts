@@ -1,3 +1,5 @@
+/// <reference path="android-declarations.d.ts"/>
+
 declare module io {
 	export module github {
 		export module triniwiz {
@@ -82,54 +84,57 @@ declare module io {
 				export module pdf {
 					export class PdfDocument {
 						public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.PdfDocument>;
-						public addText(text: string, x: number, y: number): void;
-						public constructor(it: io.github.triniwiz.plugins.pdf.PdfDocumentConfig);
-						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number): void;
 						public circle(x: number, y: number, r: number, style: io.github.triniwiz.plugins.pdf.PdfStyle): void;
-						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number): void;
-						public setFontColor(r: number, g: number, b: number): void;
-						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number, style: io.github.triniwiz.plugins.pdf.PdfStyle): void;
 						public setFillColor(r: number, g: number, b: number): void;
 						public setDrawColor(r: number, g: number, b: number, a: number): void;
 						public addPage(size: io.github.triniwiz.plugins.pdf.PdfPagerSize, orientation: io.github.triniwiz.plugins.pdf.PdfOrientation): void;
 						public finalize(): void;
-						public setFontSize(value: number): void;
-						public saveSync(this_: string): void;
-						public ellipse(x: number, y: number, rx: number, ry: number): void;
+						public addImage(image: string, mime: string, x: number, y: number, width: java.lang.Integer): void;
 						public rect(x: number, y: number, width: number, height: number): void;
-						public getFontSize(): number;
 						public addImage(bytes: androidNative.Array<number>, x: number, y: number): void;
 						public addText(this_: string, text: number, x: number, y: io.github.triniwiz.plugins.pdf.PdfTextOptions): void;
 						public constructor(document: java.lang.Long, config: io.github.triniwiz.plugins.pdf.PdfDocumentConfig);
 						public rect(x: number, y: number, width: number, height: number, style: io.github.triniwiz.plugins.pdf.PdfStyle): void;
-						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap, rect: globalAndroid.graphics.Rect, scale: number): void;
 						public setDrawColor(r: number, g: number, b: number): void;
-						public setFontColor(r: number, g: number, b: number, a: number): void;
 						public getConfig(): io.github.triniwiz.plugins.pdf.PdfDocumentConfig;
-						public count(): number;
 						public constructor();
-						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
 						public save(path: string, callback: any): void;
+						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer): void;
+						public table(thisCollection$iv: io.github.triniwiz.plugins.pdf.table.PdfTable): string;
+						public addImage(image: string, mime: string, x: number, y: number): void;
+						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: java.lang.Integer): void;
+						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap): void;
+						public addPage(size: io.github.triniwiz.plugins.pdf.PdfPagerSize): void;
+						public addText(text: string, x: number, y: number): void;
+						public constructor(it: io.github.triniwiz.plugins.pdf.PdfDocumentConfig);
+						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number): void;
+						public addImage(this_: string, image: string, mime: number, x: number, y: java.lang.Integer, width: java.lang.Integer): void;
+						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number): void;
+						public setFontColor(r: number, g: number, b: number): void;
+						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number, style: io.github.triniwiz.plugins.pdf.PdfStyle): void;
+						public setFontSize(value: number): void;
+						public saveSync(this_: string): void;
+						public ellipse(x: number, y: number, rx: number, ry: number): void;
+						public getFontSize(): number;
+						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap, rect: globalAndroid.graphics.Rect, scale: number): void;
+						public setFontColor(r: number, g: number, b: number, a: number): void;
+						public count(): number;
+						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
 						public getHeight(): number;
 						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
 						public getNativeDocument$pdf_release(): number;
 						public setNativeDocument$pdf_release(value: number): void;
 						public addPage(): void;
-						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer): void;
 						public addImage(bytes: androidNative.Array<number>, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
 						public setFillColor(r: number, g: number, b: number, a: number): void;
-						public table(thisCollection$iv: io.github.triniwiz.plugins.pdf.table.PdfTable): string;
 						public getWidth(): number;
 						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number): void;
 						public circle(x: number, y: number, r: number): void;
 						public ellipse(x: number, y: number, rx: number, ry: number, style: io.github.triniwiz.plugins.pdf.PdfStyle): void;
 						public getLineWidth(): number;
 						public setLineWidth(value: number): void;
-						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: java.lang.Integer): void;
 						public addImage(bytes: androidNative.Array<number>, x: number, y: number, width: java.lang.Integer): void;
 						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap, rect: globalAndroid.graphics.Rect): void;
-						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap): void;
-						public addPage(size: io.github.triniwiz.plugins.pdf.PdfPagerSize): void;
 					}
 					export module PdfDocument {
 						export class Companion {
@@ -556,7 +561,7 @@ declare module io {
 						public setDocument(this_: io.github.triniwiz.plugins.pdf.PdfDocument): void;
 						public loadFromBuffer(buffer: java.nio.ByteBuffer): void;
 						public setListener(value: io.github.triniwiz.plugins.pdf.PdfView.Listener): void;
-						public constructor($this$handlerThread_u24lambda_u241: globalAndroid.content.Context, value: globalAndroid.util.AttributeSet);
+						public constructor($this$handlerThread_u24lambda_u241: globalAndroid.content.Context, set: globalAndroid.util.AttributeSet);
 						public onSizeChanged(w: number, h: number, oldw: number, oldh: number): void;
 						public loadFromBuffer(buffer: java.nio.ByteBuffer, password: string): void;
 						public getCanSnap(): boolean;

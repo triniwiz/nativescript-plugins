@@ -114,6 +114,8 @@ export class IPDFDocument {
 
 	addImage(bitmap: Image, x: number, y: number, width?: number, height?: number): this;
 
+	addImage(data: string, mime: string, x: number, y: number, width?: number, height?: number): this;
+
 	setFontColor(r: number, g: number, b: number, a?: number): this;
 
 	setFillColor(r: number, g: number, b: number, a?: number): this;

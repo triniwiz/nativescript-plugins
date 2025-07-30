@@ -1488,6 +1488,102 @@
 					{
 						"kind": "Function",
 						"name": "addImage",
+						"printedName": "addImage(base64:_:_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)addImageWithBase64::::",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC8addImage6base64___ySS_SSS2ftF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "addImage",
+						"printedName": "addImage(base64:_:_:_:_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Void",
+								"printedName": "()"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "String",
+								"printedName": "Swift.String",
+								"usr": "s:SS"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfDocument(im)addImageWithBase64::::::",
+						"mangledName": "$s9PdfNative14NSCPdfDocumentC8addImage6base64_____ySS_SSS4ftF",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "addImage",
 						"printedName": "addImage(_:_:_:)",
 						"children": [
 							{
@@ -17567,42 +17663,42 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7785,
+			"offset": 9053,
 			"length": 4,
 			"value": "true"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7814,
+			"offset": 9082,
 			"length": 5,
 			"value": "false"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 7846,
+			"offset": 9114,
 			"length": 5,
 			"value": "false"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 9662,
+			"offset": 10930,
 			"length": 4,
 			"value": "true"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 9691,
+			"offset": 10959,
 			"length": 5,
 			"value": "false"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfDocument.swift",
 			"kind": "BooleanLiteral",
-			"offset": 9723,
+			"offset": 10991,
 			"length": 5,
 			"value": "false"
 		},

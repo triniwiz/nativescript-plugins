@@ -66,6 +66,8 @@ import _SwiftConcurrencyShims
   @objc public func addPage()
   @objc public func addPage(size: PdfNative.NSCPdfPagerSize = .a4(), orientation: PdfNative.NSCPdfOrientation = .Portrait)
   @objc public func addText(_ text: Swift.String, _ x: Swift.Float, _ y: Swift.Float, _ options: PdfNative.NSCPdfTextOptions? = nil)
+  @objc public func addImage(base64: Swift.String, _ mime: Swift.String, _ x: Swift.Float, _ y: Swift.Float)
+  @objc public func addImage(base64: Swift.String, _ mime: Swift.String, _ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float)
   @objc public func addImage(_ image: UIKit.UIImage, _ x: Swift.Float, _ y: Swift.Float)
   @objc public func addImage(_ image: UIKit.UIImage, _ x: Swift.Float, _ y: Swift.Float, _ width: Swift.Float, _ height: Swift.Float)
   @objc public func addImage(data: Foundation.NSData, _ x: Swift.Float, _ y: Swift.Float)

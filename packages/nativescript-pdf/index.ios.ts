@@ -513,16 +513,21 @@ export class PDFDocument implements IPDFDocument {
 		return this;
 	}
 
-	addImage(bitmap: Image | ImageSource, x: number, y: number, width?: number, height?: number) {
+	addImage(bitmap: Image | ImageSource, x: number, y: number, width?: number, height?: number);
+	addImage(bitmap: string, mime: string, x: number, y: number, width?: number, height?: number);
+	addImage(bitmap: any, xorMime: any, xOrY: number, widthOrY?: number, heightOrWidth?: number, height?: number) {
 		if (bitmap instanceof Image) {
 			// @ts-ignore
-			this[native_].addImage(bitmap.ios, x, y, width ?? -1, height ?? -1);
+			this[native_].addImage(bitmap.ios, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap instanceof ImageSource) {
 			// @ts-ignore
-			this[native_].addImage(bitmap.ios, x, y, width ?? -1, height ?? -1);
+			this[native_].addImage(bitmap.ios, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if ((bitmap as any) instanceof UIImage) {
 			// @ts-ignore
-			this[native_].addImage(bitmap as never, x, y, width ?? -1, height ?? -1);
+			this[native_].addImage(bitmap as never, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
+			// @ts-ignore
+			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, heightOrWidth ?? -1, height ?? -1);
 		}
 		return this;
 	}

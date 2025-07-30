@@ -146,6 +146,44 @@ public class NSCPdfDocument: NSObject {
     pdf_native_document_add_text(pdfDocument, text, x, y, &opts)
   }
   
+  public func addImage(base64: String, _ mime: String, _ x: Float, _ y: Float){
+    var data: NSData?
+    switch(mime){
+    case "JPG","JPEG", "PNG":
+      let input = base64.split(separator: ",")
+      if(input.count > 1){
+        data = NSData(base64Encoded: String(input[1]),  options: .ignoreUnknownCharacters)
+      }else {
+        data = NSData(base64Encoded: base64,  options: .ignoreUnknownCharacters)
+      }
+      break
+    default: break
+    }
+    guard let data = data else {return}
+    pdf_native_document_add_image(pdfDocument, data.bytes, UInt32(data.length), x, y, -1, -1)
+  }
+  
+  
+  public func addImage(base64: String, _ mime: String, _ x: Float, _ y: Float, _ width: Float, _ height: Float){
+    var data: NSData?
+    switch(mime){
+    case "JPG","JPEG", "PNG":
+      let input = base64.split(separator: ",")
+      if(input.count > 1){
+        data = NSData(base64Encoded: String(input[1]),  options: .ignoreUnknownCharacters)
+      }else {
+        data = NSData(base64Encoded: base64,  options: .ignoreUnknownCharacters)
+      }
+      break
+    default: break
+    }
+    guard let data = data else {return}
+    pdf_native_document_add_image(pdfDocument, data.bytes, UInt32(data.length), x, y, Int32(ceil(width)),Int32(ceil(height)))
+  }
+  
+  
+ 
+  
   public func addImage(_ image: UIImage, _ x: Float, _ y: Float){
     guard let data = NSCPdfDocument.getBytesFromUIImage(image) else {return}
     pdf_native_document_add_raw_image(pdfDocument, data.mutableBytes, UInt32(data.length),UInt32(image.size.width),UInt32(image.size.height), x, y, -1, -1)

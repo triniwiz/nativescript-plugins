@@ -2,6 +2,7 @@ package io.github.triniwiz.plugins.pdf
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.util.Base64
 import io.github.triniwiz.plugins.pdf.table.ColumnDef
 import io.github.triniwiz.plugins.pdf.table.ColumnKey
 import io.github.triniwiz.plugins.pdf.table.PdfTable
@@ -132,6 +133,30 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       )
     }
   }
+
+  @JvmOverloads
+  fun addImage(
+    image: String,
+    mime: String,
+    x: Float,
+    y: Float,
+    width: Int? = -1,
+    height: Int? = -1
+  ) {
+    when (mime) {
+      "JPG", "JPEG", "PNG", "WEBP" -> {
+        val input = image.split(",")
+        var img: ByteArray = if (input.size > 1) {
+          input[1].toByteArray()
+        } else {
+          image.toByteArray()
+        }
+        val decoded = Base64.decode(img, Base64.NO_WRAP)
+        nativeAddImage(nativeDocument, decoded, x, y, width ?: -1, height ?: -1)
+      }
+    }
+  }
+
 
   @JvmOverloads
   fun addImage(bitmap: Bitmap, x: Float, y: Float, width: Int? = -1, height: Int? = -1) {

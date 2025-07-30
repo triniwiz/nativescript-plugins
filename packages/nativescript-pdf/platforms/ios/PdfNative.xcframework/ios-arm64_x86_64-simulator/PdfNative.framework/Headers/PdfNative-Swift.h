@@ -408,6 +408,8 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (void)addPage;
 - (void)addPageWithSize:(NSCPdfPagerSize * _Nonnull)size orientation:(enum NSCPdfOrientation)orientation;
 - (void)addText:(NSString * _Nonnull)text :(float)x :(float)y :(NSCPdfTextOptions * _Nullable)options;
+- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y;
+- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y :(float)width :(float)height;
 - (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y;
 - (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y :(float)width :(float)height;
 - (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y;
@@ -1218,6 +1220,8 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (void)addPage;
 - (void)addPageWithSize:(NSCPdfPagerSize * _Nonnull)size orientation:(enum NSCPdfOrientation)orientation;
 - (void)addText:(NSString * _Nonnull)text :(float)x :(float)y :(NSCPdfTextOptions * _Nullable)options;
+- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y;
+- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y :(float)width :(float)height;
 - (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y;
 - (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y :(float)width :(float)height;
 - (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y;

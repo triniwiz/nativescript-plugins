@@ -215,6 +215,8 @@ declare class NSCPdfDocument extends NSObject {
 
 	addImage(image: UIImage, x: number, y: number, width: number, height: number): void;
 
+	addImageWithBase64(base64: string, mime: string, x: number, y: number, width: number, height: number): void;
+
 	addImageWithData(data: NSData, x: number, y: number, width: number, height: number): void;
 
 	addPage(): void;

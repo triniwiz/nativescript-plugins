@@ -479,13 +479,17 @@ export class PDFDocument implements IPDFDocument {
 		return this;
 	}
 
-	addImage(bitmap: Image | ImageSource, x: number, y: number, width?: number, height?: number) {
+	addImage(bitmap: Image | ImageSource, x: number, y: number, width?: number, height?: number);
+	addImage(bitmap: string, mime: string, x: number, y: number, width?: number, height?: number);
+	addImage(bitmap: any, xorMime: any, xOrY: number, widthOrY?: number, heightOrWidth?: number, height?: number) {
 		if (bitmap instanceof Image) {
-			this[native_].addImage(bitmap.android, x, y, java.lang.Integer.valueOf(width ?? -1), java.lang.Integer.valueOf(height ?? -1));
+			this[native_].addImage(bitmap.android, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
 		} else if (bitmap instanceof ImageSource) {
-			this[native_].addImage(bitmap.android, x, y, java.lang.Integer.valueOf(width ?? -1), java.lang.Integer.valueOf(height ?? -1));
+			this[native_].addImage(bitmap.android, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
 		} else if ((bitmap as any) instanceof globalAndroid.graphics.Bitmap) {
-			this[native_].addImage(bitmap as never, x, y, java.lang.Integer.valueOf(width ?? -1), java.lang.Integer.valueOf(height ?? -1));
+			this[native_].addImage(bitmap as never, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
+			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, java.lang.Integer.valueOf(heightOrWidth ?? -1), java.lang.Integer.valueOf(height ?? -1));
 		}
 		return this;
 	}
