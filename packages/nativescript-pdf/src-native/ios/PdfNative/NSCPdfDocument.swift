@@ -403,11 +403,11 @@ public class NSCPdfDocument: NSObject {
   }
   
   
-  static func getWidth(_ measureOutput: Int64) -> Float {
+  static func getFirst(_ measureOutput: Int64) -> Float {
         return Float(bitPattern: UInt32(0xFFFFFFFF & (measureOutput  >> 32)))
     }
     
-    static  func getHeight(_ measureOutput: Int64) -> Float {
+    static  func getSecond(_ measureOutput: Int64) -> Float {
         return Float(bitPattern: UInt32(0xFFFFFFFF & measureOutput))
     }
   
@@ -415,7 +415,7 @@ public class NSCPdfDocument: NSObject {
   public func table(_ config: NSCPdfTable) -> String{
     var pdfium = config.pdfium(self.config.units)
     let output = pdf_native_document_table(pdfDocument, &pdfium)
-    return String(format: "{ \"width\": %.2f, \"height\": %.2f }", NSCPdfDocument.getWidth(output), NSCPdfDocument.getHeight(output))
+    return String(format: "{ \"x\": %.2f, \"y\": %.2f }", NSCPdfDocument.getFirst(output), NSCPdfDocument.getSecond(output))
   }
   
   

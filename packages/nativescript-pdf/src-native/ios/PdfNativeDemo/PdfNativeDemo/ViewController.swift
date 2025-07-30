@@ -15,9 +15,10 @@ class ViewController: UIViewController {
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-      let output = document.table(buildTable())
+    //  let output = document.table(buildTable())
+      buildDoc(document: document)
       
-      print(output)
+
       
     
       
@@ -226,13 +227,15 @@ class ViewController: UIViewController {
     document.setFontColor(100, 100, 100)
     let options = NSCPdfTextOptions()
     options.baseline = NSCPdfTextBaseline.top
-    options.align = NSCPdfTextAlignment.center
+    options.align = NSCPdfTextAlignment.left
     document.addText("Hello World 1", (document.width / 2) - 250, 0, options)
     
-    do {
-      let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
-      document.addImage(image!, 0, 0, 100, 100)
-    }catch {}
+    document.addText("Hello World 2", 120, 50)
+    
+//    do {
+//      let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
+//      document.addImage(image!, 0, 0, 100, 100)
+//    }catch {}
          document.addPage()
          document.fontSize = 50
          document.setFontColor(

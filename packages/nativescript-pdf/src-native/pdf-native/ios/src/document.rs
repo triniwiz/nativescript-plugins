@@ -6,6 +6,7 @@ use pdf_core::document::{
     PdfNativeRotationOrMatrix, PdfNativeStyle, PdfNativeTextOptions,
 };
 use pdf_core::table::CPdfTable;
+use pdf_core::utils::to_unit;
 use std::ffi::{c_char, c_int, c_uint, c_void, CStr, CString};
 
 pub struct CPdfNativeDocument(pub(crate) PdfNativeDocument<'static>);
@@ -469,7 +470,10 @@ pub extern "C" fn pdf_native_document_table(
         let (x, y) = instance
             .0
             .table(&config)
-            .map(|(x, y)| (x.value, y.value))
+            .map(|(x, y)| {
+                let unit = instance.0.unit();
+                (to_unit(x, unit), to_unit(y, unit))
+            })
             .unwrap_or((-1., -1.));
 
         make(x, y)

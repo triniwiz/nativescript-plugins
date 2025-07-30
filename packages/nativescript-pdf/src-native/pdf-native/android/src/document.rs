@@ -19,7 +19,7 @@ use pdf_core::table::{
     PdfNativeShowFoot, PdfNativeShowHead, PdfNativeTableTheme, PdfTable, StyleDef, TableCell,
     TableCellOrString,
 };
-use pdf_core::utils::{read_float, read_int, to_points};
+use pdf_core::utils::{read_float, read_int, to_points, to_unit};
 use pdf_core::{PdfColor, PdfNative, PdfPoints};
 use std::collections::HashMap;
 
@@ -1207,7 +1207,10 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
 
         let (x, y) = instance
             .table(&table)
-            .map(|(x, y)| (x.value, y.value))
+            .map(|(x, y)| {
+                let unit = instance.unit();
+                (to_unit(x, unit), to_unit(y, unit))
+            })
             .unwrap_or((-1., -1.));
 
         make(x, y)

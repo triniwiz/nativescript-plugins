@@ -33,9 +33,9 @@ public enum NSCPdfOrientation: Int32, RawRepresentable {
   internal var pdfium: PdfNativeOrientation {
     switch self {
     case .Landscape:
-      return PdfNativeOrientation_Portrait
-    case .Portrait:
       return PdfNativeOrientation_Landscape
+    case .Portrait:
+      return PdfNativeOrientation_Portrait
     }
   }
 }

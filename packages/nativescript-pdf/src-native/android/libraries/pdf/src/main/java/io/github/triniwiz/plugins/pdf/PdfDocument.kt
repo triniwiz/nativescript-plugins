@@ -146,7 +146,7 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     when (mime) {
       "JPG", "JPEG", "PNG", "WEBP" -> {
         val input = image.split(",")
-        var img: ByteArray = if (input.size > 1) {
+        val img: ByteArray = if (input.size > 1) {
           input[1].toByteArray()
         } else {
           image.toByteArray()
@@ -236,11 +236,11 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
   }
 
 
-  private fun getWidth(measureOutput: Long): Float {
+  private fun getFirst(measureOutput: Long): Float {
     return java.lang.Float.intBitsToFloat(-0x1 and (measureOutput shr 32).toInt())
   }
 
-  private fun getHeight(measureOutput: Long): Float {
+  private fun getSecond(measureOutput: Long): Float {
     return java.lang.Float.intBitsToFloat(-0x1 and measureOutput.toInt())
   }
 
@@ -265,7 +265,7 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       config.showHead.value,
       config.showFoot.value
     )
-    return "{width:${"%.2f".format(getWidth(output))}, height:${"%.2f".format(getHeight(output))}}"
+    return "{x:${"%.2f".format(getFirst(output))}, y:${"%.2f".format(getSecond(output))}}"
   }
 
   fun saveSync(path: String) {

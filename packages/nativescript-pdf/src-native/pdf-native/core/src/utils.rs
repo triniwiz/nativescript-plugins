@@ -29,6 +29,16 @@ pub fn to_points(value: f32, unit: PdfNativeUnit) -> PdfPoints {
     }
 }
 
+#[inline]
+pub fn to_unit(value: PdfPoints, unit: PdfNativeUnit) -> f32 {
+    match unit {
+        PdfNativeUnit::Mm => value.to_mm(),
+        PdfNativeUnit::Points => value.value,
+        PdfNativeUnit::Cm => value.to_cm(),
+        PdfNativeUnit::Inches => value.to_inches(),
+    }
+}
+
 #[cfg(target_endian = "big")]
 pub fn read_float(buffer: &[u8], offset: usize) -> f32 {
     let length = buffer.len();

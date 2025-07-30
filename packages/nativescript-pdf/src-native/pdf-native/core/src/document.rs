@@ -904,7 +904,7 @@ impl<'a> PdfNativeDocument<'a> {
 
         if options.align == PdfNativeTextAlignment::Justify {
             let mut page = document.pages_mut().get(index)?;
-            let x = PdfPoints::new(x);
+            let x = to_points(x, data.units);
             let y = get_y(&page, y, data.units);
             let _ = Self::draw_justified_text(
                 document,
@@ -929,7 +929,7 @@ impl<'a> PdfNativeDocument<'a> {
 
             let mut text_object = PdfPageTextObject::new(document, text, font, font_size)?;
 
-            let x = PdfPoints::new(x);
+            let x = to_points(x, data.units);
             let y = get_y(&page, y, data.units);
             let width = text_object.width()?;
             let height = text_object.height()?;
@@ -1086,7 +1086,7 @@ impl<'a> PdfNativeDocument<'a> {
         )?;
 
         let image_height = image_obj.height()?;
-        let _ = image_obj.translate(PdfPoints::new(x), y - image_height)?;
+        let _ = image_obj.translate(to_points(x, data.units), y - image_height)?;
         page.regenerate_content()?;
         page.set_content_regeneration_strategy(
             PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
@@ -1128,7 +1128,7 @@ impl<'a> PdfNativeDocument<'a> {
                 .map(PdfPoints::new),
         )?;
         let image_height = image_obj.height()?;
-        image_obj.translate(PdfPoints::new(x), y - image_height)?;
+        image_obj.translate(to_points(x, data.units), y - image_height)?;
         page.set_content_regeneration_strategy(
             PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
         );

@@ -1,5 +1,5 @@
 use crate::document::{PdfNativeDocumentData, PdfNativeUnit};
-use crate::utils::get_y_points;
+use crate::utils::{get_y_points, to_points};
 use parking_lot::lock_api::MutexGuard;
 use parking_lot::RawMutex;
 use pdfium_render::prelude::*;
@@ -1700,7 +1700,7 @@ pub fn draw_table<'a>(
 
     let mut y_device = page_height - final_y;
 
-    if y_device.value < 0f32 {
+    if y_device.value < 0f32 || y_device.value.is_nan() {
         y_device.value = 0f32;
     }
 
