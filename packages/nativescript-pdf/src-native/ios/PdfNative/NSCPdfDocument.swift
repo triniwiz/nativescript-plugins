@@ -415,7 +415,7 @@ public class NSCPdfDocument: NSObject {
   public func table(_ config: NSCPdfTable) -> String{
     var pdfium = config.pdfium(self.config.units)
     let output = pdf_native_document_table(pdfDocument, &pdfium)
-    return "{ width: \(NSCPdfDocument.getWidth(output)) , height: \(NSCPdfDocument.getHeight(output)) }"
+    return String(format: "{ \"width\": %.2f, \"height\": %.2f }", NSCPdfDocument.getWidth(output), NSCPdfDocument.getHeight(output))
   }
   
   

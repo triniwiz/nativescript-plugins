@@ -413,7 +413,7 @@ function parseStyleDef(style: StyleDef) {
 }
 
 function parseTableCellOrString(value: TableCellOrString[][]) {
-	if (Array.isArray(value)) {
+	if (Array.isArray(value) && value.length > 0) {
 		const length = value.length;
 		const nativeArray = NSMutableArray.alloc().initWithCapacity(length);
 		for (let i = 0; i < length; i++) {
@@ -431,14 +431,17 @@ function parseTableCellOrString(value: TableCellOrString[][]) {
 						nativeInnerArray.insertObjectAtIndex(NSCPdfTableCellOrString.Cell(cell), j);
 					} else if (type === 'string') {
 						nativeInnerArray.insertObjectAtIndex(NSCPdfTableCellOrString.alloc().initWithStringCell(inner as never, null), j);
+					} else if (type === 'undefined' || inner === null) {
+						nativeInnerArray.insertObjectAtIndex(NSCPdfTableCellOrString.alloc().initWithStringCell(`${inner}`, null), j);
 					}
 				}
 			}
 			nativeArray.insertObjectAtIndex(nativeInnerArray, i);
 		}
 		return nativeArray;
+	} else {
+		return NSArray.new();
 	}
-	return [];
 }
 
 export class PDFDocument implements IPDFDocument {

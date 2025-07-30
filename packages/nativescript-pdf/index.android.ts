@@ -399,7 +399,7 @@ function parseStyleDef(style: StyleDef) {
 }
 
 function parseTableCellOrString(value: TableCellOrString[][]) {
-	if (Array.isArray(value)) {
+	if (Array.isArray(value) && value.length > 0) {
 		const length = value.length;
 		const nativeArray = Array.create('[Lio.github.triniwiz.plugins.pdf.table.TableCellOrString;', length);
 		for (let i = 0; i < length; i++) {

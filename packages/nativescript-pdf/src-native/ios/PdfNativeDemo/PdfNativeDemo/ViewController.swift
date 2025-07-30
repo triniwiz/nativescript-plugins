@@ -105,8 +105,9 @@ class ViewController: UIViewController {
         tab.headStyles = style
         tab.footStyles = foot_style
         tab.head = [[first, last]]
-        tab.foot = tab.head
+       // tab.foot = tab.head
         tab.position = [0, 10]
+        tab.body = []
     
     /*
         tab.body = [

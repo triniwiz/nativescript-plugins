@@ -265,7 +265,7 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       config.showHead.value,
       config.showFoot.value
     )
-    return "{width:${getWidth(output)}, height:${getHeight(output)} }"
+    return "{width:${"%.2f".format(getWidth(output))}, height:${"%.2f".format(getHeight(output))}}"
   }
 
   fun saveSync(path: String) {
