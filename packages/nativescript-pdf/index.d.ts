@@ -103,6 +103,7 @@ interface TableOptions {
 	pageBreak?: PageBreak;
 	showHead?: ShowHead;
 	showFoot?: ShowFoot;
+	margin?: [number, number, number, number] | [number, number, number] | [number, number] | [number] | number;
 }
 
 export class IPDFDocument {

@@ -1,6 +1,6 @@
-use crate::table::{draw_table, PdfTable};
-use crate::utils::{get_y, to_points, to_unit};
 use crate::PdfNative;
+use crate::table::{PdfTable, draw_table};
+use crate::utils::{get_y, to_points, to_unit};
 use image::GenericImageView;
 use parking_lot::Mutex;
 use pdfium_render::prelude::*;

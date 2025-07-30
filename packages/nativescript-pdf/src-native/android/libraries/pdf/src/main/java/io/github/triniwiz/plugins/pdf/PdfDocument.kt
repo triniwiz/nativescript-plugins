@@ -263,7 +263,11 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       config.theme.value,
       config.pageBreak.value,
       config.showHead.value,
-      config.showFoot.value
+      config.showFoot.value,
+      config.margin.left,
+      config.margin.top,
+      config.margin.right,
+      config.margin.bottom,
     )
     return "{x:${"%.2f".format(getFirst(output))}, y:${"%.2f".format(getSecond(output))}}"
   }
@@ -471,6 +475,10 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       pageBreak: Int,
       showHead: Int,
       showFoot: Int,
+      marginLeft: Float,
+      marginTop: Float,
+      marginRight: Float,
+      marginBottom: Float,
     ): Long
 
 

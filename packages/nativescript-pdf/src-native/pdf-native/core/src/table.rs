@@ -1,5 +1,5 @@
 use crate::document::{PdfNativeDocumentData, PdfNativeUnit};
-use crate::utils::get_y_points;
+use crate::utils::{get_y_points, to_points};
 use parking_lot::lock_api::MutexGuard;
 use parking_lot::RawMutex;
 use pdfium_render::prelude::*;
@@ -404,6 +404,40 @@ pub struct CPdfNativePadding {
 }
 
 impl CPdfNativePadding {
+    pub fn all(p: CPdfNativePoints) -> Self {
+        Self {
+            top: p,
+            right: p,
+            bottom: p,
+            left: p,
+        }
+    }
+    pub fn merge(&mut self, other: &CPdfNativePadding) {
+        if other.top.changed {
+            self.top = other.top;
+        }
+        if other.bottom.changed {
+            self.bottom = other.bottom;
+        }
+        if other.left.changed {
+            self.left = other.left;
+        }
+        if other.right.changed {
+            self.right = other.right;
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy)]
+pub struct CPdfNativeMargin {
+    pub top: CPdfNativePoints,
+    pub right: CPdfNativePoints,
+    pub bottom: CPdfNativePoints,
+    pub left: CPdfNativePoints,
+}
+
+impl CPdfNativeMargin {
     pub fn all(p: CPdfNativePoints) -> Self {
         Self {
             top: p,
@@ -955,6 +989,7 @@ pub struct CPdfTable {
     pub page_break: PdfNativePageBreak,
     pub show_head: PdfNativeShowHead,
     pub show_foot: PdfNativeShowFoot,
+    pub margin: CPdfNativeMargin,
 }
 
 impl Into<PdfTable> for CPdfTable {
@@ -1030,6 +1065,7 @@ impl Into<PdfTable> for CPdfTable {
             page_break: self.page_break,
             show_head: self.show_head,
             show_foot: self.show_foot,
+            margin: self.margin,
         }
     }
 }
@@ -1100,6 +1136,7 @@ impl From<&CPdfTable> for PdfTable {
             page_break: value.page_break,
             show_head: value.show_head,
             show_foot: value.show_foot,
+            margin: value.margin,
         }
     }
 }
@@ -1121,6 +1158,7 @@ pub struct PdfTable {
     pub page_break: PdfNativePageBreak,
     pub show_head: PdfNativeShowHead,
     pub show_foot: PdfNativeShowFoot,
+    pub margin: CPdfNativeMargin,
 }
 
 impl Default for PdfTable {
@@ -1141,6 +1179,11 @@ impl Default for PdfTable {
             page_break: Default::default(),
             show_head: Default::default(),
             show_foot: Default::default(),
+            margin: CPdfNativeMargin::all(CPdfNativePoints {
+                value: 40.0,
+                unit: PdfNativeUnit::Mm,
+                changed: false,
+            }),
         }
     }
 }
@@ -1595,7 +1638,16 @@ pub fn draw_table<'a>(
 
     let mut current_page = page;
 
-    let available_width = current_page.width() - table.position.0;
+    let page_width = current_page.width();
+    let page_height = current_page.height();
+
+    let margin_right = to_points(table.margin.right.value, data.units);
+    let margin_bottom = to_points(table.margin.bottom.value, data.units);
+
+    let x_start = table.position.0 + to_points(table.margin.left.value, data.units);
+    let y_start = table.position.1 + to_points(table.margin.top.value, data.units);
+
+    let available_width = page_width - x_start - margin_right;
     let total_auto_width = auto_widths
         .iter()
         .copied()
@@ -1610,15 +1662,14 @@ pub fn draw_table<'a>(
         vec![PdfPoints::ZERO; auto_widths.len()]
     };
 
-    let bottom_margin = PdfPoints::new(20.0);
+    let bottom_margin = margin_bottom;
 
     let footer_height = foot
         .iter()
         .map(|row| compute_row_height(document, row, &scaled_widths))
         .try_fold(PdfPoints::ZERO, |acc, h| h.map(|h| acc + h))?;
 
-    let mut cursor_y = get_y_points(&current_page, table.position.1);
-    let page_height = current_page.height();
+    let mut cursor_y = get_y_points(&current_page, y_start);
 
     current_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
@@ -1632,7 +1683,7 @@ pub fn draw_table<'a>(
                 &mut current_page,
                 row,
                 cursor_y,
-                table.position.0,
+                x_start,
                 &scaled_widths,
             )?;
         }
@@ -1650,7 +1701,7 @@ pub fn draw_table<'a>(
                     &mut current_page,
                     footer_row,
                     footer_cursor_y,
-                    table.position.0,
+                    x_start,
                     &scaled_widths,
                 )?;
             }
@@ -1659,7 +1710,7 @@ pub fn draw_table<'a>(
             data.current_page = index;
             next_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
-            cursor_y = get_y_points(&next_page, table.position.1);
+            cursor_y = get_y_points(&next_page, y_start);
 
             if matches!(table.show_head, PdfNativeShowHead::EveryPage) {
                 for header_row in &head {
@@ -1668,7 +1719,7 @@ pub fn draw_table<'a>(
                         &mut next_page,
                         header_row,
                         cursor_y,
-                        table.position.0,
+                        x_start,
                         &scaled_widths,
                     )?;
                 }
@@ -1686,12 +1737,12 @@ pub fn draw_table<'a>(
             &mut current_page,
             row,
             cursor_y,
-            table.position.0,
+            x_start,
             &scaled_widths,
         )?;
     }
 
-    let mut final_x = table.position.0;
+    let mut final_x = x_start;
     let mut final_y = cursor_y;
 
     if matches!(

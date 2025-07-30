@@ -1,7 +1,5 @@
 package io.github.triniwiz.plugins.pdf.table
 
-import java.nio.ByteBuffer
-
 class Padding(
   var left: Float,
   var top: Float,

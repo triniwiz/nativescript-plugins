@@ -3814,6 +3814,512 @@
 			},
 			{
 				"kind": "TypeDecl",
+				"name": "NSCPdfMargin",
+				"printedName": "NSCPdfMargin",
+				"children": [
+					{
+						"kind": "Var",
+						"name": "top",
+						"printedName": "top",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(py)top",
+						"mangledName": "$s9PdfNative12NSCPdfMarginC3topSfvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)top",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC3topSfvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)setTop:",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC3topSfvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative12NSCPdfMarginC3topSfvM",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC3topSfvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "left",
+						"printedName": "left",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(py)left",
+						"mangledName": "$s9PdfNative12NSCPdfMarginC4leftSfvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)left",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC4leftSfvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)setLeft:",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC4leftSfvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative12NSCPdfMarginC4leftSfvM",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC4leftSfvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "bottom",
+						"printedName": "bottom",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(py)bottom",
+						"mangledName": "$s9PdfNative12NSCPdfMarginC6bottomSfvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)bottom",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC6bottomSfvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)setBottom:",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC6bottomSfvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative12NSCPdfMarginC6bottomSfvM",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC6bottomSfvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Var",
+						"name": "right",
+						"printedName": "right",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(py)right",
+						"mangledName": "$s9PdfNative12NSCPdfMarginC5rightSfvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)right",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC5rightSfvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "Float",
+										"printedName": "Swift.Float",
+										"usr": "s:Sf"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)setRight:",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC5rightSfvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative12NSCPdfMarginC5rightSfvM",
+								"mangledName": "$s9PdfNative12NSCPdfMarginC5rightSfvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
+						"kind": "Constructor",
+						"name": "init",
+						"printedName": "init(_:_:_:_:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfMargin",
+								"printedName": "PdfNative.NSCPdfMargin",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Constructor",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)init::::",
+						"mangledName": "$s9PdfNative12NSCPdfMarginCyACSf_S3ftcfc",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"init_kind": "Designated"
+					},
+					{
+						"kind": "Constructor",
+						"name": "init",
+						"printedName": "init(uniform:)",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfMargin",
+								"printedName": "PdfNative.NSCPdfMargin",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin"
+							},
+							{
+								"kind": "TypeNominal",
+								"name": "Float",
+								"printedName": "Swift.Float",
+								"usr": "s:Sf"
+							}
+						],
+						"declKind": "Constructor",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)initWithUniform:",
+						"mangledName": "$s9PdfNative12NSCPdfMarginC7uniformACSf_tcfc",
+						"moduleName": "PdfNative",
+						"declAttributes": ["AccessControl", "ObjC"],
+						"init_kind": "Designated"
+					},
+					{
+						"kind": "Constructor",
+						"name": "init",
+						"printedName": "init()",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfMargin",
+								"printedName": "PdfNative.NSCPdfMargin",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin"
+							}
+						],
+						"declKind": "Constructor",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin(im)init",
+						"mangledName": "$s9PdfNative12NSCPdfMarginCACycfc",
+						"moduleName": "PdfNative",
+						"overriding": true,
+						"implicit": true,
+						"objc_name": "init",
+						"declAttributes": ["Dynamic", "ObjC", "Override"],
+						"init_kind": "Designated"
+					}
+				],
+				"declKind": "Class",
+				"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin",
+				"mangledName": "$s9PdfNative12NSCPdfMarginC",
+				"moduleName": "PdfNative",
+				"objc_name": "NSCPdfMargin",
+				"declAttributes": ["AccessControl", "ObjC", "ObjCMembers", "RawDocComment"],
+				"superclassUsr": "c:objc(cs)NSObject",
+				"superclassNames": ["ObjectiveC.NSObject"],
+				"conformances": [
+					{
+						"kind": "Conformance",
+						"name": "Copyable",
+						"printedName": "Copyable",
+						"usr": "s:s8CopyableP",
+						"mangledName": "$ss8CopyableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Escapable",
+						"printedName": "Escapable",
+						"usr": "s:s9EscapableP",
+						"mangledName": "$ss9EscapableP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Equatable",
+						"printedName": "Equatable",
+						"usr": "s:SQ",
+						"mangledName": "$sSQ"
+					},
+					{
+						"kind": "Conformance",
+						"name": "Hashable",
+						"printedName": "Hashable",
+						"usr": "s:SH",
+						"mangledName": "$sSH"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CVarArg",
+						"printedName": "CVarArg",
+						"usr": "s:s7CVarArgP",
+						"mangledName": "$ss7CVarArgP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObservingPublishing",
+						"printedName": "_KeyValueCodingAndObservingPublishing",
+						"usr": "s:10Foundation37_KeyValueCodingAndObservingPublishingP",
+						"mangledName": "$s10Foundation37_KeyValueCodingAndObservingPublishingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "_KeyValueCodingAndObserving",
+						"printedName": "_KeyValueCodingAndObserving",
+						"usr": "s:10Foundation27_KeyValueCodingAndObservingP",
+						"mangledName": "$s10Foundation27_KeyValueCodingAndObservingP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomStringConvertible",
+						"printedName": "CustomStringConvertible",
+						"usr": "s:s23CustomStringConvertibleP",
+						"mangledName": "$ss23CustomStringConvertibleP"
+					},
+					{
+						"kind": "Conformance",
+						"name": "CustomDebugStringConvertible",
+						"printedName": "CustomDebugStringConvertible",
+						"usr": "s:s28CustomDebugStringConvertibleP",
+						"mangledName": "$ss28CustomDebugStringConvertibleP"
+					}
+				]
+			},
+			{
+				"kind": "TypeDecl",
 				"name": "NSCPdfOrientation",
 				"printedName": "NSCPdfOrientation",
 				"children": [
@@ -13350,6 +13856,90 @@
 						]
 					},
 					{
+						"kind": "Var",
+						"name": "margin",
+						"printedName": "margin",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfMargin",
+								"printedName": "PdfNative.NSCPdfMargin",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin"
+							}
+						],
+						"declKind": "Var",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(py)margin",
+						"mangledName": "$s9PdfNative11NSCPdfTableC6marginAA0C6MarginCvp",
+						"moduleName": "PdfNative",
+						"declAttributes": ["HasInitialValue", "HasStorage", "AccessControl", "ObjC"],
+						"hasStorage": true,
+						"accessors": [
+							{
+								"kind": "Accessor",
+								"name": "Get",
+								"printedName": "Get()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "NSCPdfMargin",
+										"printedName": "PdfNative.NSCPdfMargin",
+										"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(im)margin",
+								"mangledName": "$s9PdfNative11NSCPdfTableC6marginAA0C6MarginCvg",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "get"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Set",
+								"printedName": "Set()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									},
+									{
+										"kind": "TypeNominal",
+										"name": "NSCPdfMargin",
+										"printedName": "PdfNative.NSCPdfMargin",
+										"usr": "c:@M@PdfNative@objc(cs)NSCPdfMargin"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTable(im)setMargin:",
+								"mangledName": "$s9PdfNative11NSCPdfTableC6marginAA0C6MarginCvs",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"declAttributes": ["ObjC"],
+								"accessorKind": "set"
+							},
+							{
+								"kind": "Accessor",
+								"name": "Modify",
+								"printedName": "Modify()",
+								"children": [
+									{
+										"kind": "TypeNominal",
+										"name": "Void",
+										"printedName": "()"
+									}
+								],
+								"declKind": "Accessor",
+								"usr": "s:9PdfNative11NSCPdfTableC6marginAA0C6MarginCvM",
+								"mangledName": "$s9PdfNative11NSCPdfTableC6marginAA0C6MarginCvM",
+								"moduleName": "PdfNative",
+								"implicit": true,
+								"accessorKind": "_modify"
+							}
+						]
+					},
+					{
 						"kind": "Function",
 						"name": "updatePosition",
 						"printedName": "updatePosition(_:_:)",
@@ -17752,6 +18342,90 @@
 			"value": "2"
 		},
 		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 180,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 206,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 234,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 261,
+			"length": 5,
+			"value": "false"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 332,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "IntegerLiteral",
+			"offset": 296,
+			"length": 1,
+			"value": "0"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 413,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "IntegerLiteral",
+			"offset": 377,
+			"length": 1,
+			"value": "0"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 495,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "IntegerLiteral",
+			"offset": 457,
+			"length": 1,
+			"value": "0"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "BooleanLiteral",
+			"offset": 575,
+			"length": 4,
+			"value": "true"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfMargin.swift",
+			"kind": "IntegerLiteral",
+			"offset": 538,
+			"length": 1,
+			"value": "0"
+		},
+		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfOrientation.swift",
 			"kind": "IntegerLiteral",
 			"offset": 201,
@@ -18404,22 +19078,29 @@
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
+			"kind": "IntegerLiteral",
+			"offset": 5154,
+			"length": 2,
+			"value": "40"
+		},
+		{
+			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5834,
+			"offset": 5896,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5916,
+			"offset": 5978,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5998,
+			"offset": 6060,
 			"length": 2,
 			"value": "[]"
 		},

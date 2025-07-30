@@ -589,6 +589,25 @@ export class PDFDocument implements IPDFDocument {
 
 			opts.setFoot(parseTableCellOrString(options.foot));
 
+			if (typeof options.margin === 'number') {
+				opts.setMargin(new io.github.triniwiz.plugins.pdf.table.Margin(options.margin));
+			} else if (Array.isArray(options.margin)) {
+				switch (options.margin.length) {
+					case 4:
+						opts.setMargin(new io.github.triniwiz.plugins.pdf.table.Margin(options.margin[0], options.margin[1], options.margin[2], options.margin[3]));
+						break;
+					case 3:
+						opts.setMargin(new io.github.triniwiz.plugins.pdf.table.Margin(options.margin[0], options.margin[1], options.margin[2], options.margin[1]));
+						break;
+					case 2:
+						opts.setMargin(new io.github.triniwiz.plugins.pdf.table.Margin(options.margin[0], options.margin[1], options.margin[0], options.margin[1]));
+						break;
+					case 1:
+						opts.setMargin(new io.github.triniwiz.plugins.pdf.table.Margin(options.margin[0]));
+						break;
+				}
+			}
+
 			let hasPosition = false;
 			const position = [0, 0];
 

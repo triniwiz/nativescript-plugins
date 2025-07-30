@@ -451,6 +451,13 @@ typedef struct CTableCellOrString {
   const struct CTableCell *cell;
 } CTableCellOrString;
 
+typedef struct CPdfNativeMargin {
+  struct CPdfNativePoints top;
+  struct CPdfNativePoints right;
+  struct CPdfNativePoints bottom;
+  struct CPdfNativePoints left;
+} CPdfNativeMargin;
+
 typedef struct CPdfTable {
   const struct CColumnDef *columns;
   uintptr_t columns_size;
@@ -481,6 +488,7 @@ typedef struct CPdfTable {
   enum PdfNativePageBreak page_break;
   enum PdfNativeShowHead show_head;
   enum PdfNativeShowFoot show_foot;
+  struct CPdfNativeMargin margin;
 } CPdfTable;
 
 typedef union PdfNativeRotationOrMatrixData {

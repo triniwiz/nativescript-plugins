@@ -463,6 +463,19 @@ SWIFT_CLASS_NAMED("NSCPdfInfo")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_CLASS_NAMED("NSCPdfMargin")
+@interface NSCPdfMargin : NSObject
+@property (nonatomic) float top;
+@property (nonatomic) float left;
+@property (nonatomic) float bottom;
+@property (nonatomic) float right;
+- (nonnull instancetype)init:(float)top :(float)left :(float)bottom :(float)right OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithUniform:(float)uniform OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 typedef SWIFT_ENUM_NAMED(int32_t, NSCPdfOrientation, "NSCPdfOrientation", open) {
   NSCPdfOrientationLandscape = 0,
   NSCPdfOrientationPortrait = 1,
@@ -692,6 +705,7 @@ SWIFT_CLASS_NAMED("NSCPdfTable")
 @property (nonatomic) enum NSCPdfPageBreak pageBreak;
 @property (nonatomic) enum NSCPdfShowHead showHead;
 @property (nonatomic) enum NSCPdfShowFoot showFoot;
+@property (nonatomic, strong) NSCPdfMargin * _Nonnull margin;
 - (void)updatePosition:(float)x :(float)y;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -1275,6 +1289,19 @@ SWIFT_CLASS_NAMED("NSCPdfInfo")
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
 @end
 
+
+SWIFT_CLASS_NAMED("NSCPdfMargin")
+@interface NSCPdfMargin : NSObject
+@property (nonatomic) float top;
+@property (nonatomic) float left;
+@property (nonatomic) float bottom;
+@property (nonatomic) float right;
+- (nonnull instancetype)init:(float)top :(float)left :(float)bottom :(float)right OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)initWithUniform:(float)uniform OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
 typedef SWIFT_ENUM_NAMED(int32_t, NSCPdfOrientation, "NSCPdfOrientation", open) {
   NSCPdfOrientationLandscape = 0,
   NSCPdfOrientationPortrait = 1,
@@ -1504,6 +1531,7 @@ SWIFT_CLASS_NAMED("NSCPdfTable")
 @property (nonatomic) enum NSCPdfPageBreak pageBreak;
 @property (nonatomic) enum NSCPdfShowHead showHead;
 @property (nonatomic) enum NSCPdfShowFoot showFoot;
+@property (nonatomic, strong) NSCPdfMargin * _Nonnull margin;
 - (void)updatePosition:(float)x :(float)y;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end

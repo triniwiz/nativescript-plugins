@@ -14,10 +14,10 @@ use pdf_core::document::{
     PdfNativeUnit,
 };
 use pdf_core::table::{
-    CHorizontalAlign, CPdfNativePadding, CPdfNativePoints, CVerticalAlign, CellWidth, ColumnDef,
-    ColumnKey, PdfNativeFontFamily, PdfNativeFontStyle, PdfNativeOverflow, PdfNativePageBreak,
-    PdfNativeShowFoot, PdfNativeShowHead, PdfNativeTableTheme, PdfTable, StyleDef, TableCell,
-    TableCellOrString,
+    CHorizontalAlign, CPdfNativeMargin, CPdfNativePadding, CPdfNativePoints, CVerticalAlign,
+    CellWidth, ColumnDef, ColumnKey, PdfNativeFontFamily, PdfNativeFontStyle, PdfNativeOverflow,
+    PdfNativePageBreak, PdfNativeShowFoot, PdfNativeShowHead, PdfNativeTableTheme, PdfTable,
+    StyleDef, TableCell, TableCellOrString,
 };
 use pdf_core::utils::{read_float, read_int, to_points, to_unit};
 use pdf_core::{PdfColor, PdfNative, PdfPoints};
@@ -1088,6 +1088,10 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
     page_break: jint,
     show_head: jint,
     show_foot: jint,
+    margin_left: jfloat,
+    margin_top: jfloat,
+    margin_right: jfloat,
+    margin_bottom: jfloat,
 ) -> jlong {
     unsafe {
         if instance == 0 {
@@ -1096,6 +1100,12 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
         let instance = &mut *(instance as *mut PdfNativeDocument);
         let unit = instance.unit();
         let mut table = PdfTable::default();
+        table.margin = CPdfNativeMargin {
+            top: CPdfNativePoints::new(margin_top, unit),
+            right: CPdfNativePoints::new(margin_right, unit),
+            bottom: CPdfNativePoints::new(margin_bottom, unit),
+            left: CPdfNativePoints::new(margin_left, unit),
+        };
 
         if !styles.is_null() {
             if let Ok(head_styles) = parse_style_def(&mut env, &styles, unit) {

@@ -181,6 +181,7 @@ public class NSCPdfTable: NSObject {
   public var pageBreak = NSCPdfPageBreak.default()
   public var showHead = NSCPdfShowHead.default()
   public var showFoot = NSCPdfShowFoot.default()
+  public var margin: NSCPdfMargin = NSCPdfMargin(uniform: 40)
   
   
   private var columnStylesKeysBuffer: UnsafeMutablePointer<CColumnKey>?
@@ -320,6 +321,9 @@ public class NSCPdfTable: NSObject {
     let (foot, footCount, footInner, footRows) = NSCPdfTable.parseTableData(foot, unit)
     
     var table = CPdfTable()
+    
+    table.margin = margin.pdfium(unit)
+    
     table.styles = styles?.pdfiumRaw(unit)
     table.alternate_row_styles = alternateRowsStyles?.pdfiumRaw(unit)
     table.columns = UnsafePointer(columnsCArray)

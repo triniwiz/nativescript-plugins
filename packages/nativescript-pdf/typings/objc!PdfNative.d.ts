@@ -53,6 +53,14 @@ declare const enum CPdfNativeColorOptionalType {
 	Some = 1,
 }
 
+interface CPdfNativeMargin {
+	top: CPdfNativePoints;
+	right: CPdfNativePoints;
+	bottom: CPdfNativePoints;
+	left: CPdfNativePoints;
+}
+declare var CPdfNativeMargin: interop.StructType<CPdfNativeMargin>;
+
 interface CPdfNativePadding {
 	top: CPdfNativePoints;
 	right: CPdfNativePoints;
@@ -312,6 +320,28 @@ declare class NSCPdfInfo extends NSObject {
 	constructor(o: { width: number; height: number; data: NSData });
 
 	initWithWidthHeightData(width: number, height: number, data: NSData): this;
+}
+
+declare class NSCPdfMargin extends NSObject {
+	static alloc(): NSCPdfMargin; // inherited from NSObject
+
+	static new(): NSCPdfMargin; // inherited from NSObject
+
+	bottom: number;
+
+	left: number;
+
+	right: number;
+
+	top: number;
+
+	constructor();
+
+	constructor(o: { uniform: number });
+
+	init(top: number, left: number, bottom: number, right: number): this;
+
+	initWithUniform(uniform: number): this;
 }
 
 declare const enum NSCPdfOrientation {
@@ -584,6 +614,8 @@ declare class NSCPdfTable extends NSObject {
 	head: NSArray<NSArray<NSCPdfTableCellOrString>>;
 
 	headStyles: NSCPdfStyleDef;
+
+	margin: NSCPdfMargin;
 
 	pageBreak: NSCPdfPageBreak;
 

@@ -638,6 +638,25 @@ export class PDFDocument implements IPDFDocument {
 				opts.footStyles = parseStyleDef(options.footStyles);
 			}
 
+			if (typeof options.margin === 'number') {
+				opts.margin = NSCPdfMargin.alloc().initWithUniform(options.margin);
+			} else if (Array.isArray(options.margin)) {
+				switch (options.margin.length) {
+					case 4:
+						opts.margin = NSCPdfMargin.alloc().init(options.margin[0], options.margin[1], options.margin[2], options.margin[3]);
+						break;
+					case 3:
+						opts.margin = NSCPdfMargin.alloc().init(options.margin[0], options.margin[1], options.margin[2], options.margin[1]);
+						break;
+					case 2:
+						opts.margin = NSCPdfMargin.alloc().init(options.margin[0], options.margin[1], options.margin[0], options.margin[1]);
+						break;
+					case 1:
+						opts.margin = NSCPdfMargin.alloc().initWithUniform(options.margin[0]);
+						break;
+				}
+			}
+
 			opts.head = parseTableCellOrString(options.head) as never;
 
 			opts.body = parseTableCellOrString(options.body) as never;

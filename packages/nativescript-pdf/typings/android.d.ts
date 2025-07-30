@@ -1,5 +1,3 @@
-/// <reference path="android-declarations.d.ts"/>
-
 declare module io {
 	export module github {
 		export module triniwiz {
@@ -108,7 +106,6 @@ declare module io {
 						public addText(text: string, x: number, y: number): void;
 						public constructor(it: io.github.triniwiz.plugins.pdf.PdfDocumentConfig);
 						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number): void;
-						public addImage(this_: string, image: string, mime: number, x: number, y: java.lang.Integer, width: java.lang.Integer): void;
 						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number): void;
 						public setFontColor(r: number, g: number, b: number): void;
 						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number, style: io.github.triniwiz.plugins.pdf.PdfStyle): void;
@@ -120,6 +117,7 @@ declare module io {
 						public setFontColor(r: number, g: number, b: number, a: number): void;
 						public count(): number;
 						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
+						public addImage(img: string, decoded: string, this_: number, image: number, mime: java.lang.Integer, x: java.lang.Integer): void;
 						public getHeight(): number;
 						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
 						public getNativeDocument$pdf_release(): number;
@@ -820,6 +818,32 @@ declare module io {
 			export module plugins {
 				export module pdf {
 					export module table {
+						export class Margin {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.Margin>;
+							public setBottom(value: number): void;
+							public getBottom(): number;
+							public constructor(uniform: number);
+							public constructor(top: number, left: number, bottom: number, right: number);
+							public getTop(): number;
+							public getLeft(): number;
+							public setTop(value: number): void;
+							public getRight(): number;
+							public setLeft(value: number): void;
+							public setRight(value: number): void;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
+					export module table {
 						export class Overflow {
 							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.Overflow>;
 							public static LineBreak: io.github.triniwiz.plugins.pdf.table.Overflow;
@@ -910,6 +934,8 @@ declare module io {
 						export class PdfTable {
 							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.PdfTable>;
 							public setPageBreak(value: io.github.triniwiz.plugins.pdf.table.PageBreak): void;
+							public setMargin(value: io.github.triniwiz.plugins.pdf.table.Margin): void;
+							public getMargin(): io.github.triniwiz.plugins.pdf.table.Margin;
 							public setFoot(value: androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>): void;
 							public setShowFoot(value: io.github.triniwiz.plugins.pdf.table.ShowFoot): void;
 							public setTheme(value: io.github.triniwiz.plugins.pdf.table.TableTheme): void;

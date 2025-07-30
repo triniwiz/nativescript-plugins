@@ -15,8 +15,8 @@ class ViewController: UIViewController {
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-    //  let output = document.table(buildTable())
-      buildDoc(document: document)
+      let output = document.table(buildTable())
+      //buildDoc(document: document)
       
 
       
@@ -53,15 +53,15 @@ class ViewController: UIViewController {
 
     }
   
+
   
   func buildTable() -> NSCPdfTable{
 
         let style = NSCPdfStyleDef.default()
         style.fontStyle = NSCPdfFontStyle.bold
-        style.fontSize = 24
-        style.verticalAlign = NSCPdfVerticalAlign.middle
-        style.fillColor = NSCPdfColor(41, 128, 185)
-        style.lineColor = NSCPdfColor(255, 0,0)
+        style.fontSize = 20
+        style.fillColor = NSCPdfColor(51, 51, 51)
+  
         
 
         let first = NSCPdfTableCellOrString.Cell(
@@ -87,30 +87,20 @@ class ViewController: UIViewController {
     bodyStyle.fontSize = 18
     bodyStyle.fillColor = nil
 
-    bodyStyle.horizontalAlign = NSCPdfHorizontalAlign.center
+//    bodyStyle.horizontalAlign = NSCPdfHorizontalAlign.center
     
-    let altStyle = bodyStyle.clone()
-    altStyle.fillColor = NSCPdfColor(0, 255, 0)
-    bodyStyle.fontStyle = NSCPdfFontStyle.italic
-
-        let foot_style = NSCPdfStyleDef.default()
-        foot_style.fillColor = NSCPdfColor(41, 128, 185)
-        foot_style.horizontalAlign = NSCPdfHorizontalAlign.right
-        foot_style.fontStyle = NSCPdfFontStyle.bold
-        foot_style.fontSize = 24
 
         let tab = NSCPdfTable()
+        tab.theme = .grid
+    tab.margin = NSCPdfMargin(uniform: 10)
         //tab.styles = style
         tab.styles = bodyStyle
-        tab.alternateRowsStyles = altStyle
         tab.headStyles = style
-        tab.footStyles = foot_style
         tab.head = [[first, last]]
        // tab.foot = tab.head
-        tab.position = [0, 10]
         tab.body = []
     
-    /*
+    
         tab.body = [
           [NSCPdfTableCellOrString.String("Osei"), NSCPdfTableCellOrString.String("Fortune")],
           [NSCPdfTableCellOrString.String("Liam"), NSCPdfTableCellOrString.String("Nguyen")],
@@ -215,7 +205,7 @@ class ViewController: UIViewController {
           [NSCPdfTableCellOrString.String("Leo"), NSCPdfTableCellOrString.String("Deng")],
           [NSCPdfTableCellOrString.String("Hailey"), NSCPdfTableCellOrString.String("Abebe")]
         ]
-    */
+    
 
         return tab
       

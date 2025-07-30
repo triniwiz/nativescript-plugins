@@ -128,6 +128,27 @@ import _SwiftConcurrencyShims
   @objc public init(width: Swift.UInt, height: Swift.UInt, data: Foundation.NSData)
   @objc deinit
 }
+@objcMembers @objc(NSCPdfMargin) public class NSCPdfMargin : ObjectiveC.NSObject {
+  @objc public var top: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public var left: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public var bottom: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public var right: Swift.Float {
+    @objc get
+    @objc set
+  }
+  @objc public init(_ top: Swift.Float, _ left: Swift.Float, _ bottom: Swift.Float, _ right: Swift.Float)
+  @objc public init(uniform: Swift.Float)
+  @objc deinit
+}
 @objc(NSCPdfOrientation) public enum NSCPdfOrientation : Swift.Int32, Swift.RawRepresentable {
   case Landscape
   case Portrait
@@ -378,6 +399,7 @@ import _SwiftConcurrencyShims
   @objc public var pageBreak: PdfNative.NSCPdfPageBreak
   @objc public var showHead: PdfNative.NSCPdfShowHead
   @objc public var showFoot: PdfNative.NSCPdfShowFoot
+  @objc public var margin: PdfNative.NSCPdfMargin
   @objc deinit
   @objc public func updatePosition(_ x: Swift.Float, _ y: Swift.Float)
   @objc override dynamic public init()
