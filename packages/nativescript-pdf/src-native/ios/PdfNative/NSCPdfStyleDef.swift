@@ -122,7 +122,8 @@ public class NSCPdfStyleDef:NSObject {
   }
   
   public static func `default`()-> NSCPdfStyleDef {
-    return NSCPdfStyleDef(font: .default(), fontStyle: .default(), overflow: .default(), cellWidth: .Auto, minCellHeight: 10, horizontalAlign: NSCPdfHorizontalAlign.left, verticalAlign: NSCPdfVerticalAlign.top, fontSize: 16, cellPadding: NSCPdfPadding(uniform: 10), lineColor: NSCPdfColor.grey(10), lineWidth: 0)
+    return NSCPdfStyleDef(font: .default(), fontStyle: .default(), overflow: .default(), cellWidth: .Auto, minCellHeight: 0,
+                          horizontalAlign: NSCPdfHorizontalAlign.left, verticalAlign: NSCPdfVerticalAlign.top, fontSize: 10, cellPadding: NSCPdfPadding(uniform: 10), lineColor: NSCPdfColor.grey(10), lineWidth: 0)
   }
   
   func pdfium(_ unit:  NSCPdfUnit) -> CStyleDef {
@@ -182,8 +183,7 @@ public class NSCPdfStyleDef:NSObject {
     }else {
       CPdfNativeColorOptional(kind: CPdfNativeColorOptionalType_None, data: CPdfNativeColorOptionalData())
     }
-    
-    
+  
     let value = CStyleDef(font: font.pdfium, font_style: fontStyle.pdfium, overflow: overflow.pdfium, fill_color: fillColor, text_color: textColor, cell_width: cellWidth.pdfium(unit), min_cell_width: minCellWidth, min_cell_height: CPdfNativePoints(value: minCellHeight, unit: unit.pdfium, changed: minCellHeightChanged), horizontal_align: horizontalAlign.pdfium, vertical_align: verticalAlign.pdfium, font_size: fontSize, cell_padding: cellPadding.pdfium(unit), line_color: lineColor, line_width: lineWidth)
     
     let ret = UnsafeMutablePointer<CStyleDef>.allocate(capacity: 1)

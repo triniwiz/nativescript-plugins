@@ -565,7 +565,7 @@ impl Into<StyleDef> for CStyleDef {
             cell_padding: self.cell_padding.into(),
             line_color: self.line_color.into(),
             line_width: self.line_width,
-            font_changed: self.font_size != 16.,
+            font_changed: self.font_size != 10.,
         }
     }
 }
@@ -587,7 +587,7 @@ impl From<&CStyleDef> for StyleDef {
             cell_padding: value.cell_padding.into(),
             line_color: value.line_color.into(),
             line_width: value.line_width,
-            font_changed: value.font_size != 16.,
+            font_changed: value.font_size != 10.,
         }
     }
 }
@@ -653,13 +653,13 @@ impl Default for StyleDef {
             font_style: PdfNativeFontStyle::Normal,
             overflow: PdfNativeOverflow::LineBreak,
             fill_color: None,
-            text_color: Some(PdfColor::new(20, 20, 20, 255)),
+            text_color: None,
             cell_width: CellWidth::Auto,
             min_cell_width: Some(PdfPoints::new(10.0)),
             min_cell_height: PdfPoints::ZERO,
             horizontal_align: CHorizontalAlign::Left,
             vertical_align: CVerticalAlign::Top,
-            font_size: 16.0,
+            font_size: 10.0,
             cell_padding: CPdfNativePadding::all(CPdfNativePoints {
                 value: 10.0,
                 unit: PdfNativeUnit::Points,
@@ -1237,6 +1237,8 @@ fn resolve_column_style(
         PdfNativeTableTheme::Striped => {
             if section == Section::Header || section == Section::Footer {
                 style.text_color = Some(PdfColor::WHITE);
+            } else {
+                style.text_color = Some(PdfColor::new(80, 80, 80, 255));
             }
 
             if (section == Section::Body || section == Section::Footer) && row_idx % 2 == 1 {
@@ -1252,11 +1254,13 @@ fn resolve_column_style(
                 style.line_width = 0.;
             } else {
                 style.line_width = 0.5;
+                style.text_color = Some(PdfColor::new(80, 80, 80, 255));
             }
 
             style.line_color = Some(PdfColor::new(200, 200, 200, 255));
         }
         PdfNativeTableTheme::Plain => {
+            style.text_color = Some(PdfColor::new(20, 20, 20, 255));
             if section == Section::Header || section == Section::Footer {
                 style.font_style = PdfNativeFontStyle::Bold;
             }
@@ -1370,6 +1374,9 @@ fn wrap_text<'a>(
     if !current.is_empty() {
         lines.push(current);
     }
+    if lines.is_empty() {
+        lines.push(String::new());
+    }
 
     Ok(lines)
 }
@@ -1378,6 +1385,7 @@ fn compute_auto_column_widths<'a>(
     document: &mut PdfDocument<'a>,
     rows: &[TableRow],
     column_count: usize,
+    unit: PdfNativeUnit,
 ) -> Result<Vec<PdfPoints>, PdfiumError> {
     let mut max_widths = vec![PdfPoints::ZERO; column_count];
 
@@ -1419,8 +1427,20 @@ fn compute_auto_column_widths<'a>(
                     PdfPageTextObject::new(document, cell.content.as_str(), font, font_size)?;
 
                 let width = text.width()?;
-                let total =
-                    width + style.cell_padding.left.into() + style.cell_padding.right.into();
+
+                let cell_padding_left = if style.cell_padding.left.changed {
+                    to_points(style.cell_padding.left.value, unit)
+                } else {
+                    to_points(style.cell_padding.left.value, PdfNativeUnit::Points)
+                };
+
+                let cell_padding_right = if style.cell_padding.right.changed {
+                    to_points(style.cell_padding.right.value, unit)
+                } else {
+                    to_points(style.cell_padding.right.value, PdfNativeUnit::Points)
+                };
+
+                let total = width + cell_padding_left + cell_padding_right;
                 let min = style.min_cell_width.unwrap_or(PdfPoints::ZERO);
                 max_widths[i] = max_widths[i].max(total.max(min));
             }
@@ -1434,6 +1454,7 @@ fn compute_row_height<'a>(
     document: &mut PdfDocument<'a>,
     row: &TableRow,
     scaled_widths: &[PdfPoints],
+    unit: PdfNativeUnit,
 ) -> Result<PdfPoints, PdfiumError> {
     let mut max_height = PdfPoints::ZERO;
 
@@ -1461,14 +1482,38 @@ fn compute_row_height<'a>(
             },
         };
 
+        let cell_padding_left = if style.cell_padding.left.changed {
+            to_points(style.cell_padding.left.value, unit)
+        } else {
+            to_points(style.cell_padding.left.value, PdfNativeUnit::Points)
+        };
+
+        let cell_padding_right = if style.cell_padding.right.changed {
+            to_points(style.cell_padding.right.value, unit)
+        } else {
+            to_points(style.cell_padding.right.value, PdfNativeUnit::Points)
+        };
+
+        let cell_padding_top = if style.cell_padding.top.changed {
+            to_points(style.cell_padding.top.value, unit)
+        } else {
+            to_points(style.cell_padding.top.value, PdfNativeUnit::Points)
+        };
+
+        let cell_padding_bottom = if style.cell_padding.bottom.changed {
+            to_points(style.cell_padding.bottom.value, unit)
+        } else {
+            to_points(style.cell_padding.bottom.value, PdfNativeUnit::Points)
+        };
+
         let available_width = match style.cell_width {
             CellWidth::Fixed(w) => w,
             _ => scaled_widths
                 .get(i)
                 .copied()
                 .unwrap_or(PdfPoints::new(10.0)),
-        } - style.cell_padding.left.into()
-            - style.cell_padding.right.into();
+        } - cell_padding_left
+            - cell_padding_right;
 
         let lines = if matches!(style.cell_width, CellWidth::Wrap) {
             wrap_text(document, &cell.content, font, font_size, available_width)?
@@ -1477,9 +1522,7 @@ fn compute_row_height<'a>(
         };
 
         let line_height = PdfPoints::new(style.font_size * 1.2);
-        let height = line_height * lines.len() as f32
-            + style.cell_padding.top.into()
-            + style.cell_padding.bottom.into();
+        let height = line_height * lines.len() as f32 + cell_padding_top + cell_padding_bottom;
 
         max_height = max_height.max(height);
     }
@@ -1494,8 +1537,9 @@ fn draw_row<'a>(
     cursor_y: PdfPoints,
     x_origin: PdfPoints,
     column_widths: &[PdfPoints],
+    unit: PdfNativeUnit,
 ) -> Result<PdfPoints, PdfiumError> {
-    let row_height = compute_row_height(document, row, column_widths)?;
+    let row_height = compute_row_height(document, row, column_widths, unit)?;
     let mut cursor_x = x_origin;
 
     for (i, cell) in row.cells.iter().enumerate() {
@@ -1634,20 +1678,55 @@ pub fn draw_table<'a>(
     rows.extend(body.iter().cloned());
     rows.extend(foot.iter().cloned());
 
-    let auto_widths = compute_auto_column_widths(document, &rows, column_keys.len())?;
+    let auto_widths = compute_auto_column_widths(document, &rows, column_keys.len(), data.units)?;
 
     let mut current_page = page;
 
     let page_width = current_page.width();
     let page_height = current_page.height();
 
-    let margin_right = to_points(table.margin.right.value, data.units);
-    let margin_bottom = to_points(table.margin.bottom.value, data.units);
+    let margin_top = to_points(
+        table.margin.top.value,
+        if table.margin.top.changed {
+            data.units
+        } else {
+            PdfNativeUnit::Points
+        },
+    );
+    let margin_left = to_points(
+        table.margin.left.value,
+        if table.margin.left.changed {
+            data.units
+        } else {
+            PdfNativeUnit::Points
+        },
+    );
+    let margin_right = to_points(
+        table.margin.right.value,
+        if table.margin.right.changed {
+            data.units
+        } else {
+            PdfNativeUnit::Points
+        },
+    );
+    let margin_bottom = to_points(
+        table.margin.bottom.value,
+        if table.margin.bottom.changed {
+            data.units
+        } else {
+            PdfNativeUnit::Points
+        },
+    );
 
-    let x_start = table.position.0 + to_points(table.margin.left.value, data.units);
-    let y_start = table.position.1 + to_points(table.margin.top.value, data.units);
+    let x_start = table.position.0 + margin_left;
+    let y_start = if table.position.1.value > 0.0 {
+        table.position.1
+    } else {
+        margin_top
+    };
 
     let available_width = page_width - x_start - margin_right;
+
     let total_auto_width = auto_widths
         .iter()
         .copied()
@@ -1666,7 +1745,7 @@ pub fn draw_table<'a>(
 
     let footer_height = foot
         .iter()
-        .map(|row| compute_row_height(document, row, &scaled_widths))
+        .map(|row| compute_row_height(document, row, &scaled_widths, data.units))
         .try_fold(PdfPoints::ZERO, |acc, h| h.map(|h| acc + h))?;
 
     let mut cursor_y = get_y_points(&current_page, y_start);
@@ -1685,12 +1764,13 @@ pub fn draw_table<'a>(
                 cursor_y,
                 x_start,
                 &scaled_widths,
+                data.units,
             )?;
         }
     }
 
     for row in &body {
-        let row_height = compute_row_height(document, row, &scaled_widths)?;
+        let row_height = compute_row_height(document, row, &scaled_widths, data.units)?;
         let remaining_space = cursor_y - bottom_margin - footer_height;
 
         if row_height > remaining_space {
@@ -1703,6 +1783,7 @@ pub fn draw_table<'a>(
                     footer_cursor_y,
                     x_start,
                     &scaled_widths,
+                    data.units,
                 )?;
             }
 
@@ -1721,6 +1802,7 @@ pub fn draw_table<'a>(
                         cursor_y,
                         x_start,
                         &scaled_widths,
+                        data.units,
                     )?;
                 }
             }
@@ -1739,6 +1821,7 @@ pub fn draw_table<'a>(
             cursor_y,
             x_start,
             &scaled_widths,
+            data.units,
         )?;
     }
 
@@ -1758,6 +1841,7 @@ pub fn draw_table<'a>(
                 footer_cursor_y,
                 table.position.0,
                 &scaled_widths,
+                data.units,
             )?;
             final_y = footer_cursor_y;
         }

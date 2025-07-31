@@ -530,7 +530,13 @@ export class PDFDocument implements IPDFDocument {
 			this[native_].addImage(bitmap as never, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
 			// @ts-ignore
-			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, heightOrWidth ?? -1, height ?? -1);
+			this[native_].addImageWithBase64(bitmap, xorMime, xOrY, widthOrY, heightOrWidth ?? -1, height ?? -1);
+		} else if (bitmap && bitmap instanceof NSData) {
+			// @ts-ignore
+			this[native_].addImageWithData(bitmap, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+		} else if (bitmap && (bitmap instanceof Uint8Array || bitmap instanceof Uint8ClampedArray)) {
+			// @ts-ignore
+			this[native_].addImageWithData(NSData.dataWithData(bitmap), xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		}
 		return this;
 	}

@@ -279,7 +279,7 @@ class StyleDef(
         0f,
         HorizontalAlign.Left,
         VerticalAlign.Top,
-        16f,
+        10f,
         Padding(10f),
         Color.grey(10),
         0f

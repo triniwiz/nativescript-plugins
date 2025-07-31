@@ -386,7 +386,6 @@ public class NSCPdfTable: NSObject {
     self.footSizesBuffer = footInner
     
     
-    
     table.position_x =  CPdfNativePoints(value: position[0], unit: unit.pdfium, changed: true)
     table.position_y =  CPdfNativePoints(value: position[1], unit: unit.pdfium, changed: true)
     

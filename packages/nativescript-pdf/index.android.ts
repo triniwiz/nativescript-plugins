@@ -490,6 +490,10 @@ export class PDFDocument implements IPDFDocument {
 			this[native_].addImage(bitmap as never, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
 		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
 			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, java.lang.Integer.valueOf(heightOrWidth ?? -1), java.lang.Integer.valueOf(height ?? -1));
+		} else if (Array.isArray(bitmap) && bitmap.length === 0) {
+			this[native_].addImage(bitmap, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+		} else if (bitmap && (bitmap instanceof Uint8Array || bitmap instanceof Uint8ClampedArray)) {
+			this[native_].addImage(bitmap, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
 		}
 		return this;
 	}

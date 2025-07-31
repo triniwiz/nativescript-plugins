@@ -33,6 +33,11 @@ class ViewController: UIViewController {
       
       pdf?.document = document
       
+      let tmp = NSTemporaryDirectory() + "/test.pdf"
+      
+      document.saveSync(to: tmp)
+      
+      print(tmp)
 
       
       // https://raw.githubusercontent.com/ajrcarey/pdfium-render/master/test/image-test.pdf
@@ -48,6 +53,13 @@ class ViewController: UIViewController {
 //        
 //      }
       
+      
+//            if let test = Bundle.main.url(forResource: "document", withExtension: "pdf") {
+//              pdf?.loadFromPath(test.absoluteString, nil)
+//            }else {
+//      
+//            }
+//            
 
   
 
@@ -58,11 +70,8 @@ class ViewController: UIViewController {
   func buildTable() -> NSCPdfTable{
 
         let style = NSCPdfStyleDef.default()
-        style.fontStyle = NSCPdfFontStyle.bold
-        style.fontSize = 20
         style.fillColor = NSCPdfColor(51, 51, 51)
   
-        
 
         let first = NSCPdfTableCellOrString.Cell(
           NSCPdfTableCell(
@@ -81,18 +90,13 @@ class ViewController: UIViewController {
         )
     
     
-        let bodyStyle = style.clone()
-
-    bodyStyle.fontStyle = NSCPdfFontStyle.normal
-    bodyStyle.fontSize = 18
-    bodyStyle.fillColor = nil
+        let bodyStyle = NSCPdfStyleDef.default()
 
 //    bodyStyle.horizontalAlign = NSCPdfHorizontalAlign.center
     
 
         let tab = NSCPdfTable()
         tab.theme = .grid
-    tab.margin = NSCPdfMargin(uniform: 10)
         //tab.styles = style
         tab.styles = bodyStyle
         tab.headStyles = style
