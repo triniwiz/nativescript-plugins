@@ -647,7 +647,11 @@ declare class NSCPdfTableCellOrString extends NSObject {
 
 	static alloc(): NSCPdfTableCellOrString; // inherited from NSObject
 
+	static empty(): NSCPdfTableCellOrString;
+
 	static new(): NSCPdfTableCellOrString; // inherited from NSObject
+
+	static withString(value: string): NSCPdfTableCellOrString;
 
 	constructor(o: { string: string; cell: NSCPdfTableCell });
 

@@ -722,7 +722,8 @@ SWIFT_CLASS_NAMED("NSCPdfTableCell")
 SWIFT_CLASS_NAMED("NSCPdfTableCellOrString")
 @interface NSCPdfTableCellOrString : NSObject
 - (nonnull instancetype)initWithString:(NSString * _Nonnull)string cell:(NSCPdfTableCell * _Nullable)cell OBJC_DESIGNATED_INITIALIZER;
-+ (NSCPdfTableCellOrString * _Nonnull)String:(NSString * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
++ (NSCPdfTableCellOrString * _Nonnull)empty SWIFT_WARN_UNUSED_RESULT;
++ (NSCPdfTableCellOrString * _Nonnull)withString:(NSString * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 + (NSCPdfTableCellOrString * _Nonnull)Cell:(NSCPdfTableCell * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
@@ -1548,7 +1549,8 @@ SWIFT_CLASS_NAMED("NSCPdfTableCell")
 SWIFT_CLASS_NAMED("NSCPdfTableCellOrString")
 @interface NSCPdfTableCellOrString : NSObject
 - (nonnull instancetype)initWithString:(NSString * _Nonnull)string cell:(NSCPdfTableCell * _Nullable)cell OBJC_DESIGNATED_INITIALIZER;
-+ (NSCPdfTableCellOrString * _Nonnull)String:(NSString * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
++ (NSCPdfTableCellOrString * _Nonnull)empty SWIFT_WARN_UNUSED_RESULT;
++ (NSCPdfTableCellOrString * _Nonnull)withString:(NSString * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 + (NSCPdfTableCellOrString * _Nonnull)Cell:(NSCPdfTableCell * _Nonnull)value SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init SWIFT_UNAVAILABLE;
 + (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");

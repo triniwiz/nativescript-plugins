@@ -410,13 +410,19 @@ function parseTableCellOrString(value: TableCellOrString[][]) {
 			for (let j = 0; j < innerLength; j++) {
 				const inner = innerArray[j];
 				if (inner) {
-					const type = typeof inner;
-					if (type === 'object') {
-						const style = parseStyleDef((inner as TableCell).style);
-						const cell = new io.github.triniwiz.plugins.pdf.table.TableCell((inner as TableCell).content, (inner as TableCell).rowSpan, (inner as TableCell).colSpan, style);
-						nativeInnerArray[j] = new io.github.triniwiz.plugins.pdf.table.TableCellOrString.Cell(cell);
-					} else if (type === 'string') {
-						nativeInnerArray[j] = new io.github.triniwiz.plugins.pdf.table.TableCellOrString.StringValue(inner as never);
+					if (inner === null || inner === undefined) {
+						nativeInnerArray[j] = new io.github.triniwiz.plugins.pdf.table.TableCellOrString.StringValue(`${inner}`);
+					} else {
+						switch (typeof inner) {
+							case 'object':
+								const style = parseStyleDef((inner as TableCell).style);
+								const cell = new io.github.triniwiz.plugins.pdf.table.TableCell((inner as TableCell).content, (inner as TableCell).rowSpan, (inner as TableCell).colSpan, style);
+								nativeInnerArray[j] = new io.github.triniwiz.plugins.pdf.table.TableCellOrString.Cell(cell);
+								break;
+							case 'string':
+								nativeInnerArray[j] = new io.github.triniwiz.plugins.pdf.table.TableCellOrString.StringValue(inner as never);
+								break;
+						}
 					}
 				}
 			}

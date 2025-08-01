@@ -17,11 +17,7 @@ class ViewController: UIViewController {
       let document = NSCPdfDocument()
       let output = document.table(buildTable())
       //buildDoc(document: document)
-      
 
-      
-    
-      
       pdf = NSCPdfView(frame: view.bounds)
 
       
@@ -72,7 +68,6 @@ class ViewController: UIViewController {
         let style = NSCPdfStyleDef.default()
         style.fillColor = NSCPdfColor(51, 51, 51)
   
-
         let first = NSCPdfTableCellOrString.Cell(
           NSCPdfTableCell(
             "First Name",
@@ -102,9 +97,12 @@ class ViewController: UIViewController {
         tab.headStyles = style
         tab.head = [[first, last]]
        // tab.foot = tab.head
-        tab.body = []
+        tab.body = [
+          [NSCPdfTableCellOrString.String("" ), NSCPdfTableCellOrString.Cell(NSCPdfTableCell("", 1, 1) )],
+        ]
     
     
+    /*
         tab.body = [
           [NSCPdfTableCellOrString.String("Osei"), NSCPdfTableCellOrString.String("Fortune")],
           [NSCPdfTableCellOrString.String("Liam"), NSCPdfTableCellOrString.String("Nguyen")],
@@ -209,7 +207,7 @@ class ViewController: UIViewController {
           [NSCPdfTableCellOrString.String("Leo"), NSCPdfTableCellOrString.String("Deng")],
           [NSCPdfTableCellOrString.String("Hailey"), NSCPdfTableCellOrString.String("Abebe")]
         ]
-    
+    */
 
         return tab
       

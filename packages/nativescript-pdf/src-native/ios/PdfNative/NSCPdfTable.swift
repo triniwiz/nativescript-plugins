@@ -102,7 +102,11 @@ public class NSCPdfTableCellOrString: NSObject {
     self.isCell = cell != nil
   }
   
-  public static func String(_ value: String) -> NSCPdfTableCellOrString {
+  public static func empty() -> NSCPdfTableCellOrString {
+    return NSCPdfTableCellOrString(string: "")
+  }
+  
+  public static func withString(_ value: String) -> NSCPdfTableCellOrString {
     return NSCPdfTableCellOrString(string: value)
   }
   

@@ -11895,8 +11895,28 @@
 					},
 					{
 						"kind": "Function",
-						"name": "String",
-						"printedName": "String(_:)",
+						"name": "empty",
+						"printedName": "empty()",
+						"children": [
+							{
+								"kind": "TypeNominal",
+								"name": "NSCPdfTableCellOrString",
+								"printedName": "PdfNative.NSCPdfTableCellOrString",
+								"usr": "c:@M@PdfNative@objc(cs)NSCPdfTableCellOrString"
+							}
+						],
+						"declKind": "Func",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTableCellOrString(cm)empty",
+						"mangledName": "$s9PdfNative23NSCPdfTableCellOrStringC5emptyACyFZ",
+						"moduleName": "PdfNative",
+						"static": true,
+						"declAttributes": ["Final", "AccessControl", "ObjC"],
+						"funcSelfKind": "NonMutating"
+					},
+					{
+						"kind": "Function",
+						"name": "withString",
+						"printedName": "withString(_:)",
 						"children": [
 							{
 								"kind": "TypeNominal",
@@ -11912,8 +11932,8 @@
 							}
 						],
 						"declKind": "Func",
-						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTableCellOrString(cm)String:",
-						"mangledName": "$s9PdfNative23NSCPdfTableCellOrStringC0G0yACSSFZ",
+						"usr": "c:@M@PdfNative@objc(cs)NSCPdfTableCellOrString(cm)withString:",
+						"mangledName": "$s9PdfNative23NSCPdfTableCellOrStringC04withG0yACSSFZ",
 						"moduleName": "PdfNative",
 						"static": true,
 						"declAttributes": ["Final", "AccessControl", "ObjC"],
@@ -19051,56 +19071,56 @@
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4733,
+			"offset": 4849,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4795,
+			"offset": 4911,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4857,
+			"offset": 4973,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 4893,
+			"offset": 5009,
 			"length": 5,
 			"value": "[0, 0]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "IntegerLiteral",
-			"offset": 5154,
+			"offset": 5270,
 			"length": 2,
 			"value": "40"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5896,
+			"offset": 6012,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 5978,
+			"offset": 6094,
 			"length": 2,
 			"value": "[]"
 		},
 		{
 			"filePath": "\/Users\/triniwiz\/Desktop\/oss\/nativescript-plugins\/packages\/nativescript-pdf\/src-native\/ios\/PdfNative\/NSCPdfTable.swift",
 			"kind": "Array",
-			"offset": 6060,
+			"offset": 6176,
 			"length": 2,
 			"value": "[]"
 		},

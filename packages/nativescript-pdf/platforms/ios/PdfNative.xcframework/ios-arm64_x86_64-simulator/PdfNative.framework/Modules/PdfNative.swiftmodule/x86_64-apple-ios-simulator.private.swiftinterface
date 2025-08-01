@@ -375,7 +375,8 @@ import _SwiftConcurrencyShims
 }
 @objcMembers @objc(NSCPdfTableCellOrString) public class NSCPdfTableCellOrString : ObjectiveC.NSObject {
   @objc public init(string: Swift.String, cell: PdfNative.NSCPdfTableCell? = nil)
-  @objc public static func String(_ value: Swift.String) -> PdfNative.NSCPdfTableCellOrString
+  @objc public static func empty() -> PdfNative.NSCPdfTableCellOrString
+  @objc public static func withString(_ value: Swift.String) -> PdfNative.NSCPdfTableCellOrString
   @objc public static func Cell(_ value: PdfNative.NSCPdfTableCell) -> PdfNative.NSCPdfTableCellOrString
   @objc deinit
 }

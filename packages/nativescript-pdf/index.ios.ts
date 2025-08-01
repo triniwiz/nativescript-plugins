@@ -424,19 +424,31 @@ function parseTableCellOrString(value: TableCellOrString[][]) {
 			for (let j = 0; j < innerLength; j++) {
 				const inner = innerArray[j];
 				if (inner) {
-					const type = typeof inner;
-					if (type === 'object') {
-						const style = parseStyleDef((inner as TableCell).style);
-						const cell = NSCPdfTableCell.alloc().init((inner as TableCell).content, (inner as TableCell).rowSpan, (inner as TableCell).colSpan, style);
-						nativeInnerArray.insertObjectAtIndex(NSCPdfTableCellOrString.Cell(cell), j);
-					} else if (type === 'string') {
-						nativeInnerArray.insertObjectAtIndex(NSCPdfTableCellOrString.alloc().initWithStringCell(inner as never, null), j);
-					} else if (type === 'undefined' || inner === null) {
-						nativeInnerArray.insertObjectAtIndex(NSCPdfTableCellOrString.alloc().initWithStringCell(`${inner}`, null), j);
+					if (inner === undefined || inner === null) {
+						nativeInnerArray.addObject(NSCPdfTableCellOrString.withString(`${inner}`));
+					} else {
+						switch (typeof inner) {
+							case 'string':
+								if (inner.length === 0) {
+									nativeInnerArray.addObject(NSCPdfTableCellOrString.empty());
+								} else {
+									nativeInnerArray.addObject(NSCPdfTableCellOrString.withString(inner as never));
+								}
+								break;
+							case 'object':
+								{
+									const style = parseStyleDef((inner as TableCell).style);
+									const cell = NSCPdfTableCell.alloc().init((inner as TableCell).content, (inner as TableCell).rowSpan, (inner as TableCell).colSpan, style);
+									nativeInnerArray.addObject(NSCPdfTableCellOrString.Cell(cell));
+								}
+								break;
+							default:
+								break;
+						}
 					}
 				}
 			}
-			nativeArray.insertObjectAtIndex(nativeInnerArray, i);
+			nativeArray.addObject(nativeInnerArray);
 		}
 		return nativeArray;
 	} else {
