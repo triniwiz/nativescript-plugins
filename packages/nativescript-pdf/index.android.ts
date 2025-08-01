@@ -496,7 +496,7 @@ export class PDFDocument implements IPDFDocument {
 			this[native_].addImage(bitmap.android, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
 		} else if (bitmap instanceof ImageSource) {
 			this[native_].addImage(bitmap.android, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
-		} else if ((bitmap as any) instanceof globalAndroid.graphics.Bitmap) {
+		} else if ((bitmap as any) instanceof android.graphics.Bitmap) {
 			this[native_].addImage(bitmap as never, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
 		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
 			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, java.lang.Integer.valueOf(heightOrWidth ?? -1), java.lang.Integer.valueOf(height ?? -1));
