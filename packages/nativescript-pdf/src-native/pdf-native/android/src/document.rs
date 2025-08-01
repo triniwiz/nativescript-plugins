@@ -859,10 +859,10 @@ fn parse_style_def(env: &mut JNIEnv, value: &JObject, unit: PdfNativeUnit) -> Re
         )
     };
 
-    let padding_left_changed = read_float(&value_buffer, 16_usize) > 0.;
-    let padding_top_changed = read_float(&value_buffer, 20_usize) > 0.;
-    let padding_right_changed = read_float(&value_buffer, 24_usize) > 0.;
-    let padding_bottom_changed = read_float(&value_buffer, 28_usize) > 0.;
+    let padding_left_changed = read_int(&value_buffer, 16_usize) > 0;
+    let padding_top_changed = read_int(&value_buffer, 20_usize) > 0;
+    let padding_right_changed = read_int(&value_buffer, 24_usize) > 0;
+    let padding_bottom_changed = read_int(&value_buffer, 28_usize) > 0;
 
     style.cell_padding = CPdfNativePadding {
         left: CPdfNativePoints::new_state(
