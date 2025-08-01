@@ -1,6 +1,6 @@
 {
 	"name": "@triniwiz/nativescript-pdf",
-	"version": "1.0.0-alpha.14",
+	"version": "1.0.0-alpha.15",
 	"description": "A PDFViewer or Editor for NativeScript that allows you to display and or create PDF documents in your app.",
 	"main": "index",
 	"types": "index.d.ts",
