@@ -3,6 +3,7 @@ import { PageBreak, PDFViewBase, srcProperty, TextAlignment, TextBaseline } from
 import { IPDFDocument, PageSize, StyleDef, TableCell, TableCellOrString, TableOptions, TextOptions } from '.';
 declare const kotlin: any;
 const native_ = Symbol('[[native]]');
+let emptyArray = null;
 
 export class PDFView extends PDFViewBase {
 	createNativeView(): Object {
@@ -430,7 +431,10 @@ function parseTableCellOrString(value: TableCellOrString[][]) {
 		}
 		return nativeArray;
 	}
-	return [];
+	if (emptyArray == null) {
+		emptyArray = Array.create('[Lio.github.triniwiz.plugins.pdf.table.TableCellOrString;', 0);
+	}
+	return emptyArray;
 }
 
 export class PDFDocument implements IPDFDocument {

@@ -35,15 +35,29 @@ public class NSCPdfMargin: NSObject {
     }
   }
   
+  public static func `default`(uniform: Float = 0) -> NSCPdfMargin{
+    var ret = NSCPdfMargin(uniform: uniform)
+    ret.topChanged = false
+    ret.leftChanged = false
+    ret.bottomChanged = false
+    ret.rightChanged = false
+    return ret
+  }
+  
+  public static func `default`(left: Float = 0, right: Float = 0, top: Float = 0, bottom: Float = 0) -> NSCPdfMargin{
+    var ret = NSCPdfMargin(left, right, top, bottom)
+    ret.topChanged = false
+    ret.leftChanged = false
+    ret.bottomChanged = false
+    ret.rightChanged = false
+    return ret
+  }
+  
   public init(_ top: Float, _ left: Float, _ bottom: Float, _ right: Float) {
     self.top = top
     self.left = left
     self.bottom = bottom
     self.right = right
-    rightChanged = false
-    leftChanged = false
-    bottomChanged = false
-    topChanged = false
   }
   
   public init(uniform: Float) {
@@ -51,10 +65,6 @@ public class NSCPdfMargin: NSObject {
     self.left = uniform
     self.bottom = uniform
     self.right = uniform
-    rightChanged = false
-    leftChanged = false
-    bottomChanged = false
-    topChanged = false
   }
   
   func pdfium(_ unit: NSCPdfUnit) -> CPdfNativeMargin {

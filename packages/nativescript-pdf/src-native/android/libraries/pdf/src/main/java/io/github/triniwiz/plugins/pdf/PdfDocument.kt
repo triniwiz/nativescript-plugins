@@ -265,11 +265,24 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       config.showHead.value,
       config.showFoot.value,
       config.margin.left,
+      config.margin.leftChanged,
       config.margin.top,
+      config.margin.topChanged,
       config.margin.right,
+      config.margin.rightChanged,
       config.margin.bottom,
+      config.margin.bottomChanged
     )
-    return "{x:${"%.2f".format(getFirst(output))}, y:${"%.2f".format(getSecond(output))}}"
+
+    val json = """
+    {
+        "x": %.2f,
+        "y": %.2f
+    }
+""".trimIndent().format(getFirst(output), getSecond(output))
+
+
+    return json
   }
 
   fun saveSync(path: String) {
@@ -476,9 +489,13 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       showHead: Int,
       showFoot: Int,
       marginLeft: Float,
+      marginLeftChanged: Boolean,
       marginTop: Float,
+      marginTopChanged: Boolean,
       marginRight: Float,
+      marginRightChanged: Boolean,
       marginBottom: Float,
+      marginBottomChanged: Boolean,
     ): Long
 
 

@@ -231,6 +231,36 @@ class StyleDef(
       .put(1, cellPadding.top)
       .put(2, cellPadding.right)
       .put(3, cellPadding.bottom)
+
+
+    value.asIntBuffer()
+      .put(
+        4, if (cellPadding.leftChanged) {
+          1
+        } else {
+          0
+        }
+      ).put(
+        5, if (cellPadding.topChanged) {
+          1
+        } else {
+          0
+        }
+      )
+      .put(
+        6, if (cellPadding.rightChanged) {
+          1
+        } else {
+          0
+        }
+      )
+      .put(
+        7, if (cellPadding.bottomChanged) {
+          1
+        } else {
+          0
+        }
+      )
   }
 
   fun getLineColorValue(value: ByteBuffer): Boolean {
@@ -273,14 +303,14 @@ class StyleDef(
         FontStyle.default(),
         Overflow.default(),
         null,
-        Color.grey(20),
+        null,
         CellWidth.Auto,
         10f,
         0f,
         HorizontalAlign.Left,
         VerticalAlign.Top,
         10f,
-        Padding(10f),
+        Padding.default(10f),
         Color.grey(10),
         0f
       )

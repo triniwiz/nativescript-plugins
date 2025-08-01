@@ -334,6 +334,14 @@ impl CPdfNativePoints {
             changed: true,
         }
     }
+
+    pub fn new_state(value: f32, unit: PdfNativeUnit, state: bool) -> Self {
+        CPdfNativePoints {
+            value,
+            unit,
+            changed: state,
+        }
+    }
 }
 
 impl Into<PdfPoints> for CPdfNativePoints {

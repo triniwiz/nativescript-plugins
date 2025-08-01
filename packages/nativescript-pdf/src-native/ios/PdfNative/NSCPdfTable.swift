@@ -185,7 +185,7 @@ public class NSCPdfTable: NSObject {
   public var pageBreak = NSCPdfPageBreak.default()
   public var showHead = NSCPdfShowHead.default()
   public var showFoot = NSCPdfShowFoot.default()
-  public var margin: NSCPdfMargin = NSCPdfMargin(uniform: 40)
+  public var margin = NSCPdfMargin.default(uniform: 40)
   
   
   private var columnStylesKeysBuffer: UnsafeMutablePointer<CColumnKey>?

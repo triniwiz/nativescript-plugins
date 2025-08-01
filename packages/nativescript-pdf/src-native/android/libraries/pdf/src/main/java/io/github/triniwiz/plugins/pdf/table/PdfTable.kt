@@ -16,7 +16,7 @@ class PdfTable {
   var pageBreak = PageBreak.default()
   var showHead = ShowHead.default()
   var showFoot = ShowFoot.default()
-  var margin = Margin(40f)
+  var margin = Margin.default(40f)
 
   fun updatePosition(x: Float, y: Float) {
     position = Pair(x, y)

@@ -5,7 +5,7 @@ use crate::{
 use jni::objects::{
     JByteArray, JByteBuffer, JClass, JObject, JObjectArray, JString, JValue, ReleaseMode,
 };
-use jni::sys::{jfloat, jint, jlong, jobjectArray, jstring};
+use jni::sys::{jboolean, jfloat, jint, jlong, jobjectArray, jstring, JNI_TRUE};
 use jni::JNIEnv;
 use pdf_core::document::{
     PdfNativeDocument, PdfNativeDocumentConfig, PdfNativeOrientation, PdfNativePaperSize,
@@ -717,7 +717,7 @@ fn parse_style_def(env: &mut JNIEnv, value: &JObject, unit: PdfNativeUnit) -> Re
     }
 
     // max 4 values, increase if a larger method is needed
-    let mut value_buffer = [0u8; 16];
+    let mut value_buffer = [0u8; 32];
     let byte_buffer = unsafe {
         env.new_direct_byte_buffer(value_buffer.as_mut_ptr(), value_buffer.len())
             .map_err(|_| ())?
@@ -859,11 +859,32 @@ fn parse_style_def(env: &mut JNIEnv, value: &JObject, unit: PdfNativeUnit) -> Re
         )
     };
 
+    let padding_left_changed = read_float(&value_buffer, 16_usize) > 0.;
+    let padding_top_changed = read_float(&value_buffer, 20_usize) > 0.;
+    let padding_right_changed = read_float(&value_buffer, 24_usize) > 0.;
+    let padding_bottom_changed = read_float(&value_buffer, 28_usize) > 0.;
+
     style.cell_padding = CPdfNativePadding {
-        left: CPdfNativePoints::new(read_float(&value_buffer, 0_usize), unit),
-        top: CPdfNativePoints::new(read_float(&value_buffer, 4_usize), unit),
-        bottom: CPdfNativePoints::new(read_float(&value_buffer, 12_usize), unit),
-        right: CPdfNativePoints::new(read_float(&value_buffer, 8_usize), unit),
+        left: CPdfNativePoints::new_state(
+            read_float(&value_buffer, 0_usize),
+            unit,
+            padding_left_changed,
+        ),
+        top: CPdfNativePoints::new_state(
+            read_float(&value_buffer, 4_usize),
+            unit,
+            padding_top_changed,
+        ),
+        right: CPdfNativePoints::new_state(
+            read_float(&value_buffer, 8_usize),
+            unit,
+            padding_right_changed,
+        ),
+        bottom: CPdfNativePoints::new_state(
+            read_float(&value_buffer, 12_usize),
+            unit,
+            padding_bottom_changed,
+        ),
     };
 
     // reset buffer
@@ -1089,9 +1110,13 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
     show_head: jint,
     show_foot: jint,
     margin_left: jfloat,
+    margin_left_changed: jboolean,
     margin_top: jfloat,
+    margin_top_changed: jboolean,
     margin_right: jfloat,
+    margin_right_changed: jboolean,
     margin_bottom: jfloat,
+    margin_bottom_changed: jboolean,
 ) -> jlong {
     unsafe {
         if instance == 0 {
@@ -1101,10 +1126,18 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
         let unit = instance.unit();
         let mut table = PdfTable::default();
         table.margin = CPdfNativeMargin {
-            top: CPdfNativePoints::new(margin_top, unit),
-            right: CPdfNativePoints::new(margin_right, unit),
-            bottom: CPdfNativePoints::new(margin_bottom, unit),
-            left: CPdfNativePoints::new(margin_left, unit),
+            top: CPdfNativePoints::new_state(margin_top, unit, margin_top_changed == JNI_TRUE),
+            right: CPdfNativePoints::new_state(
+                margin_right,
+                unit,
+                margin_right_changed == JNI_TRUE,
+            ),
+            bottom: CPdfNativePoints::new_state(
+                margin_bottom,
+                unit,
+                margin_bottom_changed == JNI_TRUE,
+            ),
+            left: CPdfNativePoints::new_state(margin_left, unit, margin_left_changed == JNI_TRUE),
         };
 
         if !styles.is_null() {
