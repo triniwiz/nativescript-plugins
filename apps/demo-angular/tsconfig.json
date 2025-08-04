@@ -196,6 +196,12 @@
       ],
       "@triniwiz/nativescript-supabase-functions": [
         "../../packages/nativescript-supabase-functions/index.d.ts"
+      ],
+      "@triniwiz/nativescript-klaviyo-sdk": [
+        "../../packages/nativescript-klaviyo-sdk/index.d.ts"
+      ],
+      "@triniwiz/nativescript-klaviyo-push-sdk": [
+        "../../packages/nativescript-klaviyo-push-sdk/index.d.ts"
       ]
     }
   },

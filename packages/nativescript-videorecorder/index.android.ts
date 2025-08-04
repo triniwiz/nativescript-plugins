@@ -2,6 +2,7 @@ import { AndroidActivityResultEventData, AndroidApplication, Application, Device
 import * as permissions from '@nativescript-community/perms';
 
 import { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType, VideoRecorderBase } from './common';
+import { parse } from '@nativescript/core/css';
 
 export { CameraPosition, CameraPositionType, Options, RecordResult, VideoFormat, VideoFormatType };
 const RESULT_CANCELED = 0;
@@ -9,30 +10,34 @@ const RESULT_OK = -1;
 const REQUEST_VIDEO_CAPTURE = 999;
 
 export class VideoRecorder extends VideoRecorderBase {
-	public requestPermissions(explanation?: string): Promise<permissions.Result> {
-		return permissions.request('camera').then(() => permissions.request('android.permission.RECORD_AUDIO'));
-	}
-
-	public hasCameraPermission(): Promise<permissions.Result> {
-		return permissions.check(android.Manifest.permission.CAMERA);
-	}
-
-	public hasAudioPermission(): Promise<permissions.Result> {
-		return permissions.check(android.Manifest.permission.RECORD_AUDIO);
-	}
-
-	public hasStoragePermission(): Promise<permissions.Result> {
-		return permissions.check('storage', {
-			read: true,
-			write: true,
+	public requestPermissions(explanation?: string) {
+		return permissions.request({
+		'camera': {},
+		'microphone': {}
 		});
 	}
 
-	public requestStoragePermission(explanation?: string): Promise<permissions.Result> {
-		return permissions.request('storage', {
-			read: true,
-			write: true,
-		});
+	public hasCameraPermission(): boolean {
+		return androidx.core.content.ContextCompat.checkSelfPermission(Application.android.foregroundActivity, android.Manifest.permission.CAMERA) === android.content.pm.PackageManager.PERMISSION_GRANTED;
+	}
+
+	public hasAudioPermission(): boolean {
+		return androidx.core.content.ContextCompat.checkSelfPermission(Application.android.foregroundActivity, android.Manifest.permission.RECORD_AUDIO) === android.content.pm.PackageManager.PERMISSION_GRANTED;
+	}
+
+	public hasStoragePermission(): boolean {
+		if(parseInt(Device.sdkVersion, 10) >= 32) {
+			return true;
+		}
+		return androidx.core.content.ContextCompat.checkSelfPermission(Application.android.foregroundActivity, android.Manifest.permission.WRITE_EXTERNAL_STORAGE) === android.content.pm.PackageManager.PERMISSION_GRANTED
+		&& androidx.core.content.ContextCompat.checkSelfPermission(Application.android.foregroundActivity, android.Manifest.permission.READ_EXTERNAL_STORAGE) === android.content.pm.PackageManager.PERMISSION_GRANTED
+	}
+
+	public requestStoragePermission(explanation?: string): Promise<any> {
+		if(parseInt(Device.sdkVersion, 10) >= 32) {
+			return Promise.resolve();
+		}
+		return permissions.request({storage: {}});
 	}
 
 	public static isAvailable() {
@@ -76,10 +81,11 @@ export class VideoRecorder extends VideoRecorderBase {
 				let tempPictureUri;
 
 				if (saveToGallery) {
-					await this.requestStoragePermission();
+					if(parseInt(Device.sdkVersion, 10) <= 32) {
+						await permissions.request({storage: {}});
+					}
 				}
-				const hasPerm = await this.hasStoragePermission();
-				if (hasPerm[0] !== 'authorized') {
+				if (!this.hasStoragePermission()) {
 					saveToGallery = false;
 				}
 				const createTmpFile = () => {
