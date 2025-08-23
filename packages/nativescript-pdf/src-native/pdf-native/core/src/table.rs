@@ -1799,7 +1799,7 @@ pub fn draw_table<'a>(
             data.current_page = index;
             next_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
-            cursor_y = get_y_points(&next_page, y_start);
+            cursor_y = get_y_points(&next_page, margin_top);
 
             if matches!(table.show_head, PdfNativeShowHead::EveryPage) {
                 for header_row in &head {

@@ -6,7 +6,7 @@
 	<dict>
 		<key>Headers/PdfNative-Swift.h</key>
 		<data>
-		w6oXz8HPMGJw+5ZuqtS4IzkNogU=
+		RCMtwXE61brJueDGlTw0028SilA=
 		</data>
 		<key>Headers/PdfNative.h</key>
 		<data>
@@ -22,55 +22,55 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		8hW7wWlS3r9KumAYVdZ3z8HoyRU=
+		L+TJ/bc/xoG6RSQhiPYN9NZpYw8=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		ZPeC0RYfExqRX1tsBA+xYIe5toY=
+		98L7rF4MBM9E5l6Z7MeNzRGTZbc=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<data>
-		v0ajSYMZ8Rdv/BH+3O/J4SR7XQo=
+		Kf90pScHAcxAY9GKShjJPu7jUXc=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		CV+UyBZ+TCcNsvqfEfxgK69hr9s=
+		3pMxcZ+mvOcUXzUcIgdkMmao+BU=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		8B66jIK4xaTMUuVjpAEiOYqQ9fk=
+		POAgibqAiMXRDgOsUDq3U4S0Ugk=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		t8OFN1CUP4E2eL6fzIrORw2BkGQ=
+		PxMGQOt8WyD9Ytcw8GwNwKxL/dU=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		8B66jIK4xaTMUuVjpAEiOYqQ9fk=
+		POAgibqAiMXRDgOsUDq3U4S0Ugk=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		k/Gboyvy2AJAb6j38brefXkvHiQ=
+		aj3Y6146zG/69NFBej3qt7meFzI=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		CV+UyBZ+TCcNsvqfEfxgK69hr9s=
+		3pMxcZ+mvOcUXzUcIgdkMmao+BU=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<data>
-		TJe4eyRQjSqIxwCG46b67EjTUb8=
+		69YlDRAH5iOaRQkF6t97tMTeFOE=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		AGfBFqafHYmguU9LA0IgHsup5zg=
+		wJdchY2etFMcrNi/ri4a4E0lh5g=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<data>
-		TJe4eyRQjSqIxwCG46b67EjTUb8=
+		69YlDRAH5iOaRQkF6t97tMTeFOE=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		SsOr3iF6AWgA/byM82jaA4c9DCM=
+		VkPlLasyz/svYcm1a7NitItdBQo=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -83,7 +83,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			ThRdv5JUeNqhwTGQhIqhgxJCn8WsxSAgw+zsV7IFNmE=
+			lvg9yHLDZHZSm7f5IVDw+dyyw3UidXSMLlm/Ta4ULn8=
 			</data>
 		</dict>
 		<key>Headers/PdfNative.h</key>
@@ -111,84 +111,84 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			eCXB4w9PCeDww+3YjPGhwFtL+ZIusdpd6UcAGbYurcQ=
+			NWonnbF5B8ngsYWmof+u89H5KaRQR437mU7ygeCgiuA=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			tcxH9RpzmAt5RYiSVq6bNxDTrOPf9KITkOZB2XjXHI0=
+			6cPgQntciJ8WNmNSenAataU+yCpvfcx0JjIUdGeRRU8=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KHihNUzQFfImlzft9IqO2CqFAm0L4dKlZ0SPipAyoek=
+			FaA4nAWzRwh6zW4YUj9hJt+iLrHEJy8wWzZR5f2teHc=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			VPOVKFlk0km6jj4JOp0XwiAjxnuasLFiowSiwUC04L0=
+			6ShuyE4erljns6gZWcz7zz3RDo4OVHtStI5egRkQaVk=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			93lJq56tWEXwUAFZQyfG6SSwb7scPjlc4nBkvu4ytCU=
+			9oCnN0R2Vc9JXeoT9rOcjfZenK7YNKoABIOhhDyOrGY=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			VPOVKFlk0km6jj4JOp0XwiAjxnuasLFiowSiwUC04L0=
+			6ShuyE4erljns6gZWcz7zz3RDo4OVHtStI5egRkQaVk=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			H/xkIF6geCtaML0O1rrhdlIV3u3pxd6FrMMY4qQ3LMs=
+			vnlp0qB453Os9sZOhs0hK8Aol/cvnPLbQAoYAtEVmV8=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			KHihNUzQFfImlzft9IqO2CqFAm0L4dKlZ0SPipAyoek=
+			FaA4nAWzRwh6zW4YUj9hJt+iLrHEJy8wWzZR5f2teHc=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			98UA2LlWB+ls4E6Jrs+H0h5uQy28ObH1tLzJ/7gI6m8=
+			5jfKAjoIeOCrlxGBbTRfWPv5r+kdDk0QPmBOi1Eqi+U=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			oPcOzkViw/FGWHQXLVeU1T+X1k84FKLlmTzUz8pwjoA=
+			OoKWoDGnz+rrNeQg790Z7lyVaUJ6gOvoQI0mu0or/NI=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			98UA2LlWB+ls4E6Jrs+H0h5uQy28ObH1tLzJ/7gI6m8=
+			5jfKAjoIeOCrlxGBbTRfWPv5r+kdDk0QPmBOi1Eqi+U=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			eavdv9gGQ3GLwEgIy8jz+HkJdymBXihVAr0ewGejJSY=
+			9kL5HwHcThQd9d1MKP7T5QN1jk2Cgt4VEzlJRhFo5sk=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>

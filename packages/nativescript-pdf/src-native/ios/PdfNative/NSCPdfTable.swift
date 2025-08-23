@@ -143,8 +143,12 @@ public class NSCPdfTableCellOrString: NSObject {
       cc.pointee.style = UnsafePointer(style)
       pdfium = CTableCellOrString(string: nil, cell: cc)
     }else {
-      stringC = strdup(string)
-      pdfium = CTableCellOrString(string: UnsafePointer(stringC), cell: nil)
+      if(string.isEmpty){
+        pdfium = CTableCellOrString(string: nil, cell: nil)
+      }else {
+        stringC = strdup(string)
+        pdfium = CTableCellOrString(string: UnsafePointer(stringC), cell: nil)
+      }
     }
     return pdfium
   }

@@ -15,8 +15,8 @@ class ViewController: UIViewController {
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-      let output = document.table(buildTable())
-      //buildDoc(document: document)
+     // let output = document.table(buildTable(document: document))
+      buildDoc(document: document)
 
       pdf = NSCPdfView(frame: view.bounds)
 
@@ -28,7 +28,7 @@ class ViewController: UIViewController {
       
       
       pdf?.document = document
-      
+//      
       let tmp = NSTemporaryDirectory() + "/test.pdf"
       
       document.saveSync(to: tmp)
@@ -63,7 +63,7 @@ class ViewController: UIViewController {
   
 
   
-  func buildTable() -> NSCPdfTable{
+  func buildTable(document: NSCPdfDocument) -> NSCPdfTable{
 
         let style = NSCPdfStyleDef.default()
         style.fillColor = NSCPdfColor(51, 51, 51)
@@ -89,125 +89,128 @@ class ViewController: UIViewController {
 
 //    bodyStyle.horizontalAlign = NSCPdfHorizontalAlign.center
     
+    document.setDrawColor(255, 255, 255)
+    document.rect(0, 0, 10, 10, .f)
 
         let tab = NSCPdfTable()
         tab.theme = .grid
+    tab.position = [0, document.height / 2]
         //tab.styles = style
         tab.styles = bodyStyle
         tab.headStyles = style
         tab.head = [[first, last]]
        // tab.foot = tab.head
-        tab.body = [
-          [NSCPdfTableCellOrString.String("" ), NSCPdfTableCellOrString.Cell(NSCPdfTableCell("", 1, 1) )],
-        ]
+//        tab.body = [
+//          [NSCPdfTableCellOrString(string: "" ), NSCPdfTableCellOrString.Cell(NSCPdfTableCell("", 1, 1) )],
+//        ]
     
     
-    /*
+    
         tab.body = [
-          [NSCPdfTableCellOrString.String("Osei"), NSCPdfTableCellOrString.String("Fortune")],
-          [NSCPdfTableCellOrString.String("Liam"), NSCPdfTableCellOrString.String("Nguyen")],
-          [NSCPdfTableCellOrString.String("Sofia"), NSCPdfTableCellOrString.String("Martinez")],
-          [NSCPdfTableCellOrString.String("Ethan"), NSCPdfTableCellOrString.String("Wang")],
-          [NSCPdfTableCellOrString.String("Chloe"), NSCPdfTableCellOrString.String("Okafor")],
-          [NSCPdfTableCellOrString.String("Noah"), NSCPdfTableCellOrString.String("Ivanov")],
-          [NSCPdfTableCellOrString.String("Maya"), NSCPdfTableCellOrString.String("Patel")],
-          [NSCPdfTableCellOrString.String("Lucas"), NSCPdfTableCellOrString.String("Kim")],
-          [NSCPdfTableCellOrString.String("Zara"), NSCPdfTableCellOrString.String("Haddad")],
-          [NSCPdfTableCellOrString.String("Emma"), NSCPdfTableCellOrString.String("Singh")],
-          [NSCPdfTableCellOrString.String("Oliver"), NSCPdfTableCellOrString.String("Garcia")],
-          [NSCPdfTableCellOrString.String("Ava"), NSCPdfTableCellOrString.String("Kowalski")],
-          [NSCPdfTableCellOrString.String("Elijah"), NSCPdfTableCellOrString.String("Ahmed")],
-          [NSCPdfTableCellOrString.String("Isabella"), NSCPdfTableCellOrString.String("Chen")],
-          [NSCPdfTableCellOrString.String("Benjamin"), NSCPdfTableCellOrString.String("Tanaka")],
-          [NSCPdfTableCellOrString.String("Amelia"), NSCPdfTableCellOrString.String("Dubois")],
-          [NSCPdfTableCellOrString.String("James"), NSCPdfTableCellOrString.String("López")],
-          [NSCPdfTableCellOrString.String("Mila"), NSCPdfTableCellOrString.String("Nakamura")],
-          [NSCPdfTableCellOrString.String("Henry"), NSCPdfTableCellOrString.String("Jensen")],
-          [NSCPdfTableCellOrString.String("Grace"), NSCPdfTableCellOrString.String("Kumar")],
-          [NSCPdfTableCellOrString.String("William"), NSCPdfTableCellOrString.String("Bakshi")],
-          [NSCPdfTableCellOrString.String("Ella"), NSCPdfTableCellOrString.String("Morales")],
-          [NSCPdfTableCellOrString.String("Jack"), NSCPdfTableCellOrString.String("Petrov")],
-          [NSCPdfTableCellOrString.String("Lily"), NSCPdfTableCellOrString.String("Hassan")],
-          [NSCPdfTableCellOrString.String("Alexander"), NSCPdfTableCellOrString.String("Silva")],
-          [NSCPdfTableCellOrString.String("Aria"), NSCPdfTableCellOrString.String("Bianchi")],
-          [NSCPdfTableCellOrString.String("Daniel"), NSCPdfTableCellOrString.String("O'Connor")],
-          [NSCPdfTableCellOrString.String("Layla"), NSCPdfTableCellOrString.String("Nasser")],
-          [NSCPdfTableCellOrString.String("Logan"), NSCPdfTableCellOrString.String("Schneider")],
-          [NSCPdfTableCellOrString.String("Emily"), NSCPdfTableCellOrString.String("Jin")],
-          [NSCPdfTableCellOrString.String("Jacob"), NSCPdfTableCellOrString.String("Popov")],
-          [NSCPdfTableCellOrString.String("Hannah"), NSCPdfTableCellOrString.String("Ali")],
-          [NSCPdfTableCellOrString.String("Michael"), NSCPdfTableCellOrString.String("Fernandez")],
-          [NSCPdfTableCellOrString.String("Abigail"), NSCPdfTableCellOrString.String("Iqbal")],
-          [NSCPdfTableCellOrString.String("Sebastian"), NSCPdfTableCellOrString.String("Nowak")],
-          [NSCPdfTableCellOrString.String("Nora"), NSCPdfTableCellOrString.String("Salim")],
-          [NSCPdfTableCellOrString.String("Matthew"), NSCPdfTableCellOrString.String("Carvalho")],
-          [NSCPdfTableCellOrString.String("Leah"), NSCPdfTableCellOrString.String("Georgiou")],
-          [NSCPdfTableCellOrString.String("Aiden"), NSCPdfTableCellOrString.String("Rossi")],
-          [NSCPdfTableCellOrString.String("Zoey"), NSCPdfTableCellOrString.String("Yilmaz")],
-          [NSCPdfTableCellOrString.String("Jackson"), NSCPdfTableCellOrString.String("Mehta")],
-          [NSCPdfTableCellOrString.String("Riley"), NSCPdfTableCellOrString.String("Santos")],
-          [NSCPdfTableCellOrString.String("David"), NSCPdfTableCellOrString.String("Müller")],
-          [NSCPdfTableCellOrString.String("Luna"), NSCPdfTableCellOrString.String("Andersson")],
-          [NSCPdfTableCellOrString.String("Joseph"), NSCPdfTableCellOrString.String("Kimura")],
-          [NSCPdfTableCellOrString.String("Hazel"), NSCPdfTableCellOrString.String("Jafari")],
-          [NSCPdfTableCellOrString.String("Samuel"), NSCPdfTableCellOrString.String("Takahashi")],
-          [NSCPdfTableCellOrString.String("Ellie"), NSCPdfTableCellOrString.String("Volkov")],
-          [NSCPdfTableCellOrString.String("Carter"), NSCPdfTableCellOrString.String("Dupont")],
-          [NSCPdfTableCellOrString.String("Avery"), NSCPdfTableCellOrString.String("Zhang")],
-          [NSCPdfTableCellOrString.String("Wyatt"), NSCPdfTableCellOrString.String("Costa")],
-          [NSCPdfTableCellOrString.String("Violet"), NSCPdfTableCellOrString.String("Matsumoto")],
-          [NSCPdfTableCellOrString.String("Jayden"), NSCPdfTableCellOrString.String("León")],
-          [NSCPdfTableCellOrString.String("Penelope"), NSCPdfTableCellOrString.String("Adebayo")],
-          [NSCPdfTableCellOrString.String("Luke"), NSCPdfTableCellOrString.String("van Dijk")],
-          [NSCPdfTableCellOrString.String("Stella"), NSCPdfTableCellOrString.String("Pereira")],
-          [NSCPdfTableCellOrString.String("Grayson"), NSCPdfTableCellOrString.String("Aliyev")],
-          [NSCPdfTableCellOrString.String("Aurora"), NSCPdfTableCellOrString.String("Rana")],
-          [NSCPdfTableCellOrString.String("Levi"), NSCPdfTableCellOrString.String("Ndlovu")],
-          [NSCPdfTableCellOrString.String("Naomi"), NSCPdfTableCellOrString.String("Andreev")],
-          [NSCPdfTableCellOrString.String("Gabriel"), NSCPdfTableCellOrString.String("Berger")],
-          [NSCPdfTableCellOrString.String("Camila"), NSCPdfTableCellOrString.String("Seo")],
-          [NSCPdfTableCellOrString.String("Isaac"), NSCPdfTableCellOrString.String("Sato")],
-          [NSCPdfTableCellOrString.String("Eleanor"), NSCPdfTableCellOrString.String("Toure")],
-          [NSCPdfTableCellOrString.String("Julian"), NSCPdfTableCellOrString.String("Obrien")],
-          [NSCPdfTableCellOrString.String("Madeline"), NSCPdfTableCellOrString.String("Koenig")],
-          [NSCPdfTableCellOrString.String("Anthony"), NSCPdfTableCellOrString.String("Padilla")],
-          [NSCPdfTableCellOrString.String("Bella"), NSCPdfTableCellOrString.String("Nakamoto")],
-          [NSCPdfTableCellOrString.String("Andrew"), NSCPdfTableCellOrString.String("Ahmedov")],
-          [NSCPdfTableCellOrString.String("Sadie"), NSCPdfTableCellOrString.String("Jabari")],
-          [NSCPdfTableCellOrString.String("Joshua"), NSCPdfTableCellOrString.String("Qureshi")],
-          [NSCPdfTableCellOrString.String("Skylar"), NSCPdfTableCellOrString.String("Iverson")],
-          [NSCPdfTableCellOrString.String("Christopher"), NSCPdfTableCellOrString.String("Tan")],
-          [NSCPdfTableCellOrString.String("Paisley"), NSCPdfTableCellOrString.String("Yamamoto")],
-          [NSCPdfTableCellOrString.String("Lincoln"), NSCPdfTableCellOrString.String("Duarte")],
-          [NSCPdfTableCellOrString.String("Savannah"), NSCPdfTableCellOrString.String("Berg")],
-          [NSCPdfTableCellOrString.String("Nathan"), NSCPdfTableCellOrString.String("Gomez")],
-          [NSCPdfTableCellOrString.String("Brooklyn"), NSCPdfTableCellOrString.String("Rahman")],
-          [NSCPdfTableCellOrString.String("Dylan"), NSCPdfTableCellOrString.String("Kapoor")],
-          [NSCPdfTableCellOrString.String("Claire"), NSCPdfTableCellOrString.String("Samaras")],
-          [NSCPdfTableCellOrString.String("Ezra"), NSCPdfTableCellOrString.String("Habib")],
-          [NSCPdfTableCellOrString.String("Lucy"), NSCPdfTableCellOrString.String("Wojcik")],
-          [NSCPdfTableCellOrString.String("Thomas"), NSCPdfTableCellOrString.String("Arslan")],
-          [NSCPdfTableCellOrString.String("Aaliyah"), NSCPdfTableCellOrString.String("Bukhari")],
-          [NSCPdfTableCellOrString.String("Aaron"), NSCPdfTableCellOrString.String("Hwang")],
-          [NSCPdfTableCellOrString.String("Isla"), NSCPdfTableCellOrString.String("Choudhury")],
-          [NSCPdfTableCellOrString.String("Ryan"), NSCPdfTableCellOrString.String("Markovic")],
-          [NSCPdfTableCellOrString.String("Caroline"), NSCPdfTableCellOrString.String("Gonzalez")],
-          [NSCPdfTableCellOrString.String("Asher"), NSCPdfTableCellOrString.String("Demir")],
-          [NSCPdfTableCellOrString.String("Ivy"), NSCPdfTableCellOrString.String("Stefanov")],
-          [NSCPdfTableCellOrString.String("Nolan"), NSCPdfTableCellOrString.String("Ng")],
-          [NSCPdfTableCellOrString.String("Elena"), NSCPdfTableCellOrString.String("Rahimi")],
-          [NSCPdfTableCellOrString.String("Adrian"), NSCPdfTableCellOrString.String("Saleh")],
-          [NSCPdfTableCellOrString.String("Piper"), NSCPdfTableCellOrString.String("Sharma")],
-          [NSCPdfTableCellOrString.String("Eli"), NSCPdfTableCellOrString.String("Svensson")],
-          [NSCPdfTableCellOrString.String("Nova"), NSCPdfTableCellOrString.String("Velasquez")],
-          [NSCPdfTableCellOrString.String("Jonathan"), NSCPdfTableCellOrString.String("Usman")],
-          [NSCPdfTableCellOrString.String("Melody"), NSCPdfTableCellOrString.String("Hashimoto")],
-          [NSCPdfTableCellOrString.String("Jason"), NSCPdfTableCellOrString.String("Khan")],
-          [NSCPdfTableCellOrString.String("Alice"), NSCPdfTableCellOrString.String("Roshan")],
-          [NSCPdfTableCellOrString.String("Leo"), NSCPdfTableCellOrString.String("Deng")],
-          [NSCPdfTableCellOrString.String("Hailey"), NSCPdfTableCellOrString.String("Abebe")]
+          [NSCPdfTableCellOrString(string: "Osei"), NSCPdfTableCellOrString(string: "Fortune")],
+          [NSCPdfTableCellOrString(string: "Liam"), NSCPdfTableCellOrString(string: "Nguyen")],
+          [NSCPdfTableCellOrString(string: "Sofia"), NSCPdfTableCellOrString(string: "Martinez")],
+          [NSCPdfTableCellOrString(string: "Ethan"), NSCPdfTableCellOrString(string: "Wang")],
+          [NSCPdfTableCellOrString(string: "Chloe"), NSCPdfTableCellOrString(string: "Okafor")],
+          [NSCPdfTableCellOrString(string: "Noah"), NSCPdfTableCellOrString(string: "Ivanov")],
+          [NSCPdfTableCellOrString(string: "Maya"), NSCPdfTableCellOrString(string: "Patel")],
+          [NSCPdfTableCellOrString(string: "Lucas"), NSCPdfTableCellOrString(string: "Kim")],
+          [NSCPdfTableCellOrString(string: "Zara"), NSCPdfTableCellOrString(string: "Haddad")],
+          [NSCPdfTableCellOrString(string: "Emma"), NSCPdfTableCellOrString(string: "Singh")],
+          [NSCPdfTableCellOrString(string: "Oliver"), NSCPdfTableCellOrString(string: "Garcia")],
+          [NSCPdfTableCellOrString(string: "Ava"), NSCPdfTableCellOrString(string: "Kowalski")],
+          [NSCPdfTableCellOrString(string: "Elijah"), NSCPdfTableCellOrString(string: "Ahmed")],
+          [NSCPdfTableCellOrString(string: "Isabella"), NSCPdfTableCellOrString(string: "Chen")],
+          [NSCPdfTableCellOrString(string: "Benjamin"), NSCPdfTableCellOrString(string: "Tanaka")],
+          [NSCPdfTableCellOrString(string: "Amelia"), NSCPdfTableCellOrString(string: "Dubois")],
+          [NSCPdfTableCellOrString(string: "James"), NSCPdfTableCellOrString(string: "López")],
+          [NSCPdfTableCellOrString(string: "Mila"), NSCPdfTableCellOrString(string: "Nakamura")],
+          [NSCPdfTableCellOrString(string: "Henry"), NSCPdfTableCellOrString(string: "Jensen")],
+          [NSCPdfTableCellOrString(string: "Grace"), NSCPdfTableCellOrString(string: "Kumar")],
+          [NSCPdfTableCellOrString(string: "William"), NSCPdfTableCellOrString(string: "Bakshi")],
+          [NSCPdfTableCellOrString(string: "Ella"), NSCPdfTableCellOrString(string: "Morales")],
+          [NSCPdfTableCellOrString(string: "Jack"), NSCPdfTableCellOrString(string: "Petrov")],
+          [NSCPdfTableCellOrString(string: "Lily"), NSCPdfTableCellOrString(string: "Hassan")],
+          [NSCPdfTableCellOrString(string: "Alexander"), NSCPdfTableCellOrString(string: "Silva")],
+          [NSCPdfTableCellOrString(string: "Aria"), NSCPdfTableCellOrString(string: "Bianchi")],
+          [NSCPdfTableCellOrString(string: "Daniel"), NSCPdfTableCellOrString(string: "O'Connor")],
+          [NSCPdfTableCellOrString(string: "Layla"), NSCPdfTableCellOrString(string: "Nasser")],
+          [NSCPdfTableCellOrString(string: "Logan"), NSCPdfTableCellOrString(string: "Schneider")],
+          [NSCPdfTableCellOrString(string: "Emily"), NSCPdfTableCellOrString(string: "Jin")],
+          [NSCPdfTableCellOrString(string: "Jacob"), NSCPdfTableCellOrString(string: "Popov")],
+          [NSCPdfTableCellOrString(string: "Hannah"), NSCPdfTableCellOrString(string: "Ali")],
+          [NSCPdfTableCellOrString(string: "Michael"), NSCPdfTableCellOrString(string: "Fernandez")],
+          [NSCPdfTableCellOrString(string: "Abigail"), NSCPdfTableCellOrString(string: "Iqbal")],
+          [NSCPdfTableCellOrString(string: "Sebastian"), NSCPdfTableCellOrString(string: "Nowak")],
+          [NSCPdfTableCellOrString(string: "Nora"), NSCPdfTableCellOrString(string: "Salim")],
+          [NSCPdfTableCellOrString(string: "Matthew"), NSCPdfTableCellOrString(string: "Carvalho")],
+          [NSCPdfTableCellOrString(string: "Leah"), NSCPdfTableCellOrString(string: "Georgiou")],
+          [NSCPdfTableCellOrString(string: "Aiden"), NSCPdfTableCellOrString(string: "Rossi")],
+          [NSCPdfTableCellOrString(string: "Zoey"), NSCPdfTableCellOrString(string: "Yilmaz")],
+          [NSCPdfTableCellOrString(string: "Jackson"), NSCPdfTableCellOrString(string: "Mehta")],
+          [NSCPdfTableCellOrString(string: "Riley"), NSCPdfTableCellOrString(string: "Santos")],
+          [NSCPdfTableCellOrString(string: "David"), NSCPdfTableCellOrString(string: "Müller")],
+          [NSCPdfTableCellOrString(string: "Luna"), NSCPdfTableCellOrString(string: "Andersson")],
+          [NSCPdfTableCellOrString(string: "Joseph"), NSCPdfTableCellOrString(string: "Kimura")],
+          [NSCPdfTableCellOrString(string: "Hazel"), NSCPdfTableCellOrString(string: "Jafari")],
+          [NSCPdfTableCellOrString(string: "Samuel"), NSCPdfTableCellOrString(string: "Takahashi")],
+          [NSCPdfTableCellOrString(string: "Ellie"), NSCPdfTableCellOrString(string: "Volkov")],
+          [NSCPdfTableCellOrString(string: "Carter"), NSCPdfTableCellOrString(string: "Dupont")],
+          [NSCPdfTableCellOrString(string: "Avery"), NSCPdfTableCellOrString(string: "Zhang")],
+          [NSCPdfTableCellOrString(string: "Wyatt"), NSCPdfTableCellOrString(string: "Costa")],
+          [NSCPdfTableCellOrString(string: "Violet"), NSCPdfTableCellOrString(string: "Matsumoto")],
+          [NSCPdfTableCellOrString(string: "Jayden"), NSCPdfTableCellOrString(string: "León")],
+          [NSCPdfTableCellOrString(string: "Penelope"), NSCPdfTableCellOrString(string: "Adebayo")],
+          [NSCPdfTableCellOrString(string: "Luke"), NSCPdfTableCellOrString(string: "van Dijk")],
+          [NSCPdfTableCellOrString(string: "Stella"), NSCPdfTableCellOrString(string: "Pereira")],
+          [NSCPdfTableCellOrString(string: "Grayson"), NSCPdfTableCellOrString(string: "Aliyev")],
+          [NSCPdfTableCellOrString(string: "Aurora"), NSCPdfTableCellOrString(string: "Rana")],
+          [NSCPdfTableCellOrString(string: "Levi"), NSCPdfTableCellOrString(string: "Ndlovu")],
+          [NSCPdfTableCellOrString(string: "Naomi"), NSCPdfTableCellOrString(string: "Andreev")],
+          [NSCPdfTableCellOrString(string: "Gabriel"), NSCPdfTableCellOrString(string: "Berger")],
+          [NSCPdfTableCellOrString(string: "Camila"), NSCPdfTableCellOrString(string: "Seo")],
+          [NSCPdfTableCellOrString(string: "Isaac"), NSCPdfTableCellOrString(string: "Sato")],
+          [NSCPdfTableCellOrString(string: "Eleanor"), NSCPdfTableCellOrString(string: "Toure")],
+          [NSCPdfTableCellOrString(string: "Julian"), NSCPdfTableCellOrString(string: "Obrien")],
+          [NSCPdfTableCellOrString(string: "Madeline"), NSCPdfTableCellOrString(string: "Koenig")],
+          [NSCPdfTableCellOrString(string: "Anthony"), NSCPdfTableCellOrString(string: "Padilla")],
+          [NSCPdfTableCellOrString(string: "Bella"), NSCPdfTableCellOrString(string: "Nakamoto")],
+          [NSCPdfTableCellOrString(string: "Andrew"), NSCPdfTableCellOrString(string: "Ahmedov")],
+          [NSCPdfTableCellOrString(string: "Sadie"), NSCPdfTableCellOrString(string: "Jabari")],
+          [NSCPdfTableCellOrString(string: "Joshua"), NSCPdfTableCellOrString(string: "Qureshi")],
+          [NSCPdfTableCellOrString(string: "Skylar"), NSCPdfTableCellOrString(string: "Iverson")],
+          [NSCPdfTableCellOrString(string: "Christopher"), NSCPdfTableCellOrString(string: "Tan")],
+          [NSCPdfTableCellOrString(string: "Paisley"), NSCPdfTableCellOrString(string: "Yamamoto")],
+          [NSCPdfTableCellOrString(string: "Lincoln"), NSCPdfTableCellOrString(string: "Duarte")],
+          [NSCPdfTableCellOrString(string: "Savannah"), NSCPdfTableCellOrString(string: "Berg")],
+          [NSCPdfTableCellOrString(string: "Nathan"), NSCPdfTableCellOrString(string: "Gomez")],
+          [NSCPdfTableCellOrString(string: "Brooklyn"), NSCPdfTableCellOrString(string: "Rahman")],
+          [NSCPdfTableCellOrString(string: "Dylan"), NSCPdfTableCellOrString(string: "Kapoor")],
+          [NSCPdfTableCellOrString(string: "Claire"), NSCPdfTableCellOrString(string: "Samaras")],
+          [NSCPdfTableCellOrString(string: "Ezra"), NSCPdfTableCellOrString(string: "Habib")],
+          [NSCPdfTableCellOrString(string: "Lucy"), NSCPdfTableCellOrString(string: "Wojcik")],
+          [NSCPdfTableCellOrString(string: "Thomas"), NSCPdfTableCellOrString(string: "Arslan")],
+          [NSCPdfTableCellOrString(string: "Aaliyah"), NSCPdfTableCellOrString(string: "Bukhari")],
+          [NSCPdfTableCellOrString(string: "Aaron"), NSCPdfTableCellOrString(string: "Hwang")],
+          [NSCPdfTableCellOrString(string: "Isla"), NSCPdfTableCellOrString(string: "Choudhury")],
+          [NSCPdfTableCellOrString(string: "Ryan"), NSCPdfTableCellOrString(string: "Markovic")],
+          [NSCPdfTableCellOrString(string: "Caroline"), NSCPdfTableCellOrString(string: "Gonzalez")],
+          [NSCPdfTableCellOrString(string: "Asher"), NSCPdfTableCellOrString(string: "Demir")],
+          [NSCPdfTableCellOrString(string: "Ivy"), NSCPdfTableCellOrString(string: "Stefanov")],
+          [NSCPdfTableCellOrString(string: "Nolan"), NSCPdfTableCellOrString(string: "Ng")],
+          [NSCPdfTableCellOrString(string: "Elena"), NSCPdfTableCellOrString(string: "Rahimi")],
+          [NSCPdfTableCellOrString(string: "Adrian"), NSCPdfTableCellOrString(string: "Saleh")],
+          [NSCPdfTableCellOrString(string: "Piper"), NSCPdfTableCellOrString(string: "Sharma")],
+          [NSCPdfTableCellOrString(string: "Eli"), NSCPdfTableCellOrString(string: "Svensson")],
+          [NSCPdfTableCellOrString(string: "Nova"), NSCPdfTableCellOrString(string: "Velasquez")],
+          [NSCPdfTableCellOrString(string: "Jonathan"), NSCPdfTableCellOrString(string: "Usman")],
+          [NSCPdfTableCellOrString(string: "Melody"), NSCPdfTableCellOrString(string: "Hashimoto")],
+          [NSCPdfTableCellOrString(string: "Jason"), NSCPdfTableCellOrString(string: "Khan")],
+          [NSCPdfTableCellOrString(string: "Alice"), NSCPdfTableCellOrString(string: "Roshan")],
+          [NSCPdfTableCellOrString(string: "Leo"), NSCPdfTableCellOrString(string: "Deng")],
+          [NSCPdfTableCellOrString(string: "Hailey"), NSCPdfTableCellOrString(string: "Abebe")]
         ]
-    */
+    
 
         return tab
       
@@ -222,7 +225,7 @@ class ViewController: UIViewController {
     options.align = NSCPdfTextAlignment.center
     document.addText("Hello World 1", (document.width / 2), 20, options)
     
-    document.addText("Hello World 2", 120, 50)
+    document.addText("\u{2713}", 120, 50)
     
     do {
       let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))
