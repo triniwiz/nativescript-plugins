@@ -5,7 +5,9 @@ use crate::{
 use jni::objects::{
     JByteArray, JByteBuffer, JClass, JObject, JObjectArray, JString, JValue, ReleaseMode,
 };
-use jni::sys::{jboolean, jfloat, jint, jlong, jobjectArray, jstring, JNI_TRUE};
+use jni::sys::{
+    jboolean, jbyteArray, jfloat, jint, jlong, jobjectArray, jstring, JNI_FALSE, JNI_TRUE,
+};
 use jni::JNIEnv;
 use pdf_core::document::{
     PdfNativeDocument, PdfNativeDocumentConfig, PdfNativeOrientation, PdfNativePaperSize,
@@ -22,6 +24,8 @@ use pdf_core::table::{
 use pdf_core::utils::{read_float, read_int, to_points, to_unit};
 use pdf_core::{PdfColor, PdfNative, PdfPoints};
 use std::collections::HashMap;
+use std::ffi::{c_char, CStr};
+use std::slice;
 
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeInit(
@@ -87,6 +91,69 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeRel
             return;
         }
         let _ = Box::from_raw(instance as *mut PdfNativeDocument);
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativePageInfo(
+    env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    buffer: JByteBuffer,
+) {
+    unsafe {
+        if instance == 0 {
+            return;
+        }
+        let instance = &*(instance as *mut PdfNativeDocument);
+        if let (Ok(addr), Ok(cap)) = (
+            env.get_direct_buffer_address(&buffer),
+            env.get_direct_buffer_capacity(&buffer),
+        ) {
+            if addr.is_null() || cap == 0 {
+                return;
+            }
+
+            let bytes = std::slice::from_raw_parts_mut(addr, cap);
+
+            let info = instance.pages_info();
+
+            if cap == (info.len() * 12) {
+                let mut offset = 0;
+                let is_le = if cfg!(target_endian = "little") {
+                    true
+                } else {
+                    false
+                };
+                for page in info {
+                    let idx = page.index + 1;
+
+                    let idx_bytes = if is_le {
+                        idx.to_le_bytes()
+                    } else {
+                        idx.to_be_bytes()
+                    };
+                    bytes[offset..offset + 4].copy_from_slice(&idx_bytes);
+                    offset += 4;
+
+                    let width_bytes = if is_le {
+                        page.width.to_le_bytes()
+                    } else {
+                        page.width.to_be_bytes()
+                    };
+                    bytes[offset..offset + 4].copy_from_slice(&width_bytes);
+                    offset += 4;
+
+                    let height_bytes = if is_le {
+                        page.height.to_le_bytes()
+                    } else {
+                        page.height.to_be_bytes()
+                    };
+                    bytes[offset..offset + 4].copy_from_slice(&height_bytes);
+                    offset += 4;
+                }
+            }
+        }
     }
 }
 
@@ -280,6 +347,190 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeGet
         }
         let instance = &*(instance as *mut PdfNativeDocument);
         instance.current_page_height()
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeSetFont(
+    mut env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    font_name: JString,
+    font_style: JString,
+    font_weight: JString,
+) {
+    unsafe {
+        if instance == 0 {
+            return;
+        }
+        let instance = &mut *(instance as *mut PdfNativeDocument);
+        if let (Ok(font_name), Ok(font_style), Ok(font_weight)) = (
+            env.get_string(&font_name),
+            env.get_string(&font_style),
+            env.get_string(&font_weight),
+        ) {
+            let font_name = font_name.to_string_lossy();
+            let font_style = font_style.to_string_lossy();
+            let font_weight = font_weight.to_string_lossy();
+
+            instance.set_font(
+                font_name.as_ref(),
+                font_style.as_ref(),
+                font_weight.as_ref(),
+            )
+        }
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAddFont(
+    mut env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    path: JString,
+    id: JString,
+    font_style: JString,
+    font_weight: JString,
+    is_ttf: jboolean,
+    is_cid_font: jboolean,
+) -> jboolean {
+    unsafe {
+        if instance == 0 {
+            return JNI_FALSE;
+        }
+        let instance = &mut *(instance as *mut PdfNativeDocument);
+        if let (Ok(path), Ok(id), Ok(font_style), Ok(font_weight)) = (
+            env.get_string(&path),
+            env.get_string(&id),
+            env.get_string(&font_style),
+            env.get_string(&font_weight),
+        ) {
+            let path = path.to_string_lossy();
+            let name = id.to_string_lossy();
+            let style = font_style.to_string_lossy();
+            let weight = font_weight.to_string_lossy();
+            let is_ttf = is_ttf == JNI_TRUE;
+            let is_cid_font = is_cid_font == JNI_TRUE;
+            let ret = instance.add_font(
+                path.as_ref(),
+                name.as_ref(),
+                style.as_ref(),
+                weight.as_ref(),
+                is_ttf,
+                is_cid_font,
+            );
+            if ret {
+                return JNI_TRUE;
+            }
+        }
+        JNI_FALSE
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAddFontWithBuffer(
+    mut env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    buffer: JByteBuffer,
+    id: JString,
+    font_style: JString,
+    font_weight: JString,
+    is_ttf: jboolean,
+    is_cid_font: jboolean,
+) -> jboolean {
+    unsafe {
+        if instance == 0 {
+            return JNI_FALSE;
+        }
+        let instance = &mut *(instance as *mut PdfNativeDocument);
+        if let (Ok(data), Ok(size)) = (
+            env.get_direct_buffer_address(&buffer),
+            env.get_direct_buffer_capacity(&buffer),
+        ) {
+            if data.is_null() || size == 0 {
+                return JNI_FALSE;
+            }
+            let data = slice::from_raw_parts_mut(data, size);
+            if let (Ok(id), Ok(font_style), Ok(font_weight)) = (
+                env.get_string(&id),
+                env.get_string(&font_style),
+                env.get_string(&font_weight),
+            ) {
+                let name = id.to_string_lossy();
+                let style = font_style.to_string_lossy();
+                let weight = font_weight.to_string_lossy();
+                let is_ttf = is_ttf == JNI_TRUE;
+                let is_cid_font = is_cid_font == JNI_TRUE;
+                let ret = instance.add_font_with_bytes(
+                    data,
+                    name.as_ref(),
+                    style.as_ref(),
+                    weight.as_ref(),
+                    is_ttf,
+                    is_cid_font,
+                );
+                if ret {
+                    return JNI_TRUE;
+                }
+            }
+        }
+
+        JNI_FALSE
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAddFontWithBytes(
+    mut env: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    bytes: JByteArray,
+    id: JString,
+    font_style: JString,
+    font_weight: JString,
+    is_ttf: jboolean,
+    is_cid_font: jboolean,
+) -> jboolean {
+    unsafe {
+        if instance == 0 {
+            return JNI_FALSE;
+        }
+        let instance = &mut *(instance as *mut PdfNativeDocument);
+
+        let env = &mut env;
+        if let (Ok(id), Ok(font_style), Ok(font_weight)) = (
+            env.get_string(&id),
+            env.get_string(&font_style),
+            env.get_string(&font_weight),
+        ) {
+
+            if let Ok(bytes) = env.get_array_elements_critical(&bytes, ReleaseMode::NoCopyBack) {
+                let ptr = bytes.as_ptr() as *const u8;
+                let len = bytes.len();
+                if ptr.is_null() || len == 0 {
+                    return JNI_FALSE;
+                }
+                let data = slice::from_raw_parts(ptr, len);
+                let name = id.to_string_lossy();
+                let style = font_style.to_string_lossy();
+                let weight = font_weight.to_string_lossy();
+                let is_ttf = is_ttf == JNI_TRUE;
+                let is_cid_font = is_cid_font == JNI_TRUE;
+                let ret = instance.add_font_with_bytes(
+                    data,
+                    name.as_ref(),
+                    style.as_ref(),
+                    weight.as_ref(),
+                    is_ttf,
+                    is_cid_font,
+                );
+                if ret {
+                    return JNI_TRUE;
+                }
+            }
+        }
+        JNI_FALSE
     }
 }
 

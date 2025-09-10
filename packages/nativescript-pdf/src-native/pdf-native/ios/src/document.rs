@@ -8,6 +8,7 @@ use pdf_core::document::{
 use pdf_core::table::CPdfTable;
 use pdf_core::utils::to_unit;
 use std::ffi::{c_char, c_int, c_uint, c_void, CStr, CString};
+use std::slice;
 
 pub struct CPdfNativeDocument(pub(crate) PdfNativeDocument<'static>);
 
@@ -90,6 +91,63 @@ pub extern "C" fn pdf_native_document_count(instance: *mut CPdfNativeDocument) -
 }
 
 #[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_page_info(
+    instance: *mut CPdfNativeDocument,
+    buffer: *mut u8,
+    size: usize,
+) {
+    unsafe {
+        if instance.is_null() {
+            return;
+        }
+        let instance = &*(instance);
+        if buffer.is_null() || size == 0 {
+            return;
+        }
+
+        let bytes = std::slice::from_raw_parts_mut(buffer, size);
+
+        let info = instance.0.pages_info();
+
+        if size == (info.len() * 12) {
+            let mut offset = 0;
+            let is_le = if cfg!(target_endian = "little") {
+                true
+            } else {
+                false
+            };
+            for page in info {
+                let idx = page.index + 1;
+
+                let idx_bytes = if is_le {
+                    idx.to_le_bytes()
+                } else {
+                    idx.to_be_bytes()
+                };
+                bytes[offset..offset + 4].copy_from_slice(&idx_bytes);
+                offset += 4;
+
+                let width_bytes = if is_le {
+                    page.width.to_le_bytes()
+                } else {
+                    page.width.to_be_bytes()
+                };
+                bytes[offset..offset + 4].copy_from_slice(&width_bytes);
+                offset += 4;
+
+                let height_bytes = if is_le {
+                    page.height.to_le_bytes()
+                } else {
+                    page.height.to_be_bytes()
+                };
+                bytes[offset..offset + 4].copy_from_slice(&height_bytes);
+                offset += 4;
+            }
+        }
+    }
+}
+
+#[unsafe(no_mangle)]
 pub extern "C" fn pdf_native_document_width(instance: *mut CPdfNativeDocument) -> f32 {
     unsafe {
         if instance.is_null() {
@@ -119,6 +177,116 @@ pub extern "C" fn pdf_native_document_current_page(instance: *mut CPdfNativeDocu
         }
         let instance = &*(instance);
         instance.0.current_page()
+    }
+}
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_set_font(
+    instance: *mut CPdfNativeDocument,
+    font_name: *const c_char,
+    font_style: *const c_char,
+    font_weight: *const c_char,
+) {
+    unsafe {
+        if instance.is_null()
+            || font_name.is_null()
+            || font_style.is_null()
+            || font_weight.is_null()
+        {
+            return;
+        }
+        let instance = &mut *(instance);
+        let font_name = CStr::from_ptr(font_name);
+        let font_name = font_name.to_string_lossy();
+        let font_style = CStr::from_ptr(font_style);
+        let font_style = font_style.to_string_lossy();
+        let font_weight = CStr::from_ptr(font_weight);
+        let font_weight = font_weight.to_string_lossy();
+
+        instance.0.set_font(
+            font_name.as_ref(),
+            font_style.as_ref(),
+            font_weight.as_ref(),
+        )
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_add_font(
+    instance: *mut CPdfNativeDocument,
+    path: *const c_char,
+    id: *const c_char,
+    style: *const c_char,
+    weight: *const c_char,
+    is_ttf: bool,
+    is_cid_font: bool,
+) -> bool {
+    unsafe {
+        if instance.is_null()
+            || path.is_null()
+            || id.is_null()
+            || style.is_null()
+            || weight.is_null()
+        {
+            return false;
+        }
+        let instance = &mut *(instance);
+        let path = CStr::from_ptr(path);
+        let path = path.to_string_lossy();
+        let name = CStr::from_ptr(id);
+        let name = name.to_string_lossy();
+        let style = CStr::from_ptr(style);
+        let style = style.to_string_lossy();
+        let weight = CStr::from_ptr(weight);
+        let weight = weight.to_string_lossy();
+
+        instance.0.add_font(
+            path.as_ref(),
+            name.as_ref(),
+            style.as_ref(),
+            weight.as_ref(),
+            is_ttf,
+            is_cid_font,
+        )
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_add_font_with_bytes(
+    instance: *mut CPdfNativeDocument,
+    bytes: *const u8,
+    size: usize,
+    id: *const c_char,
+    style: *const c_char,
+    weight: *const c_char,
+    is_ttf: bool,
+    is_cid_font: bool,
+) -> bool {
+    unsafe {
+        if instance.is_null()
+            || bytes.is_null()
+            || size == 0
+            || id.is_null()
+            || style.is_null()
+            || weight.is_null()
+        {
+            return false;
+        }
+        let instance = &mut *(instance);
+        let bytes = slice::from_raw_parts(bytes, size);
+        let name = CStr::from_ptr(id);
+        let name = name.to_string_lossy();
+        let style = CStr::from_ptr(style);
+        let style = style.to_string_lossy();
+        let weight = CStr::from_ptr(weight);
+        let weight = weight.to_string_lossy();
+        instance.0.add_font_with_bytes(
+            bytes,
+            name.as_ref(),
+            style.as_ref(),
+            weight.as_ref(),
+            is_ttf,
+            is_cid_font,
+        )
     }
 }
 
@@ -752,6 +920,50 @@ pub extern "C" fn pdf_native_document_render_to_buffer_with_scale_and_tile(
                 scale,
                 row,
                 column,
+            )
+            .map(|(width, height, buffer)| {
+                let data = NSData::from_vec(buffer);
+                let data = Retained::into_raw(data) as *const c_void;
+
+                Box::into_raw(Box::new(CPdfNativeRenderInfo {
+                    data,
+                    width,
+                    height,
+                }))
+            })
+            .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_render_to_buffer_with_viewport_offset_and_size(
+    instance: *mut CPdfNativeDocument,
+    index: c_int,
+    viewport_width: f32,
+    viewport_height: f32,
+    scale: f32,
+    x: f32,
+    y: f32,
+    width: f32,
+    height: f32,
+) -> *mut CPdfNativeRenderInfo {
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+        let instance = &*(instance);
+
+        instance
+            .0
+            .render_with_viewport_offset_and_size_to_buffer(
+                index,
+                viewport_width,
+                viewport_height,
+                scale,
+                x,
+                y,
+                width,
+                height,
             )
             .map(|(width, height, buffer)| {
                 let data = NSData::from_vec(buffer);

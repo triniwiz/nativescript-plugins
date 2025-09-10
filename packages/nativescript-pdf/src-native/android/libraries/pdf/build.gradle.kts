@@ -38,15 +38,15 @@ cargo {
   module = "../../../pdf-native"
   libname = "pdfnative"
 
-//  targets = listOf("arm64")
-  targets = listOf("arm", "arm64", "x86", "x86_64")
+  targets = listOf("arm64")
+//  targets = listOf("arm", "arm64", "x86", "x86_64")
   apiLevels = mapOf(
     "arm" to 21,
     "arm64" to 21,
     "x86" to 21,
     "x86_64" to 21
   )
-  profile = "release"
+  profile = "debug"
   verbose = false
 
   exec = { spec, toolchain ->

@@ -33,14 +33,16 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
     }
   }
   
-  func tiledView(_ tiledView: LDOTiledView, tileForRow row: Int, column: Int, zoomLevel: Int, bounds: CGRect) -> UIImage? {
+  func tiledView(_ tiledView: LDOTiledView, tileForRow row: Int, column: Int, zoomLevel: Int, zoomScale preciseZoomScale: CGFloat, bounds: CGRect, rect: CGRect) -> UIImage? {
     var image: UIImage? = nil
     
     guard let document = document else {
       return nil
     }
     
-    let key = "\(tiledView.index),\(row),\(column),\(zoomLevel)" as NSString
+  // Include the precise zoom scale (quantized) so we don't reuse tiles across slightly different scales
+  let scaleKey = String(format: "%.3f", Double(preciseZoomScale))
+  let key = "\(tiledView.index),\(row),\(column),Z\(zoomLevel),S\(scaleKey)" as NSString
     
     let lowRes = lowResCache.object(forKey: NSNumber(value: Int32(tiledView.index)))
     if(lowRes == nil && getPending(key: tiledView.index) == nil){
@@ -130,48 +132,57 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
     }
     
     queue.async {
-      
-      let info = pdf_native_document_render_to_buffer_with_scale_and_tile(self.document?.pdfDocument, Int32(self.currentPage), UInt32(tiledView.tileSize.width), UInt32(tiledView.tileSize.height), Float(bounds.width), Float(bounds.height), Float(zoomLevel), UInt32(row), UInt32(column))
-      
-      if let info = info {
-        
-        let bufferWidth = Int(info.pointee.width)
-        let bufferHeight = Int(info.pointee.height)
-        let dataPtr: Unmanaged<NSData> = Unmanaged.fromOpaque(info.pointee.data)
-        let data = dataPtr.takeRetainedValue()
-        
-        if let provider = CGDataProvider(data: data)  {
-          
-          let cgImage = CGImage(
-            width: bufferWidth,
-            height: bufferHeight,
-            bitsPerComponent: 8,
-            bitsPerPixel: 32,
-            bytesPerRow: bufferWidth * 4,
-            space: CGColorSpaceCreateDeviceRGB(),
-            bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
-            provider: provider,
-            decode: nil,
-            shouldInterpolate: true,
-            intent: .defaultIntent
-          )
-          
-          if let cgImage = cgImage {
-            image = UIImage(cgImage: cgImage)
-            self.tileCache.setObject(image!, forKey: key)
-            DispatchQueue.main.async {
-              tiledView.setNeedsDisplay()
-            }
-          }
-          
-          pdf_native_render_info_release(info)
-        }else {
-          pdf_native_render_info_release(info)
+      guard let document = self.document else { return }
+      let pageWidth = CGFloat(document.width)
+      let pageHeight = CGFloat(document.height)
+      let pageSize = CGSize(width: pageWidth, height: pageHeight)
+
+      let tileSize = tiledView.tileSize
+      let tileRect = CGRect(
+        x: CGFloat(column) * tileSize.width,
+        y: CGFloat(row) * tileSize.height,
+        width: tileSize.width,
+        height: tileSize.height
+      )
+
+      let imageSize = tiledView.imageSize
+
+  // Map tileRect (in image space points, top-left origin) to PDF coords (bottom-left origin)
+  let pdfWidth = (tileRect.width / imageSize.width) * pageSize.width
+  let pdfHeight = (tileRect.height / imageSize.height) * pageSize.height
+  let pdfX = (tileRect.origin.x / imageSize.width) * pageSize.width
+  let pdfYTop = (tileRect.origin.y / imageSize.height) * pageSize.height
+  let pdfY = pageSize.height - (pdfYTop + pdfHeight)
+  var pdfRect = CGRect(x: pdfX, y: pdfY, width: pdfWidth, height: pdfHeight)
+
+      // Clamp to page bounds
+      pdfRect.origin.x = max(0, min(pdfRect.origin.x, pageSize.width))
+      pdfRect.origin.y = max(0, min(pdfRect.origin.y, pageSize.height))
+      pdfRect.size.width = min(pdfRect.width, pageSize.width - pdfRect.origin.x)
+      pdfRect.size.height = min(pdfRect.height, pageSize.height - pdfRect.origin.y)
+
+  // Effective scale must include device scale for this path
+  let screenScale = UIScreen.main.scale
+  let renderScale = imageSize.width / pageSize.width
+  let effectiveScale = renderScale * preciseZoomScale * screenScale
+
+      if let pageImage = document.renderToCGContextImage(
+        Int32(self.currentPage),
+        pageSize.width,
+        pageSize.height,
+        pdfRect,
+        effectiveScale,
+        effectiveScale,
+        true,
+        false,
+        false
+      ) {
+        image = UIImage(cgImage: pageImage, scale: screenScale, orientation: .up)
+        self.tileCache.setObject(image!, forKey: key)
+        DispatchQueue.main.async {
+          tiledView.setNeedsDisplay()
         }
-        
-        
       }
-      
     }
     
     
@@ -185,6 +196,35 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
   var currentPage: Int = 0
   private let contentView = UIView()
   private var zoomScaleFactor: CGFloat = 1.0
+  
+  private func updateContent(for pageSize: CGSize) {
+    guard pageSize.width > 0 && pageSize.height > 0 else { return }
+    // Set frames to match the page virtual size so CATiledLayer can request all tiles
+    pages[0].frame = CGRect(origin: .zero, size: pageSize)
+    contentView.frame = pages[0].frame
+    contentSize = pageSize
+
+    // Fit-to-view minimum zoom
+    let boundsSize = bounds.size
+    let scaleX = boundsSize.width / pageSize.width
+    let scaleY = boundsSize.height / pageSize.height
+    let minScale = max(0.01, min(scaleX, scaleY))
+    minimumZoomScale = minScale
+    if zoomScale < minScale || abs(zoomScale - 1.0) < 0.0001 {
+      setZoomScale(minScale, animated: false)
+    }
+    centerContent()
+  }
+
+  private func centerContent() {
+    let boundsSize = bounds.size
+    var frameToCenter = contentView.frame
+    // center horizontally
+    frameToCenter.origin.x = frameToCenter.size.width < boundsSize.width ? (boundsSize.width - frameToCenter.size.width) / 2 : 0
+    // center vertically
+    frameToCenter.origin.y = frameToCenter.size.height < boundsSize.height ? (boundsSize.height - frameToCenter.size.height) / 2 : 0
+    contentView.frame = frameToCenter
+  }
   
   internal func getPending(key: Int) -> DispatchWorkItem? {
     pendingLock.lock(); defer { pendingLock.unlock() }
@@ -252,10 +292,12 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
     maximumZoomScale =  pages[0].maximumZoomScale
         
     pages[0].index = 0
-    pages[0].debugAnnotateTiles = true
+  pages[0].debugAnnotateTiles = true
     
     pages[0].dataSource = self
-    pages[0].imageSize = bounds.size
+  // Ensure the tiled view knows the full page virtual size; start with bounds, but this
+  // will be updated once the document is loaded to the actual page size.
+  pages[0].imageSize = bounds.size
     pages[0].frame = bounds
     
     contentView.addSubview(pages[0])
@@ -269,6 +311,14 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
     return contentView
   }
   
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    // Keep content centered and ensure min zoom is accurate when bounds change
+    if pages[0].imageSize != .zero {
+      updateContent(for: pages[0].imageSize)
+    }
+  }
+  
   
   public func loadFromBytes(_ bytes: NSData, _ password: String?) {
     queue.async {
@@ -277,6 +327,11 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
         DispatchQueue.main.async {
           self.document = document
           if let document = document {
+            // Update imageSize to match the PDF page size for page 0
+            let pageWidth = CGFloat(document.width)
+            let pageHeight = CGFloat(document.height)
+            self.pages[0].imageSize = CGSize(width: pageWidth, height: pageHeight)
+            self.updateContent(for: self.pages[0].imageSize)
             self.onLoaded?(document)
           }
         }
@@ -297,6 +352,11 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
       DispatchQueue.main.async {
         self.document = document
         if let document = document {
+          // Update imageSize to match the PDF page size for page 0
+          let pageWidth = CGFloat(document.width)
+          let pageHeight = CGFloat(document.height)
+          self.pages[0].imageSize = CGSize(width: pageWidth, height: pageHeight)
+          self.updateContent(for: self.pages[0].imageSize)
           self.onLoaded?(document)
         }
       }
@@ -317,6 +377,11 @@ public class NSCPdfTiledView: UIScrollView, UIScrollViewDelegate, LDOTiledViewDa
         DispatchQueue.main.async {
           self.document = document
           if let document = document {
+            // Update imageSize to match the PDF page size for page 0
+            let pageWidth = CGFloat(document.width)
+            let pageHeight = CGFloat(document.height)
+            self.pages[0].imageSize = CGSize(width: pageWidth, height: pageHeight)
+            self.updateContent(for: self.pages[0].imageSize)
             self.onLoaded?(document)
           }
         }

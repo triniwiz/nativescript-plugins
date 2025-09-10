@@ -15,10 +15,11 @@ class ViewController: UIViewController {
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-     // let output = document.table(buildTable(document: document))
+      //let output = document.table(buildTable(document: document))
       buildDoc(document: document)
 
       pdf = NSCPdfView(frame: view.bounds)
+      
 
       
       
@@ -28,10 +29,12 @@ class ViewController: UIViewController {
       
       
       pdf?.document = document
-//      
+////
       let tmp = NSTemporaryDirectory() + "/test.pdf"
       
       document.saveSync(to: tmp)
+      
+     // pdf?.loadFromPath(tmp, nil)
       
       print(tmp)
 
@@ -44,7 +47,7 @@ class ViewController: UIViewController {
 //      pdf?.loadFromUrl( "https://files.testfile.org/PDF/100MB-TESTFILE.ORG.pdf", nil)
       
 //      if let test = Bundle.main.url(forResource: "100MB-TESTFILE.ORG", withExtension: "pdf") {
-//       // pdf?.loadFromPath(test.absoluteString, nil)
+//       pdf?.loadFromPath(test.absoluteString, nil)
 //      }else {
 //        
 //      }
@@ -225,7 +228,32 @@ class ViewController: UIViewController {
     options.align = NSCPdfTextAlignment.center
     document.addText("Hello World 1", (document.width / 2), 20, options)
     
-    document.addText("\u{2713}", 120, 50)
+//    document.addText("\u{2713}", 120, 50)
+    
+    do {
+      let font = try Data(contentsOf: URL(string: "https://pixijs.com/assets/webfont-loader/ChaChicle.ttf")!)
+      let base64 = font.base64EncodedString()
+      document.addFileToVFS("ChaChicle.ttf", base64)
+      let added = document.addFont("ChaChicle.ttf", "ChaChicle", "normal")
+      print(added)
+    }catch {
+      print(error)
+    }
+    
+    document.setFont("ChaChicle", "normal")
+    
+    document.addText("✓ ??? Hello World", 120, 50)
+    
+    
+    document.setFont("times", "normal")
+    
+    document.addText("✓ ??? Hello World", 120, 100)
+    
+    
+    
+    document.setFont("courier", "bold")
+    
+    document.addText("✓ ??? Hello World", 120, 150)
     
     do {
       let image = UIImage(data: try Data(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")!))

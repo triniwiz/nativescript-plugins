@@ -1,6 +1,8 @@
 package io.github.triniwiz.plugins.pdf
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +17,10 @@ import io.github.triniwiz.plugins.pdf.table.TableCell
 import io.github.triniwiz.plugins.pdf.table.TableCellOrString
 import io.github.triniwiz.plugins.pdf.table.VerticalAlign
 import org.json.JSONObject
+import java.io.File
+import java.io.FileOutputStream
+import java.net.URI
+import java.net.URL
 import java.util.Timer
 import java.util.TimerTask
 import java.util.concurrent.Executors
@@ -92,9 +98,29 @@ class MainActivity : AppCompatActivity() {
 
     executor.execute {
       val document = PdfDocument()
-      val table = buildTable()
-      val output = document.table(table)
-      Log.d("com.test", "output ${JSONObject(output)}")
+            val url =
+        URI.create("https://pixijs.com/assets/webfont-loader/ChaChicle.ttf")
+          .toURL()
+      val font = url.readBytes()
+
+      val raw = Base64.encode(font, Base64.NO_WRAP)
+      val base64 = String(raw)
+      document.addFileToVFS("ChaChicle.ttf", base64)
+      val added = document.addFont("ChaChicle.ttf", "ChaChicle", "normal")
+
+      Log.d("com.test", "addFont  ChaChicle $added")
+      document.addText("Hello World ✓", 10f, 100f)
+
+      document.setFont("ChaChicle", "normal")
+
+      document.addText("Hello World ✓ ?", 10f, 150f)
+
+      document.setFont("times", "bolditalic")
+
+      document.addText("Hello World ✓ ?", 10f, 200f)
+//      val table = buildTable()
+//      val output = document.table(table)
+    //  Log.d("com.test", "output ${JSONObject(output)}")
 
 //      val url =
 //        URI.create("https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")
@@ -189,8 +215,8 @@ class MainActivity : AppCompatActivity() {
       */
       pdfView.document = document
 
-      /*
-      val doc = File(cacheDir, "10840.pdf")
+
+     /* val doc = File(cacheDir, "10840.pdf")
 
       if (doc.exists()) {
         pdfView.loadFromPath(doc.absolutePath)
@@ -206,8 +232,10 @@ class MainActivity : AppCompatActivity() {
 
         pdfView.loadFromPath(doc.absolutePath)
       }
+      */
 
 
+      /*
 
       runOnUiThread {
         var task: TimerTask? = null
@@ -223,6 +251,8 @@ class MainActivity : AppCompatActivity() {
       }
 
       */
+
+
     }
 
     // https://raw.githubusercontent.com/ajrcarey/pdfium-render/master/test/image-test.pdf
@@ -268,7 +298,6 @@ class MainActivity : AppCompatActivity() {
     alternateRowStyles.fillColor = Color.green
 
     tab.alternateRowStyles = alternateRowStyles
-
 
 
     val foot_style = StyleDef.default()

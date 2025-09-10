@@ -44,6 +44,7 @@ impl PdfNative {
                 document: doc,
                 password_: None,
                 data: Default::default(),
+                fonts: Default::default(),
             })
     }
 
@@ -70,6 +71,7 @@ impl PdfNative {
                 password_: password,
                 document: doc,
                 data: Default::default(),
+                fonts: Default::default(),
             })
     }
 }

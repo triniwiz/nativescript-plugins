@@ -13,6 +13,7 @@ import UIKit
 public class NSCPdfDocument: NSObject {
   internal var pdfDocument: OpaquePointer?
   internal var config: NSCPdfDocumentConfig
+  internal var vfs: [String: String] = [:]
   public override init() {
     config = NSCPdfDocumentConfig()
     super.init()
@@ -38,14 +39,64 @@ public class NSCPdfDocument: NSObject {
     super.init()
   }
   
+  public func addFileToVFS(_ fileName: String, _ fileContent: String){
+    vfs[fileName] = fileContent
+  }
+  
+  public func existsFileInVFS(_ fileName: String) -> Bool {
+    return vfs[fileName] != nil
+  }
+  
+  public func getFileFromVFS(_ fileName: String) -> String? {
+    return vfs[fileName]
+  }
+  
+  public func addFont(_ postScriptNameOrPath: String,
+                      _ id: String,
+                      _ fontStyle: String = "normal",
+                      _ fontWeight: String = "normal",
+                      _ encoding: String = "Identity-H") -> Bool{
+    var added = false
+    var isTTF = true
+    var isCid = true
+    if(encoding == "StandardEncoding" || encoding == "MacRomanEncoding" || encoding == "WinAnsiEncoding"){
+      isTTF = false
+      isCid = false
+    }
+    if(postScriptNameOrPath.starts(with: "/")){
+      added = pdf_native_document_add_font(pdfDocument, postScriptNameOrPath, id, fontStyle, fontWeight, isTTF, isCid)
+    }else {
+      if let base64 = vfs[postScriptNameOrPath], let data = NSData(base64Encoded: base64, options: .init(rawValue: 0)) {
+        added = pdf_native_document_add_font_with_bytes(pdfDocument, data.bytes, UInt(data.count), id, fontStyle, fontWeight, isTTF, isCid)
+      }
+    }
+    return added
+  }
+  
+  public func setFont(_ fontName: String, _ fontStyle: String, _ fontWeight: String? = nil){
+    var weight = fontWeight
+    if(fontWeight == nil){
+      switch(fontStyle){
+      case "normal","bold","italic":
+        weight = fontStyle
+        break
+      case "bolditalic":
+        weight = "bold"
+        break
+      default:break
+      }
+    }
+    pdf_native_document_set_font(pdfDocument, fontName, fontStyle, weight)
+  }
+  
   public func saveSync(to file: String) -> NSError? {
     let error = pdf_native_document_save_to_file(pdfDocument, file)
     if(error !=  nil){
       let msg = String(cString: error!)
       let err = NSError(
-          domain: "PdfView",
-          code: 1,
-          userInfo: [NSLocalizedDescriptionKey: msg]
+        domain: "PdfView",
+        code: 1,
+        userInfo: [NSLocalizedDescriptionKey: msg]
       )
       
       pdf_native_string_release(error)
@@ -60,9 +111,9 @@ public class NSCPdfDocument: NSObject {
       if(error !=  nil){
         let msg = String(cString: error!)
         let err = NSError(
-            domain: "PdfView",
-            code: 1,
-            userInfo: [NSLocalizedDescriptionKey: msg]
+          domain: "PdfView",
+          code: 1,
+          userInfo: [NSLocalizedDescriptionKey: msg]
         )
         
         pdf_native_string_release(error)
@@ -71,6 +122,10 @@ public class NSCPdfDocument: NSObject {
       }
       callback(nil)
     }
+  }
+  
+  internal func pageInfo(_ data: NSMutableData){
+    pdf_native_document_page_info(pdfDocument, data.mutableBytes, UInt(data.count))
   }
   
   public var count: Int {
@@ -182,7 +237,7 @@ public class NSCPdfDocument: NSObject {
   }
   
   
- 
+  
   
   public func addImage(_ image: UIImage, _ x: Float, _ y: Float){
     guard let data = NSCPdfDocument.getBytesFromUIImage(image) else {return}
@@ -343,15 +398,15 @@ public class NSCPdfDocument: NSObject {
     let info = if(withScale){
       pdf_native_document_render_to_buffers_with_scale(pdfDocument,
                                                        indices,
-                                                      UInt(indices.count),
-                                                      Float(width), Float(height),
-                                                      Float(scaleX), Float(scaleY),
-                                                      Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height), flipVertical, flipHorizontal)
+                                                       UInt(indices.count),
+                                                       Float(width), Float(height),
+                                                       Float(scaleX), Float(scaleY),
+                                                       Float(rect.origin.x), Float(rect.origin.y), Float(rect.width), Float(rect.height), flipVertical, flipHorizontal)
     }else {
       
       pdf_native_document_render_to_buffers(pdfDocument,
                                             indices,
-                                           UInt(indices.count), UInt32(width), UInt32(height), flipVertical, flipHorizontal)
+                                            UInt(indices.count), UInt32(width), UInt32(height), flipVertical, flipHorizontal)
     }
     
     
@@ -362,7 +417,7 @@ public class NSCPdfDocument: NSObject {
     let arrayPtr: Unmanaged<NSArray> = Unmanaged.fromOpaque(info)
     let array = arrayPtr.takeRetainedValue()
     
-  
+    
     return array.map { item in
       guard let info = item as? NSCPdfInfo else {
         return nil
@@ -404,12 +459,12 @@ public class NSCPdfDocument: NSObject {
   
   
   static func getFirst(_ measureOutput: Int64) -> Float {
-        return Float(bitPattern: UInt32(0xFFFFFFFF & (measureOutput  >> 32)))
-    }
-    
-    static  func getSecond(_ measureOutput: Int64) -> Float {
-        return Float(bitPattern: UInt32(0xFFFFFFFF & measureOutput))
-    }
+    return Float(bitPattern: UInt32(0xFFFFFFFF & (measureOutput  >> 32)))
+  }
+  
+  static  func getSecond(_ measureOutput: Int64) -> Float {
+    return Float(bitPattern: UInt32(0xFFFFFFFF & measureOutput))
+  }
   
   
   public func table(_ config: NSCPdfTable) -> String{
@@ -442,5 +497,56 @@ public class NSCPdfDocument: NSObject {
     ctx?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
     
     return buffer!
+  }
+  
+  public func renderTileWithViewportOffset(
+    _ index: Int32,
+    viewportWidth: CGFloat,
+    viewportHeight: CGFloat,
+    scale: CGFloat,
+    x: CGFloat,
+    y: CGFloat,
+    width: CGFloat,
+    height: CGFloat
+  ) -> CGImage? {
+    guard let info = pdf_native_document_render_to_buffer_with_viewport_offset_and_size(
+      pdfDocument,
+      index,
+      Float(viewportWidth),
+      Float(viewportHeight),
+      Float(scale),
+      Float(x),
+      Float(y),
+      Float(width),
+      Float(height)
+    ) else { return nil }
+    
+    let bufferWidth = Int(info.pointee.width)
+    let bufferHeight = Int(info.pointee.height)
+    let dataPtr: Unmanaged<NSData> = Unmanaged.fromOpaque(info.pointee.data)
+    let data = dataPtr.takeRetainedValue()
+    
+    guard let provider = CGDataProvider(data: data) else {
+      pdf_native_render_info_release(info)
+      return nil
+    }
+    
+    let cgImage = CGImage(
+      width: bufferWidth,
+      height: bufferHeight,
+      bitsPerComponent: 8,
+      bitsPerPixel: 32,
+      bytesPerRow: bufferWidth * 4,
+      space: CGColorSpaceCreateDeviceRGB(),
+      bitmapInfo: CGBitmapInfo.byteOrder32Little.union(CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedFirst.rawValue)),
+      provider: provider,
+      decode: nil,
+      shouldInterpolate: true,
+      intent: .defaultIntent
+    )
+    
+    pdf_native_render_info_release(info)
+    
+    return cgImage
   }
 }

@@ -2,17 +2,27 @@ package io.github.triniwiz.plugins.pdf
 
 import android.graphics.Bitmap
 import android.graphics.Rect
+import android.os.Build
 import android.util.Base64
+import android.util.Base64InputStream
 import io.github.triniwiz.plugins.pdf.table.ColumnDef
 import io.github.triniwiz.plugins.pdf.table.ColumnKey
 import io.github.triniwiz.plugins.pdf.table.PdfTable
 import io.github.triniwiz.plugins.pdf.table.StyleDef
 import io.github.triniwiz.plugins.pdf.table.TableCellOrString
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.io.InputStream
+import java.io.Reader
+import java.io.StringReader
 import java.nio.ByteBuffer
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.Executors
+
 
 class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfig? = null) {
   private val executor = Executors.newSingleThreadExecutor()
+  private var vfs: MutableMap<String, String> = mutableMapOf()
   var config = PdfDocumentConfig()
     private set
 
@@ -24,6 +34,39 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
   }
 
   internal var nativeDocument = 0L
+
+  class ReaderInputStream(private val reader: Reader) : InputStream() {
+    private val charBuffer = CharArray(4096) // temporary char buffer
+    private var byteBuffer = ByteArray(0) // holds converted bytes
+    private var bytePos = 0
+
+    @Throws(IOException::class)
+    override fun read(): Int {
+      if (bytePos >= byteBuffer.size) {
+        val charsRead: Int = reader.read(charBuffer)
+        if (charsRead == -1) return -1 // end of stream
+
+
+        // Convert chars to bytes (UTF-8)
+        byteBuffer = String(charBuffer, 0, charsRead).toByteArray(StandardCharsets.UTF_8)
+        bytePos = 0
+      }
+      return byteBuffer[bytePos++].toInt() and 0xFF
+    }
+
+    @Throws(IOException::class)
+    override fun read(b: ByteArray, off: Int, len: Int): Int {
+      var i: Int
+      i = 0
+      while (i < len) {
+        val next = read()
+        if (next == -1) return if (i == 0) -1 else i
+        b[off + i] = next.toByte()
+        i++
+      }
+      return i
+    }
+  }
 
   init {
     nativeDocument = document ?: nativeInit(
@@ -60,6 +103,10 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     return nativeCount(nativeDocument)
   }
 
+  internal fun pagesInfo(buffer: ByteBuffer) {
+    nativePageInfo(nativeDocument, buffer)
+  }
+
   var fontSize: Float
     get() {
       return nativeGetFontSize(nativeDocument)
@@ -67,6 +114,92 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     set(value) {
       nativeSetFontSize(nativeDocument, value)
     }
+
+  fun addFileToVFS(fileName: String, fileContent: String) {
+    vfs[fileName] = fileContent
+  }
+
+  fun existsFileInVFS(fileName: String): Boolean {
+    return vfs.contains(fileName)
+  }
+
+  fun getFileFromVFS(fileName: String): String? {
+    return vfs[fileName]
+  }
+
+
+  @JvmOverloads
+  fun addFont(
+    postScriptNameOrPath: String,
+    id: String,
+    fontStyle: String = "normal",
+    fontWeight: String = "normal",
+    encoding: String = "Identity-H"
+  ): Boolean {
+    var added = false
+    var isTTF = true
+    var isCid = true
+    if (encoding == "StandardEncoding" || encoding == "MacRomanEncoding" || encoding == "WinAnsiEncoding") {
+      isTTF = false
+      isCid = false
+    }
+    if (postScriptNameOrPath.startsWith("/")) {
+      added =
+        nativeAddFont(nativeDocument, postScriptNameOrPath, id, fontStyle, fontWeight, isTTF, isCid)
+    } else {
+      vfs[postScriptNameOrPath]?.let { fontData ->
+        try {
+          val os = ByteArrayOutputStream()
+          val reader = StringReader(fontData)
+          val b64is = Base64InputStream(ReaderInputStream(reader), Base64.DEFAULT)
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            b64is.transferTo(os)
+          } else {
+            val buffer = ByteArray(8192)
+            var read: Int
+            while ((b64is.read(buffer).also { read = it }) != -1) {
+              os.write(buffer, 0, read)
+            }
+          }
+
+
+          val raw = os.toByteArray()
+          if (raw.isNotEmpty()) {
+            added = nativeAddFontWithBytes(
+              nativeDocument,
+              raw,
+              id,
+              fontStyle,
+              fontWeight,
+              isTTF,
+              isCid
+            )
+          }
+        } catch (_: Exception) {
+        }
+      }
+    }
+    return added
+  }
+
+  @JvmOverloads
+  fun setFont(fontName: String, fontStyle: String, fontWeight: String? = null) {
+    var weight = fontWeight
+    if (fontWeight == null) {
+      when (fontStyle) {
+        "normal", "bold", "italic" -> {
+          weight = fontStyle
+        }
+
+        "bolditalic" -> {
+          weight = "bold"
+        }
+
+        else -> {}
+      }
+    }
+    nativeSetFont(nativeDocument, fontName, fontStyle, weight ?: "normal")
+  }
 
 
   @JvmOverloads
@@ -324,6 +457,12 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     private external fun nativeRelease(instance: Long)
 
     @JvmStatic
+    private external fun nativePageInfo(
+      pdfInstance: Long,
+      buffer: ByteBuffer
+    ): Long
+
+    @JvmStatic
     private external fun nativeCount(instance: Long): Int
 
     @JvmStatic
@@ -352,6 +491,50 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
 
     @JvmStatic
     private external fun nativeGetHeight(instance: Long): Float
+
+
+    @JvmStatic
+    private external fun nativeSetFont(
+      instance: Long,
+      fontName: String,
+      fontStyle: String,
+      fontWeight: String,
+    )
+
+    @JvmStatic
+    private external fun nativeAddFont(
+      instance: Long,
+      path: String,
+      id: String,
+      style: String,
+      weight: String,
+      isTTF: Boolean,
+      isCidFont: Boolean
+    ): Boolean
+
+
+    @JvmStatic
+    private external fun nativeAddFontWithBuffer(
+      instance: Long,
+      buffer: ByteBuffer,
+      id: String,
+      style: String,
+      weight: String,
+      isTTF: Boolean,
+      isCidFont: Boolean,
+    ): Boolean
+
+
+    @JvmStatic
+    private external fun nativeAddFontWithBytes(
+      instance: Long,
+      bytes: ByteArray,
+      id: String,
+      style: String,
+      weight: String,
+      isTTF: Boolean,
+      isCidFont: Boolean,
+    ): Boolean
 
     @JvmStatic
     private external fun nativeAddText(

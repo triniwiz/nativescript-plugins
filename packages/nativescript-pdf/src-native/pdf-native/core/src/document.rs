@@ -1,13 +1,13 @@
-use crate::PdfNative;
-use crate::table::{PdfTable, draw_table};
+use crate::table::{draw_table, PdfTable};
 use crate::utils::{get_y, to_points, to_unit};
+use crate::PdfNative;
 use image::GenericImageView;
-use parking_lot::Mutex;
+use parking_lot::{MappedMutexGuard, Mutex, MutexGuard};
 use pdfium_render::prelude::*;
 use std::collections::HashMap;
 use std::ffi::{c_int, c_uint};
 use std::fmt::{Debug, Formatter};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 const BEZIER_KAPPA: f32 = 0.552284749831;
 
@@ -566,6 +566,7 @@ pub struct PdfNativeDocumentData {
     pub(crate) fill_color: PdfColor,
     pub(crate) stroke_color: PdfColor,
     pub(crate) line_width: f32,
+    pub(crate) font: PdfFontInfo,
 }
 
 impl Default for PdfNativeDocumentData {
@@ -581,6 +582,7 @@ impl Default for PdfNativeDocumentData {
             fill_color: PdfColor::BLACK,
             stroke_color: PdfColor::BLACK,
             line_width: 0.2,
+            font: PdfFontInfo::default(),
         }
     }
 }
@@ -646,6 +648,226 @@ pub struct PdfNativeDocument<'a> {
     pub(crate) path_: Option<PathBuf>,
     pub(crate) password_: Option<String>,
     pub(crate) pdf_: PdfNative,
+    pub(crate) fonts: HashMap<String, PdfFontEntries>,
+}
+
+#[derive(Debug, Default)]
+pub struct PdfFontEntryWeight {
+    pub thin: Option<PdfFontInfo>,
+    pub extra_light: Option<PdfFontInfo>,
+    pub light: Option<PdfFontInfo>,
+    pub normal: Option<PdfFontInfo>,
+    pub medium: Option<PdfFontInfo>,
+    pub semi_bold: Option<PdfFontInfo>,
+    pub bold: Option<PdfFontInfo>,
+    pub extra_bold: Option<PdfFontInfo>,
+    pub black: Option<PdfFontInfo>,
+    pub extra_black: Option<PdfFontInfo>,
+}
+
+#[derive(Debug, Default)]
+pub struct PdfFontEntries {
+    pub normal: PdfFontEntryWeight,
+    pub bold: PdfFontEntryWeight,
+    pub italic: PdfFontEntryWeight,
+    pub bolditalic: PdfFontEntryWeight,
+}
+
+#[derive(Debug, Clone)]
+pub struct PdfFontInfo {
+    name: String,
+    style: String,
+    weight: String,
+    token: Option<PdfFontToken>,
+}
+
+impl Default for PdfFontInfo {
+    fn default() -> Self {
+        Self {
+            name: "helvetica".to_string(),
+            style: "normal".to_string(),
+            weight: "normal".to_string(),
+            token: None,
+        }
+    }
+}
+impl PdfFontInfo {
+    pub fn new(name: String, style: String, weight: String, token: PdfFontToken) -> Self {
+        Self {
+            name,
+            style,
+            weight,
+            token: Some(token),
+        }
+    }
+
+    fn load_token(&mut self, document: &mut PdfDocument) {
+        let fonts = document.fonts_mut();
+        let token = match self.name.as_ref() {
+            "helvetica" => match self.style.as_ref() {
+                "normal" => Some(fonts.helvetica()),
+                "bold" => Some(fonts.helvetica_bold()),
+                "italic" => Some(fonts.helvetica_oblique()),
+                "bolditalic" => Some(fonts.helvetica_bold_oblique()),
+                _ => None,
+            },
+            "times" => match self.style.as_ref() {
+                "normal" => Some(fonts.times_roman()),
+                "bold" => Some(fonts.times_bold()),
+                "italic" => Some(fonts.times_italic()),
+                "bolditalic" => Some(fonts.times_bold_italic()),
+                _ => None,
+            },
+            "courier" => match self.style.as_ref() {
+                "normal" => Some(fonts.courier()),
+                "bold" => Some(fonts.courier_bold()),
+                "italic" => Some(fonts.courier_oblique()),
+                "bolditalic" => Some(fonts.courier_bold_oblique()),
+                _ => None,
+            },
+            _ => None,
+        };
+
+        if let Some(token) = token {
+            self.token = Some(token);
+        }
+    }
+}
+
+#[derive(Debug, Copy, Clone)]
+pub struct PdfNativePageInfo {
+    pub index: u32,
+    pub width: f32,
+    pub height: f32,
+}
+
+fn default_fonts(document: &mut PdfDocument) -> HashMap<String, PdfFontEntries> {
+    let fonts = document.fonts_mut();
+    HashMap::from([
+        (
+            "helvetica".to_string(),
+            PdfFontEntries {
+                normal: PdfFontEntryWeight {
+                    normal: Some(PdfFontInfo::new(
+                        "helvetica".to_string(),
+                        "normal".to_string(),
+                        "normal".to_string(),
+                        fonts.helvetica(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                bold: PdfFontEntryWeight {
+                    bold: Some(PdfFontInfo::new(
+                        "helvetica".to_string(),
+                        "bold".to_string(),
+                        "bold".to_string(),
+                        fonts.helvetica_bold(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                italic: PdfFontEntryWeight {
+                    normal: Some(PdfFontInfo::new(
+                        "helvetica".to_string(),
+                        "italic".to_string(),
+                        "normal".to_string(),
+                        fonts.helvetica_oblique(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                bolditalic: PdfFontEntryWeight {
+                    bold: Some(PdfFontInfo::new(
+                        "helvetica".to_string(),
+                        "bolditalic".to_string(),
+                        "bold".to_string(),
+                        fonts.helvetica_bold_oblique(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+            },
+        ),
+        (
+            "times".to_string(),
+            PdfFontEntries {
+                normal: PdfFontEntryWeight {
+                    normal: Some(PdfFontInfo::new(
+                        "times".to_string(),
+                        "normal".to_string(),
+                        "normal".to_string(),
+                        fonts.times_roman(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                bold: PdfFontEntryWeight {
+                    bold: Some(PdfFontInfo::new(
+                        "times".to_string(),
+                        "bold".to_string(),
+                        "bold".to_string(),
+                        fonts.times_bold(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                italic: PdfFontEntryWeight {
+                    normal: Some(PdfFontInfo::new(
+                        "times".to_string(),
+                        "italic".to_string(),
+                        "normal".to_string(),
+                        fonts.times_italic(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                bolditalic: PdfFontEntryWeight {
+                    bold: Some(PdfFontInfo::new(
+                        "times".to_string(),
+                        "bolditalic".to_string(),
+                        "bold".to_string(),
+                        fonts.times_bold_italic(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+            },
+        ),
+        (
+            "courier".to_string(),
+            PdfFontEntries {
+                normal: PdfFontEntryWeight {
+                    normal: Some(PdfFontInfo::new(
+                        "courier".to_string(),
+                        "normal".to_string(),
+                        "normal".to_string(),
+                        fonts.courier(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                bold: PdfFontEntryWeight {
+                    bold: Some(PdfFontInfo::new(
+                        "courier".to_string(),
+                        "bold".to_string(),
+                        "bold".to_string(),
+                        fonts.courier_bold(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                italic: PdfFontEntryWeight {
+                    normal: Some(PdfFontInfo::new(
+                        "courier".to_string(),
+                        "italic".to_string(),
+                        "normal".to_string(),
+                        fonts.courier_oblique(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+                bolditalic: PdfFontEntryWeight {
+                    bold: Some(PdfFontInfo::new(
+                        "courier".to_string(),
+                        "bolditalic".to_string(),
+                        "bold".to_string(),
+                        fonts.courier_bold_oblique(),
+                    )),
+                    ..PdfFontEntryWeight::default()
+                },
+            },
+        ),
+    ])
 }
 
 impl<'a> PdfNativeDocument<'a> {
@@ -667,13 +889,35 @@ impl<'a> PdfNativeDocument<'a> {
         data.device_scale = config.device_scale;
         data.size = config.size;
         data.orientation = config.orientation;
+        data.font = PdfFontInfo::new(
+            "helvetica".to_string(),
+            "normal".to_string(),
+            "normal".to_string(),
+            document.fonts_mut().helvetica(),
+        );
+        let fonts = default_fonts(&mut document);
         Ok(Self {
             pdf_: instance.clone(),
             path_: None,
             password_: None,
             document,
             data: Mutex::new(data),
+            fonts,
         })
+    }
+
+    pub fn pages_info(&self) -> Vec<PdfNativePageInfo> {
+        let pages = self.document.pages();
+        let count = pages.len() as u32;
+        let mut ret = Vec::with_capacity(count as usize);
+        for (index, page) in pages.iter().enumerate() {
+            ret.push(PdfNativePageInfo {
+                index: index as u32,
+                width: page.width().value,
+                height: page.height().value,
+            })
+        }
+        ret
     }
 
     pub fn device_scale(&self) -> f32 {
@@ -687,6 +931,189 @@ impl<'a> PdfNativeDocument<'a> {
 
     pub fn save_to_bytes(&self) -> Result<Vec<u8>, PdfiumError> {
         self.document.save_to_bytes()
+    }
+
+    pub fn custom_fonts(&self) -> &HashMap<String, PdfFontEntries> {
+        &self.fonts
+    }
+
+    pub fn set_font(&mut self, name: &str, style: &str, weight: &str) {
+        if let Some(font) = self
+            .get_font_internal(name, style, weight)
+            .map(|font| font.clone())
+        {
+            self.data.lock().font = font;
+        }
+    }
+
+    pub fn get_font(&self) -> MappedMutexGuard<PdfFontInfo> {
+        MutexGuard::map(self.data.lock(), |lock| &mut lock.font)
+    }
+    fn get_font_internal(&self, name: &str, style: &str, weight: &str) -> Option<PdfFontInfo> {
+        if let Some(entries) = self.fonts.get(name) {
+            return if let Some(entry) = match style {
+                "normal" => Some(&entries.normal),
+                "bold" => Some(&entries.bold),
+                "italic" => Some(&entries.italic),
+                "bolditalic" => Some(&entries.bolditalic),
+                _ => None,
+            } {
+                match weight {
+                    "100" | "thin" => entry.thin.clone(),
+                    "200" | "extralight" | "extra light" => entry.extra_light.clone(),
+                    "300" | "light" => entry.extra_light.clone(),
+                    "400" | "normal" => entry.normal.clone(),
+                    "500" | "medium" => entry.medium.clone(),
+                    "600" | "semi-bold" | "semi bold " => entry.semi_bold.clone(),
+                    "700" | "bold" => entry.bold.clone(),
+                    "800" | "extra-bold" | "extra bold" => entry.extra_bold.clone(),
+                    "900" | "black" | "heavy" => entry.black.clone(),
+                    "950" | "1000" | "extra-black" | "extra black" => entry.extra_black.clone(),
+                    _ => None,
+                }
+            } else {
+                None
+            };
+        }
+        None
+    }
+
+    fn add_font_internal(
+        &mut self,
+        name: &str,
+        style: &str,
+        weight: &str,
+        info: PdfFontInfo,
+    ) -> bool {
+        if !self.fonts.contains_key(name) {
+            self.fonts
+                .insert(name.to_string(), PdfFontEntries::default());
+        }
+        if let Some(entries) = self.fonts.get_mut(name) {
+            return if let Some(entry) = match style {
+                "normal" => Some(&mut entries.normal),
+                "bold" => Some(&mut entries.bold),
+                "italic" => Some(&mut entries.italic),
+                "bolditalic" => Some(&mut entries.bolditalic),
+                _ => None,
+            } {
+                match weight {
+                    "100" | "thin" => {
+                        entry.thin = Some(info);
+                        true
+                    }
+                    "200" | "extralight" | "extra light" => {
+                        entry.extra_light = Some(info);
+                        true
+                    }
+                    "300" | "light" => {
+                        entry.light = Some(info);
+                        true
+                    }
+                    "400" | "normal" => {
+                        entry.normal = Some(info);
+                        true
+                    }
+                    "500" | "medium" => {
+                        entry.medium = Some(info);
+                        true
+                    }
+                    "600" | "semi-bold" | "semi bold " => {
+                        entry.semi_bold = Some(info);
+                        true
+                    }
+                    "700" | "bold" => {
+                        entry.bold = Some(info);
+                        true
+                    }
+                    "800" | "extra-bold" | "extra bold" => {
+                        entry.extra_bold = Some(info);
+                        true
+                    }
+                    "900" | "black" | "heavy" => {
+                        entry.black = Some(info);
+                        true
+                    }
+                    "950" | "1000" | "extra-black" | "extra black" => {
+                        entry.extra_black = Some(info);
+                        true
+                    }
+                    _ => false,
+                }
+            } else {
+                false
+            };
+        }
+        false
+    }
+
+    pub fn add_font(
+        &mut self,
+        path: &str,
+        name: &str,
+        style: &str,
+        weight: &str,
+        is_ttf: bool,
+        is_cid_font: bool,
+    ) -> bool {
+        if style != "normal" && style != "bold" && style != "italic" && style != "bolditalic" {
+            return false;
+        }
+
+        if let Ok(font) = if is_ttf {
+            self.document
+                .fonts_mut()
+                .load_true_type_from_file(Path::new(path), is_cid_font)
+        } else {
+            self.document
+                .fonts_mut()
+                .load_true_type_from_file(Path::new(path), is_cid_font)
+        } {
+            let info = PdfFontInfo::new(
+                name.to_string(),
+                style.to_string(),
+                weight.to_string(),
+                font,
+            );
+            self.add_font_internal(name, style, weight, info)
+        } else {
+            false
+        }
+    }
+
+    pub fn add_font_with_bytes(
+        &mut self,
+        font: &[u8],
+        name: &str,
+        style: &str,
+        weight: &str,
+        is_ttf: bool,
+        is_cid_font: bool,
+    ) -> bool {
+        if style != "normal" && style != "bold" && style != "italic" && style != "bolditalic" {
+            return false;
+        }
+
+        if let Ok(font) = if is_ttf {
+            self.document
+                .fonts_mut()
+                .load_true_type_from_bytes(font, is_cid_font)
+        } else {
+            self.document
+                .fonts_mut()
+                .load_type1_from_bytes(font, is_cid_font)
+        } {
+
+            let info = PdfFontInfo::new(
+                name.to_string(),
+                style.to_string(),
+                weight.to_string(),
+                font,
+            );
+            self.add_font_internal(name, style, weight, info)
+        } else {
+            false
+        }
     }
 
     pub fn add_page(
@@ -895,12 +1322,17 @@ impl<'a> PdfNativeDocument<'a> {
         y: f32,
         options: PdfNativeTextOptions,
     ) -> Result<(), PdfiumError> {
-        let data = self.data.lock();
+        let mut data = self.data.lock();
         let index = data.current_page;
         let font_size = PdfPoints::new(data.font_size);
         let color = data.text_color;
-        let font = self.document.fonts_mut().helvetica();
+
         let document = &mut self.document;
+
+        if data.font.token.is_none() {
+            data.font.load_token(document)
+        }
+        let font = data.font.token.unwrap_or(document.fonts_mut().helvetica());
 
         if options.align == PdfNativeTextAlignment::Justify {
             let mut page = document.pages_mut().get(index)?;
@@ -1515,8 +1947,6 @@ impl<'a> PdfNativeDocument<'a> {
     ) -> Result<Vec<(u32, u32, Vec<u8>)>, PdfiumError> {
         let pages = self.document.pages();
 
-        let pages = self.document.pages();
-
         let page_indices: Result<Vec<PdfPageIndex>, PdfiumError> = indices
             .iter()
             .map(|index| {
@@ -1834,33 +2264,37 @@ impl<'a> PdfNativeDocument<'a> {
         let x = column as f32 * tile_width as f32;
         let y = row as f32 * tile_height as f32;
 
-        let width = tile_width.min(viewport_width as u32 - column * tile_width) as f32;
-        let height = tile_height.min(viewport_height as u32 - row * tile_height) as f32;
+        // Compute edge tile sizes in float to preserve fractional remainder
+        let width = (viewport_width - x).max(0.0).min(tile_width as f32);
+        let height = (viewport_height - y).max(0.0).min(tile_height as f32);
 
         // Step 2: Convert from viewport space to PDF coordinates
         let pdf_scale_x = page_width / viewport_width;
         let pdf_scale_y = page_height / viewport_height;
 
         let pdf_x = x * pdf_scale_x;
-        let pdf_y = y * pdf_scale_y;
+        // Convert from top-left origin (viewport) to bottom-left origin (PDF)
+        let pdf_y = (viewport_height - y - height) * pdf_scale_y;
 
         let pdf_width = width * pdf_scale_x;
         let pdf_height = height * pdf_scale_y;
 
-        // Step 3: Convert to pixel size
-        let px_width = (pdf_width * scale).round() as i32;
-        let px_height = (pdf_height * scale).round() as i32;
+        // Step 3: Convert to pixel size (include device scale, ceil to avoid gaps; ensure at least 1px)
+        let device_scale = self.data.lock().device_scale;
+        let effective_scale = scale * device_scale;
+        let px_width = ((pdf_width * effective_scale).ceil() as i32).max(1);
+        let px_height = ((pdf_height * effective_scale).ceil() as i32).max(1);
 
         let mut buffer = vec![255_u8; (px_width * px_height * 4) as usize];
 
         // Step 4: Build the transform
         let transform = PdfMatrix::new(
-            scale, // scaleX
+            effective_scale, // scaleX
             0.0,
             0.0,
-            scale,          // scaleY
-            -pdf_x * scale, // translateX
-            -pdf_y * scale, // translateY
+            effective_scale,          // scaleY
+            -pdf_x * effective_scale, // translateX
+            -pdf_y * effective_scale, // translateY
         );
 
         let mut config = PdfRenderConfig::default()
@@ -1870,6 +2304,89 @@ impl<'a> PdfNativeDocument<'a> {
             .use_lcd_text_rendering(true)
             .clear_before_rendering(true)
             .clip(0, 0, px_width, px_height);
+
+        #[cfg(target_os = "ios")]
+        {
+            config = config.set_reverse_byte_order(false);
+        }
+
+        {
+            let mut bitmap = unsafe {
+                PdfBitmap::from_bytes(
+                    px_width,
+                    px_height,
+                    PdfBitmapFormat::default(),
+                    buffer.as_mut_slice(),
+                    self.pdf_.pdf.bindings(),
+                )?
+            };
+
+            page.render_into_bitmap_with_config(&mut bitmap, &config)?;
+        }
+
+        Ok((px_width as u32, px_height as u32, buffer))
+    }
+
+    /// Renders a tile given a viewport-space offset (top-left origin) and size.
+    ///
+    /// Parameters:
+    /// - viewport_width/height: logical viewport/canvas size that the offset+size are based on (typically the page size in PDF units).
+    /// - scale: zoom factor to apply (will be multiplied by device scale internally).
+    /// - x, y: top-left offset of the tile within the viewport (top-left origin).
+    /// - width, height: size of the tile within the viewport.
+    pub fn render_with_viewport_offset_and_size_to_buffer(
+        &self,
+        index: c_int,
+        viewport_width: f32,
+        viewport_height: f32,
+        scale: f32,
+        x: f32,
+        y: f32,
+        width: f32,
+        height: f32,
+    ) -> Result<(u32, u32, Vec<u8>), PdfiumError> {
+        let pages = self.document.pages();
+        let index = PdfPageIndex::try_from(index).map_err(|_| PdfiumError::PageIndexOutOfBounds)?;
+        let page = pages.get(index)?;
+
+        let page_width = page.width().value;
+        let page_height = page.height().value;
+
+        // Convert from viewport (top-left origin) to PDF coordinates (bottom-left origin)
+        let pdf_scale_x = page_width / viewport_width;
+        let pdf_scale_y = page_height / viewport_height;
+
+        let pdf_x = x * pdf_scale_x;
+        let pdf_y = (viewport_height - y - height) * pdf_scale_y;
+
+        let pdf_width = width * pdf_scale_x;
+        let pdf_height = height * pdf_scale_y;
+
+        // Convert to pixel size using effective scale (zoom * device scale)
+        let device_scale = self.data.lock().device_scale;
+        let effective_scale = scale; //* device_scale;
+        let px_width = ((pdf_width * effective_scale).ceil() as i32).max(1);
+        let px_height = ((pdf_height * effective_scale).ceil() as i32).max(1);
+
+        let mut buffer = vec![255_u8; (px_width * px_height * 4) as usize];
+
+        // Build transform to render the requested rect into the pixel buffer
+        let transform = PdfMatrix::new(
+            effective_scale,
+            0.0,
+            0.0,
+            effective_scale,
+            -pdf_x * effective_scale,
+            -pdf_y * effective_scale,
+        );
+
+        let mut config = PdfRenderConfig::default()
+            .apply_matrix(transform)?
+            .render_form_data(false)
+            .render_annotations(true)
+            .use_lcd_text_rendering(true)
+            .clear_before_rendering(true)
+            .clip(0, px_height, px_width, 0);
 
         #[cfg(target_os = "ios")]
         {
