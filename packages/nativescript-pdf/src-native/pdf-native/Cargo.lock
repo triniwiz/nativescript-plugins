@@ -915,8 +915,8 @@ dependencies = [
 
 [[package]]
 name = "pdfium-render"
-version = "0.8.34"
-source = "git+https://github.com/ajrcarey/pdfium-render?rev=045ef6ec8f50803d693b8831977a4b4d77f18616#045ef6ec8f50803d693b8831977a4b4d77f18616"
+version = "0.8.35"
+source = "git+https://github.com/ajrcarey/pdfium-render?rev=e8a9eb8a89a06b0167e9b269a0c3009501315742#e8a9eb8a89a06b0167e9b269a0c3009501315742"
 dependencies = [
  "bitflags 2.9.1",
  "bytemuck",

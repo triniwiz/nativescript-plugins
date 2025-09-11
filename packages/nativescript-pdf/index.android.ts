@@ -1,4 +1,4 @@
-import { Image, ImageSource, knownFolders, View } from '@nativescript/core';
+import { Image, ImageSource, knownFolders, View, File } from '@nativescript/core';
 import { PageBreak, PDFViewBase, srcProperty, TextAlignment, TextBaseline } from './common';
 import { IPDFDocument, PageSize, StyleDef, TableCell, TableCellOrString, TableOptions, TextOptions } from '.';
 declare const kotlin: any;
@@ -457,6 +457,37 @@ export class PDFDocument implements IPDFDocument {
 
 	get height(): number {
 		return this[native_].getHeight();
+	}
+
+	addFileToVFS(filename, filecontent) {
+		this[native_].addFileToVFS(filename, filecontent);
+		return this;
+	}
+
+	existsFileInVFS(filename) {
+		return this[native_].existsFileInVFS(filename);
+	}
+
+	getFileFromVFS(filename) {
+		return this[native_].getFileFromVFS(filename);
+	}
+
+	addFont(postScriptNameOrFilePath: string | File, id: string, fontStyle: string, fontWeight: `100` | `200` | `300` | `400` | `500` | `600` | `700` | `800` | `900` | `normal` | `bold` = 'normal', encoding: 'StandardEncoding' | 'MacRomanEncoding' | 'Identity-H' | 'WinAnsiEncoding' = 'Identity-H') {
+		if (typeof postScriptNameOrFilePath === 'string') {
+			let path = postScriptNameOrFilePath;
+			if (postScriptNameOrFilePath.startsWith('~/')) {
+				path = postScriptNameOrFilePath.replace('~', knownFolders.currentApp().path);
+			}
+			this[native_].addFont(path, id, fontStyle, fontWeight ?? 'normal', encoding ?? 'Identity-H');
+		} else if (postScriptNameOrFilePath instanceof File) {
+			this[native_].addFont(postScriptNameOrFilePath.path, id, fontStyle, fontWeight ?? 'normal', encoding ?? 'Identity-H');
+		}
+		return this;
+	}
+
+	setFont(fontName: string, fontStyle: string, fontWeight: string | null = null) {
+		this[native_].setFont(fontName, fontStyle, fontWeight ?? null);
+		return this;
 	}
 
 	text(text: string, x: number, y: number, options?: TextOptions) {

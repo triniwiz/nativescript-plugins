@@ -387,6 +387,11 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 @interface NSCPdfDocument : NSObject
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 - (nonnull instancetype)initWithConfig:(NSCPdfDocumentConfig * _Nonnull)config OBJC_DESIGNATED_INITIALIZER;
+- (void)addFileToVFS:(NSString * _Nonnull)fileName :(NSString * _Nonnull)fileContent;
+- (BOOL)existsFileInVFS:(NSString * _Nonnull)fileName SWIFT_WARN_UNUSED_RESULT;
+- (NSString * _Nullable)getFileFromVFS:(NSString * _Nonnull)fileName SWIFT_WARN_UNUSED_RESULT;
+- (BOOL)addFont:(NSString * _Nonnull)postScriptNameOrPath :(NSString * _Nonnull)id :(NSString * _Nonnull)fontStyle :(NSString * _Nonnull)fontWeight :(NSString * _Nonnull)encoding SWIFT_WARN_UNUSED_RESULT;
+- (void)setFont:(NSString * _Nonnull)fontName :(NSString * _Nonnull)fontStyle :(NSString * _Nullable)fontWeight;
 - (NSError * _Nullable)saveSyncTo:(NSString * _Nonnull)file SWIFT_WARN_UNUSED_RESULT;
 - (void)saveTo:(NSString * _Nonnull)file callback:(void (^ _Nonnull)(NSError * _Nullable))callback;
 @property (nonatomic, readonly) NSInteger count;
@@ -417,6 +422,7 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (CGImageRef _Nullable)renderToCGContextImage:(int32_t)index :(CGFloat)width :(CGFloat)height :(CGRect)rect :(CGFloat)scaleX :(CGFloat)scaleY :(BOOL)withScale :(BOOL)flipVertical :(BOOL)flipHorizontal SWIFT_WARN_UNUSED_RESULT;
 - (void)roundedRect:(float)x :(float)y :(float)width :(float)height :(float)rx :(float)ry :(enum NSCPdfStyle)style;
 - (NSString * _Nonnull)table:(NSCPdfTable * _Nonnull)config SWIFT_WARN_UNUSED_RESULT;
+- (CGImageRef _Nullable)renderTileWithViewportOffset:(int32_t)index viewportWidth:(CGFloat)viewportWidth viewportHeight:(CGFloat)viewportHeight scale:(CGFloat)scale x:(CGFloat)x y:(CGFloat)y width:(CGFloat)width height:(CGFloat)height SWIFT_WARN_UNUSED_RESULT;
 @end
 
 enum NSCPdfUnit : int32_t;
@@ -500,6 +506,29 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfPageBreak, "NSCPdfPageBreak", open) {
   NSCPdfPageBreakAlways = 2,
 };
 
+@class UITouch;
+@class UIEvent;
+SWIFT_CLASS_NAMED("NSCPdfPageView")
+@interface NSCPdfPageView : UIView
+@property (nonatomic, readonly) NSInteger pageIndex;
+@property (nonatomic, readonly, strong) NSCPdfDocument * _Nullable document;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (void)layoutSubviews;
+- (void)configureWithPageIndex:(NSInteger)pageIndex document:(NSCPdfDocument * _Nonnull)document;
+- (void)clearCache;
+- (void)updateForZoomScale:(CGFloat)zoomScale;
+- (void)prewarmLowResWithHighPriority:(BOOL)highPriority;
+- (void)touchesBegan:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)touchesMoved:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)touchesEnded:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+- (void)touchesCancelled:(NSSet<UITouch *> * _Nonnull)touches withEvent:(UIEvent * _Nullable)event;
+@end
+
+@interface NSCPdfPageView (SWIFT_EXTENSION(PdfNative))
+- (UIImage * _Nullable)tiledView:(LDOTiledView * _Nonnull)tiledView tileForRow:(NSInteger)row column:(NSInteger)col zoomLevel:(NSInteger)zoomLevel zoomScale:(CGFloat)preciseZoomScale bounds:(CGRect)viewBounds rect:(CGRect)tileRect SWIFT_WARN_UNUSED_RESULT;
+@end
+
 enum NSCPdfStandardPaperSize : uint32_t;
 SWIFT_CLASS_NAMED("NSCPdfPagerSize")
 @interface NSCPdfPagerSize : NSObject
@@ -522,6 +551,26 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) NSCPdfRotati
 + (NSCPdfRotationOrMatrix * _Nonnull)angle:(float)deg SWIFT_WARN_UNUSED_RESULT;
 + (NSCPdfRotationOrMatrix * _Nonnull)matrix:(float)a :(float)b :(float)c :(float)d :(float)e :(float)f SWIFT_WARN_UNUSED_RESULT;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
+@end
+
+SWIFT_CLASS_NAMED("NSCPdfScrollView")
+@interface NSCPdfScrollView : UIScrollView <UIScrollViewDelegate>
+@property (nonatomic, strong) NSCPdfDocument * _Nullable document;
+@property (nonatomic, copy) void (^ _Nullable onLoaded)(NSCPdfDocument * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable onError)(NSError * _Nullable);
+@property (nonatomic, copy) void (^ _Nullable onPageChange)(NSInteger);
+@property (nonatomic) NSInteger currentPage;
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
+- (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
+- (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
+- (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
+- (void)scrollToPage:(NSInteger)page animated:(BOOL)animated;
+- (void)layoutSubviews;
+- (void)scrollViewDidScroll:(UIScrollView * _Nonnull)scrollView;
+- (UIView * _Nullable)viewForZoomingInScrollView:(UIScrollView * _Nonnull)scrollView SWIFT_WARN_UNUSED_RESULT;
+- (void)scrollViewDidZoom:(UIScrollView * _Nonnull)scrollView;
+- (void)scrollViewDidEndZooming:(UIScrollView * _Nonnull)scrollView withView:(UIView * _Nullable)view atScale:(CGFloat)scale;
 @end
 
 typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfShowFoot, "NSCPdfShowFoot", open) {
@@ -760,6 +809,7 @@ SWIFT_CLASS_NAMED("NSCPdfTiledView")
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
 - (UIView * _Nullable)viewForZoomingInScrollView:(UIScrollView * _Nonnull)scrollView SWIFT_WARN_UNUSED_RESULT;
+- (void)layoutSubviews;
 - (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
 - (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
 - (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
@@ -778,27 +828,23 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfVerticalAlign, "NSCPdfVerticalAlign", 
   NSCPdfVerticalAlignBottom = 2,
 };
 
-@class UICollectionView;
-@class NSIndexPath;
-@class UICollectionViewCell;
-@class UICollectionViewLayout;
 SWIFT_CLASS_NAMED("NSCPdfView")
-@interface NSCPdfView : UIView <UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout>
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView prefetchItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView cancelPrefetchingForItemsAtIndexPaths:(NSArray<NSIndexPath *> * _Nonnull)indexPaths;
-- (NSInteger)collectionView:(UICollectionView * _Nonnull)collectionView numberOfItemsInSection:(NSInteger)section SWIFT_WARN_UNUSED_RESULT;
-- (UICollectionViewCell * _Nonnull)collectionView:(UICollectionView * _Nonnull)collectionView cellForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
-- (CGSize)collectionView:(UICollectionView * _Nonnull)collectionView layout:(UICollectionViewLayout * _Nonnull)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath SWIFT_WARN_UNUSED_RESULT;
-- (void)collectionView:(UICollectionView * _Nonnull)collectionView willDisplayCell:(UICollectionViewCell * _Nonnull)cell forItemAtIndexPath:(NSIndexPath * _Nonnull)indexPath;
-@property (nonatomic, strong) NSCPdfDocument * _Nullable document;
+@interface NSCPdfView : UIView
 @property (nonatomic, copy) void (^ _Nullable onLoaded)(NSCPdfDocument * _Nonnull);
 @property (nonatomic, copy) void (^ _Nullable onError)(NSError * _Nullable);
 @property (nonatomic, copy) void (^ _Nullable onPageChange)(NSInteger);
+@property (nonatomic, strong) NSCPdfDocument * _Nullable document;
+@property (nonatomic) NSInteger currentPage;
 - (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)coder SWIFT_UNAVAILABLE;
+- (void)layoutSubviews;
 - (void)loadFromBytes:(NSData * _Nonnull)bytes :(NSString * _Nullable)password;
 - (void)loadFromPath:(NSString * _Nonnull)path :(NSString * _Nullable)password;
 - (void)loadFromUrl:(NSString * _Nonnull)url :(NSString * _Nullable)password;
+- (void)scrollToPage:(NSInteger)page animated:(BOOL)animated;
+@property (nonatomic) CGFloat zoomScale;
+@property (nonatomic) CGFloat minimumZoomScale;
+@property (nonatomic) CGFloat maximumZoomScale;
 @end
 
 #endif

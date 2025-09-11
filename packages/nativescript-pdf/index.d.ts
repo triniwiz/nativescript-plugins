@@ -1,3 +1,4 @@
+import { File } from '@nativescript/core';
 import { PDFViewBase, TextAlignment, TextBaseline } from './common';
 
 function parseStyle(value: 'S' | 'F' | 'DF' | 'FD') {
@@ -107,6 +108,16 @@ interface TableOptions {
 }
 
 export class IPDFDocument {
+	addFileToVFS(filename, filecontent): this;
+
+	existsFileInVFS(filename): boolean;
+
+	getFileFromVFS(filename): string;
+
+	addFont(postScriptNameOrFilePath: string | File, id: string, fontStyle: string, fontWeight: `100` | `200` | `300` | `400` | `500` | `600` | `700` | `800` | `900` | `normal` | `bold` = 'normal', encoding: 'StandardEncoding' | 'MacRomanEncoding' | 'Identity-H' | 'WinAnsiEncoding' = 'Identity-H'): this;
+
+	setFont(fontName: string, fontStyle: string, fontWeight: string | null = null): this;
+
 	text(text: string, x: number, y: number, options?: TextOptions): this;
 
 	roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number, style?: 'S' | 'F' | 'DF' | 'FD'): this;

@@ -221,6 +221,10 @@ declare class NSCPdfDocument extends NSObject {
 
 	constructor(o: { config: NSCPdfDocumentConfig });
 
+	addFileToVFS(fileName: string, fileContent: string): void;
+
+	addFont(postScriptNameOrPath: string, id: string, fontStyle: string, fontWeight: string, encoding: string): boolean;
+
 	addImage(image: UIImage, x: number, y: number, width: number, height: number): void;
 
 	addImageWithBase64(base64: string, mime: string, x: number, y: number, width: number, height: number): void;
@@ -237,9 +241,15 @@ declare class NSCPdfDocument extends NSObject {
 
 	ellipse(x: number, y: number, rx: number, ry: number, style: NSCPdfStyle): void;
 
+	existsFileInVFS(fileName: string): boolean;
+
+	getFileFromVFS(fileName: string): string;
+
 	initWithConfig(config: NSCPdfDocumentConfig): this;
 
 	rect(x: number, y: number, width: number, height: number, style: NSCPdfStyle): void;
+
+	renderTileWithViewportOffsetViewportWidthViewportHeightScaleXYWidthHeight(index: number, viewportWidth: number, viewportHeight: number, scale: number, x: number, y: number, width: number, height: number): any;
 
 	renderToBuffer(index: number, buffer: NSMutableData, width: number, height: number): void;
 
@@ -260,6 +270,8 @@ declare class NSCPdfDocument extends NSObject {
 	setFillColor(r: number, g: number, b: number): void;
 
 	setFillColorA(r: number, g: number, b: number, a: number): void;
+
+	setFont(fontName: string, fontStyle: string, fontWeight: string): void;
 
 	setFontColor(r: number, g: number, b: number): void;
 
@@ -324,6 +336,10 @@ declare class NSCPdfInfo extends NSObject {
 
 declare class NSCPdfMargin extends NSObject {
 	static alloc(): NSCPdfMargin; // inherited from NSObject
+
+	static defaultWithLeftRightTopBottom(left: number, right: number, top: number, bottom: number): NSCPdfMargin;
+
+	static defaultWithUniform(uniform: number): NSCPdfMargin;
 
 	static new(): NSCPdfMargin; // inherited from NSObject
 
@@ -390,6 +406,55 @@ declare const enum NSCPdfPageBreak {
 	Always = 2,
 }
 
+declare class NSCPdfPageView extends UIView {
+	static alloc(): NSCPdfPageView; // inherited from NSObject
+
+	static appearance(): NSCPdfPageView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 */
+	static appearanceForTraitCollection(trait: UITraitCollection): NSCPdfPageView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 * @deprecated 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): NSCPdfPageView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfPageView; // inherited from UIAppearance
+
+	/**
+	 * @since 5.0
+	 * @deprecated 9.0
+	 */
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): NSCPdfPageView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfPageView; // inherited from UIAppearance
+
+	static new(): NSCPdfPageView; // inherited from NSObject
+
+	readonly document: NSCPdfDocument;
+
+	readonly pageIndex: number;
+
+	clearCache(): void;
+
+	configureWithPageIndexDocument(pageIndex: number, document: NSCPdfDocument): void;
+
+	prewarmLowResWithHighPriority(highPriority: boolean): void;
+
+	tiledViewTileForRowColumnZoomLevelZoomScaleBoundsRect(tiledView: LDOTiledView, row: number, col: number, zoomLevel: number, preciseZoomScale: number, viewBounds: CGRect, tileRect: CGRect): UIImage;
+
+	updateForZoomScale(zoomScale: number): void;
+}
+
 declare class NSCPdfPagerSize extends NSObject {
 	static a4(): NSCPdfPagerSize;
 
@@ -418,6 +483,133 @@ declare class NSCPdfRotationOrMatrix extends NSObject {
 	static new(): NSCPdfRotationOrMatrix; // inherited from NSObject
 
 	static readonly zero: NSCPdfRotationOrMatrix;
+}
+
+declare class NSCPdfScrollView extends UIScrollView implements UIScrollViewDelegate {
+	static alloc(): NSCPdfScrollView; // inherited from NSObject
+
+	static appearance(): NSCPdfScrollView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 */
+	static appearanceForTraitCollection(trait: UITraitCollection): NSCPdfScrollView; // inherited from UIAppearance
+
+	/**
+	 * @since 8.0
+	 * @deprecated 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedIn(trait: UITraitCollection, ContainerClass: typeof NSObject): NSCPdfScrollView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceForTraitCollectionWhenContainedInInstancesOfClasses(trait: UITraitCollection, containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfScrollView; // inherited from UIAppearance
+
+	/**
+	 * @since 5.0
+	 * @deprecated 9.0
+	 */
+	static appearanceWhenContainedIn(ContainerClass: typeof NSObject): NSCPdfScrollView; // inherited from UIAppearance
+
+	/**
+	 * @since 9.0
+	 */
+	static appearanceWhenContainedInInstancesOfClasses(containerTypes: NSArray<typeof NSObject> | (typeof NSObject)[]): NSCPdfScrollView; // inherited from UIAppearance
+
+	static new(): NSCPdfScrollView; // inherited from NSObject
+
+	currentPage: number;
+
+	document: NSCPdfDocument;
+
+	onError: (p1: NSError) => void;
+
+	onLoaded: (p1: NSCPdfDocument) => void;
+
+	onPageChange: (p1: number) => void;
+
+	readonly debugDescription: string; // inherited from NSObjectProtocol
+
+	readonly description: string; // inherited from NSObjectProtocol
+
+	readonly hash: number; // inherited from NSObjectProtocol
+
+	readonly isProxy: boolean; // inherited from NSObjectProtocol
+
+	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+
+	readonly; // inherited from NSObjectProtocol
+
+	class(): typeof NSObject;
+
+	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+
+	isEqual(object: any): boolean;
+
+	isKindOfClass(aClass: typeof NSObject): boolean;
+
+	isMemberOfClass(aClass: typeof NSObject): boolean;
+
+	loadFromBytes(bytes: NSData, password: string): void;
+
+	loadFromPath(path: string, password: string): void;
+
+	loadFromUrl(url: string, password: string): void;
+
+	performSelector(aSelector: string): any;
+
+	performSelectorWithObject(aSelector: string, object: any): any;
+
+	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
+
+	respondsToSelector(aSelector: string): boolean;
+
+	retainCount(): number;
+
+	scrollToPageAnimated(page: number, animated: boolean): void;
+
+	/**
+	 * @since 11.0
+	 */
+	scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
+
+	scrollViewDidEndDecelerating(scrollView: UIScrollView): void;
+
+	scrollViewDidEndDraggingWillDecelerate(scrollView: UIScrollView, decelerate: boolean): void;
+
+	scrollViewDidEndScrollingAnimation(scrollView: UIScrollView): void;
+
+	scrollViewDidEndZoomingWithViewAtScale(scrollView: UIScrollView, view: UIView, scale: number): void;
+
+	scrollViewDidScroll(scrollView: UIScrollView): void;
+
+	scrollViewDidScrollToTop(scrollView: UIScrollView): void;
+
+	/**
+	 * @since 3.2
+	 */
+	scrollViewDidZoom(scrollView: UIScrollView): void;
+
+	scrollViewShouldScrollToTop(scrollView: UIScrollView): boolean;
+
+	scrollViewWillBeginDecelerating(scrollView: UIScrollView): void;
+
+	scrollViewWillBeginDragging(scrollView: UIScrollView): void;
+
+	/**
+	 * @since 3.2
+	 */
+	scrollViewWillBeginZoomingWithView(scrollView: UIScrollView, view: UIView): void;
+
+	/**
+	 * @since 5.0
+	 */
+	scrollViewWillEndDraggingWithVelocityTargetContentOffset(scrollView: UIScrollView, velocity: CGPoint, targetContentOffset: interop.Pointer | interop.Reference<CGPoint>): void;
+
+	self(): this;
+
+	viewForZoomingInScrollView(scrollView: UIScrollView): UIView;
 }
 
 declare const enum NSCPdfShowFoot {
@@ -851,7 +1043,7 @@ declare const enum NSCPdfVerticalAlign {
 	Bottom = 2,
 }
 
-declare class NSCPdfView extends UIView implements UICollectionViewDataSource, UICollectionViewDataSourcePrefetching, UICollectionViewDelegateFlowLayout {
+declare class NSCPdfView extends UIView {
 	static alloc(): NSCPdfView; // inherited from NSObject
 
 	static appearance(): NSCPdfView; // inherited from UIAppearance
@@ -885,7 +1077,13 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 
 	static new(): NSCPdfView; // inherited from NSObject
 
+	currentPage: number;
+
 	document: NSCPdfDocument;
+
+	maximumZoomScale: number;
+
+	minimumZoomScale: number;
 
 	onError: (p1: NSError) => void;
 
@@ -893,252 +1091,7 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 
 	onPageChange: (p1: number) => void;
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
-
-	readonly description: string; // inherited from NSObjectProtocol
-
-	readonly hash: number; // inherited from NSObjectProtocol
-
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
-
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
-
-	readonly; // inherited from NSObjectProtocol
-
-	class(): typeof NSObject;
-
-	/**
-	 * @since 14.0
-	 */
-	collectionViewCanEditItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 9.0
-	 */
-	collectionViewCanFocusItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 9.0
-	 */
-	collectionViewCanMoveItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 6.0
-	 * @deprecated 13.0
-	 */
-	collectionViewCanPerformActionForItemAtIndexPathWithSender(collectionView: UICollectionView, action: string, indexPath: NSIndexPath, sender: any): boolean;
-
-	/**
-	 * @since 16.0
-	 */
-	collectionViewCanPerformPrimaryActionForItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 10.0
-	 */
-	collectionViewCancelPrefetchingForItemsAtIndexPaths(collectionView: UICollectionView, indexPaths: NSArray<NSIndexPath> | NSIndexPath[]): void;
-
-	collectionViewCellForItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): UICollectionViewCell;
-
-	/**
-	 * @since 16.0
-	 */
-	collectionViewContextMenuConfigurationDismissalPreviewForItemAtIndexPath(collectionView: UICollectionView, configuration: UIContextMenuConfiguration, indexPath: NSIndexPath): UITargetedPreview;
-
-	/**
-	 * @since 13.0
-	 * @deprecated 16.0
-	 */
-	collectionViewContextMenuConfigurationForItemAtIndexPathPoint(collectionView: UICollectionView, indexPath: NSIndexPath, point: CGPoint): UIContextMenuConfiguration;
-
-	/**
-	 * @since 16.0
-	 */
-	collectionViewContextMenuConfigurationForItemsAtIndexPathsPoint(collectionView: UICollectionView, indexPaths: NSArray<NSIndexPath> | NSIndexPath[], point: CGPoint): UIContextMenuConfiguration;
-
-	/**
-	 * @since 16.0
-	 */
-	collectionViewContextMenuConfigurationHighlightPreviewForItemAtIndexPath(collectionView: UICollectionView, configuration: UIContextMenuConfiguration, indexPath: NSIndexPath): UITargetedPreview;
-
-	/**
-	 * @since 13.0
-	 */
-	collectionViewDidBeginMultipleSelectionInteractionAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): void;
-
-	collectionViewDidDeselectItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): void;
-
-	collectionViewDidEndDisplayingCellForItemAtIndexPath(collectionView: UICollectionView, cell: UICollectionViewCell, indexPath: NSIndexPath): void;
-
-	collectionViewDidEndDisplayingSupplementaryViewForElementOfKindAtIndexPath(collectionView: UICollectionView, view: UICollectionReusableView, elementKind: string, indexPath: NSIndexPath): void;
-
-	/**
-	 * @since 13.0
-	 */
-	collectionViewDidEndMultipleSelectionInteraction(collectionView: UICollectionView): void;
-
-	collectionViewDidHighlightItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): void;
-
-	collectionViewDidSelectItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): void;
-
-	collectionViewDidUnhighlightItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): void;
-
-	/**
-	 * @since 9.0
-	 */
-	collectionViewDidUpdateFocusInContextWithAnimationCoordinator(collectionView: UICollectionView, context: UICollectionViewFocusUpdateContext, coordinator: UIFocusAnimationCoordinator): void;
-
-	/**
-	 * @since 14.0
-	 */
-	collectionViewIndexPathForIndexTitleAtIndex(collectionView: UICollectionView, title: string, index: number): NSIndexPath;
-
-	collectionViewLayoutInsetForSectionAtIndex(collectionView: UICollectionView, collectionViewLayout: UICollectionViewLayout, section: number): UIEdgeInsets;
-
-	collectionViewLayoutMinimumInteritemSpacingForSectionAtIndex(collectionView: UICollectionView, collectionViewLayout: UICollectionViewLayout, section: number): number;
-
-	collectionViewLayoutMinimumLineSpacingForSectionAtIndex(collectionView: UICollectionView, collectionViewLayout: UICollectionViewLayout, section: number): number;
-
-	collectionViewLayoutReferenceSizeForFooterInSection(collectionView: UICollectionView, collectionViewLayout: UICollectionViewLayout, section: number): CGSize;
-
-	collectionViewLayoutReferenceSizeForHeaderInSection(collectionView: UICollectionView, collectionViewLayout: UICollectionViewLayout, section: number): CGSize;
-
-	collectionViewLayoutSizeForItemAtIndexPath(collectionView: UICollectionView, collectionViewLayout: UICollectionViewLayout, indexPath: NSIndexPath): CGSize;
-
-	/**
-	 * @since 9.0
-	 */
-	collectionViewMoveItemAtIndexPathToIndexPath(collectionView: UICollectionView, sourceIndexPath: NSIndexPath, destinationIndexPath: NSIndexPath): void;
-
-	collectionViewNumberOfItemsInSection(collectionView: UICollectionView, section: number): number;
-
-	/**
-	 * @since 6.0
-	 * @deprecated 13.0
-	 */
-	collectionViewPerformActionForItemAtIndexPathWithSender(collectionView: UICollectionView, action: string, indexPath: NSIndexPath, sender: any): void;
-
-	/**
-	 * @since 16.0
-	 */
-	collectionViewPerformPrimaryActionForItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): void;
-
-	/**
-	 * @since 10.0
-	 */
-	collectionViewPrefetchItemsAtIndexPaths(collectionView: UICollectionView, indexPaths: NSArray<NSIndexPath> | NSIndexPath[]): void;
-
-	/**
-	 * @since 13.0
-	 * @deprecated 16.0
-	 */
-	collectionViewPreviewForDismissingContextMenuWithConfiguration(collectionView: UICollectionView, configuration: UIContextMenuConfiguration): UITargetedPreview;
-
-	/**
-	 * @since 13.0
-	 * @deprecated 16.0
-	 */
-	collectionViewPreviewForHighlightingContextMenuWithConfiguration(collectionView: UICollectionView, configuration: UIContextMenuConfiguration): UITargetedPreview;
-
-	/**
-	 * @since 15.0
-	 */
-	collectionViewSceneActivationConfigurationForItemAtIndexPathPoint(collectionView: UICollectionView, indexPath: NSIndexPath, point: CGPoint): UIWindowSceneActivationConfiguration;
-
-	/**
-	 * @since 15.0
-	 */
-	collectionViewSelectionFollowsFocusForItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 13.0
-	 */
-	collectionViewShouldBeginMultipleSelectionInteractionAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	collectionViewShouldDeselectItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	collectionViewShouldHighlightItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	collectionViewShouldSelectItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 6.0
-	 * @deprecated 13.0
-	 */
-	collectionViewShouldShowMenuForItemAtIndexPath(collectionView: UICollectionView, indexPath: NSIndexPath): boolean;
-
-	/**
-	 * @since 11.0
-	 */
-	collectionViewShouldSpringLoadItemAtIndexPathWithContext(collectionView: UICollectionView, indexPath: NSIndexPath, context: UISpringLoadedInteractionContext): boolean;
-
-	/**
-	 * @since 9.0
-	 */
-	collectionViewShouldUpdateFocusInContext(collectionView: UICollectionView, context: UICollectionViewFocusUpdateContext): boolean;
-
-	/**
-	 * @since 9.0
-	 */
-	collectionViewTargetContentOffsetForProposedContentOffset(collectionView: UICollectionView, proposedContentOffset: CGPoint): CGPoint;
-
-	/**
-	 * @since 9.0
-	 * @deprecated 15.0
-	 */
-	collectionViewTargetIndexPathForMoveFromItemAtIndexPathToProposedIndexPath(collectionView: UICollectionView, currentIndexPath: NSIndexPath, proposedIndexPath: NSIndexPath): NSIndexPath;
-
-	/**
-	 * @since 15.0
-	 */
-	collectionViewTargetIndexPathForMoveOfItemFromOriginalIndexPathAtCurrentIndexPathToProposedIndexPath(collectionView: UICollectionView, originalIndexPath: NSIndexPath, currentIndexPath: NSIndexPath, proposedIndexPath: NSIndexPath): NSIndexPath;
-
-	collectionViewTransitionLayoutForOldLayoutNewLayout(collectionView: UICollectionView, fromLayout: UICollectionViewLayout, toLayout: UICollectionViewLayout): UICollectionViewTransitionLayout;
-
-	collectionViewViewForSupplementaryElementOfKindAtIndexPath(collectionView: UICollectionView, kind: string, indexPath: NSIndexPath): UICollectionReusableView;
-
-	/**
-	 * @since 8.0
-	 */
-	collectionViewWillDisplayCellForItemAtIndexPath(collectionView: UICollectionView, cell: UICollectionViewCell, indexPath: NSIndexPath): void;
-
-	/**
-	 * @since 13.2
-	 */
-	collectionViewWillDisplayContextMenuWithConfigurationAnimator(collectionView: UICollectionView, configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating): void;
-
-	/**
-	 * @since 8.0
-	 */
-	collectionViewWillDisplaySupplementaryViewForElementKindAtIndexPath(collectionView: UICollectionView, view: UICollectionReusableView, elementKind: string, indexPath: NSIndexPath): void;
-
-	/**
-	 * @since 13.2
-	 */
-	collectionViewWillEndContextMenuInteractionWithConfigurationAnimator(collectionView: UICollectionView, configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionAnimating): void;
-
-	/**
-	 * @since 13.0
-	 */
-	collectionViewWillPerformPreviewActionForMenuWithConfigurationAnimator(collectionView: UICollectionView, configuration: UIContextMenuConfiguration, animator: UIContextMenuInteractionCommitAnimating): void;
-
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
-
-	/**
-	 * @since 9.0
-	 */
-	indexPathForPreferredFocusedViewInCollectionView(collectionView: UICollectionView): NSIndexPath;
-
-	/**
-	 * @since 14.0
-	 */
-	indexTitlesForCollectionView(collectionView: UICollectionView): NSArray<string>;
-
-	isEqual(object: any): boolean;
-
-	isKindOfClass(aClass: typeof NSObject): boolean;
-
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+	zoomScale: number;
 
 	loadFromBytes(bytes: NSData, password: string): void;
 
@@ -1146,59 +1099,7 @@ declare class NSCPdfView extends UIView implements UICollectionViewDataSource, U
 
 	loadFromUrl(url: string, password: string): void;
 
-	numberOfSectionsInCollectionView(collectionView: UICollectionView): number;
-
-	performSelector(aSelector: string): any;
-
-	performSelectorWithObject(aSelector: string, object: any): any;
-
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
-
-	respondsToSelector(aSelector: string): boolean;
-
-	retainCount(): number;
-
-	/**
-	 * @since 11.0
-	 */
-	scrollViewDidChangeAdjustedContentInset(scrollView: UIScrollView): void;
-
-	scrollViewDidEndDecelerating(scrollView: UIScrollView): void;
-
-	scrollViewDidEndDraggingWillDecelerate(scrollView: UIScrollView, decelerate: boolean): void;
-
-	scrollViewDidEndScrollingAnimation(scrollView: UIScrollView): void;
-
-	scrollViewDidEndZoomingWithViewAtScale(scrollView: UIScrollView, view: UIView, scale: number): void;
-
-	scrollViewDidScroll(scrollView: UIScrollView): void;
-
-	scrollViewDidScrollToTop(scrollView: UIScrollView): void;
-
-	/**
-	 * @since 3.2
-	 */
-	scrollViewDidZoom(scrollView: UIScrollView): void;
-
-	scrollViewShouldScrollToTop(scrollView: UIScrollView): boolean;
-
-	scrollViewWillBeginDecelerating(scrollView: UIScrollView): void;
-
-	scrollViewWillBeginDragging(scrollView: UIScrollView): void;
-
-	/**
-	 * @since 3.2
-	 */
-	scrollViewWillBeginZoomingWithView(scrollView: UIScrollView, view: UIView): void;
-
-	/**
-	 * @since 5.0
-	 */
-	scrollViewWillEndDraggingWithVelocityTargetContentOffset(scrollView: UIScrollView, velocity: CGPoint, targetContentOffset: interop.Pointer | interop.Reference<CGPoint>): void;
-
-	self(): this;
-
-	viewForZoomingInScrollView(scrollView: UIScrollView): UIView;
+	scrollToPageAnimated(page: number, animated: boolean): void;
 }
 
 declare const enum PdfNativeFontFamily {
@@ -1445,6 +1346,10 @@ declare var PdfNativeVersionNumber: number;
 
 declare var PdfNativeVersionString: interop.Reference<number>;
 
+declare function pdf_native_document_add_font(instance: interop.Pointer | interop.Reference<any>, path: string | interop.Pointer | interop.Reference<any>, id: string | interop.Pointer | interop.Reference<any>, style: string | interop.Pointer | interop.Reference<any>, weight: string | interop.Pointer | interop.Reference<any>, is_ttf: boolean, is_cid_font: boolean): boolean;
+
+declare function pdf_native_document_add_font_with_bytes(instance: interop.Pointer | interop.Reference<any>, bytes: string | interop.Pointer | interop.Reference<any>, size: number, id: string | interop.Pointer | interop.Reference<any>, style: string | interop.Pointer | interop.Reference<any>, weight: string | interop.Pointer | interop.Reference<any>, is_ttf: boolean, is_cid_font: boolean): boolean;
+
 declare function pdf_native_document_add_image(instance: interop.Pointer | interop.Reference<any>, image_data: string | interop.Pointer | interop.Reference<any>, image_size: number, x: number, y: number, width: number, height: number): void;
 
 declare function pdf_native_document_add_raw_image(instance: interop.Pointer | interop.Reference<any>, image_data: string | interop.Pointer | interop.Reference<any>, image_size: number, image_width: number, image_height: number, x: number, y: number, width: number, height: number): void;
@@ -1465,6 +1370,8 @@ declare function pdf_native_document_get_line_width(instance: interop.Pointer | 
 
 declare function pdf_native_document_height(instance: interop.Pointer | interop.Reference<any>): number;
 
+declare function pdf_native_document_page_info(instance: interop.Pointer | interop.Reference<any>, buffer: string | interop.Pointer | interop.Reference<any>, size: number): void;
+
 declare function pdf_native_document_rect(instance: interop.Pointer | interop.Reference<any>, x: number, y: number, width: number, height: number, style: PdfNativeStyle): void;
 
 declare function pdf_native_document_release(instance: interop.Pointer | interop.Reference<any>): void;
@@ -1479,6 +1386,8 @@ declare function pdf_native_document_render_to_buffer_with_scale(instance: inter
 
 declare function pdf_native_document_render_to_buffer_with_scale_and_tile(instance: interop.Pointer | interop.Reference<any>, index: number, tile_width: number, tile_height: number, viewport_width: number, viewport_height: number, scale: number, row: number, column: number): interop.Pointer | interop.Reference<CPdfNativeRenderInfo>;
 
+declare function pdf_native_document_render_to_buffer_with_viewport_offset_and_size(instance: interop.Pointer | interop.Reference<any>, index: number, viewport_width: number, viewport_height: number, scale: number, x: number, y: number, width: number, height: number): interop.Pointer | interop.Reference<CPdfNativeRenderInfo>;
+
 declare function pdf_native_document_render_to_buffers(instance: interop.Pointer | interop.Reference<any>, indices: interop.Pointer | interop.Reference<number>, indices_size: number, width: number, height: number, flip_vertical: boolean, flip_horizontal: boolean): interop.Pointer | interop.Reference<any>;
 
 declare function pdf_native_document_render_to_buffers_with_scale(instance: interop.Pointer | interop.Reference<any>, indices: interop.Pointer | interop.Reference<number>, indices_size: number, viewport_width: number, viewport_height: number, scale_x: number, scale_y: number, x: number, y: number, width: number, height: number, flip_vertical: boolean, flip_horizontal: boolean): interop.Pointer | interop.Reference<any>;
@@ -1490,6 +1399,8 @@ declare function pdf_native_document_save_to_file(instance: interop.Pointer | in
 declare function pdf_native_document_set_draw_color(instance: interop.Pointer | interop.Reference<any>, r: number, g: number, b: number, a: number): void;
 
 declare function pdf_native_document_set_fill_color(instance: interop.Pointer | interop.Reference<any>, r: number, g: number, b: number, a: number): void;
+
+declare function pdf_native_document_set_font(instance: interop.Pointer | interop.Reference<any>, font_name: string | interop.Pointer | interop.Reference<any>, font_style: string | interop.Pointer | interop.Reference<any>, font_weight: string | interop.Pointer | interop.Reference<any>): void;
 
 declare function pdf_native_document_set_font_color(instance: interop.Pointer | interop.Reference<any>, r: number, g: number, b: number, a: number): void;
 

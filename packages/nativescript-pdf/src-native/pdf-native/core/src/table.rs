@@ -1312,9 +1312,24 @@ fn resolve_rows_2d(
     table: &PdfTable,
     section: Section,
 ) -> Vec<TableRow> {
+    let target_cols = column_keys.len();
+
     grid.iter()
         .enumerate()
-        .map(|(row_idx, row)| {
+        .map(|(row_idx, raw_row)| {
+            // Pad (or truncate) to the target column count.
+            // If there are fewer cells than columns, add empty cells.
+            // If there are more, truncate (mirrors jsPDF autoTable behavior).
+            let mut row: Vec<TableCellOrString> = if raw_row.len() >= target_cols {
+                raw_row[..target_cols].to_vec()
+            } else {
+                let mut r = raw_row.clone();
+                while r.len() < target_cols {
+                    r.push(TableCellOrString::String(String::new()));
+                }
+                r
+            };
+
             let cells = row
                 .iter()
                 .enumerate()

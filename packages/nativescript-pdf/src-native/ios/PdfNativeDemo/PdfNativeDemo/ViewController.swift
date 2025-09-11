@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     //                                                                               let image = NSData(contentsOf: URL(string: "https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")!)
 //
       let document = NSCPdfDocument()
-      //let output = document.table(buildTable(document: document))
+    //  let output = document.table(buildTable(document: document))
       buildDoc(document: document)
 
       pdf = NSCPdfView(frame: view.bounds)
@@ -88,6 +88,15 @@ class ViewController: UIViewController {
         )
     
     
+    let gn = NSCPdfTableCellOrString.Cell(
+      NSCPdfTableCell(
+        "Gender",
+        1,
+        1
+      )
+    )
+    
+    
         let bodyStyle = NSCPdfStyleDef.default()
 
 //    bodyStyle.horizontalAlign = NSCPdfHorizontalAlign.center
@@ -101,7 +110,7 @@ class ViewController: UIViewController {
         //tab.styles = style
         tab.styles = bodyStyle
         tab.headStyles = style
-        tab.head = [[first, last]]
+        tab.head = [[first, last, gn]]
        // tab.foot = tab.head
 //        tab.body = [
 //          [NSCPdfTableCellOrString(string: "" ), NSCPdfTableCellOrString.Cell(NSCPdfTableCell("", 1, 1) )],
@@ -110,7 +119,7 @@ class ViewController: UIViewController {
     
     
         tab.body = [
-          [NSCPdfTableCellOrString(string: "Osei"), NSCPdfTableCellOrString(string: "Fortune")],
+          [NSCPdfTableCellOrString(string: "Osei"), NSCPdfTableCellOrString(string: "Fortune"), NSCPdfTableCellOrString(string: "√")],
           [NSCPdfTableCellOrString(string: "Liam"), NSCPdfTableCellOrString(string: "Nguyen")],
           [NSCPdfTableCellOrString(string: "Sofia"), NSCPdfTableCellOrString(string: "Martinez")],
           [NSCPdfTableCellOrString(string: "Ethan"), NSCPdfTableCellOrString(string: "Wang")],
@@ -231,16 +240,39 @@ class ViewController: UIViewController {
 //    document.addText("\u{2713}", 120, 50)
     
     do {
-      let font = try Data(contentsOf: URL(string: "https://pixijs.com/assets/webfont-loader/ChaChicle.ttf")!)
+//      
+//                  if let test = Bundle.main.url(forResource: "Roboto-Regular", withExtension: "ttf") {
+//                    let font = try Data(contentsOf: test)
+//                    let base64 = font.base64EncodedString()
+//                    document.addFileToVFS("Roboto-Regular.ttf", base64)
+//                    let added = document.addFont("Roboto-Regular.ttf", "Roboto", "normal")
+//                    document.setFont("Roboto", "normal")
+//                    print("Roboto", added)
+//                  }
+      
+      
+                  if let test = Bundle.main.url(forResource: "NotoSansSymbols-Regular", withExtension: "ttf") {
+                    let font = try Data(contentsOf: test)
+                    let base64 = font.base64EncodedString()
+                    document.addFileToVFS("NotoSansSymbols-Regular.ttf", base64)
+                    let added = document.addFont("NotoSansSymbols-Regular.ttf", "NotoSans", "normal")
+                    document.setFont("NotoSans", "normal")
+                    print("NotoSans", added)
+                  }
+      
+      
+      
+      /*let font = try Data(contentsOf: URL(string: "https://pixijs.com/assets/webfont-loader/ChaChicle.ttf")!)
       let base64 = font.base64EncodedString()
       document.addFileToVFS("ChaChicle.ttf", base64)
       let added = document.addFont("ChaChicle.ttf", "ChaChicle", "normal")
       print(added)
+      */
     }catch {
       print(error)
     }
     
-    document.setFont("ChaChicle", "normal")
+//    document.setFont("ChaChicle", "normal")
     
     document.addText("✓ ??? Hello World", 120, 50)
     
@@ -319,7 +351,7 @@ class ViewController: UIViewController {
    // Black square with rounded corners
          document.setDrawColor(0, 0, 0)
          document.setFillColor(255, 255, 255)
-   //      document.roundedRect(140f, 20f, 10f, 10f, 3f, 3f, PdfStyle.FD)
+        //  document.roundedRect(140, 20, 10, 10, 3, 3, NSCPdfStyle.fd)
 
 
     let x: Float = 100.0 / 2
@@ -329,7 +361,10 @@ class ViewController: UIViewController {
     let rx: Float = 20.0
     let ry: Float = 20.0
 
-       //  document.roundedRect(x, y, width, height, rx, ry, NSCPdfStyle.fd)
+//         document.roundedRect(x, y, width, height, rx, ry, NSCPdfStyle.fd)
+    
+    // let _ = document.roundedRect(20.0, 100.0, 100.0, 60.0, 12, 12, NSCPdfStyle.fd)
+    let _ = document.rect(20.0, 200.0, 100.0, 60.0, NSCPdfStyle.s)
     
     
   }
