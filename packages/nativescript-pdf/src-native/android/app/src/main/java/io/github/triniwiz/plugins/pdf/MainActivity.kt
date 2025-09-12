@@ -99,25 +99,46 @@ class MainActivity : AppCompatActivity() {
     executor.execute {
       val document = PdfDocument()
             val url =
-        URI.create("https://pixijs.com/assets/webfont-loader/ChaChicle.ttf")
+        URI.create("https://github.com/google/fonts/raw/refs/heads/main/ofl/notocoloremoji/NotoColorEmoji-Regular.ttf")
           .toURL()
-      val font = url.readBytes()
+
+
+      val doc = File(cacheDir, "NotoColorEmoji-Regular.ttf")
+
+      if (doc.exists()) {
+      } else {
+        val pdf = URL("https://github.com/google/fonts/raw/refs/heads/main/ofl/notocoloremoji/NotoColorEmoji-Regular.ttf")
+        val os = FileOutputStream(doc)
+        val stream = pdf.openConnection().getInputStream()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+          stream.transferTo(os)
+        } else {
+          stream.copyTo(os)
+        }
+      }
+
+
+
+      val font = doc.readBytes()
 
       val raw = Base64.encode(font, Base64.NO_WRAP)
       val base64 = String(raw)
-      document.addFileToVFS("ChaChicle.ttf", base64)
-      val added = document.addFont("ChaChicle.ttf", "ChaChicle", "normal")
+      document.addFileToVFS("NotoColorEmoji-Regular.ttf", base64)
+      val added = document.addFont("NotoColorEmoji-Regular.ttf", "NotoColorEmoji", "normal")
 
-      Log.d("com.test", "addFont  ChaChicle $added")
-      document.addText("Hello World ✓", 10f, 100f)
+      Log.d("com.test", "addFont  NotoColorEmoji $added")
+      document.addText("Hello World √", 10f, 100f)
 
-      document.setFont("ChaChicle", "normal")
+      document.setFont("NotoColorEmoji", "normal")
 
-      document.addText("Hello World ✓ ?", 10f, 150f)
+      document.addText("Hello World ✓ 🌍?", 10f, 150f)
 
       document.setFont("times", "bolditalic")
 
       document.addText("Hello World ✓ ?", 10f, 200f)
+
+
+      document.addText("Hello World ?", 10f, 230f)
 //      val table = buildTable()
 //      val output = document.table(table)
     //  Log.d("com.test", "output ${JSONObject(output)}")
