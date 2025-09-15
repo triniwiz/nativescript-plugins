@@ -2438,20 +2438,20 @@ pub fn draw_table<'a>(
 
     let bottom_margin = margin_bottom;
 
+    // Height of footer rows (if any)
     let actual_footer_height = foot
         .iter()
         .map(|row| compute_row_height(document, row, &scaled_widths, units))
         .try_fold(PdfPoints::ZERO, |acc, h| h.map(|h| acc + h))?;
 
-    // Reserve footer space only if we actually draw it on every page
-    let footer_height = if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
+    // Footer reserve used during pagination (only EveryPage)
+    let reserved_footer_height = if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
         actual_footer_height
     } else {
         PdfPoints::ZERO
     };
 
     let mut cursor_y = get_y_points(&current_page, y_start);
-
     current_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
     if matches!(
@@ -2477,11 +2477,15 @@ pub fn draw_table<'a>(
 
     for (body_row_idx, row) in body.iter().enumerate() {
         let row_height = compute_row_height(document, row, &scaled_widths, units)?;
-        let remaining_space = cursor_y - bottom_margin - footer_height;
 
-        if row_height > remaining_space {
-            // Draw footer for the page we are finishing ONLY when EveryPage
+        // Space that must remain after placing this row (bottom margin + reserved footer)
+        let needed_below = bottom_margin + reserved_footer_height;
+
+        // Break if this row does not fit with what we must still keep below
+        if row_height + needed_below > cursor_y {
+            // Finish current page
             if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
+                // Draw footer at bottom
                 let mut footer_cursor_y = bottom_margin + actual_footer_height;
                 let index = { doc.data.lock().current_page };
                 for (idx, footer_row) in foot.iter().enumerate() {
@@ -2499,36 +2503,33 @@ pub fn draw_table<'a>(
                         table,
                     )?;
                 }
-
                 if let Some(cb) = table.did_draw_page.as_ref() {
                     unsafe {
                         cb.emit(
                             index as u32,
                             to_unit(x_start, units),
-                            to_unit(footer_cursor_y, units),
+                            to_unit(footer_cursor_y, units), // footer_cursor_y ends at bottom_margin
                         )
                     };
                 }
-            } else {
-                // Even if no footer, still fire did_draw_page if callback exists
-                if let Some(cb) = table.did_draw_page.as_ref() {
-                    let index = { doc.data.lock().current_page };
-                    unsafe {
-                        cb.emit(
-                            index as u32,
-                            to_unit(x_start, units),
-                            to_unit(cursor_y, units),
-                        )
-                    };
-                }
+            } else if let Some(cb) = table.did_draw_page.as_ref() {
+                let index = { doc.data.lock().current_page };
+                unsafe {
+                    cb.emit(
+                        index as u32,
+                        to_unit(x_start, units),
+                        to_unit(cursor_y, units),
+                    )
+                };
             }
 
+            // New page
             let (mut next_page, index) = add_new_page(document)?;
             {
-                doc.data.lock().current_page = index
+                doc.data.lock().current_page = index;
             }
-            next_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
-
+            next_page
+                .set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
             cursor_y = get_y_points(&next_page, margin_top);
 
             if let Some(cb) = table.will_draw_page.as_ref() {
@@ -2563,8 +2564,7 @@ pub fn draw_table<'a>(
             current_page = next_page;
         }
 
-        let (index) = { doc.data.lock().current_page };
-
+        let index = { doc.data.lock().current_page } as u32;
         cursor_y = draw_row(
             document,
             &mut current_page,
@@ -2575,100 +2575,116 @@ pub fn draw_table<'a>(
             units,
             Section::Body,
             body_row_idx,
-            index as u32,
+            index,
             table,
         )?;
     }
 
-    let mut final_x = x_start;
+    // Footer handling for final page
     let mut final_y = cursor_y;
 
-    if matches!(
-        table.show_foot,
-        PdfNativeShowFoot::EveryPage | PdfNativeShowFoot::LastPage
-    ) {
-        // Determine required footer height for this final draw
-        let needed_footer_height = if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
-            // already reserved earlier
-            actual_footer_height
-        } else {
-            // LastPage: may not have reserved space; ensure it fits, else new page
-            if cursor_y - bottom_margin < actual_footer_height {
-                // Not enough space: finish current page & start new one
-                if let Some(cb) = table.did_draw_page.as_ref() {
-                    let index = { doc.data.lock().current_page };
-                    unsafe {
-                        cb.emit(
-                            index as u32,
-                            to_unit(x_start, units),
-                            to_unit(cursor_y, units),
-                        )
-                    };
+    match table.show_foot {
+        PdfNativeShowFoot::EveryPage => {
+            // Final page already left space; draw footer at bottom if desired (optional)
+            if actual_footer_height > PdfPoints::ZERO && !foot.is_empty() {
+                let mut footer_cursor_y = bottom_margin + actual_footer_height;
+                let index = { doc.data.lock().current_page } as u32;
+                for (idx, footer_row) in foot.iter().enumerate() {
+                    footer_cursor_y = draw_row(
+                        document,
+                        &mut current_page,
+                        footer_row,
+                        footer_cursor_y,
+                        x_start,
+                        &scaled_widths,
+                        units,
+                        Section::Footer,
+                        idx,
+                        index,
+                        table,
+                    )?;
                 }
-                let (mut next_page, index) = add_new_page(document)?;
-                {
-                    doc.data.lock().current_page = index;
-                }
-                next_page
-                    .set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
-                cursor_y = get_y_points(&next_page, margin_top);
-
-                if let Some(cb) = table.will_draw_page.as_ref() {
-                    unsafe {
-                        cb.emit(
-                            index as u32,
-                            to_unit(x_start, units),
-                            to_unit(cursor_y, units),
-                        )
-                    };
-                }
-
-                if matches!(table.show_head, PdfNativeShowHead::EveryPage) {
-                    for (idx, header_row) in head.iter().enumerate() {
-                        cursor_y = draw_row(
-                            document,
-                            &mut next_page,
-                            header_row,
-                            cursor_y,
-                            x_start,
-                            &scaled_widths,
-                            units,
-                            Section::Header,
-                            idx,
-                            index as u32,
-                            table,
-                        )?;
+                final_y = footer_cursor_y; // ends at bottom_margin
+            }
+        }
+        PdfNativeShowFoot::LastPage => {
+            if !foot.is_empty() && actual_footer_height > PdfPoints::ZERO {
+                // Ensure footer fits; if not, break to new page
+                if cursor_y < bottom_margin + actual_footer_height {
+                    if let Some(cb) = table.did_draw_page.as_ref() {
+                        let index = { doc.data.lock().current_page };
+                        unsafe {
+                            cb.emit(
+                                index as u32,
+                                to_unit(x_start, units),
+                                to_unit(cursor_y, units),
+                            )
+                        };
                     }
+                    let (mut next_page, index) = add_new_page(document)?;
+                    {
+                        doc.data.lock().current_page = index;
+                    }
+                    next_page.set_content_regeneration_strategy(
+                        PdfPageContentRegenerationStrategy::Manual,
+                    );
+                    cursor_y = get_y_points(&next_page, margin_top);
+
+                    if let Some(cb) = table.will_draw_page.as_ref() {
+                        unsafe {
+                            cb.emit(
+                                index as u32,
+                                to_unit(x_start, units),
+                                to_unit(cursor_y, units),
+                            )
+                        };
+                    }
+
+                    if matches!(table.show_head, PdfNativeShowHead::EveryPage) {
+                        for (idx, header_row) in head.iter().enumerate() {
+                            cursor_y = draw_row(
+                                document,
+                                &mut next_page,
+                                header_row,
+                                cursor_y,
+                                x_start,
+                                &scaled_widths,
+                                units,
+                                Section::Header,
+                                idx,
+                                index as u32,
+                                table,
+                            )?;
+                        }
+                    }
+
+                    current_page.regenerate_content()?;
+                    current_page = next_page;
                 }
 
-                current_page.regenerate_content()?;
-                current_page = next_page;
+                // Anchor footer at bottom
+                let mut footer_cursor_y = bottom_margin + actual_footer_height;
+                let index = { doc.data.lock().current_page } as u32;
+                for (idx, footer_row) in foot.iter().enumerate() {
+                    footer_cursor_y = draw_row(
+                        document,
+                        &mut current_page,
+                        footer_row,
+                        footer_cursor_y,
+                        x_start,
+                        &scaled_widths,
+                        units,
+                        Section::Footer,
+                        idx,
+                        index,
+                        table,
+                    )?;
+                }
+                final_y = footer_cursor_y; // bottom_margin
             }
-            actual_footer_height
-        };
-
-        // Draw footer now (final page or EveryPage case already handled earlier but we still re-draw only if LastPage or last occurrence)
-        if needed_footer_height > PdfPoints::ZERO {
-            let mut footer_cursor_y = cursor_y;
-            let (index) = { doc.data.lock().current_page };
-            for (idx, footer_row) in foot.iter().enumerate() {
-                footer_cursor_y = draw_row(
-                    document,
-                    &mut current_page,
-                    footer_row,
-                    footer_cursor_y,
-                    x_start,
-                    &scaled_widths,
-                    units,
-                    Section::Footer,
-                    idx,
-                    index as u32,
-                    table,
-                )?;
-                final_y = footer_cursor_y;
-            }
-        } else {
-            final_y = cursor_y;
+        }
+        PdfNativeShowFoot::Never => {
+            // nothing; final_y is cursor_y
         }
     }
 
@@ -2678,13 +2694,12 @@ pub fn draw_table<'a>(
     {
         let mut lock = doc.data.lock();
         lock.state = PdfNativeState::Idle;
-    };
-
-    let mut y_device = page_height - final_y;
-
-    if y_device.value < 0f32 || y_device.value.is_nan() {
-        y_device.value = 0f32;
     }
 
-    Ok((final_x, y_device))
+    let mut y_device = page_height - final_y;
+    if y_device.value < 0.0 || y_device.value.is_nan() {
+        y_device = PdfPoints::ZERO;
+    }
+
+    Ok((x_start, y_device))
 }
