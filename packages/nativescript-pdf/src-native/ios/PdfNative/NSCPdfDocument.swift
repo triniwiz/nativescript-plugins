@@ -201,6 +201,16 @@ public class NSCPdfDocument: NSObject {
     pdf_native_document_add_text(pdfDocument, text, x, y, &opts)
   }
   
+  
+  public func addImage(pdf: NSCPdfImage, _ x: Float, _ y: Float){
+    pdf_native_document_add_image_pdf(pdfDocument, pdfDocument, x, y, -1, -1)
+  }
+  
+  public func addImage(pdf: NSCPdfImage, _ x: Float, _ y: Float, width: Float, height: Float){
+    pdf_native_document_add_image_pdf(pdfDocument, pdf.nativeImage, x, y, Int32(ceil(width)),Int32(ceil(height)))
+  }
+  
+  
   public func addImage(base64: String, _ mime: String, _ x: Float, _ y: Float){
     var data: NSData?
     switch(mime){
@@ -219,7 +229,7 @@ public class NSCPdfDocument: NSObject {
   }
   
   
-  public func addImage(base64: String, _ mime: String, _ x: Float, _ y: Float, _ width: Float, _ height: Float){
+  public func addImage(base64: String, _ mime: String, _ x: Float, _ y: Float, width: Float, height: Float){
     var data: NSData?
     switch(mime){
     case "JPG","JPEG", "PNG":
@@ -245,7 +255,7 @@ public class NSCPdfDocument: NSObject {
   }
   
   
-  public func addImage(_ image: UIImage, _ x: Float, _ y: Float, _ width: Float, _ height: Float){
+  public func addImage(_ image: UIImage, _ x: Float, _ y: Float, width: Float, height: Float){
     guard let data = NSCPdfDocument.getBytesFromUIImage(image) else {return}
     pdf_native_document_add_raw_image(pdfDocument, data.mutableBytes, UInt32(data.length), UInt32(image.size.width),UInt32(image.size.height), x, y, Int32(ceil(width)),Int32(ceil(height)))
   }
@@ -255,7 +265,7 @@ public class NSCPdfDocument: NSObject {
   }
   
   
-  public func addImage(data: NSData, _ x: Float, _ y: Float, _ width: Float, _ height: Float){
+  public func addImage(data: NSData, _ x: Float, _ y: Float, width: Float, height: Float){
     pdf_native_document_add_image(pdfDocument, data.bytes, UInt32(data.length), x, y, Int32(ceil(width)),Int32(ceil(height)))
   }
   
@@ -498,6 +508,43 @@ public class NSCPdfDocument: NSObject {
     
     return buffer!
   }
+  
+  
+  static func getBytesFromUIImageData(_ image: UIImage) -> Data? {
+    var cgImage = image.cgImage
+    
+    if(cgImage == nil && image.ciImage != nil){
+      let context = CIContext()
+      cgImage = context.createCGImage(image.ciImage!, from: image.ciImage!.extent)
+    }
+    
+    guard let cgImage = cgImage else {
+      return nil
+    }
+    
+    let width = cgImage.width
+    let height = cgImage.height
+    let bytesPerRow = width * 4
+    let size = width * height * 4
+    var buffer = Data(count: size)
+    
+    buffer.withUnsafeMutableBytes { rawBuffer in
+      guard let baseAddress = rawBuffer.baseAddress else {
+        return
+      }
+      
+      
+      let colorSpace = CGColorSpaceCreateDeviceRGB()
+      let ctx = CGContext(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue | CGBitmapInfo.byteOrder32Big.rawValue)
+      
+      ctx?.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+    }
+
+    
+    return buffer
+  }
+  
+  
   
   public func renderTileWithViewportOffset(
     _ index: Int32,

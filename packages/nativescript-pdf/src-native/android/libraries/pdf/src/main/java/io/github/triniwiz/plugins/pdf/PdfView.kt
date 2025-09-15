@@ -18,7 +18,6 @@ import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.util.AttributeSet
-import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
@@ -40,6 +39,7 @@ import java.net.URI
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.channels.Channels
+import androidx.core.graphics.toColorInt
 
 
 class PdfView @JvmOverloads constructor(
@@ -51,6 +51,7 @@ class PdfView @JvmOverloads constructor(
   private var surface: Surface? = null
   private var currentScale = 1f
   private var isScaling = false
+  var pageSpacing = 16f * resources.displayMetrics.density // Space between pages
   var useSurface = true
   private lateinit var edgeEffectTop: EdgeEffect
   private lateinit var edgeEffectBottom: EdgeEffect
@@ -75,23 +76,23 @@ class PdfView @JvmOverloads constructor(
   private var isScrollbarDragging = false
   private var scrollbarDragStartY = 0f
   private var scrollbarStartScrollY = 0f
+  private var scrollbarWidth = 6f * context.resources.displayMetrics.density // 6dp (increased for better touch)
+  private var scrollbarTrackWidth = 12f * context.resources.displayMetrics.density // 12dp (increased for better visibility)
   private val scrollbarPaint = Paint().apply {
     isAntiAlias = true
-    color = Color.parseColor("#80000000") // Semi-transparent black
+    color = "#80000000".toColorInt() // Semi-transparent black
   }
   private val scrollbarBackgroundPaint = Paint().apply {
     isAntiAlias = true
-    color = Color.parseColor("#40FFFFFF") // Semi-transparent white background
+    color = "#40FFFFFF".toColorInt() // Semi-transparent white background
   }
   private val pageIndicatorText = TextView(context).apply {
     setTextColor(Color.WHITE)
     textSize = 12f
     setPadding(8, 4, 8, 4)
-    setBackgroundColor(Color.parseColor("#CC000000")) // Semi-transparent black background
+    setBackgroundColor("#CC000000".toColorInt()) // Semi-transparent black background
     visibility = GONE
   }
-  private val scrollbarWidth = 6f * context.resources.displayMetrics.density // 6dp (increased for better touch)
-  private val scrollbarTrackWidth = 12f * context.resources.displayMetrics.density // 12dp (increased for better visibility)
 
   data class PageInfo(
     val index: Int,
@@ -126,7 +127,7 @@ class PdfView @JvmOverloads constructor(
       if (!isScaling) {
         // Cancel any ongoing bounce animation
         bounceAnimator?.cancel()
-        
+
         val oldScrollX = scrollXPos
         val oldScrollY = scrollYPos
 
@@ -136,10 +137,10 @@ class PdfView @JvmOverloads constructor(
 
         // Check for edge effects (visual feedback) - DISABLED FOR NOW
         // checkEdgeEffects(oldScrollX, oldScrollY)
-        
+
         // Show scrollbar during scroll
         showScrollbarAndIndicator()
-        
+
         drawPages()
       }
       return true
@@ -185,56 +186,26 @@ class PdfView @JvmOverloads constructor(
   private fun calculatePageBounds(document: PdfDocument) {
     pageBounds.clear()
     var currentTop = 0f
-    val pageSpacing = 16f // Space between pages
-
-    val pageInfoBuffer = ByteBuffer.allocateDirect(
-      document.count() * 12
-    )
-
+    val pageInfoBuffer = ByteBuffer.allocateDirect(document.count() * 12)
     pageInfoBuffer.order(ByteOrder.nativeOrder())
     document.pagesInfo(pageInfoBuffer)
     var offset = 0
     val indexBuffer = pageInfoBuffer.asIntBuffer()
     val sizeBuffer = pageInfoBuffer.asFloatBuffer()
-
+    val usableWidth = (width - (pageSpacing * 2f)).coerceAtLeast(1f)
 
     for (i in 0 until document.count()) {
       try {
-        val index = indexBuffer[offset]
-        offset += 1
-        val w = sizeBuffer[offset]
-        offset += 1
-        val h = sizeBuffer[offset]
-        offset += 1
-
+        val index = indexBuffer[offset]; offset += 1
+        val w = sizeBuffer[offset]; offset += 1
+        val h = sizeBuffer[offset]; offset += 1
         val aspectRatio = w / h
-
-        // Calculate page dimensions based on view width
-        val pageWidth = width
+        val pageWidth = usableWidth.toInt()
         val pageHeight = (pageWidth / aspectRatio).toInt()
-
-        pageBounds.add(
-          PageInfo(
-            index = i,
-            top = currentTop,
-            bottom = currentTop + pageHeight,
-            width = pageWidth,
-            height = pageHeight
-          )
-        )
-
+        pageBounds.add(PageInfo(index = i, top = currentTop, bottom = currentTop + pageHeight, width = pageWidth, height = pageHeight))
         currentTop += pageHeight + pageSpacing
-      } catch (e: Exception) {
-        // Handle page error, use default dimensions
-        pageBounds.add(
-          PageInfo(
-            index = i,
-            top = currentTop,
-            bottom = currentTop + height,
-            width = width,
-            height = height
-          )
-        )
+      } catch (_: Exception) {
+        pageBounds.add(PageInfo(index = i, top = currentTop, bottom = currentTop + height, width = usableWidth.toInt(), height = height))
         currentTop += height + pageSpacing
       }
     }
@@ -243,14 +214,14 @@ class PdfView @JvmOverloads constructor(
   private fun preloadInitialPages(document: PdfDocument) {
     // Initialize page indicator
     updatePageIndicator()
-    
+
     // Show scrollbar briefly when document loads so user can see PDF progress
     postDelayed({
       if (maxScrollY > 0) {
         showScrollbarAndIndicator()
       }
     }, 500) // Show after 500ms when document is loaded
-    
+
     // Preload first 3 pages in background to ensure they're ready
     // Use a small delay to ensure view is properly initialized
     postDelayed({
@@ -273,27 +244,24 @@ class PdfView @JvmOverloads constructor(
       maxScrollY = 0f
       return
     }
-
-    // Horizontal scrolling only when zoomed and content is wider than view
-    val totalContentWidth = width * currentScale
+    val totalContentWidth = (width - pageSpacing * 2f) * currentScale
     maxScrollX = if (currentScale > 1f && totalContentWidth > width) {
       (totalContentWidth - width).coerceAtLeast(0f)
-    } else {
-      0f // No horizontal scrolling when not zoomed
-    }
-    
-    val totalContentHeight = pageBounds.lastOrNull()?.bottom?.times(currentScale) ?: 0f
-    maxScrollY = (totalContentHeight - height).coerceAtLeast(0f)
+    } else 0f
+
+    // Include top + bottom spacing
+    val contentHeightRaw = pageBounds.last().bottom + pageSpacing * 2f
+    maxScrollY = (contentHeightRaw * currentScale - height).coerceAtLeast(0f)
   }
 
   private fun constrainScroll() {
     updateScrollBounds()
-    
+
     // Don't constrain scroll during bounce animation
     if (bounceAnimator?.isRunning == true) {
       return
     }
-    
+
     val oldScrollX = scrollXPos
     val oldScrollY = scrollYPos
 
@@ -314,10 +282,10 @@ class PdfView @JvmOverloads constructor(
     if (isHorizontal && maxPos == 0f) {
       return 0f
     }
-    
+
     // OVERSCROLL DISABLED - keep scrolling within normal bounds
     val newPos = currentPos + distance
-    
+
     return when {
       // Don't allow scrolling beyond top/left edge
       newPos < 0 -> {
@@ -340,15 +308,15 @@ class PdfView @JvmOverloads constructor(
   }
 
   private fun updateCurrentPage() {
+    val verticalOffset = pageSpacing // top inset
     val viewCenter = scrollYPos + height / 2f
-    val scaledViewCenter = viewCenter / currentScale
-
+    val scaledCenter = (viewCenter / currentScale) - verticalOffset
     for (i in pageBounds.indices) {
-      val pageInfo = pageBounds[i]
-      if (scaledViewCenter >= pageInfo.top && scaledViewCenter <= pageInfo.bottom) {
-        val newCurrentPage = pageInfo.index + 1 // Convert to 1-based index
-        if (currentPage != newCurrentPage) {
-          currentPage = newCurrentPage
+      val p = pageBounds[i]
+      if (scaledCenter >= p.top && scaledCenter <= p.bottom) {
+        val newCurrent = p.index + 1
+        if (currentPage != newCurrent) {
+          currentPage = newCurrent
           listener?.onPageChange(currentPage)
           updatePageIndicator()
         }
@@ -365,26 +333,26 @@ class PdfView @JvmOverloads constructor(
   private fun showScrollbarAndIndicator() {
     // Cancel any existing fade animation
     scrollbarFadeAnimator?.cancel()
-    
+
     // Show scrollbar immediately
     scrollbarVisible = true
     scrollbarAlpha = 1f
-    
+
     // Trigger a redraw immediately
     invalidate()
-    
+
     // Start fade out timer (but not when dragging)
     if (!isScrollbarDragging) {
       scrollbarFadeAnimator = ValueAnimator.ofFloat(1f, 0f).apply {
         duration = 300
         startDelay = 1500 // 1.5 second delay
-        
+
         addUpdateListener { animator ->
           val alpha = animator.animatedValue as Float
           scrollbarAlpha = alpha
           invalidate()
         }
-        
+
         addListener(object : AnimatorListenerAdapter() {
           override fun onAnimationEnd(animation: Animator) {
             scrollbarVisible = false
@@ -398,7 +366,7 @@ class PdfView @JvmOverloads constructor(
   private fun checkEdgeEffects(oldScrollX: Float, oldScrollY: Float) {
     val deltaX = scrollXPos - oldScrollX
     val deltaY = scrollYPos - oldScrollY
-    
+
     // Left edge
     if (scrollXPos <= 0 && deltaX > 0) {
       val pullDistance = deltaX / width
@@ -450,7 +418,7 @@ class PdfView @JvmOverloads constructor(
       }
       edgeEffectBottomActive = true
     }
-    
+
     // Trigger visual update if any edge effect is active
     if (edgeEffectLeftActive || edgeEffectRightActive || edgeEffectTopActive || edgeEffectBottomActive) {
       postInvalidateOnAnimation()
@@ -530,15 +498,15 @@ class PdfView @JvmOverloads constructor(
 
   private fun handleScrollbarTouch(event: MotionEvent): Boolean {
     if (maxScrollY <= 0) return false // No scrollable content
-    
+
     // Calculate scrollbar bounds
     val scrollbarRight = width - 8f * resources.displayMetrics.density
     val scrollbarLeft = scrollbarRight - scrollbarTrackWidth
     val scrollbarTouchArea = scrollbarLeft - 20f * resources.displayMetrics.density // Expand touch area
-    
+
     // Check if touch is in scrollbar area
     if (event.x < scrollbarTouchArea) return false
-    
+
     when (event.action) {
       MotionEvent.ACTION_DOWN -> {
         // Calculate current thumb position
@@ -549,23 +517,23 @@ class PdfView @JvmOverloads constructor(
         val scrollProgress = if (maxScrollY > 0) scrollYPos / maxScrollY else 0f
         val thumbTop = scrollProgress * maxThumbTop
         val thumbBottom = thumbTop + thumbHeight
-        
+
         // Check if touch is on the thumb
         if (event.y >= thumbTop && event.y <= thumbBottom) {
           isScrollbarDragging = true
           scrollbarDragStartY = event.y
           scrollbarStartScrollY = scrollYPos
-          
+
           // Show scrollbar immediately and cancel fade
           scrollbarFadeAnimator?.cancel()
           scrollbarVisible = true
           scrollbarAlpha = 1f
           invalidate()
-          
+
           return true
         }
       }
-      
+
       MotionEvent.ACTION_MOVE -> {
         if (isScrollbarDragging) {
           val deltaY = event.y - scrollbarDragStartY
@@ -573,32 +541,32 @@ class PdfView @JvmOverloads constructor(
           val viewportHeight = height.toFloat()
           val thumbHeight = ((viewportHeight / totalContentHeight) * viewportHeight).coerceAtLeast(40f)
           val maxThumbTop = viewportHeight - thumbHeight
-          
+
           // Convert thumb movement to scroll position
           val scrollDelta = (deltaY / maxThumbTop) * maxScrollY
           scrollYPos = (scrollbarStartScrollY + scrollDelta).coerceIn(0f, maxScrollY)
-          
+
           // Update current page and redraw
           updateCurrentPage()
           drawPages()
           invalidate()
-          
+
           return true
         }
       }
-      
+
       MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
         if (isScrollbarDragging) {
           isScrollbarDragging = false
-          
+
           // Start fade timer
           showScrollbarAndIndicator()
-          
+
           return true
         }
       }
     }
-    
+
     return false
   }
 
@@ -624,24 +592,24 @@ class PdfView @JvmOverloads constructor(
   private fun bounceBack() {
     val targetScrollX = scrollXPos.coerceIn(0f, maxScrollX)
     val targetScrollY = scrollYPos.coerceIn(0f, maxScrollY)
-    
+
     // Only animate if we're outside the normal bounds
     if (scrollXPos != targetScrollX || scrollYPos != targetScrollY) {
       // Stop any ongoing scroll operations
       overScroller.forceFinished(true)
-      
+
       // Cancel any existing bounce animation
       bounceAnimator?.cancel()
-      
+
       bounceAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
         duration = 350 // Slightly longer for more natural spring feel
         interpolator = android.view.animation.OvershootInterpolator(0.5f) // Spring-like bounce back
-        
+
         val startScrollX = scrollXPos
         val startScrollY = scrollYPos
         val deltaX = targetScrollX - startScrollX
         val deltaY = targetScrollY - startScrollY
-        
+
         addUpdateListener { animator ->
           val fraction = animator.animatedValue as Float
           scrollXPos = startScrollX + deltaX * fraction
@@ -649,7 +617,7 @@ class PdfView @JvmOverloads constructor(
           // Simple invalidate for smooth animation
           invalidate()
         }
-        
+
         addListener(object : AnimatorListenerAdapter() {
           override fun onAnimationEnd(animation: Animator) {
             // Ensure we end up exactly at the target position
@@ -660,7 +628,7 @@ class PdfView @JvmOverloads constructor(
             updateCurrentPage()
             drawPages()
           }
-          
+
           override fun onAnimationCancel(animation: Animator) {
             bounceAnimator = null
           }
@@ -673,7 +641,7 @@ class PdfView @JvmOverloads constructor(
   private fun fling(velocityX: Int, velocityY: Int) {
     // Cancel any ongoing bounce animation
     bounceAnimator?.cancel()
-    
+
     overScroller.forceFinished(true)
 
     overScroller.fling(
@@ -709,7 +677,7 @@ class PdfView @JvmOverloads constructor(
       if (overScroller.isOverScrolled || hitLeftEdge || hitRightEdge || hitTopEdge || hitBottomEdge) {
         val velocityX = overScroller.currVelocity * kotlin.math.cos(Math.toRadians(overScroller.finalX.toDouble() - overScroller.startX.toDouble())).toFloat()
         val velocityY = overScroller.currVelocity * kotlin.math.sin(Math.toRadians(overScroller.finalY.toDouble() - overScroller.startY.toDouble())).toFloat()
-        
+
         // Absorb velocity into edge effects for fling bounce
         if (hitLeftEdge && velocityX < 0) {
           edgeEffectLeft.onAbsorb((-velocityX).toInt())
@@ -727,7 +695,7 @@ class PdfView @JvmOverloads constructor(
           edgeEffectBottom.onAbsorb(velocityY.toInt())
           edgeEffectBottomActive = true
         }
-        
+
         // checkEdgeEffects(oldScrollX, oldScrollY) - DISABLED FOR NOW
       }
 
@@ -749,7 +717,7 @@ class PdfView @JvmOverloads constructor(
         edgeEffectRightActive = false
         postInvalidateOnAnimation()
       }
-      
+
       // Trigger bounce back if overscrolled after fling
       bounceBack()
     }
@@ -766,10 +734,10 @@ class PdfView @JvmOverloads constructor(
 
   override fun onDraw(canvas: Canvas) {
     super.onDraw(canvas)
-    
+
     // Draw overscroll visual feedback
     drawOverscrollEffect(canvas)
-    
+
     // Always draw scrollbar if there's scrollable content (for debugging)
     if (maxScrollY > 0) {
       if (scrollbarVisible) {
@@ -783,7 +751,7 @@ class PdfView @JvmOverloads constructor(
     val overscrollFadePaint = Paint().apply {
       isAntiAlias = true
     }
-    
+
     // Top overscroll effect
     if (scrollYPos < 0) {
       val overscrollAmount = (-scrollYPos).coerceAtMost(100f)
@@ -791,7 +759,7 @@ class PdfView @JvmOverloads constructor(
       overscrollFadePaint.color = Color.argb(alpha, 0, 0, 0)
       canvas.drawRect(0f, 0f, width.toFloat(), overscrollAmount, overscrollFadePaint)
     }
-    
+
     // Bottom overscroll effect
     if (scrollYPos > maxScrollY) {
       val overscrollAmount = (scrollYPos - maxScrollY).coerceAtMost(100f)
@@ -804,7 +772,7 @@ class PdfView @JvmOverloads constructor(
   private fun drawScrollbar(canvas: Canvas) {
     val scrollbarRight = width - 8f * resources.displayMetrics.density // 8dp from right edge
     val scrollbarLeft = scrollbarRight - scrollbarTrackWidth
-    
+
     // Create temporary paints with adjusted alpha
     val backgroundPaint = Paint(scrollbarBackgroundPaint).apply {
       alpha = (0x40 * scrollbarAlpha).toInt() // 0x40 = 64 (25% opacity)
@@ -814,23 +782,23 @@ class PdfView @JvmOverloads constructor(
       val thumbAlpha = if (isScrollbarDragging) 0xCC else 0x80 // More opaque when dragging
       alpha = (thumbAlpha * scrollbarAlpha).toInt()
     }
-    
+
     // Draw scrollbar track background
     val trackRect = RectF(scrollbarLeft, 0f, scrollbarRight, height.toFloat())
     canvas.drawRoundRect(trackRect, scrollbarTrackWidth / 2, scrollbarTrackWidth / 2, backgroundPaint)
-    
+
     // Calculate scrollbar thumb position and size based on entire PDF progress
     val totalContentHeight = if (maxScrollY > 0) maxScrollY + height else height.toFloat()
     val viewportHeight = height.toFloat()
-    
+
     // Thumb size represents the visible portion of the entire document
     val thumbHeight = ((viewportHeight / totalContentHeight) * viewportHeight).coerceAtLeast(40f)
-    
+
     // Thumb position represents current scroll position in the entire document
     val maxThumbTop = viewportHeight - thumbHeight
     val scrollProgress = if (maxScrollY > 0) scrollYPos / maxScrollY else 0f
     val thumbTop = scrollProgress * maxThumbTop
-    
+
     // Draw scrollbar thumb
     val thumbRect = RectF(
       scrollbarLeft + (scrollbarTrackWidth - scrollbarWidth) / 2,
@@ -839,14 +807,14 @@ class PdfView @JvmOverloads constructor(
       thumbTop + thumbHeight
     )
     canvas.drawRoundRect(thumbRect, scrollbarWidth / 2, scrollbarWidth / 2, thumbPaint)
-    
+
     // Draw floating page indicator next to the thumb (like web browsers)
     drawFloatingPageIndicator(canvas, thumbTop + thumbHeight / 2, scrollProgress)
   }
 
   private fun drawFloatingPageIndicator(canvas: Canvas, thumbCenterY: Float, scrollProgress: Float) {
     val pageText = "$currentPage / ${getPageCount()}"
-    
+
     // Create paint for the floating indicator
     val textPaint = Paint().apply {
       isAntiAlias = true
@@ -854,42 +822,42 @@ class PdfView @JvmOverloads constructor(
       textSize = 12f * resources.displayMetrics.scaledDensity
       textAlign = Paint.Align.CENTER
     }
-    
+
     val backgroundPaint = Paint().apply {
       isAntiAlias = true
       color = Color.parseColor("#DD000000") // Semi-transparent black background
     }
-    
+
     // Measure text dimensions
     val textBounds = Rect()
     textPaint.getTextBounds(pageText, 0, pageText.length, textBounds)
     val textWidth = textBounds.width()
     val textHeight = textBounds.height()
-    
+
     // Calculate indicator position (to the left of scrollbar)
     val padding = 8f * resources.displayMetrics.density
     val indicatorWidth = textWidth + padding * 2
     val indicatorHeight = textHeight + padding * 2
-    
+
     val scrollbarLeft = width - 8f * resources.displayMetrics.density - scrollbarTrackWidth
     val indicatorRight = scrollbarLeft - 8f * resources.displayMetrics.density
     val indicatorLeft = indicatorRight - indicatorWidth
-    
+
     // Constrain indicator to screen bounds
     val indicatorTop = (thumbCenterY - indicatorHeight / 2).coerceIn(
-      padding, 
+      padding,
       height - indicatorHeight - padding
     )
     val indicatorBottom = indicatorTop + indicatorHeight
-    
+
     // Apply alpha for fade effect
     backgroundPaint.alpha = (0xDD * scrollbarAlpha).toInt()
     textPaint.alpha = (0xFF * scrollbarAlpha).toInt()
-    
+
     // Draw indicator background
     val indicatorRect = RectF(indicatorLeft, indicatorTop, indicatorRight, indicatorBottom)
     canvas.drawRoundRect(indicatorRect, 6f * resources.displayMetrics.density, 6f * resources.displayMetrics.density, backgroundPaint)
-    
+
     // Draw text centered in the indicator
     val textX = indicatorLeft + indicatorWidth / 2
     val textY = indicatorTop + indicatorHeight / 2 + textHeight / 2
@@ -1017,18 +985,16 @@ class PdfView @JvmOverloads constructor(
    * @param animated whether to animate the scroll
    */
   fun scrollToPage(pageIndex: Int, animated: Boolean = true) {
-    val zeroBasedIndex = pageIndex - 1 // Convert from 1-based to 0-based index
-    if (zeroBasedIndex < 0 || zeroBasedIndex >= pageBounds.size) return
-
-    val pageInfo = pageBounds[zeroBasedIndex]
-    val targetY = pageInfo.top * currentScale
-
+    val zero = pageIndex - 1
+    if (zero < 0 || zero >= pageBounds.size) return
+    val pageInfo = pageBounds[zero]
+    val targetY = (pageInfo.top + pageSpacing) * currentScale  // add top inset
     if (animated) {
       overScroller.forceFinished(true)
       overScroller.startScroll(
         scrollXPos.toInt(), scrollYPos.toInt(),
         0, (targetY - scrollYPos).toInt(),
-        300 // Duration in ms
+        300
       )
       postInvalidateOnAnimation()
     } else {
@@ -1088,44 +1054,29 @@ class PdfView @JvmOverloads constructor(
 
   fun drawPages() {
     val surface = this.surface ?: return
-    val document = this.document ?: return
-
-    if (pageBounds.isEmpty()) {
-      calculatePageBounds(document)
-    }
-
     val canvas = surface.lockCanvas(null)
     try {
-      // Clear the canvas
-      canvas.drawColor(Color.LTGRAY)
+      canvas.drawColor(Color.WHITE)
+      val document = this.document ?: return
+      if (pageBounds.isEmpty()) calculatePageBounds(document)
 
-      // Calculate which pages are visible
-      val viewTop = scrollYPos / currentScale
-      val viewBottom = (scrollYPos + height) / currentScale
+      val verticalOffset = pageSpacing
+      val viewTop = (scrollYPos / currentScale) - verticalOffset
+      val viewBottom = (scrollYPos + height) / currentScale - verticalOffset
+      val viewCenter = (viewTop + viewBottom) / 2f
 
-      // Sort pages by visibility priority (center of screen first)
-      val viewCenter = (viewTop + viewBottom) / 2
-      val visiblePages = pageBounds.filter { pageInfo ->
-        pageInfo.bottom >= viewTop && pageInfo.top <= viewBottom
-      }.sortedBy { pageInfo ->
-        // Distance from page center to view center
-        val pageCenter = (pageInfo.top + pageInfo.bottom) / 2
-        kotlin.math.abs(pageCenter - viewCenter)
+      val visiblePages = pageBounds.filter { it.bottom >= viewTop && it.top <= viewBottom }
+        .sortedBy {
+          val c = (it.top + it.bottom) / 2f
+            kotlin.math.abs(c - viewCenter)
+        }
+
+      for (p in visiblePages) {
+        renderPageToCanvas(canvas, document, p)
       }
 
-      // Render visible pages in priority order
-      for (pageInfo in visiblePages) {
-        renderPageToCanvas(canvas, document, pageInfo)
-      }
-
-      // Clean up distant pages from cache periodically to manage memory
-      if (visiblePages.isNotEmpty() && random() < 0.1) { // 10% chance per draw
-        cleanupDistantPageCache()
-      }
-
-      // Draw edge effects
+      if (visiblePages.isNotEmpty() && random() < 0.1) cleanupDistantPageCache()
       drawEdgeEffects(canvas)
-
     } finally {
       surface.unlockCanvasAndPost(canvas)
     }
@@ -1187,7 +1138,7 @@ class PdfView @JvmOverloads constructor(
   }
 
   private fun renderPageToCanvas(
-    canvas: android.graphics.Canvas,
+    canvas: Canvas,
     document: PdfDocument,
     pageInfo: PageInfo
   ) {
@@ -1209,82 +1160,102 @@ class PdfView @JvmOverloads constructor(
     }
   }
 
-  private fun drawPagePlaceholder(canvas: android.graphics.Canvas, pageInfo: PageInfo) {
-    val pageLeft = -scrollXPos
-    val pageTop = -scrollYPos + pageInfo.top * currentScale
-    val pageRight = pageLeft + pageInfo.width * currentScale
-    val pageBottom = pageTop + pageInfo.height * currentScale
-
-    // Only draw if visible
-    if (pageBottom < 0 || pageTop > height || pageRight < 0 || pageLeft > width) {
-      return
-    }
-
-    // Draw white page background
-    val backgroundPaint = android.graphics.Paint().apply {
-      color = Color.WHITE
-      style = android.graphics.Paint.Style.FILL
-    }
-    canvas.drawRect(pageLeft, pageTop, pageRight, pageBottom, backgroundPaint)
-
-    // Draw page border
-    val borderPaint = android.graphics.Paint().apply {
-      color = Color.BLACK
-      style = android.graphics.Paint.Style.STROKE
-      strokeWidth = 2f
-    }
-    canvas.drawRect(pageLeft, pageTop, pageRight, pageBottom, borderPaint)
-
-    // Draw loading text
-    val textPaint = android.graphics.Paint().apply {
-      color = Color.GRAY
-      textSize = 24f
-      textAlign = android.graphics.Paint.Align.CENTER
-      isAntiAlias = true
-    }
-    val centerX = pageLeft + (pageRight - pageLeft) / 2
-    val centerY = pageTop + (pageBottom - pageTop) / 2
-    canvas.drawText("Loading Page ${pageInfo.index + 1}...", centerX, centerY, textPaint)
+  // --- Added for elevated page style ---
+  private val density = resources.displayMetrics.density
+  // --- Shadow config (smoother) ---
+  private val pageCornerRadius = 8f * density
+  private val shadowSpread = 4f * density          // a bit wider for softer falloff
+  private val shadowOffsetY = 1f * density
+  private val shadowLayers = 3                   // increased from 4
+  private val baseShadowAlpha = 72                  // starting alpha (0..255)
+  private val pageFillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    style = Paint.Style.FILL
+    color = Color.WHITE
+  }
+  private val pageBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    style = Paint.Style.STROKE
+    strokeWidth = 1f * density
+    color = "#33000000".toColorInt()
+  }
+  private val pageShadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    style = Paint.Style.FILL
+    isDither = true
   }
 
-  private fun drawCachedPage(canvas: android.graphics.Canvas, bitmap: Bitmap, pageInfo: PageInfo) {
-    // Calculate page position on screen
-    val pageLeft = -scrollXPos
-    val pageTop = -scrollYPos + pageInfo.top * currentScale
+  private fun drawElevatedPageBackground(
+    canvas: Canvas,
+    left: Float,
+    top: Float,
+    right: Float,
+    bottom: Float
+  ) {
+    val baseRect = RectF(left, top, right, bottom)
+
+    // Layered soft shadow with eased (quadratic) falloff
+    for (i in 0 until shadowLayers) {
+      val t = (i + 1f) / shadowLayers          // 0..1
+      val eased = t * t                        // quadratic for smoother fade
+      val expand = shadowSpread * t
+      val alpha = (baseShadowAlpha * (1f - eased)).toInt().coerceIn(4, baseShadowAlpha)
+      pageShadowPaint.color = Color.argb(alpha, 0, 0, 0)
+
+      val r = RectF(
+        baseRect.left - expand,
+        baseRect.top - expand + shadowOffsetY,
+        baseRect.right + expand,
+        baseRect.bottom + expand + shadowOffsetY
+      )
+      canvas.drawRoundRect(
+        r,
+        pageCornerRadius + expand,
+        pageCornerRadius + expand,
+        pageShadowPaint
+      )
+    }
+
+    // Page body
+    canvas.drawRoundRect(baseRect, pageCornerRadius, pageCornerRadius, pageFillPaint)
+    canvas.drawRoundRect(baseRect, pageCornerRadius, pageCornerRadius, pageBorderPaint)
+  }
+  // --- end helper ---
+
+  private fun drawPagePlaceholder(canvas: android.graphics.Canvas, pageInfo: PageInfo) {
+    val verticalOffset = pageSpacing
+    val pageLeft = -scrollXPos + pageSpacing
+    val pageTop = -scrollYPos + (pageInfo.top + verticalOffset) * currentScale
     val pageRight = pageLeft + pageInfo.width * currentScale
     val pageBottom = pageTop + pageInfo.height * currentScale
-
-    // Only draw if page is visible on screen
-    if (pageBottom < 0 || pageTop > height || pageRight < 0 || pageLeft > width) {
-      return
+    if (pageBottom < 0 || pageTop > height || pageRight < 0 || pageLeft > width) return
+    drawElevatedPageBackground(canvas, pageLeft, pageTop, pageRight, pageBottom)
+    val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+      color = Color.GRAY
+      textSize = 16f * density
+      textAlign = Paint.Align.CENTER
     }
+    val cx = (pageLeft + pageRight) / 2f
+    val cy = (pageTop + pageBottom) / 2f - (textPaint.descent() + textPaint.ascent()) / 2f
+    canvas.drawText("Loading Page ${pageInfo.index + 1}...", cx, cy, textPaint)
+  }
 
-    // Calculate the scale to fit the bitmap to the page size
+  private fun drawCachedPage(canvas: Canvas, bitmap: Bitmap, pageInfo: PageInfo) {
+    val verticalOffset = pageSpacing
+    val pageLeft = -scrollXPos + pageSpacing
+    val pageTop = -scrollYPos + (pageInfo.top + verticalOffset) * currentScale
+    val pageRight = pageLeft + pageInfo.width * currentScale
+    val pageBottom = pageTop + pageInfo.height * currentScale
+    if (pageBottom < 0 || pageTop > height || pageRight < 0 || pageLeft > width) return
+    drawElevatedPageBackground(canvas, pageLeft, pageTop, pageRight, pageBottom)
+    val save = canvas.save()
+    canvas.clipRect(pageLeft, pageTop, pageRight, pageBottom)
     val scaleX = (pageRight - pageLeft) / bitmap.width
     val scaleY = (pageBottom - pageTop) / bitmap.height
-
     val matrix = Matrix().apply {
-      // Scale the bitmap to fit the page dimensions
       postScale(scaleX, scaleY)
-      // Position the page correctly
       postTranslate(pageLeft, pageTop)
     }
-
-    val paint = android.graphics.Paint().apply {
-      isAntiAlias = true
-      isFilterBitmap = true
-    }
-
+    val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { isFilterBitmap = true }
     canvas.drawBitmap(bitmap, matrix, paint)
-
-    // Draw page border
-    val borderPaint = android.graphics.Paint().apply {
-      color = Color.BLACK
-      style = android.graphics.Paint.Style.STROKE
-      strokeWidth = 2f
-    }
-
-    canvas.drawRect(pageLeft, pageTop, pageRight, pageBottom, borderPaint)
+    canvas.restoreToCount(save)
   }
 
   private fun renderPageAsync(document: PdfDocument, pageInfo: PageInfo) {

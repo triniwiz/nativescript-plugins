@@ -1,6 +1,6 @@
 use crate::table::{draw_table, PdfTable};
 use crate::utils::{get_y, to_points, to_unit};
-use crate::PdfNative;
+use crate::{PdfImage, PdfNative};
 use image::GenericImageView;
 use parking_lot::{MappedMutexGuard, Mutex, MutexGuard};
 use pdfium_render::prelude::*;
@@ -8,6 +8,12 @@ use std::collections::HashMap;
 use std::ffi::{c_int, c_uint};
 use std::fmt::{Debug, Formatter};
 use std::path::{Path, PathBuf};
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum PdfNativeState {
+    Idle,
+    DrawingTable,
+}
 
 const BEZIER_KAPPA: f32 = 0.552284749831;
 
@@ -567,6 +573,7 @@ pub struct PdfNativeDocumentData {
     pub(crate) stroke_color: PdfColor,
     pub(crate) line_width: f32,
     pub(crate) font: PdfFontInfo,
+    pub(crate) state: PdfNativeState,
 }
 
 impl Default for PdfNativeDocumentData {
@@ -583,6 +590,7 @@ impl Default for PdfNativeDocumentData {
             stroke_color: PdfColor::BLACK,
             line_width: 0.2,
             font: PdfFontInfo::default(),
+            state: PdfNativeState::Idle,
         }
     }
 }
@@ -1103,7 +1111,6 @@ impl<'a> PdfNativeDocument<'a> {
                 .fonts_mut()
                 .load_type1_from_bytes(font, is_cid_font)
         } {
-
             let info = PdfFontInfo::new(
                 name.to_string(),
                 style.to_string(),
@@ -1280,31 +1287,36 @@ impl<'a> PdfNativeDocument<'a> {
         ry: f32,
         style: PdfNativeStyle,
     ) -> Result<(), PdfiumError> {
-        let data = self.data.lock();
-        let index = data.current_page;
-        let unit = data.units;
+        let (index, units, stroke_color, fill_color, state, line_width) = {
+            let lock = self.data.lock();
+            (
+                lock.current_page,
+                lock.units,
+                lock.stroke_color,
+                lock.fill_color,
+                lock.state,
+                lock.line_width,
+            )
+        };
+
         let mut document = &mut self.document;
         let mut page = document.pages_mut().get(index)?;
         let (stroke_color, stroke_width, fill_color) = match style {
-            PdfNativeStyle::S => (
-                Some(data.stroke_color),
-                Some(to_points(data.line_width, data.units)),
-                None,
-            ),
-            PdfNativeStyle::F => (None, None, Some(data.fill_color)),
+            PdfNativeStyle::S => (Some(stroke_color), Some(to_points(line_width, units)), None),
+            PdfNativeStyle::F => (None, None, Some(fill_color)),
             PdfNativeStyle::FD | PdfNativeStyle::DF => (
-                Some(data.stroke_color),
-                Some(to_points(data.line_width, data.units)),
-                Some(data.fill_color),
+                Some(stroke_color),
+                Some(to_points(line_width, units)),
+                Some(fill_color),
             ),
         };
 
         let ellipse = PdfPagePathObject::new_ellipse_at(
             document,
-            to_points(x, unit),
-            get_y(&page, 0., data.units) - to_points(y, unit),
-            to_points(rx, unit),
-            to_points(ry, unit),
+            to_points(x, units),
+            get_y(&page, 0., units) - to_points(y, units),
+            to_points(rx, units),
+            to_points(ry, units),
             stroke_color,
             stroke_width,
             fill_color,
@@ -1322,22 +1334,29 @@ impl<'a> PdfNativeDocument<'a> {
         y: f32,
         options: PdfNativeTextOptions,
     ) -> Result<(), PdfiumError> {
-        let mut data = self.data.lock();
-        let index = data.current_page;
-        let font_size = PdfPoints::new(data.font_size);
-        let color = data.text_color;
-
         let document = &mut self.document;
 
-        if data.font.token.is_none() {
-            data.font.load_token(document)
-        }
-        let font = data.font.token.unwrap_or(document.fonts_mut().helvetica());
+        let (index, font_size, color, font, units, state) = {
+            let mut lock = self.data.lock();
+
+            if lock.font.token.is_none() {
+                lock.font.load_token(document)
+            }
+
+            (
+                lock.current_page,
+                PdfPoints::new(lock.font_size),
+                lock.text_color,
+                lock.font.token.unwrap_or(document.fonts_mut().helvetica()),
+                lock.units,
+                lock.state,
+            )
+        };
 
         if options.align == PdfNativeTextAlignment::Justify {
             let mut page = document.pages_mut().get(index)?;
-            let x = to_points(x, data.units);
-            let y = get_y(&page, y, data.units);
+            let x = to_points(x, units);
+            let y = get_y(&page, y, units);
             let _ = Self::draw_justified_text(
                 document,
                 page.objects_mut(),
@@ -1346,7 +1365,7 @@ impl<'a> PdfNativeDocument<'a> {
                 text,
                 x,
                 y,
-                to_points(options.max_width as f32, data.units),
+                to_points(options.max_width as f32, units),
             )?;
             return Ok(());
         }
@@ -1358,12 +1377,11 @@ impl<'a> PdfNativeDocument<'a> {
 
         if let Some((ascent, descent)) = font_data {
             let mut page = document.pages_mut().get(index)?;
-            page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
             let mut text_object = PdfPageTextObject::new(document, text, font, font_size)?;
 
-            let x = to_points(x, data.units);
-            let y = get_y(&page, y, data.units);
+            let x = to_points(x, units);
+            let y = get_y(&page, y, units);
             let width = text_object.width()?;
             let height = text_object.height()?;
 
@@ -1420,10 +1438,6 @@ impl<'a> PdfNativeDocument<'a> {
             text_object.translate(x_aligned, y_aligned)?;
             text_object.set_fill_color(color)?;
             page.objects_mut().add_text_object(text_object)?;
-            page.set_content_regeneration_strategy(
-                PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
-            );
-            page.regenerate_content()?;
         }
 
         Ok(())
@@ -1488,6 +1502,77 @@ impl<'a> PdfNativeDocument<'a> {
         Ok(())
     }
 
+    pub fn add_pdf_image(
+        &mut self,
+        image: &mut PdfImage,
+        x: f32,
+        y: f32,
+        width: Option<f32>,
+        height: Option<f32>,
+    ) -> Result<(), PdfiumError> {
+        let (scale, index, units, state) = {
+            let lock = self.data.lock();
+            (lock.device_scale, lock.current_page, lock.units, lock.state)
+        };
+        let document = &mut self.document;
+        let mut page = document.pages_mut().get(index)?;
+        let y = get_y(&page, y, units);
+
+        let dimensions = image.dimensions();
+        let mut object = PdfPageImageObject::new(document)?;
+        object.set_bitmap(&image.bitmap()?)?;
+        let image_width = object.width()?;
+        let image_height = object.height()?;
+        let width = width
+            .map(|v| to_points(v, units))
+            .or_else(|| Some(
+                PdfPoints::new(dimensions.0 as f32 / scale)
+            ));
+
+        let height = height
+            .map(|v| to_points(v, units))
+            .or_else(|| Some(
+                PdfPoints::new(dimensions.1 as f32 / scale)
+            ));
+
+        let mut scaled_width = dimensions.0 as f32 / scale;
+        let mut scaled_height = dimensions.1 as f32 / scale;
+        match (width, height) {
+            (Some(width), Some(height)) => {
+                scaled_height = height.value;
+                scaled_width = width.value;
+                object.scale(width.value, height.value)?;
+            }
+            (Some(width), None) => {
+                let aspect_ratio = image_height as f32 / image_width as f32;
+
+                let height = width * aspect_ratio;
+
+                scaled_height = height.value;
+                scaled_width = width.value;
+
+                object.scale(width.value, height.value)?;
+            }
+            (None, Some(height)) => {
+                let aspect_ratio = image_height as f32 / image_width as f32;
+
+                let width = height / aspect_ratio;
+
+                scaled_height = height.value;
+                scaled_width = width.value;
+
+                object.scale(width.value, height.value)?;
+            }
+            (None, None) => {}
+        };
+
+        let _ = object.translate(to_points(x, units), y - PdfPoints::new(scaled_height))?;
+
+        page.objects_mut().add_image_object(object)?;
+
+        Ok(())
+    }
+
     pub fn add_image(
         &mut self,
         image_data: &[u8],
@@ -1496,35 +1581,11 @@ impl<'a> PdfNativeDocument<'a> {
         width: Option<f32>,
         height: Option<f32>,
     ) -> Result<(), PdfiumError> {
-        let image = image::load_from_memory(image_data).map_err(|_| PdfiumError::ImageError)?;
-        let data = self.data.lock();
-        let scale = data.device_scale;
-        let index = data.current_page;
-        let document = &mut self.document;
-        let mut page = document.pages_mut().get(index)?;
-        let y = get_y(&page, y, data.units);
-        // temp set regen to manual to apply translation
-        page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
+        let mut image = image::load_from_memory(image_data)
+            .map_err(|e| PdfiumError::ImageError)
+            .and_then(|image| PdfImage::new(&self.pdf_, image))?;
 
-        let mut image_obj = page.objects_mut().create_image_object(
-            PdfPoints::ZERO,
-            PdfPoints::ZERO,
-            &image,
-            width
-                .or_else(|| Some(image.dimensions().0 as f32 / scale))
-                .map(|v| PdfPoints::new(v)),
-            height
-                .or_else(|| Some(image.dimensions().1 as f32 / scale))
-                .map(|v| PdfPoints::new(v)),
-        )?;
-
-        let image_height = image_obj.height()?;
-        let _ = image_obj.translate(to_points(x, data.units), y - image_height)?;
-        page.regenerate_content()?;
-        page.set_content_regeneration_strategy(
-            PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
-        );
-
+        self.add_pdf_image(&mut image, x, y, width, height)?;
         Ok(())
     }
 
@@ -1538,34 +1599,10 @@ impl<'a> PdfNativeDocument<'a> {
         width: Option<f32>,
         height: Option<f32>,
     ) -> Result<(), PdfiumError> {
-        let image = image::RgbaImage::from_raw(image_width, image_height, image_data.to_vec())
-            .map(|image| image::DynamicImage::from(image))
-            .ok_or(PdfiumError::ImageError)?;
-        let data = self.data.lock();
-        let index = data.current_page;
-        let scale = data.device_scale;
-        let document = &mut self.document;
-        let mut page = document.pages_mut().get(index)?;
-        let y = get_y(&page, y, data.units);
-        // temp set regen to manual to apply translation
-        page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
-        let mut image_obj = page.objects_mut().create_image_object(
-            PdfPoints::ZERO,
-            PdfPoints::ZERO,
-            &image,
-            width
-                .or_else(|| Some(image.dimensions().0 as f32 / scale))
-                .map(PdfPoints::new),
-            height
-                .or_else(|| Some(image.dimensions().1 as f32 / scale))
-                .map(PdfPoints::new),
-        )?;
-        let image_height = image_obj.height()?;
-        image_obj.translate(to_points(x, data.units), y - image_height)?;
-        page.set_content_regeneration_strategy(
-            PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
-        );
-        page.regenerate_content()?;
+        let mut image = image::RgbaImage::from_raw(image_width, image_height, image_data.to_vec())
+            .ok_or(PdfiumError::ImageError)
+            .and_then(|image| PdfImage::new(&self.pdf_, image::DynamicImage::from(image)))?;
+        self.add_pdf_image(&mut image, x, y, width, height)?;
         Ok(())
     }
 
@@ -1788,11 +1825,11 @@ impl<'a> PdfNativeDocument<'a> {
     }
 
     pub fn table(&mut self, options: &PdfTable) -> Result<(PdfPoints, PdfPoints), PdfiumError> {
-        let mut data = self.data.lock();
-        let index = data.current_page;
-        let document = &mut self.document;
-        let page = document.pages_mut().get(index)?;
-        draw_table(document, page, &options, &mut data)
+        // let mut data = self.data.lock();
+        // let index = data.current_page;
+        // let document = &mut self.document;
+        // let page = document.pages_mut().get(index)?;
+        draw_table(self, options)
     }
 
     pub fn render_with_rect(

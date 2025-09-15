@@ -1,30 +1,22 @@
-use crate::{
-    COLUMN_DEF, COLUMN_KEY, HOT_THINGS, JAVA_BOOLEAN_TYPE, JAVA_FLOAT_TYPE, JAVA_INT_TYPE,
-    JAVA_OBJECT_TYPE, JAVA_VOID_TYPE, STYLE_DEF, TABLE_CELL, TABLE_CELL_OR_STRING,
-};
+
+use pdf_core::{HOT_THINGS, TABLE, JVM};
+use crate::{PdfImage, COLUMN_DEF, COLUMN_KEY, JAVA_BOOLEAN_TYPE, JAVA_FLOAT_TYPE, JAVA_INT_TYPE, JAVA_OBJECT_TYPE, JAVA_VOID_TYPE, STYLE_DEF, TABLE_CELL, TABLE_CELL_OR_STRING};
 use jni::objects::{
     JByteArray, JByteBuffer, JClass, JObject, JObjectArray, JString, JValue, ReleaseMode,
 };
-use jni::sys::{
-    jboolean, jbyteArray, jfloat, jint, jlong, jobjectArray, jstring, JNI_FALSE, JNI_TRUE,
-};
-use jni::JNIEnv;
+use jni::sys::{jboolean, jbyte, jbyteArray, jfloat, jint, jlong, jobject, jobjectArray, jstring, jvalue, JNI_FALSE, JNI_TRUE};
+use jni::{JNIEnv, JavaVM};
 use pdf_core::document::{
     PdfNativeDocument, PdfNativeDocumentConfig, PdfNativeOrientation, PdfNativePaperSize,
     PdfNativeRotationDirection, PdfNativeRotationOrMatrix, PdfNativeStandardPaperSize,
     PdfNativeStyle, PdfNativeTextAlignment, PdfNativeTextBaseline, PdfNativeTextOptions,
     PdfNativeUnit,
 };
-use pdf_core::table::{
-    CHorizontalAlign, CPdfNativeMargin, CPdfNativePadding, CPdfNativePoints, CVerticalAlign,
-    CellWidth, ColumnDef, ColumnKey, PdfNativeFontFamily, PdfNativeFontStyle, PdfNativeOverflow,
-    PdfNativePageBreak, PdfNativeShowFoot, PdfNativeShowHead, PdfNativeTableTheme, PdfTable,
-    StyleDef, TableCell, TableCellOrString,
-};
+use pdf_core::table::{CHorizontalAlign, CPdfNativeMargin, CPdfNativePadding, CPdfNativePoints, CVerticalAlign, CellWidth, ColumnDef, ColumnKey, PdfNativeCellRenderInfo, PdfNativeDrawCell, PdfNativeDrawPage, PdfNativeFontFamily, PdfNativeFontStyle, PdfNativeOverflow, PdfNativePageBreak, PdfNativeSection, PdfNativeShowFoot, PdfNativeShowHead, PdfNativeTableTheme, PdfTable, StyleDef, TableCell, TableCellOrString};
 use pdf_core::utils::{read_float, read_int, to_points, to_unit};
 use pdf_core::{PdfColor, PdfNative, PdfPoints};
 use std::collections::HashMap;
-use std::ffi::{c_char, CStr};
+use std::ffi::{c_char, CStr, CString};
 use std::slice;
 
 #[unsafe(no_mangle)]
@@ -504,7 +496,6 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAdd
             env.get_string(&font_style),
             env.get_string(&font_weight),
         ) {
-
             if let Ok(bytes) = env.get_array_elements_critical(&bytes, ReleaseMode::NoCopyBack) {
                 let ptr = bytes.as_ptr() as *const u8;
                 let len = bytes.len();
@@ -685,20 +676,20 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAdd
         }
         let instance = &mut *(instance as *mut PdfNativeDocument);
 
-        if let Ok(bytes) = env.get_array_elements_critical(&bytes, ReleaseMode::NoCopyBack) {
-            if bytes.is_empty() {
-                return;
+        if let Ok(len) = env.get_array_length(&bytes) {
+            let mut buffer: Vec<u8> = vec![0; len as usize];
+            let slice = std::slice::from_raw_parts_mut(buffer.as_mut_ptr() as *mut jbyte, len as usize);
+            if let Ok(_) = env.get_byte_array_region(&bytes, 0, slice) {
+                let width: Option<u32> = width.try_into().ok();
+                let height: Option<u32> = height.try_into().ok();
+                let _ = instance.add_image(
+                    buffer.as_slice(),
+                    x,
+                    y,
+                    width.map(|v| v as f32),
+                    height.map(|v| v as f32),
+                );
             }
-            let width: Option<u32> = width.try_into().ok();
-            let height: Option<u32> = height.try_into().ok();
-            let buffer = std::slice::from_raw_parts_mut(bytes.as_ptr() as *mut u8, bytes.len());
-            let _ = instance.add_image(
-                buffer,
-                x,
-                y,
-                width.map(|v| v as f32),
-                height.map(|v| v as f32),
-            );
         }
     }
 }
@@ -730,7 +721,7 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAdd
             }
             let width: Option<u32> = width.try_into().ok();
             let height: Option<u32> = height.try_into().ok();
-            let buffer = std::slice::from_raw_parts_mut(bytes.as_ptr() as *mut u8, bytes.len());
+            let buffer = slice::from_raw_parts_mut(bytes.as_ptr() as *mut u8, bytes.len());
             let _ = instance.add_image(
                 buffer,
                 x,
@@ -741,6 +732,39 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAdd
         }
     }
 }
+
+#[unsafe(no_mangle)]
+pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAddPdfImage(
+    _: JNIEnv,
+    _class: JClass,
+    instance: jlong,
+    image: jlong,
+    x: jfloat,
+    y: jfloat,
+    width: jint,
+    height: jint,
+) {
+    unsafe {
+        if instance == 0 || image == 0 {
+            return;
+        }
+        let instance = &mut *(instance as *mut PdfNativeDocument);
+        let image = &mut *(image as *mut PdfImage);
+
+        let width: Option<u32> = width.try_into().ok();
+        let height: Option<u32> = height.try_into().ok();
+        let _ = instance.add_pdf_image(
+            image,
+            x,
+            y,
+            width.map(|v| v as f32),
+            height.map(|v| v as f32),
+        );
+    }
+}
+
+
+
 #[unsafe(no_mangle)]
 pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeAddPage(
     _: JNIEnv,
@@ -1368,6 +1392,7 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
     margin_right_changed: jboolean,
     margin_bottom: jfloat,
     margin_bottom_changed: jboolean,
+    draw_hooks: JObject,
 ) -> jlong {
     unsafe {
         if instance == 0 {
@@ -1497,6 +1522,19 @@ pub extern "system" fn Java_io_github_triniwiz_plugins_pdf_PdfDocument_nativeTab
 
         if let Ok(show_foot) = PdfNativeShowFoot::try_from(show_foot) {
             table.show_foot = show_foot;
+        }
+
+        if !draw_hooks.is_null() {
+            if let Ok(draw_hooks) = env.new_global_ref(draw_hooks) {
+
+                table.will_draw_page = Some(PdfNativeDrawPage::new(draw_hooks.clone(), true));
+
+                table.did_draw_page = Some(PdfNativeDrawPage::new(draw_hooks.clone(), false));
+
+                table.will_draw_cell = Some(PdfNativeDrawCell::new(draw_hooks.clone(), true));
+
+                table.did_draw_cell = Some(PdfNativeDrawCell::new(draw_hooks.clone(), false));
+            }
         }
 
         let (x, y) = instance

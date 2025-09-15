@@ -267,14 +267,11 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     }
   }
 
-  @JvmOverloads
   fun addImage(
     image: String,
     mime: String,
     x: Float,
-    y: Float,
-    width: Int? = -1,
-    height: Int? = -1
+    y: Float
   ) {
     when (mime) {
       "JPG", "JPEG", "PNG", "WEBP" -> {
@@ -285,26 +282,70 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
           image.toByteArray()
         }
         val decoded = Base64.decode(img, Base64.NO_WRAP)
-        nativeAddImage(nativeDocument, decoded, x, y, width ?: -1, height ?: -1)
+        nativeAddImage(nativeDocument, decoded, x, y, -1, -1)
+      }
+    }
+  }
+
+  fun addImage(
+    image: String,
+    mime: String,
+    x: Float,
+    y: Float,
+    width: Int,
+    height: Int
+  ) {
+    when (mime) {
+      "JPG", "JPEG", "PNG", "WEBP" -> {
+        val input = image.split(",")
+        val img: ByteArray = if (input.size > 1) {
+          input[1].toByteArray()
+        } else {
+          image.toByteArray()
+        }
+        val decoded = Base64.decode(img, Base64.NO_WRAP)
+        nativeAddImage(nativeDocument, decoded, x, y, width, height)
       }
     }
   }
 
 
-  @JvmOverloads
-  fun addImage(bitmap: Bitmap, x: Float, y: Float, width: Int? = -1, height: Int? = -1) {
-    nativeAddImageBitmap(nativeDocument, bitmap, x, y, width ?: -1, height ?: -1)
+  fun addImage(bitmap: Bitmap, x: Float, y: Float) {
+    nativeAddImageBitmap(nativeDocument, bitmap, x, y, -1, -1)
   }
 
-  @JvmOverloads
-  fun addImage(bytes: ByteArray, x: Float, y: Float, width: Int? = -1, height: Int? = -1) {
-    nativeAddImage(nativeDocument, bytes, x, y, width ?: -1, height ?: -1)
+
+  fun addImage(bitmap: Bitmap, x: Float, y: Float, width: Int, height: Int) {
+    nativeAddImageBitmap(nativeDocument, bitmap, x, y, width, height)
   }
 
-  @JvmOverloads
-  fun addImage(buffer: ByteBuffer, x: Float, y: Float, width: Int? = -1, height: Int? = -1) {
-    nativeAddImageBuffer(nativeDocument, buffer, x, y, width ?: -1, height ?: -1)
+  fun addImage(bytes: ByteArray, x: Float, y: Float) {
+    nativeAddImage(nativeDocument, bytes, x, y, -1, -1)
   }
+
+  fun addImage(bytes: ByteArray, x: Float, y: Float, width: Int, height: Int) {
+    nativeAddImage(nativeDocument, bytes, x, y, width, height)
+  }
+
+  fun addImage(buffer: ByteBuffer, x: Float, y: Float) {
+    nativeAddImageBuffer(nativeDocument, buffer, x, y, -1, -1)
+  }
+
+
+  fun addImage(buffer: ByteBuffer, x: Float, y: Float, width: Int, height: Int) {
+    nativeAddImageBuffer(nativeDocument, buffer, x, y, width, height)
+  }
+
+
+  fun addImage(image: PdfImage, x: Float, y: Float) {
+    nativeAddPdfImage(nativeDocument, image.nativeImage, x, y, -1, -1)
+  }
+
+
+  fun addImage(image: PdfImage, x: Float, y: Float, width: Int, height: Int) {
+    nativeAddPdfImage(nativeDocument, image.nativeImage, x, y, width, height)
+  }
+
 
   @JvmOverloads
   fun addPage(
@@ -404,7 +445,8 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       config.margin.right,
       config.margin.rightChanged,
       config.margin.bottom,
-      config.margin.bottomChanged
+      config.margin.bottomChanged,
+      config
     )
 
     val json = """
@@ -581,6 +623,12 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
     )
 
     @JvmStatic
+    private external fun nativeAddPdfImage(
+      instance: Long, image: Long, x: Float, y: Float, width: Int, height: Int
+    )
+
+
+    @JvmStatic
     private external fun nativeAddPage(
       instance: Long,
       sizeType: Int,
@@ -679,6 +727,7 @@ class PdfDocument internal constructor(document: Long?, config: PdfDocumentConfi
       marginRightChanged: Boolean,
       marginBottom: Float,
       marginBottomChanged: Boolean,
+      table: PdfTable
     ): Long
 
 

@@ -437,6 +437,161 @@ function parseTableCellOrString(value: TableCellOrString[][]) {
 	return emptyArray;
 }
 
+export class HookData {
+	[native_]: io.github.triniwiz.plugins.pdf.table.HookData;
+	constructor(data: io.github.triniwiz.plugins.pdf.table.HookData) {
+		this[native_] = data;
+	}
+	get index(): number {
+		return this[native_]?.getPageIndex() ?? 0;
+	}
+
+	get x(): number {
+		return this[native_]?.getX() ?? 0;
+	}
+
+	get y(): number {
+		return this[native_]?.getY() ?? 0;
+	}
+}
+
+export class CellHookData extends HookData {
+	[native_]: io.github.triniwiz.plugins.pdf.table.CellHookData;
+	constructor(data: io.github.triniwiz.plugins.pdf.table.CellHookData) {
+		super(data);
+		this[native_] = data;
+	}
+
+	get colSpan(): number {
+		return this[native_]?.getColSpan() ?? 0;
+	}
+
+	get columnIndex(): number {
+		return this[native_]?.getColumnIndex() ?? 0;
+	}
+
+	get content(): string {
+		return this[native_]?.getContent() ?? '';
+	}
+
+	__content: string;
+	set content(value: string) {
+		if (this[native_]) {
+			this[native_].setContent(value);
+			this.__content = value;
+		}
+	}
+
+	get height(): number {
+		return this[native_]?.getHeight() ?? 0;
+	}
+
+	get lineCount(): number {
+		return this[native_]?.getLineCount() ?? 0;
+	}
+
+	get rowIndex(): number {
+		return this[native_]?.getRowIndex() ?? 0;
+	}
+
+	get rowSpan(): number {
+		return this[native_]?.getRowSpan() ?? 0;
+	}
+
+	get section(): 'head' | 'body' | 'foot' {
+		switch (this[native_]?.getSection()) {
+			case io.github.triniwiz.plugins.pdf.table.Section.Head:
+				return 'head';
+			case io.github.triniwiz.plugins.pdf.table.Section.Body:
+				return 'body';
+			case io.github.triniwiz.plugins.pdf.table.Section.Foot:
+				return 'foot';
+			default:
+				return 'unknown' as never;
+		}
+	}
+
+	get width(): number {
+		return this[native_]?.getWidth() ?? 0;
+	}
+}
+
+export class PdfImage {
+	[native_]: io.github.triniwiz.plugins.pdf.PdfImage;
+	constructor(image) {
+		this[native_] = image;
+	}
+
+	get width(): number {
+		return this[native_]?.getWidth() ?? 0;
+	}
+
+	get height(): number {
+		return this[native_]?.getHeight() ?? 0;
+	}
+
+	static from(bitmap: ImageSource | android.graphics.Bitmap | ArrayBuffer, width: number | null | undefined, height: number | null | undefined): PdfImage {
+		let image: io.github.triniwiz.plugins.pdf.PdfImage | null = null;
+		if (bitmap instanceof android.graphics.Bitmap) {
+			image = io.github.triniwiz.plugins.pdf.PdfImage.fromBitmap(bitmap);
+		} else if (bitmap instanceof ImageSource) {
+			image = io.github.triniwiz.plugins.pdf.PdfImage.fromBitmap(bitmap.android);
+		} else if (bitmap instanceof ArrayBuffer) {
+			image = io.github.triniwiz.plugins.pdf.PdfImage.fromEncodedData(bitmap as never);
+		} else {
+			if (arguments.length === 3 && typeof width === 'number' && typeof height === 'number') {
+				try {
+					image = io.github.triniwiz.plugins.pdf.PdfImage.fromData(bitmap as never, width, height);
+				} catch (e) {
+					console.info(e);
+				}
+			} else {
+				try {
+					image = io.github.triniwiz.plugins.pdf.PdfImage.fromEncodedData(bitmap as never);
+				} catch (e) {
+					console.info(e);
+				}
+			}
+		}
+
+		if (image) {
+			return new PdfImage(image);
+		}
+		return null;
+	}
+
+	static fromAsync(bitmap: ImageSource | android.graphics.Bitmap | ArrayBuffer, width: number | null | undefined, height: number | null | undefined): Promise<PdfImage> {
+		return new Promise<PdfImage>((resolve, reject) => {
+			const cb = new kotlin.jvm.functions.Function1({
+				invoke(image) {
+					if (image) {
+						resolve(new PdfImage(image));
+					} else {
+						reject(new Error('Could not create image'));
+					}
+				},
+			});
+			if (bitmap instanceof android.graphics.Bitmap) {
+				io.github.triniwiz.plugins.pdf.PdfImage.fromBitmapAsync(bitmap, cb);
+			} else if (bitmap instanceof ImageSource) {
+				io.github.triniwiz.plugins.pdf.PdfImage.fromBitmapAsync(bitmap.android, cb);
+			} else if (bitmap instanceof ArrayBuffer) {
+				io.github.triniwiz.plugins.pdf.PdfImage.fromEncodedDataAsync(bitmap as never, cb);
+			} else {
+				if (arguments.length === 3 && typeof width === 'number' && typeof height === 'number') {
+					io.github.triniwiz.plugins.pdf.PdfImage.fromDataAsync(bitmap as never, width, height, cb);
+				} else {
+					try {
+						io.github.triniwiz.plugins.pdf.PdfImage.fromEncodedDataAsync(bitmap as never, cb);
+					} catch (error) {
+						reject(new Error('Could not create image'));
+					}
+				}
+			}
+		});
+	}
+}
+
 export class PDFDocument implements IPDFDocument {
 	[native_]: io.github.triniwiz.plugins.pdf.PdfDocument;
 	constructor(document?: { units: 'mm' | 'cm' | 'inches' | 'points' }) {
@@ -446,6 +601,11 @@ export class PDFDocument implements IPDFDocument {
 			this[native_] = new io.github.triniwiz.plugins.pdf.PdfDocument();
 		}
 	}
+
+	willDrawPage?: (HookData) => void;
+	didDrawPage?: (HookData) => void;
+	willDrawCell?: (CellHookData) => boolean;
+	didDrawCell?: (CellHookData) => void;
 
 	get native() {
 		return this[native_];
@@ -520,21 +680,25 @@ export class PDFDocument implements IPDFDocument {
 		return this;
 	}
 
-	addImage(bitmap: Image | ImageSource, x: number, y: number, width?: number, height?: number);
+	addImage(bitmap: Image | ImageSource | PdfImage, x: number, y: number, width?: number, height?: number);
 	addImage(bitmap: string, mime: string, x: number, y: number, width?: number, height?: number);
 	addImage(bitmap: any, xorMime: any, xOrY: number, widthOrY?: number, heightOrWidth?: number, height?: number) {
 		if (bitmap instanceof Image) {
-			this[native_].addImage(bitmap.android, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+			this[native_].addImage(bitmap.android, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap instanceof ImageSource) {
-			this[native_].addImage(bitmap.android, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+			this[native_].addImage(bitmap.android, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if ((bitmap as any) instanceof android.graphics.Bitmap) {
-			this[native_].addImage(bitmap as never, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+			this[native_].addImage(bitmap as never, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
-			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, java.lang.Integer.valueOf(heightOrWidth ?? -1), java.lang.Integer.valueOf(height ?? -1));
+			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY, heightOrWidth ?? -1, height ?? -1);
 		} else if (Array.isArray(bitmap) && bitmap.length === 0) {
-			this[native_].addImage(bitmap, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap && (bitmap instanceof Uint8Array || bitmap instanceof Uint8ClampedArray)) {
-			this[native_].addImage(bitmap, xorMime, xOrY, java.lang.Integer.valueOf(widthOrY ?? -1), java.lang.Integer.valueOf(heightOrWidth ?? -1));
+			this[native_].addImage(bitmap, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+		} else if (bitmap instanceof PdfImage) {
+			this[native_].addImage(bitmap[native_], float(xorMime), float(xOrY), widthOrY ?? -1, heightOrWidth ?? -1);
+		} else if (bitmap instanceof io.github.triniwiz.plugins.pdf.PdfImage) {
+			this[native_].addImage(bitmap, float(xorMime), float(xOrY), widthOrY ?? -1, heightOrWidth ?? -1);
 		}
 		return this;
 	}
@@ -591,6 +755,42 @@ export class PDFDocument implements IPDFDocument {
 
 	table(options?: TableOptions) {
 		const opts = new io.github.triniwiz.plugins.pdf.table.PdfTable();
+
+		if (this.willDrawCell || this.willDrawPage || this.didDrawCell || this.didDrawPage) {
+			const ref = new WeakRef(this);
+			opts.setHooksListener(
+				new io.github.triniwiz.plugins.pdf.table.TableHookListener({
+					onWillDrawPage(param0: io.github.triniwiz.plugins.pdf.table.HookData) {
+						const owner = ref.get();
+						if (owner && owner.willDrawPage) {
+							owner.willDrawPage(new HookData(param0));
+						}
+					},
+					onDidDrawPage(param0: io.github.triniwiz.plugins.pdf.table.HookData) {
+						const owner = ref.get();
+						if (owner && owner.didDrawPage) {
+							owner.didDrawPage(new HookData(param0));
+						}
+					},
+					onWillDrawCell(param0: io.github.triniwiz.plugins.pdf.table.CellHookData): android.util.Pair<java.lang.Boolean, string> {
+						const owner = ref.get();
+						if (owner && owner.willDrawCell) {
+							const result = owner.willDrawCell(new CellHookData(param0));
+							if (typeof result === 'boolean') {
+								return android.util.Pair.create(java.lang.Boolean.valueOf(result), param0.getContent());
+							}
+							return null;
+						}
+					},
+					onDidDrawCell(param0: io.github.triniwiz.plugins.pdf.table.CellHookData) {
+						const owner = ref.get();
+						if (owner && owner.didDrawCell) {
+							owner.didDrawCell(new CellHookData(param0));
+						}
+					},
+				}),
+			);
+		}
 
 		if (options) {
 			if (options.columns) {

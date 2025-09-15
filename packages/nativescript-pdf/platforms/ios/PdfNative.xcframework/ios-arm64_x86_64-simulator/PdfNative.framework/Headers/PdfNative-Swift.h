@@ -333,6 +333,31 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) NSCPdf * _No
 - (NSCPdfDocument * _Nullable)loadFromBytesWithBytes:(NSData * _Nonnull)bytes password:(NSString * _Nullable)password SWIFT_WARN_UNUSED_RESULT;
 @end
 
+SWIFT_CLASS_NAMED("NSCPdfHookData")
+@interface NSCPdfHookData : NSObject
+@property (nonatomic, readonly) uint32_t pageIndex;
+@property (nonatomic, readonly) float x;
+@property (nonatomic, readonly) float y;
+- (nonnull instancetype)init:(uint32_t)pageIndex :(float)x :(float)y OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+enum NSCPdfSection : NSInteger;
+SWIFT_CLASS_NAMED("NSCPdfCellHookData")
+@interface NSCPdfCellHookData : NSCPdfHookData
+@property (nonatomic, readonly) enum NSCPdfSection section;
+@property (nonatomic, readonly) uint32_t rowIndex;
+@property (nonatomic, readonly) uint32_t columnIndex;
+@property (nonatomic, readonly) float width;
+@property (nonatomic, readonly) float height;
+@property (nonatomic, readonly) uint32_t colSpan;
+@property (nonatomic, readonly) uint32_t rowSpan;
+@property (nonatomic, readonly) uint32_t lineCount;
+@property (nonatomic, copy) NSString * _Nonnull content;
+- (nonnull instancetype)init:(uint32_t)pageIndex :(float)x :(float)y SWIFT_UNAVAILABLE;
+@end
+
 SWIFT_CLASS_NAMED("NSCPdfCellWidth")
 @interface NSCPdfCellWidth : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) NSCPdfCellWidth * _Nonnull Auto;)
@@ -379,6 +404,7 @@ SWIFT_CLASS_NAMED("NSCPdfColumnKey")
 @class NSCPdfPagerSize;
 enum NSCPdfOrientation : int32_t;
 @class NSCPdfTextOptions;
+@class NSCPdfImage;
 @class UIImage;
 enum NSCPdfStyle : NSInteger;
 @class NSMutableData;
@@ -408,12 +434,14 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (void)addPage;
 - (void)addPageWithSize:(NSCPdfPagerSize * _Nonnull)size orientation:(enum NSCPdfOrientation)orientation;
 - (void)addText:(NSString * _Nonnull)text :(float)x :(float)y :(NSCPdfTextOptions * _Nullable)options;
+- (void)addImageWithPdf:(NSCPdfImage * _Nonnull)pdf :(float)x :(float)y;
+- (void)addImageWithPdf:(NSCPdfImage * _Nonnull)pdf :(float)x :(float)y width:(float)width height:(float)height;
 - (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y;
-- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y :(float)width :(float)height;
+- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y width:(float)width height:(float)height;
 - (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y;
-- (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y :(float)width :(float)height;
+- (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y width:(float)width height:(float)height;
 - (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y;
-- (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y :(float)width :(float)height;
+- (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y width:(float)width height:(float)height;
 - (void)circle:(float)x :(float)y :(float)r :(enum NSCPdfStyle)style;
 - (void)ellipse:(float)x :(float)y :(float)rx :(float)ry :(enum NSCPdfStyle)style;
 - (void)rect:(float)x :(float)y :(float)width :(float)height :(enum NSCPdfStyle)style;
@@ -454,6 +482,20 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfHorizontalAlign, "NSCPdfHorizontalAlig
   NSCPdfHorizontalAlignCenter = 1,
   NSCPdfHorizontalAlignRight = 2,
 };
+
+SWIFT_CLASS_NAMED("NSCPdfImage")
+@interface NSCPdfImage : NSObject
+@property (nonatomic, readonly) NSInteger width;
+@property (nonatomic, readonly) NSInteger height;
++ (NSCPdfImage * _Nullable)fromImage:(UIImage * _Nonnull)image SWIFT_WARN_UNUSED_RESULT;
++ (void)fromImageAsync:(UIImage * _Nonnull)image :(void (^ _Nonnull)(NSCPdfImage * _Nullable))callback;
++ (NSCPdfImage * _Nullable)fromData:(NSData * _Nonnull)data :(uint32_t)width :(uint32_t)height SWIFT_WARN_UNUSED_RESULT;
++ (NSCPdfImage * _Nullable)fromEncodedData:(NSData * _Nonnull)data SWIFT_WARN_UNUSED_RESULT;
++ (void)fromDataAsync:(NSData * _Nonnull)data :(uint32_t)width :(uint32_t)height :(void (^ _Nonnull)(NSCPdfImage * _Nullable))callback;
++ (void)fromEncodedDataAsync:(NSData * _Nonnull)data :(void (^ _Nonnull)(NSCPdfImage * _Nullable))callback;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
 
 SWIFT_CLASS_NAMED("NSCPdfInfo")
 @interface NSCPdfInfo : NSObject
@@ -572,6 +614,12 @@ SWIFT_CLASS_NAMED("NSCPdfScrollView")
 - (void)scrollViewDidZoom:(UIScrollView * _Nonnull)scrollView;
 - (void)scrollViewDidEndZooming:(UIScrollView * _Nonnull)scrollView withView:(UIView * _Nullable)view atScale:(CGFloat)scale;
 @end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfSection, "NSCPdfSection", open) {
+  NSCPdfSectionHead = 0,
+  NSCPdfSectionBody = 1,
+  NSCPdfSectionFoot = 2,
+};
 
 typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfShowFoot, "NSCPdfShowFoot", open) {
   NSCPdfShowFootEveryPage = 0,
@@ -744,6 +792,10 @@ SWIFT_CLASS_NAMED("NSCPdfTable")
 @property (nonatomic) enum NSCPdfShowHead showHead;
 @property (nonatomic) enum NSCPdfShowFoot showFoot;
 @property (nonatomic, strong) NSCPdfMargin * _Nonnull margin;
+@property (nonatomic, copy) void (^ _Nullable willDrawPage)(NSCPdfHookData * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable didDrawPage)(NSCPdfHookData * _Nonnull);
+@property (nonatomic, copy) BOOL (^ _Nullable willDrawCell)(NSCPdfCellHookData * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable didDrawCell)(NSCPdfCellHookData * _Nonnull);
 - (void)updatePosition:(float)x :(float)y;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end
@@ -1190,6 +1242,31 @@ SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) NSCPdf * _No
 - (NSCPdfDocument * _Nullable)loadFromBytesWithBytes:(NSData * _Nonnull)bytes password:(NSString * _Nullable)password SWIFT_WARN_UNUSED_RESULT;
 @end
 
+SWIFT_CLASS_NAMED("NSCPdfHookData")
+@interface NSCPdfHookData : NSObject
+@property (nonatomic, readonly) uint32_t pageIndex;
+@property (nonatomic, readonly) float x;
+@property (nonatomic, readonly) float y;
+- (nonnull instancetype)init:(uint32_t)pageIndex :(float)x :(float)y OBJC_DESIGNATED_INITIALIZER;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
+
+enum NSCPdfSection : NSInteger;
+SWIFT_CLASS_NAMED("NSCPdfCellHookData")
+@interface NSCPdfCellHookData : NSCPdfHookData
+@property (nonatomic, readonly) enum NSCPdfSection section;
+@property (nonatomic, readonly) uint32_t rowIndex;
+@property (nonatomic, readonly) uint32_t columnIndex;
+@property (nonatomic, readonly) float width;
+@property (nonatomic, readonly) float height;
+@property (nonatomic, readonly) uint32_t colSpan;
+@property (nonatomic, readonly) uint32_t rowSpan;
+@property (nonatomic, readonly) uint32_t lineCount;
+@property (nonatomic, copy) NSString * _Nonnull content;
+- (nonnull instancetype)init:(uint32_t)pageIndex :(float)x :(float)y SWIFT_UNAVAILABLE;
+@end
+
 SWIFT_CLASS_NAMED("NSCPdfCellWidth")
 @interface NSCPdfCellWidth : NSObject
 SWIFT_CLASS_PROPERTY(@property (nonatomic, class, readonly, strong) NSCPdfCellWidth * _Nonnull Auto;)
@@ -1236,6 +1313,7 @@ SWIFT_CLASS_NAMED("NSCPdfColumnKey")
 @class NSCPdfPagerSize;
 enum NSCPdfOrientation : int32_t;
 @class NSCPdfTextOptions;
+@class NSCPdfImage;
 @class UIImage;
 enum NSCPdfStyle : NSInteger;
 @class NSMutableData;
@@ -1265,12 +1343,14 @@ SWIFT_CLASS_NAMED("NSCPdfDocument")
 - (void)addPage;
 - (void)addPageWithSize:(NSCPdfPagerSize * _Nonnull)size orientation:(enum NSCPdfOrientation)orientation;
 - (void)addText:(NSString * _Nonnull)text :(float)x :(float)y :(NSCPdfTextOptions * _Nullable)options;
+- (void)addImageWithPdf:(NSCPdfImage * _Nonnull)pdf :(float)x :(float)y;
+- (void)addImageWithPdf:(NSCPdfImage * _Nonnull)pdf :(float)x :(float)y width:(float)width height:(float)height;
 - (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y;
-- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y :(float)width :(float)height;
+- (void)addImageWithBase64:(NSString * _Nonnull)base64 :(NSString * _Nonnull)mime :(float)x :(float)y width:(float)width height:(float)height;
 - (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y;
-- (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y :(float)width :(float)height;
+- (void)addImage:(UIImage * _Nonnull)image :(float)x :(float)y width:(float)width height:(float)height;
 - (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y;
-- (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y :(float)width :(float)height;
+- (void)addImageWithData:(NSData * _Nonnull)data :(float)x :(float)y width:(float)width height:(float)height;
 - (void)circle:(float)x :(float)y :(float)r :(enum NSCPdfStyle)style;
 - (void)ellipse:(float)x :(float)y :(float)rx :(float)ry :(enum NSCPdfStyle)style;
 - (void)rect:(float)x :(float)y :(float)width :(float)height :(enum NSCPdfStyle)style;
@@ -1311,6 +1391,20 @@ typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfHorizontalAlign, "NSCPdfHorizontalAlig
   NSCPdfHorizontalAlignCenter = 1,
   NSCPdfHorizontalAlignRight = 2,
 };
+
+SWIFT_CLASS_NAMED("NSCPdfImage")
+@interface NSCPdfImage : NSObject
+@property (nonatomic, readonly) NSInteger width;
+@property (nonatomic, readonly) NSInteger height;
++ (NSCPdfImage * _Nullable)fromImage:(UIImage * _Nonnull)image SWIFT_WARN_UNUSED_RESULT;
++ (void)fromImageAsync:(UIImage * _Nonnull)image :(void (^ _Nonnull)(NSCPdfImage * _Nullable))callback;
++ (NSCPdfImage * _Nullable)fromData:(NSData * _Nonnull)data :(uint32_t)width :(uint32_t)height SWIFT_WARN_UNUSED_RESULT;
++ (NSCPdfImage * _Nullable)fromEncodedData:(NSData * _Nonnull)data SWIFT_WARN_UNUSED_RESULT;
++ (void)fromDataAsync:(NSData * _Nonnull)data :(uint32_t)width :(uint32_t)height :(void (^ _Nonnull)(NSCPdfImage * _Nullable))callback;
++ (void)fromEncodedDataAsync:(NSData * _Nonnull)data :(void (^ _Nonnull)(NSCPdfImage * _Nullable))callback;
+- (nonnull instancetype)init SWIFT_UNAVAILABLE;
++ (nonnull instancetype)new SWIFT_UNAVAILABLE_MSG("-init is unavailable");
+@end
 
 SWIFT_CLASS_NAMED("NSCPdfInfo")
 @interface NSCPdfInfo : NSObject
@@ -1429,6 +1523,12 @@ SWIFT_CLASS_NAMED("NSCPdfScrollView")
 - (void)scrollViewDidZoom:(UIScrollView * _Nonnull)scrollView;
 - (void)scrollViewDidEndZooming:(UIScrollView * _Nonnull)scrollView withView:(UIView * _Nullable)view atScale:(CGFloat)scale;
 @end
+
+typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfSection, "NSCPdfSection", open) {
+  NSCPdfSectionHead = 0,
+  NSCPdfSectionBody = 1,
+  NSCPdfSectionFoot = 2,
+};
 
 typedef SWIFT_ENUM_NAMED(NSInteger, NSCPdfShowFoot, "NSCPdfShowFoot", open) {
   NSCPdfShowFootEveryPage = 0,
@@ -1601,6 +1701,10 @@ SWIFT_CLASS_NAMED("NSCPdfTable")
 @property (nonatomic) enum NSCPdfShowHead showHead;
 @property (nonatomic) enum NSCPdfShowFoot showFoot;
 @property (nonatomic, strong) NSCPdfMargin * _Nonnull margin;
+@property (nonatomic, copy) void (^ _Nullable willDrawPage)(NSCPdfHookData * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable didDrawPage)(NSCPdfHookData * _Nonnull);
+@property (nonatomic, copy) BOOL (^ _Nullable willDrawCell)(NSCPdfCellHookData * _Nonnull);
+@property (nonatomic, copy) void (^ _Nullable didDrawCell)(NSCPdfCellHookData * _Nonnull);
 - (void)updatePosition:(float)x :(float)y;
 - (nonnull instancetype)init OBJC_DESIGNATED_INITIALIZER;
 @end

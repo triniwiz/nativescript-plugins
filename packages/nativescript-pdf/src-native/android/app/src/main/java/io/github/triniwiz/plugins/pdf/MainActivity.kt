@@ -2,24 +2,25 @@ package io.github.triniwiz.plugins.pdf
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import io.github.triniwiz.plugins.pdf.table.CellHookData
 import io.github.triniwiz.plugins.pdf.table.FontStyle
+import io.github.triniwiz.plugins.pdf.table.HookData
 import io.github.triniwiz.plugins.pdf.table.HorizontalAlign
 import io.github.triniwiz.plugins.pdf.table.PdfTable
+import io.github.triniwiz.plugins.pdf.table.Section
 import io.github.triniwiz.plugins.pdf.table.StyleDef
 import io.github.triniwiz.plugins.pdf.table.TableCell
 import io.github.triniwiz.plugins.pdf.table.TableCellOrString
+import io.github.triniwiz.plugins.pdf.table.TableHookListener
 import io.github.triniwiz.plugins.pdf.table.VerticalAlign
-import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
-import java.net.URI
 import java.net.URL
 import java.util.Timer
 import java.util.TimerTask
@@ -27,6 +28,7 @@ import java.util.concurrent.Executors
 
 class MainActivity : AppCompatActivity() {
   val executor = Executors.newSingleThreadScheduledExecutor()
+  var image: PdfImage? = null
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     enableEdgeToEdge()
@@ -95,9 +97,10 @@ class MainActivity : AppCompatActivity() {
     }
     Timer().schedule(t, 5000L)
 
+    val document = PdfDocument()
 
     executor.execute {
-      val document = PdfDocument()
+    /*
             val url =
         URI.create("https://github.com/google/fonts/raw/refs/heads/main/ofl/notocoloremoji/NotoColorEmoji-Regular.ttf")
           .toURL()
@@ -139,14 +142,88 @@ class MainActivity : AppCompatActivity() {
 
 
       document.addText("Hello World ?", 10f, 230f)
-//      val table = buildTable()
-//      val output = document.table(table)
-    //  Log.d("com.test", "output ${JSONObject(output)}")
+      */
+
+      val res = resources.openRawResource(R.drawable.deadpool_textless)
+      image = PdfImage.fromData(res.readBytes())
+//      val dp = File(cacheDir, "dp.pdf")
+
+    /*  if (dp.exists()) {
+        image = PdfImage.fromData(dp.readBytes())
+      } else {
+        val jpg = URL("https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg")
+        val os = FileOutputStream(dp)
+        val stream = jpg.openConnection().getInputStream()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+          stream.transferTo(os)
+        } else {
+          stream.copyTo(os)
+        }
+        image = PdfImage.fromData(dp.readBytes())
+      }
+
+      */
+
+
+      val table = buildTable()
+
+//      image?.let { image ->
+//        document.addImage(image, 0f, 0f, 50, 50)
+//      }
+
+
+// val image = BitmapFactory.decodeStream(url.openStream())
+
+      table.hooksListener = object : TableHookListener {
+        override fun onWillDrawPage(hook: HookData) {
+        //  Log.d("onWillDrawPage", "$hook")
+        }
+
+        override fun onDidDrawPage(hook: HookData) {
+        //  Log.d("onDidDrawPage", "$hook")
+        }
+
+        override fun onWillDrawCell(hook: CellHookData): android.util.Pair<Boolean, String>? {
+          if (hook.section == Section.Body && hook.columnIndex == 2){
+            return android.util.Pair(true, "")
+          }
+          if (hook.section == Section.Foot){
+            return android.util.Pair(false, "")
+          }
+          return null
+        }
+
+        override fun onDidDrawCell(hook: CellHookData) {
+         if (hook.section == Section.Body && hook.columnIndex == 2 && (hook.rowIndex % 2) == 0){
+          //  document.addImage(image, hook.x + 25, hook.y + 25, 50, 50)
+              //  document.addText("Hello World √", hook.x - hook.width, hook.y)
+
+
+            image?.let { image ->
+              document.addImage(image, hook.x + hook.width.toInt() / 2, hook.y + hook.height / 4, hook.height.toInt() / 2, hook.height.toInt() / 2)
+            }
+
+          }
+        }
+      }
+//      image?.let { image ->
+//        document.addImage(image, 50f, 100f, 50, 50)
+//      }
+
+      document.table(table)
+
+
+      val tmp = File(cacheDir, "temp_doc.pdf")
+      document.saveSync(tmp.absolutePath)
+
+
+      //  Log.d("com.test", "output ${JSONObject(output)}")
 
 //      val url =
 //        URI.create("https://static.wikia.nocookie.net/xmenmovies/images/9/94/Deadpool_Textless.jpg/")
 //          .toURL()
 //      val image = url.readBytes()
+//      document.addImage(image, 0f, 0f, 50, 50)
       // val image = BitmapFactory.decodeStream(url.openStream())
 
       /*
@@ -234,7 +311,10 @@ class MainActivity : AppCompatActivity() {
       document.roundedRect(x, y, width, height, rx, ry, PdfStyle.FD)
 
       */
-      pdfView.document = document
+
+      runOnUiThread {
+        pdfView.document = document
+      }
 
 
      /* val doc = File(cacheDir, "10840.pdf")
@@ -307,6 +387,14 @@ class MainActivity : AppCompatActivity() {
       )
     )
 
+    val gender = TableCellOrString.Cell(
+      TableCell(
+        "Gender",
+        1,
+        1
+      )
+    )
+
     val tab = PdfTable()
     tab.styles = StyleDef.default()
     tab.headStyles = style
@@ -321,14 +409,14 @@ class MainActivity : AppCompatActivity() {
     tab.alternateRowStyles = alternateRowStyles
 
 
-    val foot_style = StyleDef.default()
-    foot_style.fillColor = Color(41, 128, 185)
-    foot_style.horizontalAlign = HorizontalAlign.Right
-    foot_style.fontStyle = FontStyle.Bold
-    foot_style.fontSize = 24f
+    val footStyle = StyleDef.default()
+    footStyle.fillColor = Color(41, 128, 185)
+    footStyle.horizontalAlign = HorizontalAlign.Right
+    footStyle.fontStyle = FontStyle.Bold
+    footStyle.fontSize = 24f
 
-    tab.footStyles = foot_style
-    tab.head = arrayOf(arrayOf(first, last))
+    tab.footStyles = footStyle
+    tab.head = arrayOf(arrayOf(first, last, gender))
     tab.foot = tab.head
     tab.position = Pair(0f, 10f)
     tab.body = arrayOf(

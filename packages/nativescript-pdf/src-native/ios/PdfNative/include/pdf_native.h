@@ -11,6 +11,8 @@ typedef struct CPdfNative CPdfNative;
 
 typedef struct CPdfNativeDocument CPdfNativeDocument;
 
+typedef struct CPdfNativeImage CPdfNativeImage;
+
 typedef struct CPdfNativeRenderInfo {
   const void *data;
   uint32_t width;
@@ -31,6 +33,15 @@ struct CPdfNativeDocument *pdf_native_load_from_bytes(struct CPdfNative *instanc
                                                       const uint8_t *buffer,
                                                       uintptr_t size,
                                                       const char *password);
+
+const char *pdf_native_cell_render_info_get_content(const PdfNativeCellRenderInfo *instance);
+
+void pdf_native_cell_render_info_set_content(PdfNativeCellRenderInfo *instance,
+                                             const char *content);
+
+PdfNativeCellRenderInfoContent *pdf_native_cell_render_info_create_borrowed(const char *content);
+
+PdfNativeCellRenderInfoContent *pdf_native_cell_render_info_create_owned(const char *content);
 
 struct CPdfNativeDocument *pdf_native_document_init(struct CPdfNative *instance,
                                                     const PdfNativeDocumentConfig *config);
@@ -162,6 +173,13 @@ void pdf_native_document_add_image(struct CPdfNativeDocument *instance,
                                    int32_t width,
                                    int32_t height);
 
+void pdf_native_document_add_image_pdf(struct CPdfNativeDocument *instance,
+                                       struct CPdfNativeImage *image,
+                                       float x,
+                                       float y,
+                                       int32_t width,
+                                       int32_t height);
+
 void pdf_native_document_add_raw_image(struct CPdfNativeDocument *instance,
                                        const uint8_t *image_data,
                                        unsigned int image_size,
@@ -257,3 +275,19 @@ struct CPdfNativeRenderInfo *pdf_native_document_render_to_buffer_with_viewport_
                                                                                                 float height);
 
 void pdf_native_render_info_release(struct CPdfNativeRenderInfo *instance);
+
+uint32_t pdf_native_image_get_width(struct CPdfNativeImage *instance);
+
+uint32_t pdf_native_image_get_height(struct CPdfNativeImage *instance);
+
+void pdf_native_image_release(struct CPdfNativeImage *instance);
+
+struct CPdfNativeImage *pdf_native_image_from_data(struct CPdfNativeDocument *instance,
+                                                   const uint8_t *image,
+                                                   uintptr_t size,
+                                                   uint32_t width,
+                                                   uint32_t height);
+
+struct CPdfNativeImage *pdf_native_image_from_encoded_data(struct CPdfNativeDocument *instance,
+                                                           const uint8_t *image,
+                                                           uintptr_t size);

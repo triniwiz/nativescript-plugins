@@ -81,6 +81,12 @@ typedef enum PdfNativeRotationOrMatrixKind {
   PdfNativeRotationOrMatrixKind_Matrix,
 } PdfNativeRotationOrMatrixKind;
 
+typedef enum PdfNativeSection {
+  PdfNativeSection_Head,
+  PdfNativeSection_Body,
+  PdfNativeSection_Foot,
+} PdfNativeSection;
+
 typedef enum PdfNativeShowFoot {
   PdfNativeShowFoot_EveryPage,
   PdfNativeShowFoot_LastPage,
@@ -341,6 +347,8 @@ typedef enum PdfNativeUnit {
   PdfNativeUnit_Inches,
 } PdfNativeUnit;
 
+typedef struct PdfNativeCellRenderInfoContent PdfNativeCellRenderInfoContent;
+
 typedef enum PdfNativePaperSize_Tag {
   PdfNativePaperSize_StandardPaper,
   PdfNativePaperSize_Custom,
@@ -458,6 +466,22 @@ typedef struct CPdfNativeMargin {
   struct CPdfNativePoints left;
 } CPdfNativeMargin;
 
+typedef struct PdfNativeCellRenderInfo {
+  enum PdfNativeSection section;
+  uint32_t row_index;
+  uint32_t column_index;
+  uint32_t page_index;
+  float x;
+  float y;
+  float width;
+  float height;
+  uint32_t col_span;
+  uint32_t row_span;
+  uint32_t line_count;
+  struct PdfNativeCellRenderInfoContent *content;
+} PdfNativeCellRenderInfo;
+
+#if !defined(TARGET_OS_ANDROID)
 typedef struct CPdfTable {
   const struct CColumnDef *columns;
   uintptr_t columns_size;
@@ -489,7 +513,16 @@ typedef struct CPdfTable {
   enum PdfNativeShowHead show_head;
   enum PdfNativeShowFoot show_foot;
   struct CPdfNativeMargin margin;
+  void (*will_draw_page)(const void*, uint32_t, float, float);
+  const void *will_draw_page_data;
+  void (*did_draw_page)(const void*, uint32_t, float, float);
+  const void *did_draw_page_data;
+  bool (*will_draw_cell)(const void*, struct PdfNativeCellRenderInfo*);
+  const void *will_draw_cell_data;
+  void (*did_draw_cell)(const void*, struct PdfNativeCellRenderInfo*);
+  const void *did_draw_cell_data;
 } CPdfTable;
+#endif
 
 typedef union PdfNativeRotationOrMatrixData {
   float rotation;

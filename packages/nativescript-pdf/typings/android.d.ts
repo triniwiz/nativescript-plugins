@@ -45,6 +45,30 @@ declare module io {
 		export module triniwiz {
 			export module plugins {
 				export module pdf {
+					export class JNIHelpers {
+						public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.JNIHelpers>;
+						public constructor();
+						public static pairFirst(pair: globalAndroid.util.Pair<java.lang.Boolean, string>): boolean;
+						public static pairSecond(pair: globalAndroid.util.Pair<java.lang.Boolean, string>): string;
+					}
+					export module JNIHelpers {
+						export class Companion {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.JNIHelpers.Companion>;
+							public pairFirst(pair: globalAndroid.util.Pair<java.lang.Boolean, string>): boolean;
+							public pairSecond(pair: globalAndroid.util.Pair<java.lang.Boolean, string>): string;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
 					export class Pdf {
 						public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.Pdf>;
 						public static loadLib(): void;
@@ -89,7 +113,7 @@ declare module io {
 						public setDrawColor(r: number, g: number, b: number, a: number): void;
 						public addPage(size: io.github.triniwiz.plugins.pdf.PdfPagerSize, orientation: io.github.triniwiz.plugins.pdf.PdfOrientation): void;
 						public finalize(): void;
-						public addImage(image: string, mime: string, x: number, y: number, width: java.lang.Integer): void;
+						public addImage(image: string, mime: string, x: number, y: number, width: number): void;
 						public rect(x: number, y: number, width: number, height: number): void;
 						public addImage(bytes: androidNative.Array<number>, x: number, y: number): void;
 						public addText(this_: string, text: number, x: number, y: io.github.triniwiz.plugins.pdf.PdfTextOptions): void;
@@ -101,16 +125,18 @@ declare module io {
 						public constructor();
 						public setFont(fontName: string, fontStyle: string): void;
 						public save(path: string, callback: any): void;
-						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer): void;
+						public addImage(image: io.github.triniwiz.plugins.pdf.PdfImage, x: number, y: number, width: number): void;
+						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: number): void;
 						public table(thisCollection$iv: io.github.triniwiz.plugins.pdf.table.PdfTable): string;
 						public addImage(image: string, mime: string, x: number, y: number): void;
-						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: java.lang.Integer): void;
+						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: number): void;
 						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap): void;
 						public addPage(size: io.github.triniwiz.plugins.pdf.PdfPagerSize): void;
 						public addText(text: string, x: number, y: number): void;
 						public constructor(it: io.github.triniwiz.plugins.pdf.PdfDocumentConfig);
 						public roundedRect(x: number, y: number, width: number, height: number, rx: number, ry: number): void;
 						public pagesInfo$pdf_release(buffer: java.nio.ByteBuffer): void;
+						public addImage(image: io.github.triniwiz.plugins.pdf.PdfImage, x: number, y: number, width: number, height: number): void;
 						public addFont(postScriptNameOrPath: string, id: string): boolean;
 						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number): void;
 						public setFontColor(r: number, g: number, b: number): void;
@@ -124,15 +150,16 @@ declare module io {
 						public addFont(it: string, buffer: string, read: string, os: string, reader: string): boolean;
 						public setFontColor(r: number, g: number, b: number, a: number): void;
 						public count(): number;
-						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
+						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number, width: number, height: number): void;
 						public addFont(postScriptNameOrPath: string, id: string, fontStyle: string, fontWeight: string): boolean;
-						public addImage(img: string, decoded: string, this_: number, image: number, mime: java.lang.Integer, x: java.lang.Integer): void;
+						public addImage(image: io.github.triniwiz.plugins.pdf.PdfImage, x: number, y: number): void;
+						public addImage(img: string, decoded: string, this_: number, image: number, mime: number, x: number): void;
 						public getHeight(): number;
-						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
+						public addImage(bitmap: globalAndroid.graphics.Bitmap, x: number, y: number, width: number, height: number): void;
 						public getNativeDocument$pdf_release(): number;
 						public setNativeDocument$pdf_release(value: number): void;
 						public addPage(): void;
-						public addImage(bytes: androidNative.Array<number>, x: number, y: number, width: java.lang.Integer, height: java.lang.Integer): void;
+						public addImage(bytes: androidNative.Array<number>, x: number, y: number, width: number, height: number): void;
 						public setFillColor(r: number, g: number, b: number, a: number): void;
 						public getWidth(): number;
 						public addImage(buffer: java.nio.ByteBuffer, x: number, y: number): void;
@@ -141,7 +168,7 @@ declare module io {
 						public getLineWidth(): number;
 						public setLineWidth(value: number): void;
 						public addFont(postScriptNameOrPath: string, id: string, fontStyle: string): boolean;
-						public addImage(bytes: androidNative.Array<number>, x: number, y: number, width: java.lang.Integer): void;
+						public addImage(bytes: androidNative.Array<number>, x: number, y: number, width: number): void;
 						public renderToBitmap(page: number, bitmap: globalAndroid.graphics.Bitmap, rect: globalAndroid.graphics.Rect): void;
 					}
 					export module PdfDocument {
@@ -177,6 +204,51 @@ declare module io {
 						public setDeviceScale(value: number): void;
 						public setOrientation(value: io.github.triniwiz.plugins.pdf.PdfOrientation): void;
 						public getDeviceScale(): number;
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
+					export class PdfImage {
+						public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.PdfImage>;
+						public getNativeImage$pdf_release(): number;
+						public setNativeImage$pdf_release(value: number): void;
+						public static fromEncodedDataAsync(data: java.nio.ByteBuffer, callback: any): void;
+						public static fromBitmapAsync(data: globalAndroid.graphics.Bitmap, callback: any): void;
+						public static fromEncodedData(data: java.nio.ByteBuffer): io.github.triniwiz.plugins.pdf.PdfImage;
+						public static fromEncodedDataAsync(data: androidNative.Array<number>, callback: any): void;
+						public finalize(): void;
+						public static fromDataAsync(data: java.nio.ByteBuffer, width: number, height: number, callback: any): void;
+						public static fromEncodedData(data: androidNative.Array<number>): io.github.triniwiz.plugins.pdf.PdfImage;
+						public static fromBitmap(data: globalAndroid.graphics.Bitmap): io.github.triniwiz.plugins.pdf.PdfImage;
+						public static fromDataAsync(data: androidNative.Array<number>, width: number, height: number, callback: any): void;
+						public static fromData(data: androidNative.Array<number>, width: number, height: number): io.github.triniwiz.plugins.pdf.PdfImage;
+						public constructor(nativeImage: number);
+						public static fromData(data: java.nio.ByteBuffer, width: number, height: number): io.github.triniwiz.plugins.pdf.PdfImage;
+						public getHeight(): number;
+						public getWidth(): number;
+					}
+					export module PdfImage {
+						export class Companion {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.PdfImage.Companion>;
+							public fromBitmapAsync(data: globalAndroid.graphics.Bitmap, callback: any): void;
+							public fromData(this_: androidNative.Array<number>, data: number, width: number): io.github.triniwiz.plugins.pdf.PdfImage;
+							public fromDataAsync(data: java.nio.ByteBuffer, width: number, height: number, callback: any): void;
+							public fromEncodedData(this_: androidNative.Array<number>): io.github.triniwiz.plugins.pdf.PdfImage;
+							public fromEncodedDataAsync(data: java.nio.ByteBuffer, callback: any): void;
+							public fromBitmap(this_: globalAndroid.graphics.Bitmap): io.github.triniwiz.plugins.pdf.PdfImage;
+							public fromEncodedData(this_: java.nio.ByteBuffer): io.github.triniwiz.plugins.pdf.PdfImage;
+							public fromDataAsync(data: androidNative.Array<number>, width: number, height: number, callback: any): void;
+							public fromEncodedDataAsync(data: androidNative.Array<number>, callback: any): void;
+							public fromData(this_: java.nio.ByteBuffer, data: number, width: number): io.github.triniwiz.plugins.pdf.PdfImage;
+						}
 					}
 				}
 			}
@@ -558,49 +630,51 @@ declare module io {
 					export class PdfView {
 						public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.PdfView>;
 						public getHandler$pdf_release(): globalAndroid.os.Handler;
-						public resetZoom(): void;
-						public zoomTo(this_: number, scale: number, focusX: number, focusY: boolean): void;
 						public getPdfScrollX(): number;
 						public onSurfaceTextureAvailable(surface: globalAndroid.graphics.SurfaceTexture, width: number, height: number): void;
 						public setUseSurface(value: boolean): void;
-						public onSizeChanged(it: number, element$iv: number, $i$f$forEach: number, $this$forEach$iv: number): void;
-						public onAttachedToWindow(): void;
 						public loadFromBytes(bytes: androidNative.Array<number>, password: string): void;
 						public loadFromUrl(url: string, password: string): void;
-						public awakenScrollBars(): boolean;
-						public computeScroll(): void;
 						public onSurfaceTextureSizeChanged(surface: globalAndroid.graphics.SurfaceTexture, width: number, height: number): void;
 						public loadFromPath(path: string, password: string): void;
-						public getDocument(): io.github.triniwiz.plugins.pdf.PdfDocument;
+						public getPageSpacing(): number;
 						public loadFromBytes(bytes: androidNative.Array<number>): void;
 						public surfaceChanged(holder: globalAndroid.view.SurfaceHolder, format: number, width: number, height: number): void;
 						public setDocument(doc: io.github.triniwiz.plugins.pdf.PdfDocument): void;
 						public setHandler$pdf_release(value: globalAndroid.os.Handler): void;
-						public getPageCount(): number;
-						public dispatchDraw(canvas: globalAndroid.graphics.Canvas): void;
-						public setCanSnap(value: boolean): void;
-						public onScale(oldScale: globalAndroid.view.ScaleGestureDetector): boolean;
 						public onSurfaceTextureDestroyed(surface: globalAndroid.graphics.SurfaceTexture): boolean;
-						public getListener(): io.github.triniwiz.plugins.pdf.PdfView.Listener;
-						public onTouchEvent(this_: globalAndroid.view.MotionEvent): boolean;
-						public getCurrentScale(): number;
+						public constructor($this$toColorInt$iv: globalAndroid.content.Context, set: globalAndroid.util.AttributeSet);
 						public onSurfaceTextureUpdated(surface: globalAndroid.graphics.SurfaceTexture): void;
-						public constructor($this$scrollbarPaint_u24lambda_u240: globalAndroid.content.Context, set: globalAndroid.util.AttributeSet);
 						public onScaleEnd(detector: globalAndroid.view.ScaleGestureDetector): void;
-						public getHandlerThread$pdf_release(): globalAndroid.os.HandlerThread;
-						public surfaceDestroyed(holder: globalAndroid.view.SurfaceHolder): void;
 						public getUseSurface(): boolean;
 						public loadFromBuffer(buffer: java.nio.ByteBuffer): void;
-						public setListener(value: io.github.triniwiz.plugins.pdf.PdfView.Listener): void;
 						public scrollToPage(pageInfo: number, targetY: boolean): void;
 						public loadFromBuffer(buffer: java.nio.ByteBuffer, password: string): void;
 						public getCanSnap(): boolean;
 						public onScaleBegin(detector: globalAndroid.view.ScaleGestureDetector): boolean;
 						public getCurrentPage(): number;
-						public loadFromPath(path: string): void;
 						public onDraw(canvas: globalAndroid.graphics.Canvas): void;
 						public getPdfScrollY(): number;
 						public surfaceCreated(holder: globalAndroid.view.SurfaceHolder): void;
+						public resetZoom(): void;
+						public zoomTo(this_: number, scale: number, focusX: number, focusY: boolean): void;
+						public onSizeChanged(it: number, element$iv: number, $i$f$forEach: number, $this$forEach$iv: number): void;
+						public onAttachedToWindow(): void;
+						public setPageSpacing(value: number): void;
+						public awakenScrollBars(): boolean;
+						public computeScroll(): void;
+						public getDocument(): io.github.triniwiz.plugins.pdf.PdfDocument;
+						public getPageCount(): number;
+						public dispatchDraw(canvas: globalAndroid.graphics.Canvas): void;
+						public setCanSnap(value: boolean): void;
+						public onScale(oldScale: globalAndroid.view.ScaleGestureDetector): boolean;
+						public getListener(): io.github.triniwiz.plugins.pdf.PdfView.Listener;
+						public onTouchEvent(this_: globalAndroid.view.MotionEvent): boolean;
+						public getCurrentScale(): number;
+						public getHandlerThread$pdf_release(): globalAndroid.os.HandlerThread;
+						public surfaceDestroyed(holder: globalAndroid.view.SurfaceHolder): void;
+						public setListener(value: io.github.triniwiz.plugins.pdf.PdfView.Listener): void;
+						public loadFromPath(path: string): void;
 						public constructor(context: globalAndroid.content.Context);
 						public loadFromUrl(url: string): void;
 						public drawPages(): void;
@@ -638,6 +712,34 @@ declare module io {
 							public component3(): number;
 							public setWidth(value: number): void;
 							public setHeight(value: number): void;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
+					export module table {
+						export class CellHookData extends io.github.triniwiz.plugins.pdf.table.HookData {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.CellHookData>;
+							public getSection(): io.github.triniwiz.plugins.pdf.table.Section;
+							public getWidth(): number;
+							public getHeight(): number;
+							public getContent(): string;
+							public setContent(value: string): void;
+							public getRowIndex(): number;
+							public constructor(pageIndex: number, x: number, y: number, section: io.github.triniwiz.plugins.pdf.table.Section, rowIndex: number, columnIndex: number, width: number, height: number, colSpan: number, rowSpan: number, lineCount: number, content: string);
+							public getRowSpan(): number;
+							public getLineCount(): number;
+							public constructor(pageIndex: number, x: number, y: number);
+							public getColumnIndex(): number;
+							public getColSpan(): number;
 						}
 					}
 				}
@@ -805,6 +907,26 @@ declare module io {
 								public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.FontStyle.Companion>;
 								public default(): io.github.triniwiz.plugins.pdf.table.FontStyle;
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
+					export module table {
+						export class HookData {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.HookData>;
+							public getY(): number;
+							public getPageIndex(): number;
+							public getX(): number;
+							public constructor(pageIndex: number, x: number, y: number);
 						}
 					}
 				}
@@ -999,6 +1121,7 @@ declare module io {
 							public setMargin(value: io.github.triniwiz.plugins.pdf.table.Margin): void;
 							public getMargin(): io.github.triniwiz.plugins.pdf.table.Margin;
 							public setFoot(value: androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>): void;
+							public getHooksListener(): io.github.triniwiz.plugins.pdf.table.TableHookListener;
 							public setShowFoot(value: io.github.triniwiz.plugins.pdf.table.ShowFoot): void;
 							public setTheme(value: io.github.triniwiz.plugins.pdf.table.TableTheme): void;
 							public getStyles(): io.github.triniwiz.plugins.pdf.table.StyleDef;
@@ -1010,6 +1133,7 @@ declare module io {
 							public setBody(value: androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>): void;
 							public getColumns(): androidNative.Array<io.github.triniwiz.plugins.pdf.table.ColumnDef>;
 							public updatePosition(x: number, y: number): void;
+							public onDidDrawCell(data: number, it: number, this_: number, index: number, x: number, y: number, section: number, rowIndex: number, columnIndex: number, width: number, height: number, colSpan: string): void;
 							public setHeadStyles(value: io.github.triniwiz.plugins.pdf.table.StyleDef): void;
 							public constructor();
 							public setAlternateRowStyles(value: io.github.triniwiz.plugins.pdf.table.StyleDef): void;
@@ -1020,6 +1144,7 @@ declare module io {
 							public setPosition(value: any): void;
 							public getPageBreak(): io.github.triniwiz.plugins.pdf.table.PageBreak;
 							public getShowFoot(): io.github.triniwiz.plugins.pdf.table.ShowFoot;
+							public onDidDrawPage(index: number, x: number, y: number): void;
 							public getColumnStyles(): java.util.Map<io.github.triniwiz.plugins.pdf.table.ColumnKey, io.github.triniwiz.plugins.pdf.table.StyleDef>;
 							public setBodyStyles(value: io.github.triniwiz.plugins.pdf.table.StyleDef): void;
 							public getHead(): androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>;
@@ -1027,8 +1152,41 @@ declare module io {
 							public getHeadStyles(): io.github.triniwiz.plugins.pdf.table.StyleDef;
 							public getTheme(): io.github.triniwiz.plugins.pdf.table.TableTheme;
 							public setShowHead(value: io.github.triniwiz.plugins.pdf.table.ShowHead): void;
+							public onWillDrawPage(index: number, x: number, y: number): void;
 							public getBody(): androidNative.Array<androidNative.Array<io.github.triniwiz.plugins.pdf.table.TableCellOrString>>;
 							public getPosition(): any;
+							public setHooksListener(value: io.github.triniwiz.plugins.pdf.table.TableHookListener): void;
+							public onWillDrawCell(data: number, it: number, this_: number, index: number, x: number, y: number, section: number, rowIndex: number, columnIndex: number, width: number, height: number, colSpan: string): globalAndroid.util.Pair<java.lang.Boolean, string>;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
+					export module table {
+						export class Section {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.Section>;
+							public static Head: io.github.triniwiz.plugins.pdf.table.Section;
+							public static Body: io.github.triniwiz.plugins.pdf.table.Section;
+							public static Foot: io.github.triniwiz.plugins.pdf.table.Section;
+							public static from(value: number): io.github.triniwiz.plugins.pdf.table.Section;
+							public static getEntries(): any;
+							public static values(): androidNative.Array<io.github.triniwiz.plugins.pdf.table.Section>;
+							public getValue(): number;
+							public static valueOf(value: string): io.github.triniwiz.plugins.pdf.table.Section;
+						}
+						export module Section {
+							export class Companion {
+								public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.Section.Companion>;
+								public from(value: number): io.github.triniwiz.plugins.pdf.table.Section;
+							}
 						}
 					}
 				}
@@ -1246,6 +1404,31 @@ declare module io {
 								public equals(other: any): boolean;
 								public getValue(): string;
 							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+declare module io {
+	export module github {
+		export module triniwiz {
+			export module plugins {
+				export module pdf {
+					export module table {
+						export class TableHookListener {
+							public static class: java.lang.Class<io.github.triniwiz.plugins.pdf.table.TableHookListener>;
+							/**
+							 * Constructs a new instance of the io.github.triniwiz.plugins.pdf.table.TableHookListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
+							 */
+							public constructor(implementation: { onWillDrawPage(param0: io.github.triniwiz.plugins.pdf.table.HookData): void; onDidDrawPage(param0: io.github.triniwiz.plugins.pdf.table.HookData): void; onWillDrawCell(param0: io.github.triniwiz.plugins.pdf.table.CellHookData): globalAndroid.util.Pair<java.lang.Boolean, string>; onDidDrawCell(param0: io.github.triniwiz.plugins.pdf.table.CellHookData): void });
+							public constructor();
+							public onWillDrawCell(param0: io.github.triniwiz.plugins.pdf.table.CellHookData): globalAndroid.util.Pair<java.lang.Boolean, string>;
+							public onDidDrawPage(param0: io.github.triniwiz.plugins.pdf.table.HookData): void;
+							public onDidDrawCell(param0: io.github.triniwiz.plugins.pdf.table.CellHookData): void;
+							public onWillDrawPage(param0: io.github.triniwiz.plugins.pdf.table.HookData): void;
 						}
 					}
 				}

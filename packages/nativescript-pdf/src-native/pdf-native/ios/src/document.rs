@@ -7,6 +7,7 @@ use pdf_core::document::{
 };
 use pdf_core::table::CPdfTable;
 use pdf_core::utils::to_unit;
+use pdf_core::{PdfImage, PdfNative};
 use std::ffi::{c_char, c_int, c_uint, c_void, CStr, CString};
 use std::slice;
 
@@ -588,6 +589,27 @@ pub extern "C" fn pdf_native_document_add_image(
 }
 
 #[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_document_add_image_pdf(
+    instance: *mut CPdfNativeDocument,
+    image: *mut CPdfNativeImage,
+    x: f32,
+    y: f32,
+    width: i32,
+    height: i32,
+) {
+    unsafe {
+        if instance.is_null() || image.is_null() {
+            return;
+        }
+        let image = &mut *(image);
+        let instance = &mut *(instance);
+        let _ = instance
+            .0
+            .add_pdf_image(&mut image.0, x, y, Some(width as f32), Some(height as f32));
+    }
+}
+
+#[unsafe(no_mangle)]
 pub extern "C" fn pdf_native_document_add_raw_image(
     instance: *mut CPdfNativeDocument,
     image_data: *const u8,
@@ -987,5 +1009,99 @@ pub extern "C" fn pdf_native_render_info_release(instance: *mut CPdfNativeRender
         }
 
         let _ = Box::from_raw(instance);
+    }
+}
+
+pub struct CPdfNativeImage(PdfImage);
+
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_image_get_width(instance: *mut CPdfNativeImage) -> u32 {
+    if instance.is_null() {
+        return 0;
+    }
+
+    unsafe {
+       let instance = &*(instance);
+        instance.0.width()
+    }
+}
+
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_image_get_height(instance: *mut CPdfNativeImage) -> u32 {
+    if instance.is_null() {
+        return 0;
+    }
+
+    unsafe {
+        let instance = &*(instance);
+        instance.0.height()
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_image_release(instance: *mut CPdfNativeImage) {
+    if instance.is_null() {
+        return;
+    }
+
+    unsafe {
+        let _ = Box::from_raw(instance);
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_image_from_data(
+    instance: *mut CPdfNativeDocument,
+    image: *const u8,
+    size: usize,
+    width: u32,
+    height: u32,
+) -> *mut CPdfNativeImage {
+    let mut ret: Option<CPdfNativeImage> = None;
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+        let instance = &*(instance as *mut PdfNative);
+
+        let buffer = slice::from_raw_parts(image, size);
+        ret = image::RgbaImage::from_raw(width, height, buffer.to_vec()).and_then(|image| {
+            let image = PdfImage::new(instance, image::DynamicImage::from(image)).ok()?;
+            Some(CPdfNativeImage(image))
+        });
+    }
+
+    match ret {
+        None => 0 as _,
+        Some(image) => Box::into_raw(Box::new(image)),
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_image_from_encoded_data(
+    instance: *mut CPdfNativeDocument,
+    image: *const u8,
+    size: usize,
+) -> *mut CPdfNativeImage {
+    let mut ret: Option<CPdfNativeImage> = None;
+
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+        let instance = &*(instance as *mut PdfNative);
+
+        let buffer = slice::from_raw_parts(image, size);
+        ret = image::load_from_memory(buffer).ok().and_then(|image| {
+            let image = PdfImage::new(instance, image).ok()?;
+            Some(CPdfNativeImage(image))
+        });
+    }
+
+    match ret {
+        None => 0 as _,
+        Some(image) => Box::into_raw(Box::new(image)),
     }
 }

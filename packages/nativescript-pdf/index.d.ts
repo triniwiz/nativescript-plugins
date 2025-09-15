@@ -107,6 +107,48 @@ interface TableOptions {
 	margin?: [number, number, number, number] | [number, number, number] | [number, number] | [number] | number;
 }
 
+export class HookData {
+	readonly index: number;
+
+	readonly x: number;
+
+	readonly y: number;
+}
+
+export class CellHookData extends HookData {
+	readonly colSpan: number;
+
+	readonly columnIndex: number;
+
+	content: string;
+
+	readonly height: number;
+
+	readonly lineCount: number;
+
+	readonly rowIndex: number;
+
+	readonly rowSpan: number;
+
+	readonly rowSpan: number;
+
+	readonly section: 'head' | 'body' | 'foot';
+
+	readonly width: number;
+}
+
+export class PdfImage {
+	readonly width: number;
+
+	readonly height: number;
+
+	static from(bitmap: ImageSource | android.graphics.Bitmap | UIImage | ArrayBuffer): PdfImage;
+	static from(bitmap: ImageSource | android.graphics.Bitmap | UIImage | ArrayBuffer, width: number, height: number): PdfImage;
+
+	static fromAsync(bitmap: ImageSource | android.graphics.Bitmap | UIImage | ArrayBuffer): Promise<PdfImage>;
+	static fromAsync(bitmap: ImageSource | android.graphics.Bitmap | UIImage | ArrayBuffer, width: number | null | undefined, height: number | null | undefined): Promise<PdfImage>;
+}
+
 export class IPDFDocument {
 	addFileToVFS(filename, filecontent): this;
 
@@ -124,7 +166,7 @@ export class IPDFDocument {
 
 	circle(x: number, y: number, r: number, style?: 'S' | 'F' | 'DF' | 'FD'): this;
 
-	addImage(bitmap: Image, x: number, y: number, width?: number, height?: number): this;
+	addImage(bitmap: Image | PdfImage, x: number, y: number, width?: number, height?: number): this;
 
 	addImage(data: string, mime: string, x: number, y: number, width?: number, height?: number): this;
 
@@ -167,6 +209,11 @@ export class PDFDocument extends IPDFDocument {
 	readonly width: number;
 
 	readonly height: number;
+
+	willDrawPage?: (data: HookData) => void;
+	didDrawPage?: (data: HookData) => void;
+	willDrawCell?: (data: CellHookData) => boolean;
+	didDrawCell?: (data: CellHookData) => void;
 }
 
 export class PDFView extends PDFViewBase {

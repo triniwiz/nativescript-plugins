@@ -146,6 +146,30 @@ declare class NSCPdf extends NSObject {
 	loadFromPathWithPathPassword(path: string, password: string): NSCPdfDocument;
 }
 
+declare class NSCPdfCellHookData extends NSCPdfHookData {
+	static alloc(): NSCPdfCellHookData; // inherited from NSObject
+
+	static new(): NSCPdfCellHookData; // inherited from NSObject
+
+	readonly colSpan: number;
+
+	readonly columnIndex: number;
+
+	content: string;
+
+	readonly height: number;
+
+	readonly lineCount: number;
+
+	readonly rowIndex: number;
+
+	readonly rowSpan: number;
+
+	readonly section: NSCPdfSection;
+
+	readonly width: number;
+}
+
 declare class NSCPdfCellWidth extends NSObject {
 	static Fixed(value: number): NSCPdfCellWidth;
 
@@ -225,11 +249,21 @@ declare class NSCPdfDocument extends NSObject {
 
 	addFont(postScriptNameOrPath: string, id: string, fontStyle: string, fontWeight: string, encoding: string): boolean;
 
-	addImage(image: UIImage, x: number, y: number, width: number, height: number): void;
+	addImage(image: UIImage, x: number, y: number): void;
 
-	addImageWithBase64(base64: string, mime: string, x: number, y: number, width: number, height: number): void;
+	addImageWidthHeight(image: UIImage, x: number, y: number, width: number, height: number): void;
 
-	addImageWithData(data: NSData, x: number, y: number, width: number, height: number): void;
+	addImageWithBase64(base64: string, mime: string, x: number, y: number): void;
+
+	addImageWithBase64WidthHeight(base64: string, mime: string, x: number, y: number, width: number, height: number): void;
+
+	addImageWithData(data: NSData, x: number, y: number): void;
+
+	addImageWithDataWidthHeight(data: NSData, x: number, y: number, width: number, height: number): void;
+
+	addImageWithPdf(pdf: NSCPdfImage, x: number, y: number): void;
+
+	addImageWithPdfWidthHeight(pdf: NSCPdfImage, x: number, y: number, width: number, height: number): void;
 
 	addPage(): void;
 
@@ -316,12 +350,50 @@ declare const enum NSCPdfFontStyle {
 	BoldItalic = 3,
 }
 
+declare class NSCPdfHookData extends NSObject {
+	static alloc(): NSCPdfHookData; // inherited from NSObject
+
+	static new(): NSCPdfHookData; // inherited from NSObject
+
+	readonly pageIndex: number;
+
+	readonly x: number;
+
+	readonly y: number;
+
+	constructor();
+
+	init(pageIndex: number, x: number, y: number): this;
+}
+
 declare const enum NSCPdfHorizontalAlign {
 	Left = 0,
 
 	Center = 1,
 
 	Right = 2,
+}
+
+declare class NSCPdfImage extends NSObject {
+	static alloc(): NSCPdfImage; // inherited from NSObject
+
+	static fromData(data: NSData, width: number, height: number): NSCPdfImage;
+
+	static fromDataAsync(data: NSData, width: number, height: number, callback: (p1: NSCPdfImage) => void): void;
+
+	static fromEncodedData(data: NSData): NSCPdfImage;
+
+	static fromEncodedDataAsync(data: NSData, callback: (p1: NSCPdfImage) => void): void;
+
+	static fromImage(image: UIImage): NSCPdfImage;
+
+	static fromImageAsync(image: UIImage, callback: (p1: NSCPdfImage) => void): void;
+
+	static new(): NSCPdfImage; // inherited from NSObject
+
+	readonly width: number;
+
+	readonly height: number;
 }
 
 declare class NSCPdfInfo extends NSObject {
@@ -612,6 +684,14 @@ declare class NSCPdfScrollView extends UIScrollView implements UIScrollViewDeleg
 	viewForZoomingInScrollView(scrollView: UIScrollView): UIView;
 }
 
+declare const enum NSCPdfSection {
+	Head = 0,
+
+	Body = 1,
+
+	Foot = 2,
+}
+
 declare const enum NSCPdfShowFoot {
 	EveryPage = 0,
 
@@ -799,6 +879,10 @@ declare class NSCPdfTable extends NSObject {
 
 	columns: NSArray<NSCPdfColumnDef>;
 
+	didDrawCell: (p1: NSCPdfCellHookData) => void;
+
+	didDrawPage: (p1: NSCPdfHookData) => void;
+
 	foot: NSArray<NSArray<NSCPdfTableCellOrString>>;
 
 	footStyles: NSCPdfStyleDef;
@@ -820,6 +904,10 @@ declare class NSCPdfTable extends NSObject {
 	styles: NSCPdfStyleDef;
 
 	theme: NSCPdfTableTheme;
+
+	willDrawCell: (p1: NSCPdfCellHookData) => boolean;
+
+	willDrawPage: (p1: NSCPdfHookData) => void;
 
 	updatePosition(x: number, y: number): void;
 }
@@ -1102,6 +1190,22 @@ declare class NSCPdfView extends UIView {
 	scrollToPageAnimated(page: number, animated: boolean): void;
 }
 
+interface PdfNativeCellRenderInfo {
+	section: PdfNativeSection;
+	row_index: number;
+	column_index: number;
+	page_index: number;
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	col_span: number;
+	row_span: number;
+	line_count: number;
+	content: interop.Pointer | interop.Reference<any>;
+}
+declare var PdfNativeCellRenderInfo: interop.StructType<PdfNativeCellRenderInfo>;
+
 declare const enum PdfNativeFontFamily {
 	Helvetica = 0,
 
@@ -1166,6 +1270,14 @@ declare const enum PdfNativeRotationOrMatrixKind {
 	Rotation = 0,
 
 	Matrix = 1,
+}
+
+declare const enum PdfNativeSection {
+	Head = 0,
+
+	Body = 1,
+
+	Foot = 2,
 }
 
 declare const enum PdfNativeShowFoot {
@@ -1346,11 +1458,21 @@ declare var PdfNativeVersionNumber: number;
 
 declare var PdfNativeVersionString: interop.Reference<number>;
 
+declare function pdf_native_cell_render_info_create_borrowed(content: string | interop.Pointer | interop.Reference<any>): interop.Pointer | interop.Reference<any>;
+
+declare function pdf_native_cell_render_info_create_owned(content: string | interop.Pointer | interop.Reference<any>): interop.Pointer | interop.Reference<any>;
+
+declare function pdf_native_cell_render_info_get_content(instance: interop.Pointer | interop.Reference<PdfNativeCellRenderInfo>): interop.Pointer | interop.Reference<any>;
+
+declare function pdf_native_cell_render_info_set_content(instance: interop.Pointer | interop.Reference<PdfNativeCellRenderInfo>, content: string | interop.Pointer | interop.Reference<any>): void;
+
 declare function pdf_native_document_add_font(instance: interop.Pointer | interop.Reference<any>, path: string | interop.Pointer | interop.Reference<any>, id: string | interop.Pointer | interop.Reference<any>, style: string | interop.Pointer | interop.Reference<any>, weight: string | interop.Pointer | interop.Reference<any>, is_ttf: boolean, is_cid_font: boolean): boolean;
 
 declare function pdf_native_document_add_font_with_bytes(instance: interop.Pointer | interop.Reference<any>, bytes: string | interop.Pointer | interop.Reference<any>, size: number, id: string | interop.Pointer | interop.Reference<any>, style: string | interop.Pointer | interop.Reference<any>, weight: string | interop.Pointer | interop.Reference<any>, is_ttf: boolean, is_cid_font: boolean): boolean;
 
 declare function pdf_native_document_add_image(instance: interop.Pointer | interop.Reference<any>, image_data: string | interop.Pointer | interop.Reference<any>, image_size: number, x: number, y: number, width: number, height: number): void;
+
+declare function pdf_native_document_add_image_pdf(instance: interop.Pointer | interop.Reference<any>, image: interop.Pointer | interop.Reference<any>, x: number, y: number, width: number, height: number): void;
 
 declare function pdf_native_document_add_raw_image(instance: interop.Pointer | interop.Reference<any>, image_data: string | interop.Pointer | interop.Reference<any>, image_size: number, image_width: number, image_height: number, x: number, y: number, width: number, height: number): void;
 
@@ -1411,6 +1533,12 @@ declare function pdf_native_document_set_line_width(instance: interop.Pointer | 
 declare function pdf_native_document_set_page(instance: interop.Pointer | interop.Reference<any>, index: number): void;
 
 declare function pdf_native_document_width(instance: interop.Pointer | interop.Reference<any>): number;
+
+declare function pdf_native_image_from_data(instance: interop.Pointer | interop.Reference<any>, image: string | interop.Pointer | interop.Reference<any>, size: number, width: number, height: number): interop.Pointer | interop.Reference<any>;
+
+declare function pdf_native_image_from_encoded_data(instance: interop.Pointer | interop.Reference<any>, image: string | interop.Pointer | interop.Reference<any>, size: number): interop.Pointer | interop.Reference<any>;
+
+declare function pdf_native_image_release(instance: interop.Pointer | interop.Reference<any>): void;
 
 declare function pdf_native_init(): interop.Pointer | interop.Reference<any>;
 

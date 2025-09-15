@@ -456,6 +456,157 @@ function parseTableCellOrString(value: TableCellOrString[][]) {
 	}
 }
 
+export class HookData {
+	[native_]: NSCPdfHookData;
+	constructor(data: NSCPdfHookData) {
+		this[native_] = data;
+	}
+	get index(): number {
+		return this[native_]?.pageIndex ?? 0;
+	}
+
+	get x(): number {
+		return this[native_]?.x ?? 0;
+	}
+
+	get y(): number {
+		return this[native_]?.y ?? 0;
+	}
+}
+
+export class CellHookData extends HookData {
+	[native_]: NSCPdfCellHookData;
+	constructor(data: NSCPdfCellHookData) {
+		super(data);
+		this[native_] = data;
+	}
+
+	get colSpan(): number {
+		return this[native_]?.colSpan ?? 0;
+	}
+
+	get columnIndex(): number {
+		return this[native_]?.columnIndex ?? 0;
+	}
+
+	get content(): string {
+		return this[native_]?.content ?? '';
+	}
+
+	set content(value: string) {
+		if (this[native_]) {
+			this[native_].content = value;
+		}
+	}
+
+	get height(): number {
+		return this[native_]?.height ?? 0;
+	}
+
+	get lineCount(): number {
+		return this[native_]?.lineCount ?? 0;
+	}
+
+	get rowIndex(): number {
+		return this[native_]?.rowIndex ?? 0;
+	}
+
+	get rowSpan(): number {
+		return this[native_]?.rowSpan ?? 0;
+	}
+
+	get section(): 'head' | 'body' | 'foot' {
+		switch (this[native_]?.section) {
+			case NSCPdfSection.Head:
+				return 'head';
+			case NSCPdfSection.Body:
+				return 'body';
+			case NSCPdfSection.Foot:
+				return 'foot';
+			default:
+				return 'unknown' as never;
+		}
+	}
+
+	get width(): number {
+		return this[native_]?.width ?? 0;
+	}
+}
+
+export class PdfImage {
+	[native_]: NSCPdfImage;
+	constructor(image) {
+		this[native_] = image;
+	}
+
+	get width(): number {
+		return this[native_]?.width ?? 0;
+	}
+
+	get height(): number {
+		return this[native_]?.height ?? 0;
+	}
+
+	static from(bitmap: ImageSource | UIImage | ArrayBuffer, width: number | null | undefined, height: number | null | undefined): PdfImage {
+		let image: NSCPdfImage | null = null;
+		if (bitmap instanceof UIImage) {
+			image = NSCPdfImage.fromImage(bitmap);
+		} else if (bitmap instanceof ImageSource) {
+			image = NSCPdfImage.fromImage(bitmap.ios);
+		} else if (bitmap instanceof ArrayBuffer) {
+			image = NSCPdfImage.fromEncodedData(NSData.dataWithData(bitmap as never));
+		} else {
+			if (arguments.length === 3 && typeof width === 'number' && typeof height === 'number') {
+				try {
+					image = NSCPdfImage.fromData(NSData.dataWithData(bitmap as never), width, height);
+				} catch (e) {
+					console.info(e);
+				}
+			} else {
+				try {
+					image = NSCPdfImage.fromEncodedData(NSData.dataWithData(bitmap as never));
+				} catch (e) {
+					console.info(e);
+				}
+			}
+		}
+
+		if (image) {
+			return new PdfImage(image);
+		}
+		return null;
+	}
+
+	static fromAsync(bitmap: ImageSource | UIImage | ArrayBuffer, width: number | null | undefined, height: number | null | undefined): Promise<PdfImage> {
+		return new Promise<PdfImage>((resolve, reject) => {
+			const cb = (image) => {
+				if (image) {
+					resolve(new PdfImage(image));
+				} else {
+					reject(new Error('Could not create image'));
+				}
+			};
+			if (bitmap instanceof UIImage) {
+				NSCPdfImage.fromImageAsync(bitmap, cb);
+			} else if (bitmap instanceof ImageSource) {
+				NSCPdfImage.fromImageAsync(bitmap.ios, cb);
+			} else if (bitmap instanceof ArrayBuffer) {
+				NSCPdfImage.fromEncodedDataAsync(NSData.dataWithData(bitmap as never), cb);
+			} else {
+				if (arguments.length === 3 && typeof width === 'number' && typeof height === 'number') {
+					NSCPdfImage.fromDataAsync(bitmap as never, width, height, cb);
+				} else {
+					try {
+						NSCPdfImage.fromEncodedDataAsync(bitmap as never, cb);
+					} catch (error) {
+						reject(new Error('Could not create image'));
+					}
+				}
+			}
+		});
+	}
+}
+
 export class PDFDocument implements IPDFDocument {
 	[native_]: NSCPdfDocument;
 	constructor(document?: { units: 'mm' | 'cm' | 'inches' | 'points' }) {
@@ -485,6 +636,11 @@ export class PDFDocument implements IPDFDocument {
 			}
 		}
 	}
+
+	willDrawPage?: (HookData) => void;
+	didDrawPage?: (HookData) => void;
+	willDrawCell?: (CellHookData) => boolean;
+	didDrawCell?: (CellHookData) => void;
 
 	get native() {
 		return this[native_];
@@ -559,27 +715,23 @@ export class PDFDocument implements IPDFDocument {
 		return this;
 	}
 
-	addImage(bitmap: Image | ImageSource, x: number, y: number, width?: number, height?: number);
+	addImage(bitmap: Image | ImageSource | UIImage | PdfImage, x: number, y: number, width?: number, height?: number);
 	addImage(bitmap: string, mime: string, x: number, y: number, width?: number, height?: number);
 	addImage(bitmap: any, xorMime: any, xOrY: number, widthOrY?: number, heightOrWidth?: number, height?: number) {
 		if (bitmap instanceof Image) {
-			// @ts-ignore
-			this[native_].addImage(bitmap.ios, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+			this[native_].addImageWidthHeight(bitmap.ios, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap instanceof ImageSource) {
-			// @ts-ignore
-			this[native_].addImage(bitmap.ios, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+			this[native_].addImageWidthHeight(bitmap.ios, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if ((bitmap as any) instanceof UIImage) {
-			// @ts-ignore
-			this[native_].addImage(bitmap as never, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+			this[native_].addImageWidthHeight(bitmap as never, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap && typeof bitmap === 'string' && xorMime && typeof xorMime === 'string') {
-			// @ts-ignore
-			this[native_].addImageWithBase64(bitmap, xorMime, xOrY, widthOrY, heightOrWidth ?? -1, height ?? -1);
+			this[native_].addImageWithBase64WidthHeight(bitmap, xorMime, xOrY, widthOrY, heightOrWidth ?? -1, height ?? -1);
 		} else if (bitmap && bitmap instanceof NSData) {
-			// @ts-ignore
-			this[native_].addImageWithData(bitmap, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+			this[native_].addImageWithDataWidthHeight(bitmap, xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		} else if (bitmap && (bitmap instanceof Uint8Array || bitmap instanceof Uint8ClampedArray)) {
-			// @ts-ignore
-			this[native_].addImageWithData(NSData.dataWithData(bitmap), xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+			this[native_].addImageWithDataWidthHeight(NSData.dataWithData(bitmap as never), xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
+		} else if (bitmap instanceof PdfImage) {
+			this[native_].addImageWithPdfWidthHeight(bitmap[native_], xorMime, xOrY, widthOrY ?? -1, heightOrWidth ?? -1);
 		}
 		return this;
 	}
@@ -643,6 +795,30 @@ export class PDFDocument implements IPDFDocument {
 
 	table(options?: TableOptions): { x: number; y: number } {
 		const opts = NSCPdfTable.new();
+
+		if (this.willDrawPage) {
+			opts.willDrawPage = (data) => {
+				this.willDrawPage(new HookData(data));
+			};
+		}
+
+		if (this.didDrawPage) {
+			opts.didDrawPage = (data) => {
+				this.didDrawPage(new HookData(data));
+			};
+		}
+
+		if (this.willDrawCell) {
+			opts.willDrawCell = (data) => {
+				return this.willDrawCell(new CellHookData(data)) ?? true;
+			};
+		}
+
+		if (this.didDrawCell) {
+			opts.didDrawCell = (data) => {
+				this.didDrawCell(new CellHookData(data));
+			};
+		}
 
 		if (options) {
 			if (options.columns) {
@@ -790,7 +966,7 @@ export class PDFDocument implements IPDFDocument {
 				return { x: position.x, y: position.y };
 			}
 		} catch (error) {
-			console.error('Error creating table');
+			console.error('Error creating table', error);
 		}
 
 		return { x: 0, y: 0 };

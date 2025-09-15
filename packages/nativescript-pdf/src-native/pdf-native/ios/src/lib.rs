@@ -5,6 +5,7 @@ use objc2::rc::Retained;
 use objc2::runtime::NSObject;
 use objc2::{class, msg_send};
 use objc2_foundation::NSData;
+use pdf_core::table::PdfNativeCellRenderInfoContent;
 use pdf_core::PdfNative;
 use std::ffi::{c_char, CStr, CString};
 use std::ops::Deref;
@@ -111,5 +112,73 @@ pub extern "C" fn pdf_native_load_from_bytes(
             .load_from_bytes(slice, password.as_deref())
             .map(|document| Box::into_raw(Box::new(CPdfNativeDocument(document))))
             .unwrap_or(0 as _)
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_cell_render_info_get_content(
+    instance: *const pdf_core::table::PdfNativeCellRenderInfo
+) -> *const c_char {
+    unsafe {
+        if instance.is_null() {
+            return 0 as _;
+        }
+        let instance = &*(instance);
+
+        let content = instance.get_content();
+
+        content.as_ptr()
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_cell_render_info_set_content(
+    instance: *mut pdf_core::table::PdfNativeCellRenderInfo,
+    content: *const c_char,
+) {
+    unsafe {
+        if instance.is_null() {
+            return;
+        }
+        let instance = &mut *(instance);
+
+        let info_content = if !content.is_null() {
+            let content = CStr::from_ptr(content);
+            let content = content.to_string_lossy();
+            PdfNativeCellRenderInfoContent::new(content.as_ref())
+        } else {
+            PdfNativeCellRenderInfoContent::empty()
+        };
+        instance.content = Box::into_raw(Box::new(info_content));
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_cell_render_info_create_borrowed(
+    content: *const c_char,
+) -> *mut PdfNativeCellRenderInfoContent {
+    unsafe {
+        let info_content = if !content.is_null() {
+            PdfNativeCellRenderInfoContent::new_borrowed(content)
+        } else {
+            PdfNativeCellRenderInfoContent::empty()
+        };
+        Box::into_raw(Box::new(info_content))
+    }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn pdf_native_cell_render_info_create_owned(
+    content: *const c_char,
+) -> *mut PdfNativeCellRenderInfoContent {
+    unsafe {
+        let info_content = if !content.is_null() {
+            let content = CStr::from_ptr(content);
+            let content = content.to_string_lossy();
+            PdfNativeCellRenderInfoContent::new(content.as_ref())
+        } else {
+            PdfNativeCellRenderInfoContent::empty()
+        };
+        Box::into_raw(Box::new(info_content))
     }
 }

@@ -35,7 +35,6 @@ class Pdf {
   companion object {
     internal var PDFInstance: Long = 0
 
-
     val instance = Pdf()
     internal var isLibraryLoaded = false
     init {

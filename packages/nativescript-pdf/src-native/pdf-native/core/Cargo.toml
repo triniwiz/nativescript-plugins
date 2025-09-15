@@ -5,12 +5,14 @@ edition = "2024"
 
 [dependencies]
 parking_lot = "0.12.4"
-image = { version = "0.25", features = ["jpeg", "png"] }
+image = { version = "0.25.8", features = ["jpeg", "png"] }
 byteorder = "1"
 log = "0.4.27"
 
 [target.'cfg(any(target_os = "ios", target_os="macos"))'.dependencies]
-pdfium-render = { git = "https://github.com/ajrcarey/pdfium-render", rev = "e8a9eb8a89a06b0167e9b269a0c3009501315742", features = ["image_025", "pdfium_latest", "static", "thread_safe"] }
+pdfium-render = { git = "https://github.com/ajrcarey/pdfium-render", rev = "e8a9eb8a89a06b0167e9b269a0c3009501315742", default-features = false, features = ["pdfium_latest", "static", "thread_safe"] }
 
 [target.'cfg(any(target_os = "android"))'.dependencies]
-pdfium-render = { git = "https://github.com/ajrcarey/pdfium-render", rev = "e8a9eb8a89a06b0167e9b269a0c3009501315742", features = ["image_025", "pdfium_latest", "thread_safe"] }
+pdfium-render = { git = "https://github.com/ajrcarey/pdfium-render", rev = "e8a9eb8a89a06b0167e9b269a0c3009501315742", default-features = false, features = ["pdfium_latest", "thread_safe"] }
+once_cell = "1.21.3"
+jni = "0.21.1"

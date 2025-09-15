@@ -1,11 +1,9 @@
-use crate::document::{PdfNativeDocumentData, PdfNativeUnit};
-use crate::utils::{get_y_points, to_points};
-use parking_lot::lock_api::MutexGuard;
-use parking_lot::RawMutex;
+use crate::document::{PdfNativeDocument, PdfNativeState, PdfNativeUnit};
+use crate::utils::{get_y_points, to_points, to_unit};
 use pdfium_render::prelude::*;
 use std::cmp::PartialEq;
 use std::collections::HashMap;
-use std::ffi::{c_char, CStr};
+use std::ffi::{c_char, c_void, CStr, CString};
 use std::fmt::{Debug, Formatter};
 
 #[repr(C)]
@@ -965,6 +963,7 @@ fn parse_style_def(value: *const CStyleDef) -> Option<StyleDef> {
     unsafe { Some((*value).into()) }
 }
 
+#[cfg(not(target_os = "android"))]
 #[repr(C)]
 #[derive(Debug, Clone)]
 pub struct CPdfTable {
@@ -998,8 +997,19 @@ pub struct CPdfTable {
     pub show_head: PdfNativeShowHead,
     pub show_foot: PdfNativeShowFoot,
     pub margin: CPdfNativeMargin,
+    pub will_draw_page: Option<extern "C" fn(*const std::os::raw::c_void, u32, f32, f32)>,
+    pub will_draw_page_data: *const std::os::raw::c_void,
+    pub did_draw_page: Option<extern "C" fn(*const std::os::raw::c_void, u32, f32, f32)>,
+    pub did_draw_page_data: *const std::os::raw::c_void,
+    pub will_draw_cell:
+        Option<extern "C" fn(*const std::os::raw::c_void, *mut PdfNativeCellRenderInfo) -> bool>,
+    pub will_draw_cell_data: *const std::os::raw::c_void,
+    pub did_draw_cell:
+        Option<extern "C" fn(*const std::os::raw::c_void, *mut PdfNativeCellRenderInfo)>,
+    pub did_draw_cell_data: *const std::os::raw::c_void,
 }
 
+#[cfg(not(target_os = "android"))]
 impl Into<PdfTable> for CPdfTable {
     fn into(self) -> PdfTable {
         let mut columns: Option<Vec<ColumnDef>> = None;
@@ -1042,6 +1052,66 @@ impl Into<PdfTable> for CPdfTable {
             column_styles = Some(map);
         }
 
+        let will_draw_page: Option<PdfNativeDrawPage> = if self.will_draw_page.is_some() {
+            let f = self.will_draw_page;
+            Some(PdfNativeDrawPage::new(
+                Box::new(move |idx, x, y, data| {
+                    if let Some(cb) = f {
+                        cb(data, idx, x, y)
+                    }
+                }),
+                self.will_draw_page_data as _,
+            ))
+        } else {
+            None
+        };
+
+        let did_draw_page: Option<PdfNativeDrawPage> = if self.did_draw_page.is_some() {
+            let f = self.did_draw_page;
+            Some(PdfNativeDrawPage::new(
+                Box::new(move |idx, x, y, data| {
+                    if let Some(cb) = f {
+                        cb(data, idx, x, y)
+                    }
+                }),
+                self.did_draw_page_data as _,
+            ))
+        } else {
+            None
+        };
+
+        let will_draw_cell: Option<PdfNativeDrawCell> = if self.will_draw_cell.is_some() {
+            let f = self.will_draw_cell;
+            Some(PdfNativeDrawCell::new(
+                true,
+                Box::new(move |info, data| {
+                    if let Some(cb) = f {
+                        return cb(data, info as *mut _);
+                    }
+                    true
+                }),
+                self.will_draw_cell_data as _,
+            ))
+        } else {
+            None
+        };
+
+        let did_draw_cell: Option<PdfNativeDrawCell> = if self.did_draw_cell.is_some() {
+            let f = self.did_draw_cell;
+            Some(PdfNativeDrawCell::new(
+                false,
+                Box::new(move |info, data| {
+                    if let Some(cb) = f {
+                        cb(data, info as *mut _);
+                    }
+                    true
+                }),
+                self.did_draw_cell_data as _,
+            ))
+        } else {
+            None
+        };
+
         PdfTable {
             styles: parse_style_def(self.styles),
             alternate_row_styles: parse_style_def(self.alternate_row_styles),
@@ -1074,10 +1144,15 @@ impl Into<PdfTable> for CPdfTable {
             show_head: self.show_head,
             show_foot: self.show_foot,
             margin: self.margin,
+            will_draw_page,
+            did_draw_page,
+            will_draw_cell,
+            did_draw_cell,
         }
     }
 }
 
+#[cfg(not(target_os = "android"))]
 impl From<&CPdfTable> for PdfTable {
     fn from(value: &CPdfTable) -> Self {
         let mut columns: Option<Vec<ColumnDef>> = None;
@@ -1113,6 +1188,64 @@ impl From<&CPdfTable> for PdfTable {
             column_styles = Some(map);
         }
 
+        let will_draw_page: Option<PdfNativeDrawPage> = if value.will_draw_page.is_some() {
+            let f = value.will_draw_page;
+            Some(PdfNativeDrawPage::new(
+                Box::new(move |idx, x, y, data| {
+                    if let Some(cb) = f {
+                        cb(data, idx, x, y)
+                    }
+                }),
+                value.will_draw_page_data as _,
+            ))
+        } else {
+            None
+        };
+
+        let did_draw_page: Option<PdfNativeDrawPage> = if value.did_draw_page.is_some() {
+            let f = value.did_draw_page;
+            Some(PdfNativeDrawPage::new(
+                Box::new(move |idx, x, y, data| {
+                    if let Some(cb) = f {
+                        cb(data, idx, x, y)
+                    }
+                }),
+                value.did_draw_page_data as _,
+            ))
+        } else {
+            None
+        };
+
+        let will_draw_cell_func = value.will_draw_cell;
+        let will_draw_cell: Option<PdfNativeDrawCell> = match will_draw_cell_func {
+            None => None,
+            Some(will_draw_cell) => {
+                Some(PdfNativeDrawCell::new(
+                    true,
+                    Box::new(move |info, data| {
+                        will_draw_cell(data, info as *mut _)
+                    }),
+                    value.will_draw_cell_data as _,
+                ))
+            }
+        };
+
+        let did_draw_cell: Option<PdfNativeDrawCell> = if value.did_draw_cell.is_some() {
+            let f = value.did_draw_cell;
+            Some(PdfNativeDrawCell::new(
+                false,
+                Box::new(move |info, data| {
+                    if let Some(cb) = f {
+                        cb(data, info as *mut _);
+                    }
+                    true
+                }),
+                value.did_draw_cell_data as _,
+            ))
+        } else {
+            None
+        };
+
         PdfTable {
             styles: parse_style_def(value.styles),
             alternate_row_styles: parse_style_def(value.alternate_row_styles),
@@ -1145,11 +1278,401 @@ impl From<&CPdfTable> for PdfTable {
             show_head: value.show_head,
             show_foot: value.show_foot,
             margin: value.margin,
+            will_draw_page,
+            did_draw_page,
+            will_draw_cell,
+            did_draw_cell,
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PdfNativeSection {
+    Head,
+    Body,
+    Foot,
+}
+
+impl From<PdfNativeSection> for i32 {
+    fn from(s: PdfNativeSection) -> Self {
+        match s {
+            PdfNativeSection::Head => 0,
+            PdfNativeSection::Body => 1,
+            PdfNativeSection::Foot => 2,
+        }
+    }
+}
+
+impl From<Section> for PdfNativeSection {
+    fn from(s: Section) -> Self {
+        match s {
+            Section::Header => PdfNativeSection::Head,
+            Section::Body => PdfNativeSection::Body,
+            Section::Footer => PdfNativeSection::Foot,
+        }
+    }
+}
+
+impl From<Section> for i32 {
+    fn from(s: Section) -> Self {
+        match s {
+            Section::Header => 0,
+            Section::Body => 1,
+            Section::Footer => 2,
         }
     }
 }
 
 #[derive(Debug, Clone)]
+pub enum PdfNativeCellRenderInfoContentInner {
+    Owned(CString),
+    Borrowed(*const c_char),
+    Empty,
+}
+
+#[derive(Debug, Clone)]
+pub struct PdfNativeCellRenderInfoContent(pub(crate) PdfNativeCellRenderInfoContentInner);
+
+impl PdfNativeCellRenderInfoContent {
+    pub fn new(content: &str) -> PdfNativeCellRenderInfoContent {
+        let content = if content.is_empty() {
+            PdfNativeCellRenderInfoContentInner::Empty
+        } else {
+            PdfNativeCellRenderInfoContentInner::Owned(CString::new(content).unwrap())
+        };
+        PdfNativeCellRenderInfoContent(content)
+    }
+
+    pub fn new_borrowed(content: *const c_char) -> PdfNativeCellRenderInfoContent {
+        let content = if content.is_null() {
+            PdfNativeCellRenderInfoContentInner::Empty
+        } else {
+            PdfNativeCellRenderInfoContentInner::Borrowed(content)
+        };
+        PdfNativeCellRenderInfoContent(content)
+    }
+
+    pub fn empty() -> PdfNativeCellRenderInfoContent {
+        PdfNativeCellRenderInfoContent(PdfNativeCellRenderInfoContentInner::Empty)
+    }
+
+    pub fn content(&self) -> &CStr {
+        match &self.0 {
+            PdfNativeCellRenderInfoContentInner::Owned(content) => content.as_c_str(),
+            PdfNativeCellRenderInfoContentInner::Borrowed(content) => unsafe {
+                CStr::from_ptr(*content)
+            },
+            PdfNativeCellRenderInfoContentInner::Empty => c"",
+        }
+    }
+}
+
+#[repr(C)]
+#[derive(Debug, Clone)]
+pub struct PdfNativeCellRenderInfo {
+    pub section: PdfNativeSection,
+    pub row_index: u32,
+    pub column_index: u32,
+    pub page_index: u32,
+
+    pub x: f32,
+    pub y: f32,
+    pub width: f32,
+    pub height: f32,
+
+    pub col_span: u32,
+    pub row_span: u32,
+    pub line_count: u32,
+
+    pub content: *mut PdfNativeCellRenderInfoContent,
+}
+
+impl Drop for PdfNativeCellRenderInfo {
+    fn drop(&mut self) {
+        if !self.content.is_null() {
+            let _ = unsafe { Box::from_raw(self.content) };
+        }
+    }
+}
+
+impl PdfNativeCellRenderInfo {
+    pub fn get_content(&self) -> &CStr {
+        if self.content.is_null() {
+            return c"";
+        }
+        unsafe {
+            let content = &*self.content;
+            content.content()
+        }
+    }
+}
+
+pub struct PdfNativeDrawPage {
+    #[cfg(target_os = "android")]
+    pub(crate) object: jni::objects::GlobalRef,
+    #[cfg(target_os = "android")]
+    pub(crate) will_draw: bool,
+    #[cfg(not(target_os = "android"))]
+    pub(crate) cb: Box<dyn Fn(u32, f32, f32, *mut c_void)>,
+    #[cfg(not(target_os = "android"))]
+    pub(crate) cb_data: *mut c_void,
+}
+
+impl PdfNativeDrawPage {
+    #[cfg(not(target_os = "android"))]
+    pub fn new(cb: Box<dyn Fn(u32, f32, f32, *mut c_void)>, data: *mut c_void) -> Self {
+        Self { cb, cb_data: data }
+    }
+
+    #[cfg(target_os = "android")]
+    pub fn new(object: jni::objects::GlobalRef, will_draw: bool) -> Self {
+        Self { object, will_draw }
+    }
+
+    #[cfg(not(target_os = "android"))]
+    pub fn emit(&self, index: u32, x: f32, y: f32) {
+        (self.cb)(index, x, y, self.cb_data);
+    }
+
+    #[cfg(target_os = "android")]
+    pub fn emit(&self, index: u32, x: f32, y: f32) {
+        if let (Some(object), Some(jvm)) = (Some(self.object.as_obj()), crate::JVM.get()) {
+            let name = if self.will_draw {
+                "onWillDrawPage"
+            } else {
+                "onDidDrawPage"
+            };
+            let vm = jvm.attach_current_thread();
+            let mut env = vm.unwrap();
+            env.call_method(
+                object,
+                name,
+                "(IFF)V",
+                &[
+                    jni::objects::JValue::from(index as i32),
+                    jni::objects::JValue::from(x),
+                    jni::objects::JValue::from(y),
+                ],
+            );
+        }
+    }
+}
+
+impl Debug for PdfNativeDrawPage {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("<PdfNativeDrawPage closure>")
+    }
+}
+
+pub struct PdfNativeDrawCell {
+    #[cfg(target_os = "android")]
+    pub(crate) object: jni::objects::GlobalRef,
+    pub(crate) will_draw: bool,
+    #[cfg(not(target_os = "android"))]
+    pub(crate) cb: Box<dyn Fn(&mut PdfNativeCellRenderInfo, *mut c_void) -> bool>,
+    #[cfg(not(target_os = "android"))]
+    pub(crate) cb_data: *mut c_void,
+}
+
+impl PdfNativeDrawCell {
+    #[cfg(not(target_os = "android"))]
+    pub fn new(
+        will_draw: bool,
+        cb: Box<dyn Fn(&mut PdfNativeCellRenderInfo, *mut c_void) -> bool>,
+        data: *mut c_void,
+    ) -> Self {
+        Self {
+            will_draw,
+            cb,
+            cb_data: data,
+        }
+    }
+
+    #[cfg(target_os = "android")]
+    pub fn new(object: jni::objects::GlobalRef, will_draw: bool) -> Self {
+        Self { object, will_draw }
+    }
+
+    #[cfg(not(target_os = "android"))]
+    pub fn emit(&self, mut info: PdfNativeCellRenderInfo) -> (bool, Option<String>) {
+        let previous = info.content;
+        let proceed = (self.cb)(&mut info, self.cb_data);
+        // Capture possible modified content for will_draw
+        let updated = if self.will_draw {
+            if !std::ptr::eq(previous, info.content) {
+                return (proceed, None);
+            }
+            let content = unsafe { *Box::from_raw(info.content) };
+            let content = match content.0 {
+                PdfNativeCellRenderInfoContentInner::Owned(content) => {
+                    content.into_string().unwrap()
+                }
+                PdfNativeCellRenderInfoContentInner::Borrowed(content) => {
+                    if content.is_null() {
+                        String::new()
+                    } else {
+                        unsafe { CStr::from_ptr(content).to_string_lossy().to_string() }
+                    }
+                }
+                PdfNativeCellRenderInfoContentInner::Empty => String::new(),
+            };
+            info.content = 0 as _;
+            Some(content)
+        } else {
+            None
+        };
+
+        (proceed, updated)
+    }
+
+    #[cfg(target_os = "android")]
+    pub fn emit(&self, mut info: PdfNativeCellRenderInfo) -> (bool, Option<String>) {
+        use jni::objects::{JString, JValue};
+        if let (Some(object), Some(jvm)) = (Some(self.object.as_obj()), crate::JVM.get()) {
+            let vm = jvm.attach_current_thread();
+            let mut env = vm.unwrap();
+
+            let content = if info.content.is_null() {
+                env.new_string("").unwrap()
+            } else {
+                let content = unsafe { *Box::from_raw(info.content) };
+                let content = match content.0 {
+                    PdfNativeCellRenderInfoContentInner::Owned(content) => {
+                        content.into_string().unwrap()
+                    }
+                    PdfNativeCellRenderInfoContentInner::Borrowed(content) => {
+                        if content.is_null() {
+                            String::new()
+                        } else {
+                            unsafe { CStr::from_ptr(content).to_string_lossy().to_string() }
+                        }
+                    }
+                    PdfNativeCellRenderInfoContentInner::Empty => String::new(),
+                };
+                info.content = 0 as _;
+
+                env.new_string(content).unwrap()
+            };
+
+            return if let (Some(table_cache), Some(cache)) =
+                (crate::TABLE.get(), crate::HOT_THINGS.get())
+            {
+                let section: i32 = info.section.try_into().unwrap();
+                if self.will_draw {
+                    let content_value = jni::objects::JValue::Object(&content);
+                    let ret = unsafe {
+                        env.call_method_unchecked(
+                            object,
+                            table_cache.will_draw_cell_id,
+                            jni::signature::ReturnType::Object,
+                            &[
+                                jni::objects::JValue::from(info.page_index as i32).as_jni(),
+                                jni::objects::JValue::from(info.x).as_jni(),
+                                jni::objects::JValue::from(info.y).as_jni(),
+                                jni::objects::JValue::from(section).as_jni(),
+                                jni::objects::JValue::from(info.row_index as i32).as_jni(),
+                                jni::objects::JValue::from(info.column_index as i32).as_jni(),
+                                jni::objects::JValue::from(info.width).as_jni(),
+                                jni::objects::JValue::from(info.height).as_jni(),
+                                jni::objects::JValue::from(info.col_span as i32).as_jni(),
+                                jni::objects::JValue::from(info.row_span as i32).as_jni(),
+                                jni::objects::JValue::from(info.line_count as i32).as_jni(),
+                                content_value.as_jni(),
+                            ],
+                        )
+                        .and_then(|value| value.l())
+                    };
+
+                    if let Ok(pair) = ret {
+                        return if !pair.is_null() {
+                            let clazz = unsafe {
+                                jni::objects::JClass::from_raw(cache.jni_helper_class.as_raw() as _)
+                            };
+                            let first = unsafe {
+                                env.call_static_method_unchecked(
+                                    &clazz,
+                                    cache.jni_helper_pair_first_id,
+                                    jni::signature::ReturnType::Primitive(
+                                        jni::signature::Primitive::Boolean,
+                                    ),
+                                    &[JValue::from(&pair).as_jni()],
+                                )
+                                .and_then(|first| first.z())
+                            };
+
+                            let second = unsafe {
+                                env.call_static_method_unchecked(
+                                    &clazz,
+                                    cache.jni_helper_pair_second_id,
+                                    jni::signature::ReturnType::Object,
+                                    &[JValue::from(&pair).as_jni()],
+                                )
+                                .and_then(|second| second.l())
+                            };
+                            match (first, second) {
+                                (Ok(proceed), Ok(updated)) => {
+                                    let updated = if updated.is_null() {
+                                        None
+                                    } else {
+                                        let string = JString::from(updated);
+                                        env.get_string(&string)
+                                            .and_then(|string| {
+                                                let string = string.to_string_lossy();
+                                                Ok(string.to_string())
+                                            })
+                                            .ok()
+                                    };
+                                    (proceed, updated)
+                                }
+                                _ => (true, None),
+                            }
+                        } else {
+                            (true, None)
+                        };
+                    }
+
+                    (true, None)
+                } else {
+                    let content_value = jni::objects::JValue::Object(&content);
+                    unsafe {
+                        env.call_method_unchecked(
+                            object,
+                            table_cache.did_draw_cell_id,
+                            jni::signature::ReturnType::Primitive(jni::signature::Primitive::Void),
+                            &[
+                                jni::objects::JValue::from(info.page_index as i32).as_jni(),
+                                jni::objects::JValue::from(info.x).as_jni(),
+                                jni::objects::JValue::from(info.y).as_jni(),
+                                jni::objects::JValue::from(section).as_jni(),
+                                jni::objects::JValue::from(info.row_index as i32).as_jni(),
+                                jni::objects::JValue::from(info.column_index as i32).as_jni(),
+                                jni::objects::JValue::from(info.width).as_jni(),
+                                jni::objects::JValue::from(info.height).as_jni(),
+                                jni::objects::JValue::from(info.col_span as i32).as_jni(),
+                                jni::objects::JValue::from(info.row_span as i32).as_jni(),
+                                jni::objects::JValue::from(info.line_count as i32).as_jni(),
+                                content_value.as_jni(),
+                            ],
+                        );
+                    };
+                    (true, None)
+                }
+            } else {
+                (true, None)
+            };
+        }
+        (true, None)
+    }
+}
+
+impl Debug for PdfNativeDrawCell {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("<PdfNativeDrawCell closure>")
+    }
+}
+
+#[derive(Debug)]
 pub struct PdfTable {
     pub columns: Option<Vec<ColumnDef>>,
     pub column_styles: Option<HashMap<ColumnKey, StyleDef>>,
@@ -1167,6 +1690,10 @@ pub struct PdfTable {
     pub show_head: PdfNativeShowHead,
     pub show_foot: PdfNativeShowFoot,
     pub margin: CPdfNativeMargin,
+    pub will_draw_page: Option<PdfNativeDrawPage>,
+    pub did_draw_page: Option<PdfNativeDrawPage>,
+    pub will_draw_cell: Option<PdfNativeDrawCell>,
+    pub did_draw_cell: Option<PdfNativeDrawCell>,
 }
 
 impl Default for PdfTable {
@@ -1192,6 +1719,10 @@ impl Default for PdfTable {
                 unit: PdfNativeUnit::Mm,
                 changed: false,
             }),
+            will_draw_page: None,
+            did_draw_page: None,
+            will_draw_cell: None,
+            did_draw_cell: None,
         }
     }
 }
@@ -1561,6 +2092,10 @@ fn draw_row<'a>(
     x_origin: PdfPoints,
     column_widths: &[PdfPoints],
     unit: PdfNativeUnit,
+    section: Section,
+    row_index: usize,
+    page_index: u32,
+    table: &PdfTable,
 ) -> Result<PdfPoints, PdfiumError> {
     let row_height = compute_row_height(document, row, column_widths, unit)?;
     let mut cursor_x = x_origin;
@@ -1573,31 +2108,79 @@ fn draw_row<'a>(
             CellWidth::Auto | CellWidth::Wrap => column_widths[i],
         };
 
-        if style.line_width > 0.0 || style.fill_color.is_some() {
-            let mut path = PdfPagePathObject::new(
+        let font = match style.font {
+            PdfNativeFontFamily::Helvetica => match style.font_style {
+                PdfNativeFontStyle::Normal => document.fonts_mut().helvetica(),
+                PdfNativeFontStyle::Bold => document.fonts_mut().helvetica_bold(),
+                PdfNativeFontStyle::Italic => document.fonts_mut().helvetica_oblique(),
+                PdfNativeFontStyle::BoldItalic => document.fonts_mut().helvetica_bold_oblique(),
+            },
+            PdfNativeFontFamily::Times => match style.font_style {
+                PdfNativeFontStyle::Normal => document.fonts_mut().times_roman(),
+                PdfNativeFontStyle::Bold => document.fonts_mut().times_bold(),
+                PdfNativeFontStyle::Italic => document.fonts_mut().times_italic(),
+                PdfNativeFontStyle::BoldItalic => document.fonts_mut().times_bold_italic(),
+            },
+            PdfNativeFontFamily::Courier => match style.font_style {
+                PdfNativeFontStyle::Normal => document.fonts_mut().courier(),
+                PdfNativeFontStyle::Bold => document.fonts_mut().courier_bold(),
+                PdfNativeFontStyle::Italic => document.fonts_mut().courier_oblique(),
+                PdfNativeFontStyle::BoldItalic => document.fonts_mut().courier_bold_oblique(),
+            },
+        };
+        let original_content = cell.content.clone();
+        let original_lines = if matches!(style.cell_width, CellWidth::Wrap) {
+            wrap_text(
                 document,
-                PdfPoints::ZERO,
-                PdfPoints::ZERO,
-                if style.line_width > 0.0 {
-                    Some(style.line_color.unwrap_or(PdfColor::new(10, 10, 10, 255)))
-                } else {
-                    None
-                },
-                if style.line_width > 0.0 {
-                    Some(PdfPoints::new(style.line_width))
-                } else {
-                    None
-                },
-                style.fill_color,
-            )?;
+                &original_content,
+                font,
+                PdfPoints::new(style.font_size),
+                cell_width - padding.left.into() - padding.right.into(),
+            )
+            .unwrap_or_else(|_| vec![original_content.clone()])
+        } else {
+            vec![original_content.clone()]
+        };
 
-            path.move_to(cursor_x, cursor_y)?;
-            path.line_to(cursor_x + cell_width, cursor_y)?;
-            path.line_to(cursor_x + cell_width, cursor_y - row_height)?;
-            path.line_to(cursor_x, cursor_y - row_height)?;
-            path.close_path()?;
-            page.objects_mut().add_path_object(path)?;
+        // Build render info (line_count reflects original before potential mutation)
+        let will_info_content = PdfNativeCellRenderInfoContent::new(original_content.as_str());
+        let will_info = PdfNativeCellRenderInfo {
+            section: section.into(),
+            row_index: row_index as u32,
+            column_index: i as u32,
+            page_index,
+            x: to_unit(cursor_x, unit),
+            y: to_unit(page.height() - cursor_y, unit),
+            width: to_unit(cell_width, unit),
+            height: to_unit(row_height, unit),
+            col_span: cell.col_span as u32,
+            row_span: cell.row_span as u32,
+            line_count: original_lines.len() as u32,
+            content: Box::into_raw(Box::new(will_info_content)),
+        };
+
+        let mut replace_page = false;
+        // Invoke will_draw_cell (may mutate content and/or cancel drawing)
+        let (proceed, updated) = if let Some(cb) = table.will_draw_cell.as_ref() {
+            replace_page = true;
+            cb.emit(will_info)
+        } else {
+            (true, None)
+        };
+
+        if replace_page {
+            page.regenerate_content()?;
+            let _ = std::mem::replace(page, document.pages_mut().get(page_index as PdfPageIndex)?);
         }
+
+        if !proceed {
+            // Skip drawing & did_draw callback
+            cursor_x += cell_width;
+            continue;
+        }
+
+        // Decide final content string
+        let final_content = updated.unwrap_or_else(|| original_content.clone());
 
         let font = match style.font {
             PdfNativeFontFamily::Helvetica => match style.font_style {
@@ -1620,21 +2203,69 @@ fn draw_row<'a>(
             },
         };
 
+        // Recompute wrapped lines if content changed
         let content_lines = if matches!(style.cell_width, CellWidth::Wrap) {
             wrap_text(
                 document,
-                &cell.content,
+                &final_content,
                 font,
                 PdfPoints::new(style.font_size),
                 cell_width - padding.left.into() - padding.right.into(),
             )
-            .unwrap_or_else(|_| vec![cell.content.clone()])
+            .unwrap_or_else(|_| vec![final_content.clone()])
         } else {
-            vec![cell.content.clone()]
+            vec![final_content.clone()]
+        };
+
+        // Background / border
+        if style.line_width > 0.0 || style.fill_color.is_some() {
+            let mut path = PdfPagePathObject::new(
+                document,
+                PdfPoints::ZERO,
+                PdfPoints::ZERO,
+                if style.line_width > 0.0 {
+                    Some(style.line_color.unwrap_or(PdfColor::new(10, 10, 10, 255)))
+                } else {
+                    None
+                },
+                if style.line_width > 0.0 {
+                    Some(PdfPoints::new(style.line_width))
+                } else {
+                    None
+                },
+                style.fill_color,
+            )?;
+            path.move_to(cursor_x, cursor_y)?;
+            path.line_to(cursor_x + cell_width, cursor_y)?;
+            path.line_to(cursor_x + cell_width, cursor_y - row_height)?;
+            path.line_to(cursor_x, cursor_y - row_height)?;
+            path.close_path()?;
+            page.objects_mut().add_path_object(path)?;
+        }
+
+        // Font selection
+        let font = match style.font {
+            PdfNativeFontFamily::Helvetica => match style.font_style {
+                PdfNativeFontStyle::Normal => document.fonts_mut().helvetica(),
+                PdfNativeFontStyle::Bold => document.fonts_mut().helvetica_bold(),
+                PdfNativeFontStyle::Italic => document.fonts_mut().helvetica_oblique(),
+                PdfNativeFontStyle::BoldItalic => document.fonts_mut().helvetica_bold_oblique(),
+            },
+            PdfNativeFontFamily::Times => match style.font_style {
+                PdfNativeFontStyle::Normal => document.fonts_mut().times_roman(),
+                PdfNativeFontStyle::Bold => document.fonts_mut().times_bold(),
+                PdfNativeFontStyle::Italic => document.fonts_mut().times_italic(),
+                PdfNativeFontStyle::BoldItalic => document.fonts_mut().times_bold_italic(),
+            },
+            PdfNativeFontFamily::Courier => match style.font_style {
+                PdfNativeFontStyle::Normal => document.fonts_mut().courier(),
+                PdfNativeFontStyle::Bold => document.fonts_mut().courier_bold(),
+                PdfNativeFontStyle::Italic => document.fonts_mut().courier_oblique(),
+                PdfNativeFontStyle::BoldItalic => document.fonts_mut().courier_bold_oblique(),
+            },
         };
 
         let line_height = PdfPoints::new(style.font_size * 1.2);
-        let total_text_height = line_height * content_lines.len() as f32;
         let available_width = cell_width - padding.left.into() - padding.right.into();
         let available_height = row_height - padding.top.into() - padding.bottom.into();
 
@@ -1651,16 +2282,13 @@ fn draw_row<'a>(
             }
         };
 
-        for line in content_lines {
+        for line in &content_lines {
             let mut text_obj =
-                PdfPageTextObject::new(document, &line, font, PdfPoints::new(style.font_size))?;
-
+                PdfPageTextObject::new(document, line, font, PdfPoints::new(style.font_size))?;
             let text_width = text_obj.width()?;
-
             if let Some(color) = style.text_color {
                 text_obj.set_fill_color(color)?;
             }
-
             let text_x = match style.horizontal_align {
                 CHorizontalAlign::Left => cursor_x + padding.left.into(),
                 CHorizontalAlign::Center => {
@@ -1670,12 +2298,37 @@ fn draw_row<'a>(
                     cursor_x + cell_width - padding.right.into() - text_width
                 }
             };
-
             text_obj.translate(text_x, text_y)?;
-
             page.objects_mut().add_text_object(text_obj)?;
-
             text_y -= line_height;
+        }
+
+        let mut replace_page = false;
+
+        // did_draw_cell with updated content
+        if let Some(cb) = table.did_draw_cell.as_ref() {
+            let did_info_content = PdfNativeCellRenderInfoContent::new(final_content.as_str());
+            let did_info = PdfNativeCellRenderInfo {
+                section: section.into(),
+                row_index: row_index as u32,
+                column_index: i as u32,
+                page_index,
+                x: to_unit(cursor_x, unit),
+                y: to_unit(page.height() - cursor_y, unit),
+                width: to_unit(cell_width, unit),
+                height: to_unit(row_height, unit),
+                col_span: cell.col_span as u32,
+                row_span: cell.row_span as u32,
+                line_count: content_lines.len() as u32,
+                content: Box::into_raw(Box::new(did_info_content)),
+            };
+            replace_page = true;
+            cb.emit(did_info);
+        }
+
+        if replace_page {
+            page.regenerate_content()?;
+            let _ = std::mem::replace(page, document.pages_mut().get(page_index as PdfPageIndex)?);
         }
 
         cursor_x += cell_width;
@@ -1685,11 +2338,18 @@ fn draw_row<'a>(
 }
 
 pub fn draw_table<'a>(
-    document: &mut PdfDocument<'a>,
-    page: PdfPage<'a>,
+    doc: &mut PdfNativeDocument,
     table: &PdfTable,
-    data: &mut MutexGuard<RawMutex, PdfNativeDocumentData>,
 ) -> Result<(PdfPoints, PdfPoints), PdfiumError> {
+    let (units, index) = {
+        let mut lock = doc.data.lock();
+        lock.state = PdfNativeState::DrawingTable;
+        (lock.units, lock.current_page)
+    };
+    // let index = data.current_page;
+    let document = &mut doc.document;
+    let page = document.pages_mut().get(index)?;
+
     let column_keys = resolve_columns(table);
 
     let head = resolve_rows_2d(&table.head, &column_keys, table, Section::Header);
@@ -1701,7 +2361,7 @@ pub fn draw_table<'a>(
     rows.extend(body.iter().cloned());
     rows.extend(foot.iter().cloned());
 
-    let auto_widths = compute_auto_column_widths(document, &rows, column_keys.len(), data.units)?;
+    let auto_widths = compute_auto_column_widths(document, &rows, column_keys.len(), units)?;
 
     let mut current_page = page;
 
@@ -1711,7 +2371,7 @@ pub fn draw_table<'a>(
     let margin_top = to_points(
         table.margin.top.value,
         if table.margin.top.changed {
-            data.units
+            units
         } else {
             PdfNativeUnit::Points
         },
@@ -1719,7 +2379,7 @@ pub fn draw_table<'a>(
     let margin_left = to_points(
         table.margin.left.value,
         if table.margin.left.changed {
-            data.units
+            units
         } else {
             PdfNativeUnit::Points
         },
@@ -1727,7 +2387,7 @@ pub fn draw_table<'a>(
     let margin_right = to_points(
         table.margin.right.value,
         if table.margin.right.changed {
-            data.units
+            units
         } else {
             PdfNativeUnit::Points
         },
@@ -1735,7 +2395,7 @@ pub fn draw_table<'a>(
     let margin_bottom = to_points(
         table.margin.bottom.value,
         if table.margin.bottom.changed {
-            data.units
+            units
         } else {
             PdfNativeUnit::Points
         },
@@ -1747,6 +2407,18 @@ pub fn draw_table<'a>(
     } else {
         margin_top
     };
+
+    let current_page_index = index as u32;
+
+    if let Some(cb) = table.will_draw_page.as_ref() {
+        unsafe {
+            cb.emit(
+                current_page_index,
+                to_unit(x_start, units),
+                to_unit(y_start, units),
+            )
+        };
+    }
 
     let available_width = page_width - x_start - margin_right;
 
@@ -1766,10 +2438,17 @@ pub fn draw_table<'a>(
 
     let bottom_margin = margin_bottom;
 
-    let footer_height = foot
+    let actual_footer_height = foot
         .iter()
-        .map(|row| compute_row_height(document, row, &scaled_widths, data.units))
+        .map(|row| compute_row_height(document, row, &scaled_widths, units))
         .try_fold(PdfPoints::ZERO, |acc, h| h.map(|h| acc + h))?;
+
+    // Reserve footer space only if we actually draw it on every page
+    let footer_height = if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
+        actual_footer_height
+    } else {
+        PdfPoints::ZERO
+    };
 
     let mut cursor_y = get_y_points(&current_page, y_start);
 
@@ -1779,7 +2458,7 @@ pub fn draw_table<'a>(
         table.show_head,
         PdfNativeShowHead::EveryPage | PdfNativeShowHead::FirstPage
     ) {
-        for row in &head {
+        for (idx, row) in head.iter().enumerate() {
             cursor_y = draw_row(
                 document,
                 &mut current_page,
@@ -1787,37 +2466,83 @@ pub fn draw_table<'a>(
                 cursor_y,
                 x_start,
                 &scaled_widths,
-                data.units,
+                units,
+                Section::Header,
+                idx,
+                current_page_index,
+                table,
             )?;
         }
     }
 
-    for row in &body {
-        let row_height = compute_row_height(document, row, &scaled_widths, data.units)?;
+    for (body_row_idx, row) in body.iter().enumerate() {
+        let row_height = compute_row_height(document, row, &scaled_widths, units)?;
         let remaining_space = cursor_y - bottom_margin - footer_height;
 
         if row_height > remaining_space {
-            let mut footer_cursor_y = bottom_margin + footer_height;
-            for footer_row in &foot {
-                footer_cursor_y = draw_row(
-                    document,
-                    &mut current_page,
-                    footer_row,
-                    footer_cursor_y,
-                    x_start,
-                    &scaled_widths,
-                    data.units,
-                )?;
+            // Draw footer for the page we are finishing ONLY when EveryPage
+            if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
+                let mut footer_cursor_y = bottom_margin + actual_footer_height;
+                let index = { doc.data.lock().current_page };
+                for (idx, footer_row) in foot.iter().enumerate() {
+                    footer_cursor_y = draw_row(
+                        document,
+                        &mut current_page,
+                        footer_row,
+                        footer_cursor_y,
+                        x_start,
+                        &scaled_widths,
+                        units,
+                        Section::Footer,
+                        idx,
+                        index as u32,
+                        table,
+                    )?;
+                }
+
+                if let Some(cb) = table.did_draw_page.as_ref() {
+                    unsafe {
+                        cb.emit(
+                            index as u32,
+                            to_unit(x_start, units),
+                            to_unit(footer_cursor_y, units),
+                        )
+                    };
+                }
+            } else {
+                // Even if no footer, still fire did_draw_page if callback exists
+                if let Some(cb) = table.did_draw_page.as_ref() {
+                    let index = { doc.data.lock().current_page };
+                    unsafe {
+                        cb.emit(
+                            index as u32,
+                            to_unit(x_start, units),
+                            to_unit(cursor_y, units),
+                        )
+                    };
+                }
             }
 
             let (mut next_page, index) = add_new_page(document)?;
-            data.current_page = index;
+            {
+                doc.data.lock().current_page = index
+            }
             next_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
 
             cursor_y = get_y_points(&next_page, margin_top);
 
+            if let Some(cb) = table.will_draw_page.as_ref() {
+                unsafe {
+                    cb.emit(
+                        index as u32,
+                        to_unit(x_start, units),
+                        to_unit(cursor_y, units),
+                    )
+                };
+            }
+
             if matches!(table.show_head, PdfNativeShowHead::EveryPage) {
-                for header_row in &head {
+                for (idx, header_row) in head.iter().enumerate() {
                     cursor_y = draw_row(
                         document,
                         &mut next_page,
@@ -1825,17 +2550,20 @@ pub fn draw_table<'a>(
                         cursor_y,
                         x_start,
                         &scaled_widths,
-                        data.units,
+                        units,
+                        Section::Header,
+                        idx,
+                        index as u32,
+                        table,
                     )?;
                 }
             }
 
-            current_page.set_content_regeneration_strategy(
-                PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
-            );
             current_page.regenerate_content()?;
             current_page = next_page;
         }
+
+        let (index) = { doc.data.lock().current_page };
 
         cursor_y = draw_row(
             document,
@@ -1844,7 +2572,11 @@ pub fn draw_table<'a>(
             cursor_y,
             x_start,
             &scaled_widths,
-            data.units,
+            units,
+            Section::Body,
+            body_row_idx,
+            index as u32,
+            table,
         )?;
     }
 
@@ -1855,25 +2587,98 @@ pub fn draw_table<'a>(
         table.show_foot,
         PdfNativeShowFoot::EveryPage | PdfNativeShowFoot::LastPage
     ) {
-        let mut footer_cursor_y = cursor_y;
-        for footer_row in &foot {
-            footer_cursor_y = draw_row(
-                document,
-                &mut current_page,
-                footer_row,
-                footer_cursor_y,
-                table.position.0,
-                &scaled_widths,
-                data.units,
-            )?;
-            final_y = footer_cursor_y;
+        // Determine required footer height for this final draw
+        let needed_footer_height = if matches!(table.show_foot, PdfNativeShowFoot::EveryPage) {
+            // already reserved earlier
+            actual_footer_height
+        } else {
+            // LastPage: may not have reserved space; ensure it fits, else new page
+            if cursor_y - bottom_margin < actual_footer_height {
+                // Not enough space: finish current page & start new one
+                if let Some(cb) = table.did_draw_page.as_ref() {
+                    let index = { doc.data.lock().current_page };
+                    unsafe {
+                        cb.emit(
+                            index as u32,
+                            to_unit(x_start, units),
+                            to_unit(cursor_y, units),
+                        )
+                    };
+                }
+                let (mut next_page, index) = add_new_page(document)?;
+                {
+                    doc.data.lock().current_page = index;
+                }
+                next_page
+                    .set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
+                cursor_y = get_y_points(&next_page, margin_top);
+
+                if let Some(cb) = table.will_draw_page.as_ref() {
+                    unsafe {
+                        cb.emit(
+                            index as u32,
+                            to_unit(x_start, units),
+                            to_unit(cursor_y, units),
+                        )
+                    };
+                }
+
+                if matches!(table.show_head, PdfNativeShowHead::EveryPage) {
+                    for (idx, header_row) in head.iter().enumerate() {
+                        cursor_y = draw_row(
+                            document,
+                            &mut next_page,
+                            header_row,
+                            cursor_y,
+                            x_start,
+                            &scaled_widths,
+                            units,
+                            Section::Header,
+                            idx,
+                            index as u32,
+                            table,
+                        )?;
+                    }
+                }
+
+                current_page.regenerate_content()?;
+                current_page = next_page;
+            }
+            actual_footer_height
+        };
+
+        // Draw footer now (final page or EveryPage case already handled earlier but we still re-draw only if LastPage or last occurrence)
+        if needed_footer_height > PdfPoints::ZERO {
+            let mut footer_cursor_y = cursor_y;
+            let (index) = { doc.data.lock().current_page };
+            for (idx, footer_row) in foot.iter().enumerate() {
+                footer_cursor_y = draw_row(
+                    document,
+                    &mut current_page,
+                    footer_row,
+                    footer_cursor_y,
+                    x_start,
+                    &scaled_widths,
+                    units,
+                    Section::Footer,
+                    idx,
+                    index as u32,
+                    table,
+                )?;
+                final_y = footer_cursor_y;
+            }
+        } else {
+            final_y = cursor_y;
         }
     }
 
-    current_page.set_content_regeneration_strategy(
-        PdfPageContentRegenerationStrategy::AutomaticOnEveryChange,
-    );
+    current_page.set_content_regeneration_strategy(PdfPageContentRegenerationStrategy::Manual);
     current_page.regenerate_content()?;
+
+    {
+        let mut lock = doc.data.lock();
+        lock.state = PdfNativeState::Idle;
+    };
 
     let mut y_device = page_height - final_y;
 
