@@ -1500,7 +1500,7 @@ impl PdfNativeDrawCell {
         let proceed = (self.cb)(&mut info, self.cb_data);
         // Capture possible modified content for will_draw
         let updated = if self.will_draw {
-            if !std::ptr::eq(previous, info.content) {
+            if std::ptr::eq(previous, info.content) {
                 return (proceed, None);
             }
             let content = unsafe { *Box::from_raw(info.content) };

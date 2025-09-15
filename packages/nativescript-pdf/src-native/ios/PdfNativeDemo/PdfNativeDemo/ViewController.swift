@@ -156,17 +156,17 @@ class ViewController: UIViewController {
     
     let tab = NSCPdfTable()
     
-//    tab.willDrawCell = { hook in
-//      if (hook.section == .body && hook.columnIndex == 2){
-//        hook.content = ""
-//        return true
-//      }
-//      if (hook.section == .foot){
-//        hook.content = ""
-//        return false
-//      }
-//      return true
-//    }
+    tab.willDrawCell = { hook in
+      if (hook.section == .body && hook.columnIndex == 2){
+        hook.content = ""
+        return true
+      }
+      if (hook.section == .foot){
+        hook.content = ""
+        return false
+      }
+      return true
+    }
     
     
     tab.didDrawCell = { hook in
