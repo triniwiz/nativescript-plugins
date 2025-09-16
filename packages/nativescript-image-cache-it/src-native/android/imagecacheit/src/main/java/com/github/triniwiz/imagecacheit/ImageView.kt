@@ -52,6 +52,7 @@ import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import androidx.core.graphics.drawable.toDrawable
 
 /**
  * Created by triniwiz on 4/6/20
@@ -951,7 +952,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
       }
 
       override fun onResourceReady(
-        resource: Drawable,
+        resource: Drawable?,
         model: Any,
         target: Target<Drawable?>?,
         dataSource: DataSource,
@@ -988,7 +989,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
             if (resource is BitmapDrawable) {
               if (overlayColor != 0) {
                 val bitmapResource = drawOverlay(resource.bitmap)
-                res = BitmapDrawable(resources, bitmapResource)
+                res = bitmapResource.toDrawable(resources)
               }
             }
             res?.let {
@@ -1004,8 +1005,8 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
             var bmWidth: Int
             var bmHeight: Int
             try {
-              bmWidth = resource.intrinsicWidth
-              bmHeight = resource.intrinsicHeight
+              bmWidth = resource?.intrinsicWidth ?: 0
+              bmHeight = resource?.intrinsicHeight ?: 0
               if (bmWidth <= 0) {
                 bmWidth = width
               }
@@ -1017,7 +1018,7 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
               } else {
                 bitmap = pool[bmWidth, bmHeight, Bitmap.Config.ARGB_8888]
                 val canvas = Canvas(bitmap)
-                resource.draw(canvas)
+                resource?.draw(canvas)
               }
               handleImageFilters(gpuImage)
             } catch (outOfMemoryError: OutOfMemoryError) {
@@ -1034,10 +1035,10 @@ class ImageView : AppCompatImageView, ImageViewProgressListener {
             val handler = Handler(Looper.getMainLooper())
             try {
               val filteredImage = gpuImage.getBitmapWithFilterApplied(bitmap)
-              var res = BitmapDrawable(resources, filteredImage)
+              var res = filteredImage.toDrawable(resources)
               if (overlayColor != 0) {
                 val bitmapResource = drawOverlay(filteredImage)
-                res = BitmapDrawable(resources, bitmapResource)
+                res = bitmapResource.toDrawable(resources)
               }
               thumbConfig.createThumb(res)
               sendLoadEvent(res)

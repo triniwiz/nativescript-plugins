@@ -109,7 +109,7 @@ class MyAppGlideModule : AppGlideModule() {
 
   }
 
-  private class OkHttpProgressResponseBody internal constructor(
+  private class OkHttpProgressResponseBody(
     private val key: String,
     private val responseBody: ResponseBody?,
     private val progressListener: ResponseProgressListener
@@ -125,7 +125,7 @@ class MyAppGlideModule : AppGlideModule() {
 
     override fun source(): BufferedSource {
       if (bufferedSource == null) {
-        bufferedSource = responseBody!!.source().buffer
+        bufferedSource = source(responseBody!!.source()).buffer()
       }
       return bufferedSource!!
     }
