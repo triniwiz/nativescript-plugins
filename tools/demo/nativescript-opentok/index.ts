@@ -1,6 +1,7 @@
 import { DemoSharedBase } from '../utils';
 import { TNSSession, TNSPublisher, TNSSubscriber } from '@triniwiz/nativescript-opentok';
 import { Frame, GridLayout } from '@nativescript/core';
+import * as permissions from '@nativescript-community/perms';
 
 export class DemoSharedNativescriptOpentok extends DemoSharedBase {
 	session: TNSSession;
@@ -36,12 +37,15 @@ export class DemoSharedNativescriptOpentok extends DemoSharedBase {
 				this.session.connect('T1==cGFydG5lcl9pZD00NzI4MzU2NCZzaWc9OWJhOTZkNmQ1ZDBlOTExZjM1NmRlMTI3MmQyYzdjZTQ5ZGMwZmIzNDpzZXNzaW9uX2lkPTJfTVg0ME56STRNelUyTkg1LU1UWXlOamcwTnpZek5UWTRNMzVPUWpWVVJVdE1TWEJwWTJGVGFrNHlUR3MyZUVRdlYxRi1mZyZjcmVhdGVfdGltZT0xNjI2ODUyNDMwJm5vbmNlPTAuMDM1OTIzOTk3NDQ2MDg2NTQmcm9sZT1wdWJsaXNoZXImZXhwaXJlX3RpbWU9MTYyNzQ1NzIyOSZpbml0aWFsX2xheW91dF9jbGFzc19saXN0PQ==');
 			};
 			if (global.isAndroid) {
-				const permissions = require('nativescript-permissions');
 				if (android.os.Build.VERSION.SDK_INT >= 23) {
-					const perms = [android.Manifest.permission.CAMERA, android.Manifest.permission.RECORD_AUDIO];
-					permissions.requestPermission(perms).then((args) => {
-						connect();
-					});
+					permissions
+						.request({
+							camera: {},
+							microphone: {},
+						})
+						.then((args) => {
+							connect();
+						});
 				} else {
 					connect();
 				}
