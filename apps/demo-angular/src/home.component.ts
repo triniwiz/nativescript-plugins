@@ -70,6 +70,9 @@ export class HomeComponent {
 		name: 'nativescript-parsesdk'
 	},
 	{
+			name: 'nativescript-pdf',
+	},
+	{
 		name: 'nativescript-popup'
 	},
 	{

@@ -20,6 +20,7 @@ export * from './nativescript-nested-scrollview';
 export * from './nativescript-opentok';
 export * from './nativescript-pager';
 export * from './nativescript-parsesdk';
+export * from './nativescript-pdf';
 export * from './nativescript-popup';
 export * from './nativescript-pubnub';
 export * from './nativescript-pusher-beams';

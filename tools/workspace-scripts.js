@@ -446,6 +446,13 @@ module.exports = {
 					description: '@triniwiz/nativescript-supabase-auth: Build',
 				},
 			},
+			// @triniwiz/nativescript-pdf
+			'nativescript-pdf': {
+				build: {
+					script: 'nx run nativescript-pdf:build.all',
+					description: '@triniwiz/nativescript-pdf: Build',
+				},
+			},
 			// @triniwiz/nativescript-klaviyo-sdk
 			'nativescript-klaviyo-sdk': {
 				build: {
@@ -689,6 +696,10 @@ module.exports = {
 			'nativescript-supabase-auth': {
 				script: 'nx run nativescript-supabase-auth:focus',
 				description: 'Focus on @triniwiz/nativescript-supabase-auth',
+			},
+			'nativescript-pdf': {
+				script: 'nx run nativescript-pdf:focus',
+				description: 'Focus on @triniwiz/nativescript-pdf',
 			},
 			'nativescript-klaviyo-sdk': {
 				script: 'nx run nativescript-klaviyo-sdk:focus',

@@ -47,3 +47,6 @@ packages/**/angular/dist
 .nx/workspace-data
 apps/demo/.env
 /packages/nativescript-supabase/src-native/ios/NSCSupabase/dist
+packages/nativescript-pdf/src-native/ios/dist
+packages/nativescript-pdf/src-native/ios/pdfium_lib
+packages/nativescript-pdf/src-native/pdf-native/target

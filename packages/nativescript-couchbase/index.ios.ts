@@ -1227,7 +1227,7 @@ const fromISO8601UTC = function (date: string) {
 	if (dateFormatter === undefined) {
 		dateFormatter = NSDateFormatter.new();
 	}
-	dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+	dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	dateFormatter.locale = NSLocale.localeWithLocaleIdentifier('en_US_POSIX');
 	dateFormatter.timeZone = NSTimeZone.timeZoneForSecondsFromGMT(0);
 	return dateFormatter.dateFromString(date);
