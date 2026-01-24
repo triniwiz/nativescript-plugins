@@ -1,5 +1,3 @@
-/// <reference path="android-declarations.d.ts"/>
-
 declare module com {
 	export module bumptech {
 		export module glide {
@@ -15,7 +13,7 @@ declare module com {
 declare module com {
 	export module bumptech {
 		export module glide {
-			export class GenericTransitionOptions<TranscodeType>  extends com.bumptech.glide.TransitionOptions<com.bumptech.glide.GenericTransitionOptions<any>,any> {
+			export class GenericTransitionOptions<TranscodeType> extends com.bumptech.glide.TransitionOptions<com.bumptech.glide.GenericTransitionOptions<any>, any> {
 				public static class: java.lang.Class<com.bumptech.glide.GenericTransitionOptions<any>>;
 				public static with(param0: number): com.bumptech.glide.GenericTransitionOptions<any>;
 				public static withNoTransition(): com.bumptech.glide.GenericTransitionOptions<any>;
@@ -66,9 +64,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.Glide$RequestOptionsFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						build(): com.bumptech.glide.request.RequestOptions;
-					});
+					public constructor(implementation: { build(): com.bumptech.glide.request.RequestOptions });
 					public constructor();
 					public build(): com.bumptech.glide.request.RequestOptions;
 				}
@@ -85,7 +81,7 @@ declare module com {
 				public addGlobalRequestListener(param0: com.bumptech.glide.request.RequestListener<any>): com.bumptech.glide.GlideBuilder;
 				public setDefaultRequestOptions(param0: com.bumptech.glide.Glide.RequestOptionsFactory): com.bumptech.glide.GlideBuilder;
 				public setDiskCacheExecutor(param0: com.bumptech.glide.load.engine.executor.GlideExecutor): com.bumptech.glide.GlideBuilder;
-				public setDefaultTransitionOptions(param0: java.lang.Class, param1: com.bumptech.glide.TransitionOptions<any,any>): com.bumptech.glide.GlideBuilder;
+				public setDefaultTransitionOptions(param0: java.lang.Class, param1: com.bumptech.glide.TransitionOptions<any, any>): com.bumptech.glide.GlideBuilder;
 				public setConnectivityMonitorFactory(param0: com.bumptech.glide.manager.ConnectivityMonitorFactory): com.bumptech.glide.GlideBuilder;
 				public setImageDecoderEnabledForBitmaps(param0: boolean): com.bumptech.glide.GlideBuilder;
 				public setArrayPool(param0: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool): com.bumptech.glide.GlideBuilder;
@@ -116,13 +112,13 @@ declare module com {
 				public getEngine(): com.bumptech.glide.load.engine.Engine;
 				public getLogLevel(): number;
 				public getDefaultRequestListeners(): java.util.List<com.bumptech.glide.request.RequestListener<any>>;
-				public constructor(param0: globalAndroid.content.Context, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool, param2: com.bumptech.glide.Registry, param3: com.bumptech.glide.request.target.ImageViewTargetFactory, param4: com.bumptech.glide.Glide.RequestOptionsFactory, param5: java.util.Map<java.lang.Class<any>,com.bumptech.glide.TransitionOptions<any,any>>, param6: java.util.List<com.bumptech.glide.request.RequestListener<any>>, param7: com.bumptech.glide.load.engine.Engine, param8: boolean, param9: number);
+				public constructor(param0: globalAndroid.content.Context, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool, param2: com.bumptech.glide.Registry, param3: com.bumptech.glide.request.target.ImageViewTargetFactory, param4: com.bumptech.glide.Glide.RequestOptionsFactory, param5: java.util.Map<java.lang.Class<any>, com.bumptech.glide.TransitionOptions<any, any>>, param6: java.util.List<com.bumptech.glide.request.RequestListener<any>>, param7: com.bumptech.glide.load.engine.Engine, param8: boolean, param9: number);
 				public getRegistry(): com.bumptech.glide.Registry;
 				public getDefaultRequestOptions(): com.bumptech.glide.request.RequestOptions;
-				public buildImageViewTarget(param0: globalAndroid.widget.ImageView, param1: java.lang.Class): com.bumptech.glide.request.target.ViewTarget<any,any>;
+				public buildImageViewTarget(param0: globalAndroid.widget.ImageView, param1: java.lang.Class): com.bumptech.glide.request.target.ViewTarget<any, any>;
 				public getArrayPool(): com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool;
 				public isLoggingRequestOriginsEnabled(): boolean;
-				public getDefaultTransitionOptions(param0: java.lang.Class): com.bumptech.glide.TransitionOptions<any,any>;
+				public getDefaultTransitionOptions(param0: java.lang.Class): com.bumptech.glide.TransitionOptions<any, any>;
 			}
 		}
 	}
@@ -131,34 +127,29 @@ declare module com {
 declare module com {
 	export module bumptech {
 		export module glide {
-			export class ListPreloader<T>  extends globalAndroid.widget.AbsListView.OnScrollListener {
+			export class ListPreloader<T> extends globalAndroid.widget.AbsListView.OnScrollListener {
 				public static class: java.lang.Class<com.bumptech.glide.ListPreloader<any>>;
 				public constructor(param0: com.bumptech.glide.RequestManager, param1: com.bumptech.glide.ListPreloader.PreloadModelProvider<any>, param2: com.bumptech.glide.ListPreloader.PreloadSizeProvider<any>, param3: number);
 				public onScrollStateChanged(param0: globalAndroid.widget.AbsListView, param1: number): void;
 				public onScroll(param0: globalAndroid.widget.AbsListView, param1: number, param2: number, param3: number): void;
 			}
 			export module ListPreloader {
-				export class PreloadModelProvider<U>  extends java.lang.Object {
+				export class PreloadModelProvider<U> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.ListPreloader.PreloadModelProvider<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.ListPreloader$PreloadModelProvider interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						getPreloadItems(param0: number): java.util.List<U>;
-						getPreloadRequestBuilder(param0: U): com.bumptech.glide.RequestBuilder<any>;
-					});
+					public constructor(implementation: { getPreloadItems(param0: number): java.util.List<U>; getPreloadRequestBuilder(param0: U): com.bumptech.glide.RequestBuilder<any> });
 					public constructor();
 					public getPreloadItems(param0: number): java.util.List<U>;
 					public getPreloadRequestBuilder(param0: U): com.bumptech.glide.RequestBuilder<any>;
 				}
-				export class PreloadSizeProvider<T>  extends java.lang.Object {
+				export class PreloadSizeProvider<T> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.ListPreloader.PreloadSizeProvider<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.ListPreloader$PreloadSizeProvider interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						getPreloadSize(param0: T, param1: number, param2: number): native.Array<number>;
-					});
+					public constructor(implementation: { getPreloadSize(param0: T, param1: number, param2: number): native.Array<number> });
 					public constructor();
 					public getPreloadSize(param0: T, param1: number, param2: number): native.Array<number>;
 				}
@@ -204,22 +195,12 @@ declare module com {
 declare module com {
 	export module bumptech {
 		export module glide {
-			export class ModelTypes<T>  extends java.lang.Object {
+			export class ModelTypes<T> extends java.lang.Object {
 				public static class: java.lang.Class<com.bumptech.glide.ModelTypes<any>>;
 				/**
 				 * Constructs a new instance of the com.bumptech.glide.ModelTypes<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 				 */
-				public constructor(implementation: {
-					load(param0: globalAndroid.graphics.Bitmap): T;
-					load(param0: globalAndroid.graphics.drawable.Drawable): T;
-					load(param0: string): T;
-					load(param0: globalAndroid.net.Uri): T;
-					load(param0: java.io.File): T;
-					load(param0: java.lang.Integer): T;
-					load(param0: java.net.URL): T;
-					load(param0: native.Array<number>): T;
-					load(param0: any): T;
-				});
+				public constructor(implementation: { load(param0: globalAndroid.graphics.Bitmap): T; load(param0: globalAndroid.graphics.drawable.Drawable): T; load(param0: string): T; load(param0: globalAndroid.net.Uri): T; load(param0: java.io.File): T; load(param0: java.lang.Integer): T; load(param0: java.net.URL): T; load(param0: native.Array<number>): T; load(param0: any): T });
 				public constructor();
 				public load(param0: globalAndroid.graphics.drawable.Drawable): T;
 				public load(param0: string): T;
@@ -263,19 +244,19 @@ declare module com {
 				public getRegisteredResourceClasses(param0: java.lang.Class, param1: java.lang.Class, param2: java.lang.Class): java.util.List;
 				/** @deprecated */
 				public register(param0: java.lang.Class, param1: com.bumptech.glide.load.ResourceEncoder<any>): com.bumptech.glide.Registry;
-				public append(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>): com.bumptech.glide.Registry;
-				public replace(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>): com.bumptech.glide.Registry;
+				public append(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>): com.bumptech.glide.Registry;
+				public replace(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>): com.bumptech.glide.Registry;
 				public isResourceEncoderAvailable(param0: com.bumptech.glide.load.engine.Resource<any>): boolean;
 				public prepend(param0: java.lang.Class, param1: com.bumptech.glide.load.Encoder<any>): com.bumptech.glide.Registry;
-				public append(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.ResourceDecoder<any,any>): com.bumptech.glide.Registry;
+				public append(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.ResourceDecoder<any, any>): com.bumptech.glide.Registry;
 				public constructor();
-				public append(param0: string, param1: java.lang.Class, param2: java.lang.Class, param3: com.bumptech.glide.load.ResourceDecoder<any,any>): com.bumptech.glide.Registry;
-				public prepend(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.ResourceDecoder<any,any>): com.bumptech.glide.Registry;
-				public prepend(param0: string, param1: java.lang.Class, param2: java.lang.Class, param3: com.bumptech.glide.load.ResourceDecoder<any,any>): com.bumptech.glide.Registry;
+				public append(param0: string, param1: java.lang.Class, param2: java.lang.Class, param3: com.bumptech.glide.load.ResourceDecoder<any, any>): com.bumptech.glide.Registry;
+				public prepend(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.ResourceDecoder<any, any>): com.bumptech.glide.Registry;
+				public prepend(param0: string, param1: java.lang.Class, param2: java.lang.Class, param3: com.bumptech.glide.load.ResourceDecoder<any, any>): com.bumptech.glide.Registry;
 				public getImageHeaderParsers(): java.util.List<com.bumptech.glide.load.ImageHeaderParser>;
-				public prepend(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>): com.bumptech.glide.Registry;
+				public prepend(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>): com.bumptech.glide.Registry;
 				public getSourceEncoder(param0: any): com.bumptech.glide.load.Encoder<any>;
-				public register(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any>): com.bumptech.glide.Registry;
+				public register(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any, any>): com.bumptech.glide.Registry;
 				/** @deprecated */
 				public register(param0: java.lang.Class, param1: com.bumptech.glide.load.Encoder<any>): com.bumptech.glide.Registry;
 				public prepend(param0: java.lang.Class, param1: com.bumptech.glide.load.ResourceEncoder<any>): com.bumptech.glide.Registry;
@@ -283,7 +264,7 @@ declare module com {
 				public getResultEncoder(param0: com.bumptech.glide.load.engine.Resource<any>): com.bumptech.glide.load.ResourceEncoder<any>;
 				public getRewinder(param0: any): com.bumptech.glide.load.data.DataRewinder<any>;
 				public register(param0: com.bumptech.glide.load.ImageHeaderParser): com.bumptech.glide.Registry;
-				public getLoadPath(param0: java.lang.Class, param1: java.lang.Class, param2: java.lang.Class): com.bumptech.glide.load.engine.LoadPath<any,any,any>;
+				public getLoadPath(param0: java.lang.Class, param1: java.lang.Class, param2: java.lang.Class): com.bumptech.glide.load.engine.LoadPath<any, any, any>;
 				public getModelLoaders(param0: any): java.util.List;
 				public setResourceDecoderBucketPriorityList(param0: java.util.List<string>): com.bumptech.glide.Registry;
 				public register(param0: com.bumptech.glide.load.data.DataRewinder.Factory<any>): com.bumptech.glide.Registry;
@@ -324,7 +305,7 @@ declare module com {
 declare module com {
 	export module bumptech {
 		export module glide {
-			export class RequestBuilder<TranscodeType>  extends com.bumptech.glide.request.BaseRequestOptions<com.bumptech.glide.RequestBuilder<any>> {
+			export class RequestBuilder<TranscodeType> extends com.bumptech.glide.request.BaseRequestOptions<com.bumptech.glide.RequestBuilder<any>> {
 				public static class: java.lang.Class<com.bumptech.glide.RequestBuilder<any>>;
 				public static DOWNLOAD_ONLY_OPTIONS: com.bumptech.glide.request.RequestOptions;
 				public load(param0: globalAndroid.graphics.drawable.Drawable): com.bumptech.glide.RequestBuilder<any>;
@@ -348,7 +329,7 @@ declare module com {
 				public thumbnail(param0: number): com.bumptech.glide.RequestBuilder<any>;
 				public clone(): com.bumptech.glide.RequestBuilder<any>;
 				public load(param0: java.io.File): any;
-				public into(param0: globalAndroid.widget.ImageView): com.bumptech.glide.request.target.ViewTarget<globalAndroid.widget.ImageView,any>;
+				public into(param0: globalAndroid.widget.ImageView): com.bumptech.glide.request.target.ViewTarget<globalAndroid.widget.ImageView, any>;
 				public apply(param0: com.bumptech.glide.request.BaseRequestOptions<any>): com.bumptech.glide.RequestBuilder<any>;
 				public load(param0: globalAndroid.graphics.drawable.Drawable): any;
 				public into(param0: com.bumptech.glide.request.target.Target<any>): com.bumptech.glide.request.target.Target<any>;
@@ -374,7 +355,7 @@ declare module com {
 				public load(param0: java.net.URL): any;
 				public apply(param0: com.bumptech.glide.request.BaseRequestOptions<any>): any;
 				public load(param0: java.io.File): com.bumptech.glide.RequestBuilder<any>;
-				public transition(param0: com.bumptech.glide.TransitionOptions<any,any>): com.bumptech.glide.RequestBuilder<any>;
+				public transition(param0: com.bumptech.glide.TransitionOptions<any, any>): com.bumptech.glide.RequestBuilder<any>;
 				public load(param0: globalAndroid.net.Uri): any;
 			}
 		}
@@ -439,7 +420,7 @@ declare module com {
 				public load(param0: globalAndroid.net.Uri): any;
 			}
 			export module RequestManager {
-				export class ClearTarget extends com.bumptech.glide.request.target.CustomViewTarget<globalAndroid.view.View,any> {
+				export class ClearTarget extends com.bumptech.glide.request.target.CustomViewTarget<globalAndroid.view.View, any> {
 					public static class: java.lang.Class<com.bumptech.glide.RequestManager.ClearTarget>;
 					public onResourceCleared(param0: globalAndroid.graphics.drawable.Drawable): void;
 					public getRequest(): com.bumptech.glide.request.Request;
@@ -463,8 +444,8 @@ declare module com {
 declare module com {
 	export module bumptech {
 		export module glide {
-			export abstract class TransitionOptions<CHILD, TranscodeType>  extends java.lang.Cloneable {
-				public static class: java.lang.Class<com.bumptech.glide.TransitionOptions<any,any>>;
+			export abstract class TransitionOptions<CHILD, TranscodeType> extends java.lang.Cloneable {
+				public static class: java.lang.Class<com.bumptech.glide.TransitionOptions<any, any>>;
 				public clone(): any;
 				public dontTransition(): any;
 				public transition(param0: number): any;
@@ -533,14 +514,12 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module load {
-				export class Encoder<T>  extends java.lang.Object {
+				export class Encoder<T> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.load.Encoder<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.load.Encoder<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						encode(param0: T, param1: java.io.File, param2: com.bumptech.glide.load.Options): boolean;
-					});
+					public constructor(implementation: { encode(param0: T, param1: java.io.File, param2: com.bumptech.glide.load.Options): boolean });
 					public constructor();
 					public encode(param0: T, param1: java.io.File, param2: com.bumptech.glide.load.Options): boolean;
 				}
@@ -576,12 +555,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.load.ImageHeaderParser interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						getType(param0: java.io.InputStream): com.bumptech.glide.load.ImageHeaderParser.ImageType;
-						getType(param0: java.nio.ByteBuffer): com.bumptech.glide.load.ImageHeaderParser.ImageType;
-						getOrientation(param0: java.io.InputStream, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool): number;
-						getOrientation(param0: java.nio.ByteBuffer, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool): number;
-					});
+					public constructor(implementation: { getType(param0: java.io.InputStream): com.bumptech.glide.load.ImageHeaderParser.ImageType; getType(param0: java.nio.ByteBuffer): com.bumptech.glide.load.ImageHeaderParser.ImageType; getOrientation(param0: java.io.InputStream, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool): number; getOrientation(param0: java.nio.ByteBuffer, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool): number });
 					public constructor();
 					public static UNKNOWN_ORIENTATION: number;
 					public getOrientation(param0: java.io.InputStream, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool): number;
@@ -628,9 +602,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.ImageHeaderParserUtils$OrientationReader interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							getOrientation(param0: com.bumptech.glide.load.ImageHeaderParser): number;
-						});
+						public constructor(implementation: { getOrientation(param0: com.bumptech.glide.load.ImageHeaderParser): number });
 						public constructor();
 						public getOrientation(param0: com.bumptech.glide.load.ImageHeaderParser): number;
 					}
@@ -639,9 +611,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.ImageHeaderParserUtils$TypeReader interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							getType(param0: com.bumptech.glide.load.ImageHeaderParser): com.bumptech.glide.load.ImageHeaderParser.ImageType;
-						});
+						public constructor(implementation: { getType(param0: com.bumptech.glide.load.ImageHeaderParser): com.bumptech.glide.load.ImageHeaderParser.ImageType });
 						public constructor();
 						public getType(param0: com.bumptech.glide.load.ImageHeaderParser): com.bumptech.glide.load.ImageHeaderParser.ImageType;
 					}
@@ -660,12 +630,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.load.Key interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						updateDiskCacheKey(param0: java.security.MessageDigest): void;
-						equals(param0: any): boolean;
-						hashCode(): number;
-						<clinit>(): void;
-					});
+					public constructor(implementation: { updateDiskCacheKey(param0: java.security.MessageDigest): void; equals(param0: any): boolean; hashCode(): number; <clinit>(): void });
 					public constructor();
 					public static CHARSET: java.nio.charset.Charset;
 					public static STRING_CHARSET_NAME: string;
@@ -682,7 +647,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module load {
-				export class MultiTransformation<T>  extends com.bumptech.glide.load.Transformation<any> {
+				export class MultiTransformation<T> extends com.bumptech.glide.load.Transformation<any> {
 					public static class: java.lang.Class<com.bumptech.glide.load.MultiTransformation<any>>;
 					public equals(param0: any): boolean;
 					public constructor(param0: java.util.Collection<any>);
@@ -700,7 +665,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module load {
-				export class Option<T>  extends java.lang.Object {
+				export class Option<T> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.load.Option<any>>;
 					public static disk(param0: string, param1: any, param2: com.bumptech.glide.load.Option.CacheKeyUpdater<any>): com.bumptech.glide.load.Option<any>;
 					public equals(param0: any): boolean;
@@ -713,14 +678,12 @@ declare module com {
 					public getDefaultValue(): T;
 				}
 				export module Option {
-					export class CacheKeyUpdater<T>  extends java.lang.Object {
+					export class CacheKeyUpdater<T> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.Option.CacheKeyUpdater<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.Option$CacheKeyUpdater interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							update(param0: native.Array<number>, param1: T, param2: java.security.MessageDigest): void;
-						});
+						public constructor(implementation: { update(param0: native.Array<number>, param1: T, param2: java.security.MessageDigest): void });
 						public constructor();
 						public update(param0: native.Array<number>, param1: T, param2: java.security.MessageDigest): void;
 					}
@@ -770,15 +733,12 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module load {
-				export class ResourceDecoder<T, Z>  extends java.lang.Object {
-					public static class: java.lang.Class<com.bumptech.glide.load.ResourceDecoder<any,any>>;
+				export class ResourceDecoder<T, Z> extends java.lang.Object {
+					public static class: java.lang.Class<com.bumptech.glide.load.ResourceDecoder<any, any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.load.ResourceDecoder<any,any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						handles(param0: T, param1: com.bumptech.glide.load.Options): boolean;
-						decode(param0: T, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<Z>;
-					});
+					public constructor(implementation: { handles(param0: T, param1: com.bumptech.glide.load.Options): boolean; decode(param0: T, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<Z> });
 					public constructor();
 					public decode(param0: T, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<Z>;
 					public handles(param0: T, param1: com.bumptech.glide.load.Options): boolean;
@@ -792,15 +752,12 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module load {
-				export class ResourceEncoder<T>  extends com.bumptech.glide.load.Encoder<com.bumptech.glide.load.engine.Resource<any>> {
+				export class ResourceEncoder<T> extends com.bumptech.glide.load.Encoder<com.bumptech.glide.load.engine.Resource<any>> {
 					public static class: java.lang.Class<com.bumptech.glide.load.ResourceEncoder<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.load.ResourceEncoder<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						getEncodeStrategy(param0: com.bumptech.glide.load.Options): com.bumptech.glide.load.EncodeStrategy;
-						encode(param0: any, param1: java.io.File, param2: com.bumptech.glide.load.Options): boolean;
-					});
+					public constructor(implementation: { getEncodeStrategy(param0: com.bumptech.glide.load.Options): com.bumptech.glide.load.EncodeStrategy; encode(param0: any, param1: java.io.File, param2: com.bumptech.glide.load.Options): boolean });
 					public constructor();
 					public encode(param0: any, param1: java.io.File, param2: com.bumptech.glide.load.Options): boolean;
 					public getEncodeStrategy(param0: com.bumptech.glide.load.Options): com.bumptech.glide.load.EncodeStrategy;
@@ -814,18 +771,12 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module load {
-				export class Transformation<T>  extends com.bumptech.glide.load.Key {
+				export class Transformation<T> extends com.bumptech.glide.load.Key {
 					public static class: java.lang.Class<com.bumptech.glide.load.Transformation<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.load.Transformation<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						transform(param0: globalAndroid.content.Context, param1: com.bumptech.glide.load.engine.Resource<any>, param2: number, param3: number): com.bumptech.glide.load.engine.Resource<any>;
-						updateDiskCacheKey(param0: java.security.MessageDigest): void;
-						equals(param0: any): boolean;
-						hashCode(): number;
-						<clinit>(): void;
-					});
+					public constructor(implementation: { transform(param0: globalAndroid.content.Context, param1: com.bumptech.glide.load.engine.Resource<any>, param2: number, param3: number): com.bumptech.glide.load.engine.Resource<any>; updateDiskCacheKey(param0: java.security.MessageDigest): void; equals(param0: any): boolean; hashCode(): number; <clinit>(): void });
 					public constructor();
 					public static CHARSET: java.nio.charset.Charset;
 					public static STRING_CHARSET_NAME: string;
@@ -869,7 +820,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module data {
-					export abstract class AssetPathFetcher<T>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+					export abstract class AssetPathFetcher<T> extends com.bumptech.glide.load.data.DataFetcher<any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.data.AssetPathFetcher<any>>;
 						public getDataSource(): com.bumptech.glide.load.DataSource;
 						public constructor(param0: globalAndroid.content.res.AssetManager, param1: string);
@@ -911,18 +862,12 @@ declare module com {
 		export module glide {
 			export module load {
 				export module data {
-					export class DataFetcher<T>  extends java.lang.Object {
+					export class DataFetcher<T> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.data.DataFetcher<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.data.DataFetcher<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void;
-							cleanup(): void;
-							cancel(): void;
-							getDataClass(): java.lang.Class<T>;
-							getDataSource(): com.bumptech.glide.load.DataSource;
-						});
+						public constructor(implementation: { loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void; cleanup(): void; cancel(): void; getDataClass(): java.lang.Class<T>; getDataSource(): com.bumptech.glide.load.DataSource });
 						public constructor();
 						public getDataSource(): com.bumptech.glide.load.DataSource;
 						public loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void;
@@ -931,15 +876,12 @@ declare module com {
 						public getDataClass(): java.lang.Class<T>;
 					}
 					export module DataFetcher {
-						export class DataCallback<T>  extends java.lang.Object {
+						export class DataCallback<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.data.DataFetcher.DataCallback<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.data.DataFetcher$DataCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								onDataReady(param0: T): void;
-								onLoadFailed(param0: java.lang.Exception): void;
-							});
+							public constructor(implementation: { onDataReady(param0: T): void; onLoadFailed(param0: java.lang.Exception): void });
 							public constructor();
 							public onLoadFailed(param0: java.lang.Exception): void;
 							public onDataReady(param0: T): void;
@@ -956,29 +898,23 @@ declare module com {
 		export module glide {
 			export module load {
 				export module data {
-					export class DataRewinder<T>  extends java.lang.Object {
+					export class DataRewinder<T> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.data.DataRewinder<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.data.DataRewinder<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							rewindAndGet(): T;
-							cleanup(): void;
-						});
+						public constructor(implementation: { rewindAndGet(): T; cleanup(): void });
 						public constructor();
 						public rewindAndGet(): T;
 						public cleanup(): void;
 					}
 					export module DataRewinder {
-						export class Factory<T>  extends java.lang.Object {
+						export class Factory<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.data.DataRewinder.Factory<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.data.DataRewinder$Factory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								build(param0: T): com.bumptech.glide.load.data.DataRewinder<T>;
-								getDataClass(): java.lang.Class<T>;
-							});
+							public constructor(implementation: { build(param0: T): com.bumptech.glide.load.data.DataRewinder<T>; getDataClass(): java.lang.Class<T> });
 							public constructor();
 							public build(param0: T): com.bumptech.glide.load.data.DataRewinder<T>;
 							public getDataClass(): java.lang.Class<T>;
@@ -1110,9 +1046,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.data.HttpUrlFetcher$HttpUrlConnectionFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								build(param0: java.net.URL): java.net.HttpURLConnection;
-							});
+							public constructor(implementation: { build(param0: java.net.URL): java.net.HttpURLConnection });
 							public constructor();
 							public build(param0: java.net.URL): java.net.HttpURLConnection;
 						}
@@ -1157,7 +1091,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module data {
-					export abstract class LocalUriFetcher<T>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+					export abstract class LocalUriFetcher<T> extends com.bumptech.glide.load.data.DataFetcher<any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.data.LocalUriFetcher<any>>;
 						public getDataSource(): com.bumptech.glide.load.DataSource;
 						public loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void;
@@ -1340,9 +1274,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.data.mediastore.ThumbnailQuery interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								query(param0: globalAndroid.net.Uri): globalAndroid.database.Cursor;
-							});
+							public constructor(implementation: { query(param0: globalAndroid.net.Uri): globalAndroid.database.Cursor });
 							public constructor();
 							public query(param0: globalAndroid.net.Uri): globalAndroid.database.Cursor;
 						}
@@ -1384,9 +1316,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.ActiveResources$DequeuedResourceCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								onResourceDequeued(): void;
-							});
+							public constructor(implementation: { onResourceDequeued(): void });
 							public constructor();
 							public onResourceDequeued(): void;
 						}
@@ -1455,7 +1385,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class DataCacheWriter<DataType>  extends com.bumptech.glide.load.engine.cache.DiskCache.Writer {
+					export class DataCacheWriter<DataType> extends com.bumptech.glide.load.engine.cache.DiskCache.Writer {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.DataCacheWriter<any>>;
 						public write(param0: java.io.File): boolean;
 					}
@@ -1475,10 +1405,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.engine.DataFetcherGenerator interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							startNext(): boolean;
-							cancel(): void;
-						});
+						public constructor(implementation: { startNext(): boolean; cancel(): void });
 						public constructor();
 						public startNext(): boolean;
 						public cancel(): void;
@@ -1489,11 +1416,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.DataFetcherGenerator$FetcherReadyCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								reschedule(): void;
-								onDataFetcherReady(param0: com.bumptech.glide.load.Key, param1: any, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource, param4: com.bumptech.glide.load.Key): void;
-								onDataFetcherFailed(param0: com.bumptech.glide.load.Key, param1: java.lang.Exception, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource): void;
-							});
+							public constructor(implementation: { reschedule(): void; onDataFetcherReady(param0: com.bumptech.glide.load.Key, param1: any, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource, param4: com.bumptech.glide.load.Key): void; onDataFetcherFailed(param0: com.bumptech.glide.load.Key, param1: java.lang.Exception, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource): void });
 							public constructor();
 							public reschedule(): void;
 							public onDataFetcherFailed(param0: com.bumptech.glide.load.Key, param1: java.lang.Exception, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource): void;
@@ -1511,7 +1434,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class DecodeHelper<Transcode>  extends java.lang.Object {
+					export class DecodeHelper<Transcode> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodeHelper<any>>;
 					}
 				}
@@ -1525,7 +1448,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class DecodeJob<R>  extends java.lang.Object {
+					export class DecodeJob<R> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodeJob<any>>;
 						public run(): void;
 						public onDataFetcherReady(param0: com.bumptech.glide.load.Key, param1: any, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource, param4: com.bumptech.glide.load.Key): void;
@@ -1536,26 +1459,22 @@ declare module com {
 						public onDataFetcherFailed(param0: com.bumptech.glide.load.Key, param1: java.lang.Exception, param2: com.bumptech.glide.load.data.DataFetcher<any>, param3: com.bumptech.glide.load.DataSource): void;
 					}
 					export module DecodeJob {
-						export class Callback<R>  extends java.lang.Object {
+						export class Callback<R> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodeJob.Callback<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.DecodeJob$Callback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								onResourceReady(param0: com.bumptech.glide.load.engine.Resource<R>, param1: com.bumptech.glide.load.DataSource): void;
-								onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException): void;
-								reschedule(param0: com.bumptech.glide.load.engine.DecodeJob<any>): void;
-							});
+							public constructor(implementation: { onResourceReady(param0: com.bumptech.glide.load.engine.Resource<R>, param1: com.bumptech.glide.load.DataSource): void; onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException): void; reschedule(param0: com.bumptech.glide.load.engine.DecodeJob<any>): void });
 							public constructor();
 							public onResourceReady(param0: com.bumptech.glide.load.engine.Resource<R>, param1: com.bumptech.glide.load.DataSource): void;
 							public reschedule(param0: com.bumptech.glide.load.engine.DecodeJob<any>): void;
 							public onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException): void;
 						}
-						export class DecodeCallback<Z>  extends com.bumptech.glide.load.engine.DecodePath.DecodeCallback<any> {
+						export class DecodeCallback<Z> extends com.bumptech.glide.load.engine.DecodePath.DecodeCallback<any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodeJob.DecodeCallback<any>>;
 							public onResourceDecoded(param0: com.bumptech.glide.load.engine.Resource<any>): com.bumptech.glide.load.engine.Resource<any>;
 						}
-						export class DeferredEncodeManager<Z>  extends java.lang.Object {
+						export class DeferredEncodeManager<Z> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodeJob.DeferredEncodeManager<any>>;
 						}
 						export class DiskCacheProvider {
@@ -1563,9 +1482,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.DecodeJob$DiskCacheProvider interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								getDiskCache(): com.bumptech.glide.load.engine.cache.DiskCache;
-							});
+							public constructor(implementation: { getDiskCache(): com.bumptech.glide.load.engine.cache.DiskCache });
 							public constructor();
 							public getDiskCache(): com.bumptech.glide.load.engine.cache.DiskCache;
 						}
@@ -1603,21 +1520,19 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class DecodePath<DataType, ResourceType, Transcode>  extends java.lang.Object {
-						public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodePath<any,any,any>>;
-						public constructor(param0: java.lang.Class<DataType>, param1: java.lang.Class<ResourceType>, param2: java.lang.Class<Transcode>, param3: java.util.List<any>, param4: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<ResourceType,Transcode>, param5: androidx.core.util.Pools.Pool<java.util.List<java.lang.Throwable>>);
+					export class DecodePath<DataType, ResourceType, Transcode> extends java.lang.Object {
+						public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodePath<any, any, any>>;
+						public constructor(param0: java.lang.Class<DataType>, param1: java.lang.Class<ResourceType>, param2: java.lang.Class<Transcode>, param3: java.util.List<any>, param4: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<ResourceType, Transcode>, param5: androidx.core.util.Pools.Pool<java.util.List<java.lang.Throwable>>);
 						public decode(param0: com.bumptech.glide.load.data.DataRewinder<DataType>, param1: number, param2: number, param3: com.bumptech.glide.load.Options, param4: com.bumptech.glide.load.engine.DecodePath.DecodeCallback<ResourceType>): com.bumptech.glide.load.engine.Resource<Transcode>;
 						public toString(): string;
 					}
 					export module DecodePath {
-						export class DecodeCallback<ResourceType>  extends java.lang.Object {
+						export class DecodeCallback<ResourceType> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.DecodePath.DecodeCallback<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.DecodePath$DecodeCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								onResourceDecoded(param0: com.bumptech.glide.load.engine.Resource<ResourceType>): com.bumptech.glide.load.engine.Resource<ResourceType>;
-							});
+							public constructor(implementation: { onResourceDecoded(param0: com.bumptech.glide.load.engine.Resource<ResourceType>): com.bumptech.glide.load.engine.Resource<ResourceType> });
 							public constructor();
 							public onResourceDecoded(param0: com.bumptech.glide.load.engine.Resource<ResourceType>): com.bumptech.glide.load.engine.Resource<ResourceType>;
 						}
@@ -1665,7 +1580,27 @@ declare module com {
 						public onEngineJobCancelled(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key): void;
 						public release(param0: com.bumptech.glide.load.engine.Resource<any>): void;
 						public constructor(param0: com.bumptech.glide.load.engine.cache.MemoryCache, param1: com.bumptech.glide.load.engine.cache.DiskCache.Factory, param2: com.bumptech.glide.load.engine.executor.GlideExecutor, param3: com.bumptech.glide.load.engine.executor.GlideExecutor, param4: com.bumptech.glide.load.engine.executor.GlideExecutor, param5: com.bumptech.glide.load.engine.executor.GlideExecutor, param6: boolean);
-						public load(param0: com.bumptech.glide.GlideContext, param1: any, param2: com.bumptech.glide.load.Key, param3: number, param4: number, param5: java.lang.Class, param6: java.lang.Class, param7: com.bumptech.glide.Priority, param8: com.bumptech.glide.load.engine.DiskCacheStrategy, param9: java.util.Map, param10: boolean, param11: boolean, param12: com.bumptech.glide.load.Options, param13: boolean, param14: boolean, param15: boolean, param16: boolean, param17: com.bumptech.glide.request.ResourceCallback, param18: java.util.concurrent.Executor): com.bumptech.glide.load.engine.Engine.LoadStatus;
+						public load(
+							param0: com.bumptech.glide.GlideContext,
+							param1: any,
+							param2: com.bumptech.glide.load.Key,
+							param3: number,
+							param4: number,
+							param5: java.lang.Class,
+							param6: java.lang.Class,
+							param7: com.bumptech.glide.Priority,
+							param8: com.bumptech.glide.load.engine.DiskCacheStrategy,
+							param9: java.util.Map,
+							param10: boolean,
+							param11: boolean,
+							param12: com.bumptech.glide.load.Options,
+							param13: boolean,
+							param14: boolean,
+							param15: boolean,
+							param16: boolean,
+							param17: com.bumptech.glide.request.ResourceCallback,
+							param18: java.util.concurrent.Executor,
+						): com.bumptech.glide.load.engine.Engine.LoadStatus;
 						public onResourceReleased(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.EngineResource<any>): void;
 						public onResourceRemoved(param0: com.bumptech.glide.load.engine.Resource<any>): void;
 					}
@@ -1696,7 +1631,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class EngineJob<R>  extends java.lang.Object {
+					export class EngineJob<R> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.EngineJob<any>>;
 						public reschedule(param0: com.bumptech.glide.load.engine.DecodeJob<any>): void;
 						public onResourceReady(param0: com.bumptech.glide.load.engine.Resource<R>, param1: com.bumptech.glide.load.DataSource): void;
@@ -1743,10 +1678,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.engine.EngineJobListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							onEngineJobComplete(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key, param2: com.bumptech.glide.load.engine.EngineResource<any>): void;
-							onEngineJobCancelled(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key): void;
-						});
+						public constructor(implementation: { onEngineJobComplete(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key, param2: com.bumptech.glide.load.engine.EngineResource<any>): void; onEngineJobCancelled(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key): void });
 						public constructor();
 						public onEngineJobComplete(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key, param2: com.bumptech.glide.load.engine.EngineResource<any>): void;
 						public onEngineJobCancelled(param0: com.bumptech.glide.load.engine.EngineJob<any>, param1: com.bumptech.glide.load.Key): void;
@@ -1794,7 +1726,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class EngineResource<Z>  extends com.bumptech.glide.load.engine.Resource<any> {
+					export class EngineResource<Z> extends com.bumptech.glide.load.engine.Resource<any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.EngineResource<any>>;
 						public getResourceClass(): java.lang.Class<any>;
 						public getSize(): number;
@@ -1808,9 +1740,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.EngineResource$ResourceListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								onResourceReleased(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.EngineResource<any>): void;
-							});
+							public constructor(implementation: { onResourceReleased(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.EngineResource<any>): void });
 							public constructor();
 							public onResourceReleased(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.EngineResource<any>): void;
 						}
@@ -1865,9 +1795,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.engine.Initializable interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							initialize(): void;
-						});
+						public constructor(implementation: { initialize(): void });
 						public constructor();
 						public initialize(): void;
 					}
@@ -1896,9 +1824,9 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class LoadPath<Data, ResourceType, Transcode>  extends java.lang.Object {
-						public static class: java.lang.Class<com.bumptech.glide.load.engine.LoadPath<any,any,any>>;
-						public constructor(param0: java.lang.Class<Data>, param1: java.lang.Class<ResourceType>, param2: java.lang.Class<Transcode>, param3: java.util.List<com.bumptech.glide.load.engine.DecodePath<Data,ResourceType,Transcode>>, param4: androidx.core.util.Pools.Pool<java.util.List<java.lang.Throwable>>);
+					export class LoadPath<Data, ResourceType, Transcode> extends java.lang.Object {
+						public static class: java.lang.Class<com.bumptech.glide.load.engine.LoadPath<any, any, any>>;
+						public constructor(param0: java.lang.Class<Data>, param1: java.lang.Class<ResourceType>, param2: java.lang.Class<Transcode>, param3: java.util.List<com.bumptech.glide.load.engine.DecodePath<Data, ResourceType, Transcode>>, param4: androidx.core.util.Pools.Pool<java.util.List<java.lang.Throwable>>);
 						public getDataClass(): java.lang.Class<Data>;
 						public load(param0: com.bumptech.glide.load.data.DataRewinder<Data>, param1: com.bumptech.glide.load.Options, param2: number, param3: number, param4: com.bumptech.glide.load.engine.DecodePath.DecodeCallback<ResourceType>): com.bumptech.glide.load.engine.Resource<Transcode>;
 						public toString(): string;
@@ -1914,7 +1842,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class LockedResource<Z>  extends java.lang.Object {
+					export class LockedResource<Z> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.LockedResource<any>>;
 						public getSize(): number;
 						public get(): Z;
@@ -1933,17 +1861,12 @@ declare module com {
 		export module glide {
 			export module load {
 				export module engine {
-					export class Resource<Z>  extends java.lang.Object {
+					export class Resource<Z> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.load.engine.Resource<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.engine.Resource<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							getResourceClass(): java.lang.Class<Z>;
-							get(): Z;
-							getSize(): number;
-							recycle(): void;
-						});
+						public constructor(implementation: { getResourceClass(): java.lang.Class<Z>; get(): Z; getSize(): number; recycle(): void });
 						public constructor();
 						public getSize(): number;
 						public get(): Z;
@@ -2037,17 +1960,12 @@ declare module com {
 			export module load {
 				export module engine {
 					export module bitmap_recycle {
-						export class ArrayAdapterInterface<T>  extends java.lang.Object {
+						export class ArrayAdapterInterface<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.ArrayAdapterInterface<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.bitmap_recycle.ArrayAdapterInterface<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								getTag(): string;
-								getArrayLength(param0: T): number;
-								newArray(param0: number): T;
-								getElementSizeInBytes(): number;
-							});
+							public constructor(implementation: { getTag(): string; getArrayLength(param0: T): number; newArray(param0: number): T; getElementSizeInBytes(): number });
 							public constructor();
 							public newArray(param0: number): T;
 							public getArrayLength(param0: T): number;
@@ -2072,14 +1990,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								put(param0: any, param1: java.lang.Class): void;
-								put(param0: any): void;
-								get(param0: number, param1: java.lang.Class): any;
-								getExact(param0: number, param1: java.lang.Class): any;
-								clearMemory(): void;
-								trimMemory(param0: number): void;
-							});
+							public constructor(implementation: { put(param0: any, param1: java.lang.Class): void; put(param0: any): void; get(param0: number, param1: java.lang.Class): any; getExact(param0: number, param1: java.lang.Class): any; clearMemory(): void; trimMemory(param0: number): void });
 							public constructor();
 							public static STANDARD_BUFFER_SIZE_BYTES: number;
 							public getExact(param0: number, param1: java.lang.Class): any;
@@ -2141,7 +2052,7 @@ declare module com {
 			export module load {
 				export module engine {
 					export module bitmap_recycle {
-						export abstract class BaseKeyPool<T>  extends java.lang.Object {
+						export abstract class BaseKeyPool<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.BaseKeyPool<any>>;
 							public offer(param0: T): void;
 						}
@@ -2163,15 +2074,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								getMaxSize(): number;
-								setSizeMultiplier(param0: number): void;
-								put(param0: globalAndroid.graphics.Bitmap): void;
-								get(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap;
-								getDirty(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap;
-								clearMemory(): void;
-								trimMemory(param0: number): void;
-							});
+							public constructor(implementation: { getMaxSize(): number; setSizeMultiplier(param0: number): void; put(param0: globalAndroid.graphics.Bitmap): void; get(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap; getDirty(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap; clearMemory(): void; trimMemory(param0: number): void });
 							public constructor();
 							public put(param0: globalAndroid.graphics.Bitmap): void;
 							public get(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap;
@@ -2241,16 +2144,16 @@ declare module com {
 			export module load {
 				export module engine {
 					export module bitmap_recycle {
-						export class GroupedLinkedMap<K, V>  extends java.lang.Object {
-							public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.GroupedLinkedMap<any,any>>;
+						export class GroupedLinkedMap<K, V> extends java.lang.Object {
+							public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.GroupedLinkedMap<any, any>>;
 							public put(param0: K, param1: V): void;
 							public toString(): string;
 							public get(param0: K): V;
 							public removeLast(): V;
 						}
 						export module GroupedLinkedMap {
-							export class LinkedEntry<K, V>  extends java.lang.Object {
-								public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.GroupedLinkedMap.LinkedEntry<any,any>>;
+							export class LinkedEntry<K, V> extends java.lang.Object {
+								public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.GroupedLinkedMap.LinkedEntry<any, any>>;
 								public size(): number;
 								public removeLast(): V;
 								public add(param0: V): void;
@@ -2352,10 +2255,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool$BitmapTracker interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									add(param0: globalAndroid.graphics.Bitmap): void;
-									remove(param0: globalAndroid.graphics.Bitmap): void;
-								});
+								public constructor(implementation: { add(param0: globalAndroid.graphics.Bitmap): void; remove(param0: globalAndroid.graphics.Bitmap): void });
 								public constructor();
 								public remove(param0: globalAndroid.graphics.Bitmap): void;
 								public add(param0: globalAndroid.graphics.Bitmap): void;
@@ -2389,14 +2289,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.bitmap_recycle.LruPoolStrategy interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								put(param0: globalAndroid.graphics.Bitmap): void;
-								get(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap;
-								removeLast(): globalAndroid.graphics.Bitmap;
-								logBitmap(param0: globalAndroid.graphics.Bitmap): string;
-								logBitmap(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): string;
-								getSize(param0: globalAndroid.graphics.Bitmap): number;
-							});
+							public constructor(implementation: { put(param0: globalAndroid.graphics.Bitmap): void; get(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): globalAndroid.graphics.Bitmap; removeLast(): globalAndroid.graphics.Bitmap; logBitmap(param0: globalAndroid.graphics.Bitmap): string; logBitmap(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): string; getSize(param0: globalAndroid.graphics.Bitmap): number });
 							public constructor();
 							public put(param0: globalAndroid.graphics.Bitmap): void;
 							public logBitmap(param0: number, param1: number, param2: globalAndroid.graphics.Bitmap.Config): string;
@@ -2423,9 +2316,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.bitmap_recycle.Poolable interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								offer(): void;
-							});
+							public constructor(implementation: { offer(): void });
 							public constructor();
 							public offer(): void;
 						}
@@ -2442,8 +2333,8 @@ declare module com {
 			export module load {
 				export module engine {
 					export module bitmap_recycle {
-						export class PrettyPrintTreeMap<K, V>  extends java.util.TreeMap<any,any> {
-							public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.PrettyPrintTreeMap<any,any>>;
+						export class PrettyPrintTreeMap<K, V> extends java.util.TreeMap<any, any> {
+							public static class: java.lang.Class<com.bumptech.glide.load.engine.bitmap_recycle.PrettyPrintTreeMap<any, any>>;
 							public toString(): string;
 						}
 					}
@@ -2542,12 +2433,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.DiskCache interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								get(param0: com.bumptech.glide.load.Key): java.io.File;
-								put(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.cache.DiskCache.Writer): void;
-								delete(param0: com.bumptech.glide.load.Key): void;
-								clear(): void;
-							});
+							public constructor(implementation: { get(param0: com.bumptech.glide.load.Key): java.io.File; put(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.cache.DiskCache.Writer): void; delete(param0: com.bumptech.glide.load.Key): void; clear(): void });
 							public constructor();
 							public get(param0: com.bumptech.glide.load.Key): java.io.File;
 							public put(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.cache.DiskCache.Writer): void;
@@ -2560,9 +2446,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.DiskCache$Factory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									build(): com.bumptech.glide.load.engine.cache.DiskCache;
-								});
+								public constructor(implementation: { build(): com.bumptech.glide.load.engine.cache.DiskCache });
 								public constructor();
 								public static DEFAULT_DISK_CACHE_DIR: string;
 								public static DEFAULT_DISK_CACHE_SIZE: number;
@@ -2573,9 +2457,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.DiskCache$Writer interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									write(param0: java.io.File): boolean;
-								});
+								public constructor(implementation: { write(param0: java.io.File): boolean });
 								public constructor();
 								public write(param0: java.io.File): boolean;
 							}
@@ -2658,9 +2540,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.DiskLruCacheFactory$CacheDirectoryGetter interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									getCacheDirectory(): java.io.File;
-								});
+								public constructor(implementation: { getCacheDirectory(): java.io.File });
 								public constructor();
 								public getCacheDirectory(): java.io.File;
 							}
@@ -2772,7 +2652,7 @@ declare module com {
 			export module load {
 				export module engine {
 					export module cache {
-						export class LruResourceCache extends com.bumptech.glide.util.LruCache<com.bumptech.glide.load.Key,com.bumptech.glide.load.engine.Resource<any>> implements com.bumptech.glide.load.engine.cache.MemoryCache  {
+						export class LruResourceCache extends com.bumptech.glide.util.LruCache<com.bumptech.glide.load.Key, com.bumptech.glide.load.engine.Resource<any>> implements com.bumptech.glide.load.engine.cache.MemoryCache {
 							public static class: java.lang.Class<com.bumptech.glide.load.engine.cache.LruResourceCache>;
 							public getCurrentSize(): number;
 							public remove(param0: any): any;
@@ -2808,16 +2688,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.MemoryCache interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								getCurrentSize(): number;
-								getMaxSize(): number;
-								setSizeMultiplier(param0: number): void;
-								remove(param0: com.bumptech.glide.load.Key): com.bumptech.glide.load.engine.Resource<any>;
-								put(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.Resource<any>): com.bumptech.glide.load.engine.Resource<any>;
-								setResourceRemovedListener(param0: com.bumptech.glide.load.engine.cache.MemoryCache.ResourceRemovedListener): void;
-								clearMemory(): void;
-								trimMemory(param0: number): void;
-							});
+							public constructor(implementation: { getCurrentSize(): number; getMaxSize(): number; setSizeMultiplier(param0: number): void; remove(param0: com.bumptech.glide.load.Key): com.bumptech.glide.load.engine.Resource<any>; put(param0: com.bumptech.glide.load.Key, param1: com.bumptech.glide.load.engine.Resource<any>): com.bumptech.glide.load.engine.Resource<any>; setResourceRemovedListener(param0: com.bumptech.glide.load.engine.cache.MemoryCache.ResourceRemovedListener): void; clearMemory(): void; trimMemory(param0: number): void });
 							public constructor();
 							public setResourceRemovedListener(param0: com.bumptech.glide.load.engine.cache.MemoryCache.ResourceRemovedListener): void;
 							public getCurrentSize(): number;
@@ -2834,9 +2705,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.MemoryCache$ResourceRemovedListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									onResourceRemoved(param0: com.bumptech.glide.load.engine.Resource<any>): void;
-								});
+								public constructor(implementation: { onResourceRemoved(param0: com.bumptech.glide.load.engine.Resource<any>): void });
 								public constructor();
 								public onResourceRemoved(param0: com.bumptech.glide.load.engine.Resource<any>): void;
 							}
@@ -2906,10 +2775,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.cache.MemorySizeCalculator$ScreenDimensions interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									getWidthPixels(): number;
-									getHeightPixels(): number;
-								});
+								public constructor(implementation: { getWidthPixels(): number; getHeightPixels(): number });
 								public constructor();
 								public getWidthPixels(): number;
 								public getHeightPixels(): number;
@@ -3006,10 +2872,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.engine.executor.GlideExecutor$UncaughtThrowableStrategy interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									handle(param0: java.lang.Throwable): void;
-									<clinit>(): void;
-								});
+								public constructor(implementation: { handle(param0: java.lang.Throwable): void; <clinit>(): void });
 								public constructor();
 								public static IGNORE: com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy;
 								public static DEFAULT: com.bumptech.glide.load.engine.executor.GlideExecutor.UncaughtThrowableStrategy;
@@ -3100,7 +2963,7 @@ declare module com {
 							public remove(): com.bumptech.glide.load.engine.prefill.PreFillType;
 							public getSize(): number;
 							public isEmpty(): boolean;
-							public constructor(param0: java.util.Map<com.bumptech.glide.load.engine.prefill.PreFillType,java.lang.Integer>);
+							public constructor(param0: java.util.Map<com.bumptech.glide.load.engine.prefill.PreFillType, java.lang.Integer>);
 						}
 					}
 				}
@@ -3142,7 +3005,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class AssetUriLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any> {
+					export class AssetUriLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.AssetUriLoader<any>>;
 						public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						public handles(param0: any): boolean;
@@ -3151,14 +3014,12 @@ declare module com {
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module AssetUriLoader {
-						export class AssetFetcherFactory<Data>  extends java.lang.Object {
+						export class AssetFetcherFactory<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.AssetUriLoader.AssetFetcherFactory<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.model.AssetUriLoader$AssetFetcherFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<Data>;
-							});
+							public constructor(implementation: { buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<Data> });
 							public constructor();
 							public buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<Data>;
 						}
@@ -3166,16 +3027,16 @@ declare module com {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.AssetUriLoader.FileDescriptorFactory>;
 							public buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<globalAndroid.os.ParcelFileDescriptor>;
 							public constructor(param0: globalAndroid.content.res.AssetManager);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,globalAndroid.os.ParcelFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, globalAndroid.os.ParcelFileDescriptor>;
 							public teardown(): void;
 							public buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<any>;
 						}
 						export class StreamFactory extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.AssetUriLoader.StreamFactory>;
 							public constructor(param0: globalAndroid.content.res.AssetManager);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream>;
 							public buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<java.io.InputStream>;
 							public teardown(): void;
 							public buildFetcher(param0: globalAndroid.content.res.AssetManager, param1: string): com.bumptech.glide.load.data.DataFetcher<any>;
@@ -3192,7 +3053,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class ByteArrayLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<native.Array<number>,any> {
+					export class ByteArrayLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<native.Array<number>, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.ByteArrayLoader<any>>;
 						public buildLoadData(param0: native.Array<number>, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						public handles(param0: any): boolean;
@@ -3201,27 +3062,24 @@ declare module com {
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module ByteArrayLoader {
-						export class ByteBufferFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<native.Array<number>,java.nio.ByteBuffer> {
+						export class ByteBufferFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<native.Array<number>, java.nio.ByteBuffer> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ByteArrayLoader.ByteBufferFactory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<native.Array<number>,java.nio.ByteBuffer>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<native.Array<number>, java.nio.ByteBuffer>;
 							public teardown(): void;
 						}
-						export class Converter<Data>  extends java.lang.Object {
+						export class Converter<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ByteArrayLoader.Converter<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.model.ByteArrayLoader$Converter interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								convert(param0: native.Array<number>): Data;
-								getDataClass(): java.lang.Class<Data>;
-							});
+							public constructor(implementation: { convert(param0: native.Array<number>): Data; getDataClass(): java.lang.Class<Data> });
 							public constructor();
 							public getDataClass(): java.lang.Class<Data>;
 							public convert(param0: native.Array<number>): Data;
 						}
-						export class Fetcher<Data>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+						export class Fetcher<Data> extends com.bumptech.glide.load.data.DataFetcher<any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ByteArrayLoader.Fetcher<any>>;
 							public cancel(): void;
 							public cleanup(): void;
@@ -3229,11 +3087,11 @@ declare module com {
 							public loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void;
 							public getDataClass(): java.lang.Class<any>;
 						}
-						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<native.Array<number>,java.io.InputStream> {
+						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<native.Array<number>, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ByteArrayLoader.StreamFactory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<native.Array<number>,java.io.InputStream>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<native.Array<number>, java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public teardown(): void;
 						}
 					}
@@ -3265,7 +3123,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class ByteBufferFileLoader extends com.bumptech.glide.load.model.ModelLoader<java.io.File,java.nio.ByteBuffer> {
+					export class ByteBufferFileLoader extends com.bumptech.glide.load.model.ModelLoader<java.io.File, java.nio.ByteBuffer> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.ByteBufferFileLoader>;
 						public constructor();
 						public buildLoadData(param0: java.io.File, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.nio.ByteBuffer>;
@@ -3283,12 +3141,12 @@ declare module com {
 							public getDataClass(): java.lang.Class<java.nio.ByteBuffer>;
 							public getDataClass(): java.lang.Class<any>;
 						}
-						export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.io.File,java.nio.ByteBuffer> {
+						export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.io.File, java.nio.ByteBuffer> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ByteBufferFileLoader.Factory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public teardown(): void;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File,java.nio.ByteBuffer>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File, java.nio.ByteBuffer>;
 						}
 					}
 				}
@@ -3302,29 +3160,25 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class DataUrlLoader<Model, Data>  extends com.bumptech.glide.load.model.ModelLoader<any,any> {
-						public static class: java.lang.Class<com.bumptech.glide.load.model.DataUrlLoader<any,any>>;
+					export class DataUrlLoader<Model, Data> extends com.bumptech.glide.load.model.ModelLoader<any, any> {
+						public static class: java.lang.Class<com.bumptech.glide.load.model.DataUrlLoader<any, any>>;
 						public handles(param0: any): boolean;
 						public constructor(param0: com.bumptech.glide.load.model.DataUrlLoader.DataDecoder<any>);
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module DataUrlLoader {
-						export class DataDecoder<Data>  extends java.lang.Object {
+						export class DataDecoder<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.DataUrlLoader.DataDecoder<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.model.DataUrlLoader$DataDecoder interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								decode(param0: string): Data;
-								close(param0: Data): void;
-								getDataClass(): java.lang.Class<Data>;
-							});
+							public constructor(implementation: { decode(param0: string): Data; close(param0: Data): void; getDataClass(): java.lang.Class<Data> });
 							public constructor();
 							public close(param0: Data): void;
 							public getDataClass(): java.lang.Class<Data>;
 							public decode(param0: string): Data;
 						}
-						export class DataUriFetcher<Data>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+						export class DataUriFetcher<Data> extends com.bumptech.glide.load.data.DataFetcher<any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.DataUrlLoader.DataUriFetcher<any>>;
 							public cancel(): void;
 							public cleanup(): void;
@@ -3332,11 +3186,11 @@ declare module com {
 							public loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void;
 							public getDataClass(): java.lang.Class<any>;
 						}
-						export class StreamFactory<Model>  extends com.bumptech.glide.load.model.ModelLoaderFactory<any,java.io.InputStream> {
+						export class StreamFactory<Model> extends com.bumptech.glide.load.model.ModelLoaderFactory<any, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.DataUrlLoader.StreamFactory<any>>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, java.io.InputStream>;
 							public teardown(): void;
 						}
 					}
@@ -3351,7 +3205,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class FileLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<java.io.File,any> {
+					export class FileLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<java.io.File, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.FileLoader<any>>;
 						public constructor(param0: com.bumptech.glide.load.model.FileLoader.FileOpener<any>);
 						public handles(param0: java.io.File): boolean;
@@ -3360,22 +3214,22 @@ declare module com {
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module FileLoader {
-						export class Factory<Data>  extends com.bumptech.glide.load.model.ModelLoaderFactory<java.io.File,any> {
+						export class Factory<Data> extends com.bumptech.glide.load.model.ModelLoaderFactory<java.io.File, any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.FileLoader.Factory<any>>;
 							public constructor(param0: com.bumptech.glide.load.model.FileLoader.FileOpener<any>);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File, any>;
 							public teardown(): void;
 						}
 						export class FileDescriptorFactory extends com.bumptech.glide.load.model.FileLoader.Factory<globalAndroid.os.ParcelFileDescriptor> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.FileLoader.FileDescriptorFactory>;
 							public constructor();
 							public constructor(param0: com.bumptech.glide.load.model.FileLoader.FileOpener<any>);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File, any>;
 							public teardown(): void;
 						}
-						export class FileFetcher<Data>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+						export class FileFetcher<Data> extends com.bumptech.glide.load.data.DataFetcher<any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.FileLoader.FileFetcher<any>>;
 							public cancel(): void;
 							public cleanup(): void;
@@ -3383,16 +3237,12 @@ declare module com {
 							public loadData(param0: com.bumptech.glide.Priority, param1: com.bumptech.glide.load.data.DataFetcher.DataCallback<any>): void;
 							public getDataClass(): java.lang.Class<any>;
 						}
-						export class FileOpener<Data>  extends java.lang.Object {
+						export class FileOpener<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.FileLoader.FileOpener<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.model.FileLoader$FileOpener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								open(param0: java.io.File): Data;
-								close(param0: Data): void;
-								getDataClass(): java.lang.Class<Data>;
-							});
+							public constructor(implementation: { open(param0: java.io.File): Data; close(param0: Data): void; getDataClass(): java.lang.Class<Data> });
 							public constructor();
 							public close(param0: Data): void;
 							public open(param0: java.io.File): Data;
@@ -3402,8 +3252,8 @@ declare module com {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.FileLoader.StreamFactory>;
 							public constructor();
 							public constructor(param0: com.bumptech.glide.load.model.FileLoader.FileOpener<any>);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.io.File, any>;
 							public teardown(): void;
 						}
 					}
@@ -3423,7 +3273,7 @@ declare module com {
 						public constructor(param0: java.net.URL);
 						public getCacheKey(): string;
 						public constructor(param0: java.net.URL, param1: com.bumptech.glide.load.model.Headers);
-						public getHeaders(): java.util.Map<string,string>;
+						public getHeaders(): java.util.Map<string, string>;
 						public updateDiskCacheKey(param0: java.security.MessageDigest): void;
 						public toStringUrl(): string;
 						public constructor(param0: string, param1: com.bumptech.glide.load.model.Headers);
@@ -3449,14 +3299,11 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.model.Headers interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							getHeaders(): java.util.Map<string,string>;
-							<clinit>(): void;
-						});
+						public constructor(implementation: { getHeaders(): java.util.Map<string, string>; <clinit>(): void });
 						public constructor();
 						public static DEFAULT: com.bumptech.glide.load.model.Headers;
 						public static NONE: com.bumptech.glide.load.model.Headers;
-						public getHeaders(): java.util.Map<string,string>;
+						public getHeaders(): java.util.Map<string, string>;
 					}
 				}
 			}
@@ -3474,9 +3321,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.model.LazyHeaderFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							buildHeader(): string;
-						});
+						public constructor(implementation: { buildHeader(): string });
 						public constructor();
 						public buildHeader(): string;
 					}
@@ -3493,7 +3338,7 @@ declare module com {
 				export module model {
 					export class LazyHeaders extends com.bumptech.glide.load.model.Headers {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.LazyHeaders>;
-						public getHeaders(): java.util.Map<string,string>;
+						public getHeaders(): java.util.Map<string, string>;
 						public equals(param0: any): boolean;
 						public hashCode(): number;
 						public toString(): string;
@@ -3527,7 +3372,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class MediaStoreFileLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.File> {
+					export class MediaStoreFileLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.File> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.MediaStoreFileLoader>;
 						public constructor(param0: globalAndroid.content.Context);
 						public handles(param0: any): boolean;
@@ -3536,10 +3381,10 @@ declare module com {
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module MediaStoreFileLoader {
-						export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri,java.io.File> {
+						export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri, java.io.File> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.MediaStoreFileLoader.Factory>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.File>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.File>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public teardown(): void;
 							public constructor(param0: globalAndroid.content.Context);
 						}
@@ -3569,9 +3414,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.model.Model interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							isEquivalentTo(param0: any): boolean;
-						});
+						public constructor(implementation: { isEquivalentTo(param0: any): boolean });
 						public constructor();
 						public isEquivalentTo(param0: any): boolean;
 					}
@@ -3586,8 +3429,8 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class ModelCache<A, B>  extends java.lang.Object {
-						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelCache<any,any>>;
+					export class ModelCache<A, B> extends java.lang.Object {
+						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelCache<any, any>>;
 						public constructor();
 						public put(param0: A, param1: number, param2: number, param3: B): void;
 						public constructor(param0: number);
@@ -3595,7 +3438,7 @@ declare module com {
 						public get(param0: A, param1: number, param2: number): B;
 					}
 					export module ModelCache {
-						export class ModelKey<A>  extends java.lang.Object {
+						export class ModelKey<A> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ModelCache.ModelKey<any>>;
 							public hashCode(): number;
 							public release(): void;
@@ -3613,21 +3456,18 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class ModelLoader<Model, Data>  extends java.lang.Object {
-						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoader<any,any>>;
+					export class ModelLoader<Model, Data> extends java.lang.Object {
+						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoader<any, any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.model.ModelLoader<any,any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							buildLoadData(param0: Model, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<Data>;
-							handles(param0: Model): boolean;
-						});
+						public constructor(implementation: { buildLoadData(param0: Model, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<Data>; handles(param0: Model): boolean });
 						public constructor();
 						public buildLoadData(param0: Model, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<Data>;
 						public handles(param0: Model): boolean;
 					}
 					export module ModelLoader {
-						export class LoadData<Data>  extends java.lang.Object {
+						export class LoadData<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoader.LoadData<any>>;
 							public sourceKey: com.bumptech.glide.load.Key;
 							public alternateKeys: java.util.List<com.bumptech.glide.load.Key>;
@@ -3647,18 +3487,15 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class ModelLoaderFactory<T, Y>  extends java.lang.Object {
-						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoaderFactory<any,any>>;
+					export class ModelLoaderFactory<T, Y> extends java.lang.Object {
+						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoaderFactory<any, any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.load.model.ModelLoaderFactory<any,any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<T,Y>;
-							teardown(): void;
-						});
+						public constructor(implementation: { build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<T, Y>; teardown(): void });
 						public constructor();
 						public teardown(): void;
-						public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<T,Y>;
+						public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<T, Y>;
 					}
 				}
 			}
@@ -3674,13 +3511,13 @@ declare module com {
 					export class ModelLoaderRegistry {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoaderRegistry>;
 						public getModelLoaders(param0: any): java.util.List;
-						public build(param0: java.lang.Class, param1: java.lang.Class): com.bumptech.glide.load.model.ModelLoader<any,any>;
+						public build(param0: java.lang.Class, param1: java.lang.Class): com.bumptech.glide.load.model.ModelLoader<any, any>;
 						public remove(param0: java.lang.Class, param1: java.lang.Class): void;
-						public prepend(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>): void;
+						public prepend(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>): void;
 						public getDataClasses(param0: java.lang.Class<any>): java.util.List<java.lang.Class<any>>;
 						public constructor(param0: androidx.core.util.Pools.Pool<java.util.List<java.lang.Throwable>>);
-						public append(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>): void;
-						public replace(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>): void;
+						public append(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>): void;
+						public replace(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>): void;
 					}
 					export module ModelLoaderRegistry {
 						export class ModelLoaderCache {
@@ -3690,9 +3527,9 @@ declare module com {
 							public get(param0: java.lang.Class): java.util.List;
 						}
 						export module ModelLoaderCache {
-							export class Entry<Model>  extends java.lang.Object {
+							export class Entry<Model> extends java.lang.Object {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.ModelLoaderRegistry.ModelLoaderCache.Entry<any>>;
-								public constructor(param0: java.util.List<com.bumptech.glide.load.model.ModelLoader<Model,any>>);
+								public constructor(param0: java.util.List<com.bumptech.glide.load.model.ModelLoader<Model, any>>);
 							}
 						}
 					}
@@ -3707,14 +3544,14 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class MultiModelLoader<Model, Data>  extends com.bumptech.glide.load.model.ModelLoader<any,any> {
-						public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoader<any,any>>;
+					export class MultiModelLoader<Model, Data> extends com.bumptech.glide.load.model.ModelLoader<any, any> {
+						public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoader<any, any>>;
 						public handles(param0: any): boolean;
 						public toString(): string;
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module MultiModelLoader {
-						export class MultiFetcher<Data>  extends java.lang.Object {
+						export class MultiFetcher<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoader.MultiFetcher<any>>;
 							public cancel(): void;
 							public cleanup(): void;
@@ -3740,24 +3577,24 @@ declare module com {
 				export module model {
 					export class MultiModelLoaderFactory {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoaderFactory>;
-						public build(param0: java.lang.Class, param1: java.lang.Class): com.bumptech.glide.load.model.ModelLoader<any,any>;
+						public build(param0: java.lang.Class, param1: java.lang.Class): com.bumptech.glide.load.model.ModelLoader<any, any>;
 						public constructor(param0: androidx.core.util.Pools.Pool<java.util.List<java.lang.Throwable>>);
 					}
 					export module MultiModelLoaderFactory {
-						export class EmptyModelLoader extends com.bumptech.glide.load.model.ModelLoader<any,any> {
+						export class EmptyModelLoader extends com.bumptech.glide.load.model.ModelLoader<any, any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoaderFactory.EmptyModelLoader>;
 							public handles(param0: any): boolean;
 							public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						}
-						export class Entry<Model, Data>  extends java.lang.Object {
-							public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoaderFactory.Entry<any,any>>;
-							public constructor(param0: java.lang.Class<Model>, param1: java.lang.Class<Data>, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any,any>);
+						export class Entry<Model, Data> extends java.lang.Object {
+							public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoaderFactory.Entry<any, any>>;
+							public constructor(param0: java.lang.Class<Model>, param1: java.lang.Class<Data>, param2: com.bumptech.glide.load.model.ModelLoaderFactory<any, any>);
 							public handles(param0: java.lang.Class<any>): boolean;
 							public handles(param0: java.lang.Class<any>, param1: java.lang.Class<any>): boolean;
 						}
 						export class Factory {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.MultiModelLoaderFactory.Factory>;
-							public build(param0: java.util.List, param1: androidx.core.util.Pools.Pool): com.bumptech.glide.load.model.MultiModelLoader<any,any>;
+							public build(param0: java.util.List, param1: androidx.core.util.Pools.Pool): com.bumptech.glide.load.model.MultiModelLoader<any, any>;
 						}
 					}
 				}
@@ -3771,42 +3608,42 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class ResourceLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<java.lang.Integer,any> {
+					export class ResourceLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<java.lang.Integer, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.ResourceLoader<any>>;
 						public buildLoadData(param0: java.lang.Integer, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						public handles(param0: any): boolean;
-						public constructor(param0: globalAndroid.content.res.Resources, param1: com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any>);
+						public constructor(param0: globalAndroid.content.res.Resources, param1: com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any>);
 						public handles(param0: java.lang.Integer): boolean;
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module ResourceLoader {
-						export class AssetFileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer,globalAndroid.content.res.AssetFileDescriptor> {
+						export class AssetFileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer, globalAndroid.content.res.AssetFileDescriptor> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ResourceLoader.AssetFileDescriptorFactory>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public constructor(param0: globalAndroid.content.res.Resources);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer,globalAndroid.content.res.AssetFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer, globalAndroid.content.res.AssetFileDescriptor>;
 							public teardown(): void;
 						}
-						export class FileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer,globalAndroid.os.ParcelFileDescriptor> {
+						export class FileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer, globalAndroid.os.ParcelFileDescriptor> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ResourceLoader.FileDescriptorFactory>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public constructor(param0: globalAndroid.content.res.Resources);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer,globalAndroid.os.ParcelFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer, globalAndroid.os.ParcelFileDescriptor>;
 							public teardown(): void;
 						}
-						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer,java.io.InputStream> {
+						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ResourceLoader.StreamFactory>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public constructor(param0: globalAndroid.content.res.Resources);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer,java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer, java.io.InputStream>;
 							public teardown(): void;
 						}
-						export class UriFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer,globalAndroid.net.Uri> {
+						export class UriFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.lang.Integer, globalAndroid.net.Uri> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.ResourceLoader.UriFactory>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public constructor(param0: globalAndroid.content.res.Resources);
 							public teardown(): void;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer,globalAndroid.net.Uri>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.lang.Integer, globalAndroid.net.Uri>;
 						}
 					}
 				}
@@ -3837,34 +3674,34 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class StringLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<string,any> {
+					export class StringLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<string, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.StringLoader<any>>;
 						public handles(param0: string): boolean;
-						public constructor(param0: com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any>);
+						public constructor(param0: com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any>);
 						public handles(param0: any): boolean;
 						public buildLoadData(param0: string, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module StringLoader {
-						export class AssetFileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<string,globalAndroid.content.res.AssetFileDescriptor> {
+						export class AssetFileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<string, globalAndroid.content.res.AssetFileDescriptor> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.StringLoader.AssetFileDescriptorFactory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public teardown(): void;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<string,globalAndroid.content.res.AssetFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<string, globalAndroid.content.res.AssetFileDescriptor>;
 						}
-						export class FileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<string,globalAndroid.os.ParcelFileDescriptor> {
+						export class FileDescriptorFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<string, globalAndroid.os.ParcelFileDescriptor> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.StringLoader.FileDescriptorFactory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public teardown(): void;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<string,globalAndroid.os.ParcelFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<string, globalAndroid.os.ParcelFileDescriptor>;
 						}
-						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<string,java.io.InputStream> {
+						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<string, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.StringLoader.StreamFactory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<string,java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<string, java.io.InputStream>;
 							public teardown(): void;
 						}
 					}
@@ -3879,7 +3716,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class UnitModelLoader<Model>  extends com.bumptech.glide.load.model.ModelLoader<any,any> {
+					export class UnitModelLoader<Model> extends com.bumptech.glide.load.model.ModelLoader<any, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.UnitModelLoader<any>>;
 						public static getInstance(): com.bumptech.glide.load.model.UnitModelLoader<any>;
 						/** @deprecated */
@@ -3888,15 +3725,15 @@ declare module com {
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module UnitModelLoader {
-						export class Factory<Model>  extends com.bumptech.glide.load.model.ModelLoaderFactory<any,any> {
+						export class Factory<Model> extends com.bumptech.glide.load.model.ModelLoaderFactory<any, any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UnitModelLoader.Factory<any>>;
 							/** @deprecated */
 							public constructor();
 							public static getInstance(): com.bumptech.glide.load.model.UnitModelLoader.Factory<any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public teardown(): void;
 						}
-						export class UnitFetcher<Model>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+						export class UnitFetcher<Model> extends com.bumptech.glide.load.data.DataFetcher<any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UnitModelLoader.UnitFetcher<any>>;
 							public cancel(): void;
 							public cleanup(): void;
@@ -3916,7 +3753,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class UriLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any> {
+					export class UriLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.UriLoader<any>>;
 						public constructor(param0: com.bumptech.glide.load.model.UriLoader.LocalUriFetcherFactory<any>);
 						public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
@@ -3927,9 +3764,9 @@ declare module com {
 					export module UriLoader {
 						export class AssetFileDescriptorFactory extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UriLoader.AssetFileDescriptorFactory>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,globalAndroid.content.res.AssetFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, globalAndroid.content.res.AssetFileDescriptor>;
 							public constructor(param0: globalAndroid.content.ContentResolver);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<any>;
 							public teardown(): void;
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<globalAndroid.content.res.AssetFileDescriptor>;
@@ -3937,28 +3774,26 @@ declare module com {
 						export class FileDescriptorFactory extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UriLoader.FileDescriptorFactory>;
 							public constructor(param0: globalAndroid.content.ContentResolver);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<globalAndroid.os.ParcelFileDescriptor>;
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,globalAndroid.os.ParcelFileDescriptor>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, globalAndroid.os.ParcelFileDescriptor>;
 							public teardown(): void;
 						}
-						export class LocalUriFetcherFactory<Data>  extends java.lang.Object {
+						export class LocalUriFetcherFactory<Data> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UriLoader.LocalUriFetcherFactory<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.model.UriLoader$LocalUriFetcherFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<Data>;
-							});
+							public constructor(implementation: { build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<Data> });
 							public constructor();
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<Data>;
 						}
 						export class StreamFactory extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UriLoader.StreamFactory>;
 							public constructor(param0: globalAndroid.content.ContentResolver);
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream>;
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<any>;
 							public teardown(): void;
 							public build(param0: globalAndroid.net.Uri): com.bumptech.glide.load.data.DataFetcher<java.io.InputStream>;
@@ -3975,20 +3810,20 @@ declare module com {
 		export module glide {
 			export module load {
 				export module model {
-					export class UrlUriLoader<Data>  extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any> {
+					export class UrlUriLoader<Data> extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.model.UrlUriLoader<any>>;
 						public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						public handles(param0: any): boolean;
-						public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,any>);
+						public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, any>);
 						public handles(param0: globalAndroid.net.Uri): boolean;
 						public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 					}
 					export module UrlUriLoader {
-						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri,java.io.InputStream> {
+						export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.UrlUriLoader.StreamFactory>;
 							public constructor();
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+							public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream>;
 							public teardown(): void;
 						}
 					}
@@ -4004,11 +3839,11 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export abstract class BaseGlideUrlLoader<Model>  extends com.bumptech.glide.load.model.ModelLoader<any,java.io.InputStream> {
+						export abstract class BaseGlideUrlLoader<Model> extends com.bumptech.glide.load.model.ModelLoader<any, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.BaseGlideUrlLoader<any>>;
-							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream>);
+							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream>);
 							public handles(param0: any): boolean;
-							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream>, param1: com.bumptech.glide.load.model.ModelCache<any,com.bumptech.glide.load.model.GlideUrl>);
+							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream>, param1: com.bumptech.glide.load.model.ModelCache<any, com.bumptech.glide.load.model.GlideUrl>);
 							public getUrl(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): string;
 							public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.io.InputStream>;
 							public getHeaders(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.Headers;
@@ -4028,23 +3863,23 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export class HttpGlideUrlLoader extends com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream> {
+						export class HttpGlideUrlLoader extends com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.HttpGlideUrlLoader>;
 							public static TIMEOUT: com.bumptech.glide.load.Option<java.lang.Integer>;
 							public constructor();
 							public handles(param0: any): boolean;
-							public constructor(param0: com.bumptech.glide.load.model.ModelCache<com.bumptech.glide.load.model.GlideUrl,com.bumptech.glide.load.model.GlideUrl>);
+							public constructor(param0: com.bumptech.glide.load.model.ModelCache<com.bumptech.glide.load.model.GlideUrl, com.bumptech.glide.load.model.GlideUrl>);
 							public buildLoadData(param0: com.bumptech.glide.load.model.GlideUrl, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.io.InputStream>;
 							public handles(param0: com.bumptech.glide.load.model.GlideUrl): boolean;
 							public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						}
 						export module HttpGlideUrlLoader {
-							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream> {
+							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.HttpGlideUrlLoader.Factory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 								public constructor();
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream>;
 							}
 						}
 					}
@@ -4060,20 +3895,20 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export class HttpUriLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream> {
+						export class HttpUriLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.HttpUriLoader>;
-							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream>);
+							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream>);
 							public handles(param0: any): boolean;
 							public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.io.InputStream>;
 							public handles(param0: globalAndroid.net.Uri): boolean;
 							public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						}
 						export module HttpUriLoader {
-							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri,java.io.InputStream> {
+							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri, java.io.InputStream> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.HttpUriLoader.Factory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream>;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 								public constructor();
 							}
 						}
@@ -4090,7 +3925,7 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export class MediaStoreImageThumbLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream> {
+						export class MediaStoreImageThumbLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.MediaStoreImageThumbLoader>;
 							public handles(param0: any): boolean;
 							public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.io.InputStream>;
@@ -4099,11 +3934,11 @@ declare module com {
 							public constructor(param0: globalAndroid.content.Context);
 						}
 						export module MediaStoreImageThumbLoader {
-							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri,java.io.InputStream> {
+							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri, java.io.InputStream> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.MediaStoreImageThumbLoader.Factory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream>;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 								public constructor(param0: globalAndroid.content.Context);
 							}
 						}
@@ -4120,7 +3955,7 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export class MediaStoreVideoThumbLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream> {
+						export class MediaStoreVideoThumbLoader extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.MediaStoreVideoThumbLoader>;
 							public handles(param0: any): boolean;
 							public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.io.InputStream>;
@@ -4129,11 +3964,11 @@ declare module com {
 							public constructor(param0: globalAndroid.content.Context);
 						}
 						export module MediaStoreVideoThumbLoader {
-							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri,java.io.InputStream> {
+							export class Factory extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri, java.io.InputStream> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.MediaStoreVideoThumbLoader.Factory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,java.io.InputStream>;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, java.io.InputStream>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 								public constructor(param0: globalAndroid.content.Context);
 							}
 						}
@@ -4150,7 +3985,7 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export class QMediaStoreUriLoader<DataT>  extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any> {
+						export class QMediaStoreUriLoader<DataT> extends com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.QMediaStoreUriLoader<any>>;
 							public handles(param0: any): boolean;
 							public buildLoadData(param0: globalAndroid.net.Uri, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
@@ -4158,27 +3993,27 @@ declare module com {
 							public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						}
 						export module QMediaStoreUriLoader {
-							export abstract class Factory<DataT>  extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri,any> {
+							export abstract class Factory<DataT> extends com.bumptech.glide.load.model.ModelLoaderFactory<globalAndroid.net.Uri, any> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.QMediaStoreUriLoader.Factory<any>>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any>;
 							}
 							export class FileDescriptorFactory extends com.bumptech.glide.load.model.stream.QMediaStoreUriLoader.Factory<globalAndroid.os.ParcelFileDescriptor> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.QMediaStoreUriLoader.FileDescriptorFactory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 								public constructor(param0: globalAndroid.content.Context);
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any>;
 							}
 							export class InputStreamFactory extends com.bumptech.glide.load.model.stream.QMediaStoreUriLoader.Factory<java.io.InputStream> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.QMediaStoreUriLoader.InputStreamFactory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
 								public constructor(param0: globalAndroid.content.Context);
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri,any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<globalAndroid.net.Uri, any>;
 							}
-							export class QMediaStoreUriFetcher<DataT>  extends com.bumptech.glide.load.data.DataFetcher<any> {
+							export class QMediaStoreUriFetcher<DataT> extends com.bumptech.glide.load.data.DataFetcher<any> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.QMediaStoreUriLoader.QMediaStoreUriFetcher<any>>;
 								public cancel(): void;
 								public cleanup(): void;
@@ -4200,20 +4035,20 @@ declare module com {
 			export module load {
 				export module model {
 					export module stream {
-						export class UrlLoader extends com.bumptech.glide.load.model.ModelLoader<java.net.URL,java.io.InputStream> {
+						export class UrlLoader extends com.bumptech.glide.load.model.ModelLoader<java.net.URL, java.io.InputStream> {
 							public static class: java.lang.Class<com.bumptech.glide.load.model.stream.UrlLoader>;
-							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl,java.io.InputStream>);
+							public constructor(param0: com.bumptech.glide.load.model.ModelLoader<com.bumptech.glide.load.model.GlideUrl, java.io.InputStream>);
 							public handles(param0: any): boolean;
 							public handles(param0: java.net.URL): boolean;
 							public buildLoadData(param0: java.net.URL, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<java.io.InputStream>;
 							public buildLoadData(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.model.ModelLoader.LoadData<any>;
 						}
 						export module UrlLoader {
-							export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.net.URL,java.io.InputStream> {
+							export class StreamFactory extends com.bumptech.glide.load.model.ModelLoaderFactory<java.net.URL, java.io.InputStream> {
 								public static class: java.lang.Class<com.bumptech.glide.load.model.stream.UrlLoader.StreamFactory>;
 								public teardown(): void;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any,any>;
-								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.net.URL,java.io.InputStream>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<any, any>;
+								public build(param0: com.bumptech.glide.load.model.MultiModelLoaderFactory): com.bumptech.glide.load.model.ModelLoader<java.net.URL, java.io.InputStream>;
 								public constructor();
 							}
 						}
@@ -4229,7 +4064,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module resource {
-					export abstract class ImageDecoderResourceDecoder<T>  extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.graphics.ImageDecoder.Source,any> {
+					export abstract class ImageDecoderResourceDecoder<T> extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.graphics.ImageDecoder.Source, any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.resource.ImageDecoderResourceDecoder<any>>;
 						public decode(param0: globalAndroid.graphics.ImageDecoder.Source, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
 						public handles(param0: any, param1: com.bumptech.glide.load.Options): boolean;
@@ -4249,7 +4084,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module resource {
-					export class SimpleResource<T>  extends com.bumptech.glide.load.engine.Resource<any> {
+					export class SimpleResource<T> extends com.bumptech.glide.load.engine.Resource<any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.resource.SimpleResource<any>>;
 						public data: any;
 						public getResourceClass(): java.lang.Class<any>;
@@ -4269,7 +4104,7 @@ declare module com {
 		export module glide {
 			export module load {
 				export module resource {
-					export class UnitTransformation<T>  extends com.bumptech.glide.load.Transformation<any> {
+					export class UnitTransformation<T> extends com.bumptech.glide.load.Transformation<any> {
 						public static class: java.lang.Class<com.bumptech.glide.load.resource.UnitTransformation<any>>;
 						public static get(): com.bumptech.glide.load.resource.UnitTransformation<any>;
 						public updateDiskCacheKey(param0: java.security.MessageDigest): void;
@@ -4289,14 +4124,14 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class BitmapDrawableDecoder<DataType>  extends com.bumptech.glide.load.ResourceDecoder<any,globalAndroid.graphics.drawable.BitmapDrawable> {
+						export class BitmapDrawableDecoder<DataType> extends com.bumptech.glide.load.ResourceDecoder<any, globalAndroid.graphics.drawable.BitmapDrawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.BitmapDrawableDecoder<any>>;
-							public constructor(param0: globalAndroid.content.res.Resources, param1: com.bumptech.glide.load.ResourceDecoder<any,globalAndroid.graphics.Bitmap>);
+							public constructor(param0: globalAndroid.content.res.Resources, param1: com.bumptech.glide.load.ResourceDecoder<any, globalAndroid.graphics.Bitmap>);
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.drawable.BitmapDrawable>;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
-							public constructor(param0: globalAndroid.content.Context, param1: com.bumptech.glide.load.ResourceDecoder<any,globalAndroid.graphics.Bitmap>);
+							public constructor(param0: globalAndroid.content.Context, param1: com.bumptech.glide.load.ResourceDecoder<any, globalAndroid.graphics.Bitmap>);
 							/** @deprecated */
-							public constructor(param0: globalAndroid.content.res.Resources, param1: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param2: com.bumptech.glide.load.ResourceDecoder<any,globalAndroid.graphics.Bitmap>);
+							public constructor(param0: globalAndroid.content.res.Resources, param1: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param2: com.bumptech.glide.load.ResourceDecoder<any, globalAndroid.graphics.Bitmap>);
 							public handles(param0: any, param1: com.bumptech.glide.load.Options): boolean;
 						}
 					}
@@ -4332,7 +4167,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class BitmapDrawableResource extends com.bumptech.glide.load.resource.drawable.DrawableResource<globalAndroid.graphics.drawable.BitmapDrawable> implements com.bumptech.glide.load.engine.Initializable  {
+						export class BitmapDrawableResource extends com.bumptech.glide.load.resource.drawable.DrawableResource<globalAndroid.graphics.drawable.BitmapDrawable> implements com.bumptech.glide.load.engine.Initializable {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource>;
 							public get(): any;
 							public constructor(param0: globalAndroid.graphics.drawable.BitmapDrawable, param1: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool);
@@ -4473,7 +4308,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class BitmapTransitionOptions extends com.bumptech.glide.TransitionOptions<com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions,globalAndroid.graphics.Bitmap> {
+						export class BitmapTransitionOptions extends com.bumptech.glide.TransitionOptions<com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions>;
 							public constructor();
 							public static withWrapped(param0: com.bumptech.glide.request.transition.TransitionFactory<globalAndroid.graphics.drawable.Drawable>): com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions;
@@ -4501,7 +4336,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class ByteBufferBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer,globalAndroid.graphics.Bitmap> {
+						export class ByteBufferBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.ByteBufferBitmapDecoder>;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
 							public constructor(param0: com.bumptech.glide.load.resource.bitmap.Downsampler);
@@ -4522,7 +4357,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class ByteBufferBitmapImageDecoderResourceDecoder extends com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer,globalAndroid.graphics.Bitmap> {
+						export class ByteBufferBitmapImageDecoderResourceDecoder extends com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.ByteBufferBitmapImageDecoderResourceDecoder>;
 							public constructor();
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -4636,12 +4471,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.resource.bitmap.DefaultImageHeaderParser$Reader interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									getUInt8(): number;
-									getUInt16(): number;
-									read(param0: native.Array<number>, param1: number): number;
-									skip(param0: number): number;
-								});
+								public constructor(implementation: { getUInt8(): number; getUInt16(): number; read(param0: native.Array<number>, param1: number): number; skip(param0: number): number });
 								public constructor();
 								public skip(param0: number): number;
 								public getUInt8(): number;
@@ -4761,10 +4591,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.resource.bitmap.Downsampler$DecodeCallbacks interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									onObtainBounds(): void;
-									onDecodeComplete(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param1: globalAndroid.graphics.Bitmap): void;
-								});
+								public constructor(implementation: { onObtainBounds(): void; onDecodeComplete(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param1: globalAndroid.graphics.Bitmap): void });
 								public constructor();
 								public onDecodeComplete(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param1: globalAndroid.graphics.Bitmap): void;
 								public onObtainBounds(): void;
@@ -4913,12 +4740,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.resource.bitmap.ImageReader interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								decodeBitmap(param0: globalAndroid.graphics.BitmapFactory.Options): globalAndroid.graphics.Bitmap;
-								getImageType(): com.bumptech.glide.load.ImageHeaderParser.ImageType;
-								getImageOrientation(): number;
-								stopGrowingBuffers(): void;
-							});
+							public constructor(implementation: { decodeBitmap(param0: globalAndroid.graphics.BitmapFactory.Options): globalAndroid.graphics.Bitmap; getImageType(): com.bumptech.glide.load.ImageHeaderParser.ImageType; getImageOrientation(): number; stopGrowingBuffers(): void });
 							public constructor();
 							public getImageOrientation(): number;
 							public stopGrowingBuffers(): void;
@@ -4954,7 +4776,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class InputStreamBitmapImageDecoderResourceDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.InputStream,globalAndroid.graphics.Bitmap> {
+						export class InputStreamBitmapImageDecoderResourceDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.InputStream, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.InputStreamBitmapImageDecoderResourceDecoder>;
 							public constructor();
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5003,7 +4825,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class ParcelFileDescriptorBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.os.ParcelFileDescriptor,globalAndroid.graphics.Bitmap> {
+						export class ParcelFileDescriptorBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.os.ParcelFileDescriptor, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.ParcelFileDescriptorBitmapDecoder>;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
 							public constructor(param0: com.bumptech.glide.load.resource.bitmap.Downsampler);
@@ -5056,7 +4878,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class ResourceBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.net.Uri,globalAndroid.graphics.Bitmap> {
+						export class ResourceBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.net.Uri, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.ResourceBitmapDecoder>;
 							public handles(param0: globalAndroid.net.Uri, param1: com.bumptech.glide.load.Options): boolean;
 							public constructor(param0: com.bumptech.glide.load.resource.drawable.ResourceDrawableDecoder, param1: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool);
@@ -5125,7 +4947,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class StreamBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.InputStream,globalAndroid.graphics.Bitmap> {
+						export class StreamBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.InputStream, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.StreamBitmapDecoder>;
 							public constructor(param0: com.bumptech.glide.load.resource.bitmap.Downsampler, param1: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool);
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5177,9 +4999,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.resource.bitmap.TransformationUtils$DrawRoundedCornerFn interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									drawRoundedCorners(param0: globalAndroid.graphics.Canvas, param1: globalAndroid.graphics.Paint, param2: globalAndroid.graphics.RectF): void;
-								});
+								public constructor(implementation: { drawRoundedCorners(param0: globalAndroid.graphics.Canvas, param1: globalAndroid.graphics.Paint, param2: globalAndroid.graphics.RectF): void });
 								public constructor();
 								public drawRoundedCorners(param0: globalAndroid.graphics.Canvas, param1: globalAndroid.graphics.Paint, param2: globalAndroid.graphics.RectF): void;
 							}
@@ -5206,7 +5026,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class UnitBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.graphics.Bitmap,globalAndroid.graphics.Bitmap> {
+						export class UnitBitmapDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.graphics.Bitmap, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.UnitBitmapDecoder>;
 							public constructor();
 							public handles(param0: globalAndroid.graphics.Bitmap, param1: com.bumptech.glide.load.Options): boolean;
@@ -5259,16 +5079,16 @@ declare module com {
 			export module load {
 				export module resource {
 					export module bitmap {
-						export class VideoDecoder<T>  extends com.bumptech.glide.load.ResourceDecoder<any,globalAndroid.graphics.Bitmap> {
+						export class VideoDecoder<T> extends com.bumptech.glide.load.ResourceDecoder<any, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.VideoDecoder<any>>;
 							public static DEFAULT_FRAME: number;
 							public static TARGET_FRAME: com.bumptech.glide.load.Option<java.lang.Long>;
 							public static FRAME_OPTION: com.bumptech.glide.load.Option<java.lang.Integer>;
-							public static parcel(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool): com.bumptech.glide.load.ResourceDecoder<globalAndroid.os.ParcelFileDescriptor,globalAndroid.graphics.Bitmap>;
+							public static parcel(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool): com.bumptech.glide.load.ResourceDecoder<globalAndroid.os.ParcelFileDescriptor, globalAndroid.graphics.Bitmap>;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
-							public static byteBuffer(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool): com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer,globalAndroid.graphics.Bitmap>;
+							public static byteBuffer(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool): com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer, globalAndroid.graphics.Bitmap>;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.Bitmap>;
-							public static asset(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool): com.bumptech.glide.load.ResourceDecoder<globalAndroid.content.res.AssetFileDescriptor,globalAndroid.graphics.Bitmap>;
+							public static asset(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool): com.bumptech.glide.load.ResourceDecoder<globalAndroid.content.res.AssetFileDescriptor, globalAndroid.graphics.Bitmap>;
 							public handles(param0: any, param1: com.bumptech.glide.load.Options): boolean;
 						}
 						export module VideoDecoder {
@@ -5286,14 +5106,12 @@ declare module com {
 								public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.VideoDecoder.MediaMetadataRetrieverFactory>;
 								public build(): globalAndroid.media.MediaMetadataRetriever;
 							}
-							export class MediaMetadataRetrieverInitializer<T>  extends java.lang.Object {
+							export class MediaMetadataRetrieverInitializer<T> extends java.lang.Object {
 								public static class: java.lang.Class<com.bumptech.glide.load.resource.bitmap.VideoDecoder.MediaMetadataRetrieverInitializer<any>>;
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.resource.bitmap.VideoDecoder$MediaMetadataRetrieverInitializer interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									initialize(param0: globalAndroid.media.MediaMetadataRetriever, param1: T): void;
-								});
+								public constructor(implementation: { initialize(param0: globalAndroid.media.MediaMetadataRetriever, param1: T): void });
 								public constructor();
 								public initialize(param0: globalAndroid.media.MediaMetadataRetriever, param1: T): void;
 							}
@@ -5387,7 +5205,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module drawable {
-						export abstract class DrawableResource<T>  extends java.lang.Object {
+						export abstract class DrawableResource<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.drawable.DrawableResource<any>>;
 							public drawable: T;
 							public get(): any;
@@ -5411,7 +5229,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module drawable {
-						export class DrawableTransitionOptions extends com.bumptech.glide.TransitionOptions<com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions,globalAndroid.graphics.drawable.Drawable> {
+						export class DrawableTransitionOptions extends com.bumptech.glide.TransitionOptions<com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions, globalAndroid.graphics.drawable.Drawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions>;
 							public constructor();
 							public static withCrossFade(param0: number): com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
@@ -5459,7 +5277,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module drawable {
-						export class ResourceDrawableDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.net.Uri,globalAndroid.graphics.drawable.Drawable> {
+						export class ResourceDrawableDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.net.Uri, globalAndroid.graphics.drawable.Drawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.drawable.ResourceDrawableDecoder>;
 							public handles(param0: globalAndroid.net.Uri, param1: com.bumptech.glide.load.Options): boolean;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5480,7 +5298,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module drawable {
-						export class UnitDrawableDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.graphics.drawable.Drawable,globalAndroid.graphics.drawable.Drawable> {
+						export class UnitDrawableDecoder extends com.bumptech.glide.load.ResourceDecoder<globalAndroid.graphics.drawable.Drawable, globalAndroid.graphics.drawable.Drawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.drawable.UnitDrawableDecoder>;
 							public constructor();
 							public decode(param0: globalAndroid.graphics.drawable.Drawable, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.drawable.Drawable>;
@@ -5501,7 +5319,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module file {
-						export class FileDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.File,java.io.File> {
+						export class FileDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.File, java.io.File> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.file.FileDecoder>;
 							public constructor();
 							public decode(param0: java.io.File, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<java.io.File>;
@@ -5544,7 +5362,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module gif {
-						export class ByteBufferGifDecoder extends com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer,com.bumptech.glide.load.resource.gif.GifDrawable> {
+						export class ByteBufferGifDecoder extends com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer, com.bumptech.glide.load.resource.gif.GifDrawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.gif.ByteBufferGifDecoder>;
 							public constructor(param0: globalAndroid.content.Context, param1: java.util.List<com.bumptech.glide.load.ImageHeaderParser>, param2: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param3: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool);
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5672,7 +5490,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module gif {
-						export class GifDrawableResource extends com.bumptech.glide.load.resource.drawable.DrawableResource<com.bumptech.glide.load.resource.gif.GifDrawable> implements com.bumptech.glide.load.engine.Initializable  {
+						export class GifDrawableResource extends com.bumptech.glide.load.resource.drawable.DrawableResource<com.bumptech.glide.load.resource.gif.GifDrawable> implements com.bumptech.glide.load.engine.Initializable {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.gif.GifDrawableResource>;
 							public get(): any;
 							public constructor(param0: com.bumptech.glide.load.resource.gif.GifDrawable);
@@ -5739,9 +5557,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.resource.gif.GifFrameLoader$FrameCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									onFrameReady(): void;
-								});
+								public constructor(implementation: { onFrameReady(): void });
 								public constructor();
 								public onFrameReady(): void;
 							}
@@ -5754,9 +5570,7 @@ declare module com {
 								/**
 								 * Constructs a new instance of the com.bumptech.glide.load.resource.gif.GifFrameLoader$OnEveryFrameListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 								 */
-								public constructor(implementation: {
-									onFrameReady(): void;
-								});
+								public constructor(implementation: { onFrameReady(): void });
 								public constructor();
 								public onFrameReady(): void;
 							}
@@ -5774,7 +5588,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module gif {
-						export class GifFrameResourceDecoder extends com.bumptech.glide.load.ResourceDecoder<com.bumptech.glide.gifdecoder.GifDecoder,globalAndroid.graphics.Bitmap> {
+						export class GifFrameResourceDecoder extends com.bumptech.glide.load.ResourceDecoder<com.bumptech.glide.gifdecoder.GifDecoder, globalAndroid.graphics.Bitmap> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.gif.GifFrameResourceDecoder>;
 							public constructor(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool);
 							public decode(param0: com.bumptech.glide.gifdecoder.GifDecoder, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.Bitmap>;
@@ -5813,12 +5627,12 @@ declare module com {
 			export module load {
 				export module resource {
 					export module gif {
-						export class StreamGifDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.InputStream,com.bumptech.glide.load.resource.gif.GifDrawable> {
+						export class StreamGifDecoder extends com.bumptech.glide.load.ResourceDecoder<java.io.InputStream, com.bumptech.glide.load.resource.gif.GifDrawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.gif.StreamGifDecoder>;
 							public decode(param0: any, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
 							public decode(param0: java.io.InputStream, param1: number, param2: number, param3: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<com.bumptech.glide.load.resource.gif.GifDrawable>;
 							public handles(param0: java.io.InputStream, param1: com.bumptech.glide.load.Options): boolean;
-							public constructor(param0: java.util.List<com.bumptech.glide.load.ImageHeaderParser>, param1: com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer,com.bumptech.glide.load.resource.gif.GifDrawable>, param2: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool);
+							public constructor(param0: java.util.List<com.bumptech.glide.load.ImageHeaderParser>, param1: com.bumptech.glide.load.ResourceDecoder<java.nio.ByteBuffer, com.bumptech.glide.load.resource.gif.GifDrawable>, param2: com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool);
 							public handles(param0: any, param1: com.bumptech.glide.load.Options): boolean;
 						}
 					}
@@ -5834,7 +5648,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module transcode {
-						export class BitmapBytesTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.Bitmap,native.Array<number>> {
+						export class BitmapBytesTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.Bitmap, native.Array<number>> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.BitmapBytesTranscoder>;
 							public constructor();
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5854,7 +5668,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module transcode {
-						export class BitmapDrawableTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.Bitmap,globalAndroid.graphics.drawable.BitmapDrawable> {
+						export class BitmapDrawableTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.Bitmap, globalAndroid.graphics.drawable.BitmapDrawable> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.BitmapDrawableTranscoder>;
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.Bitmap>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.drawable.BitmapDrawable>;
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5876,10 +5690,10 @@ declare module com {
 			export module load {
 				export module resource {
 					export module transcode {
-						export class DrawableBytesTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.drawable.Drawable,native.Array<number>> {
+						export class DrawableBytesTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.drawable.Drawable, native.Array<number>> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.DrawableBytesTranscoder>;
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
-							public constructor(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param1: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.Bitmap,native.Array<number>>, param2: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<com.bumptech.glide.load.resource.gif.GifDrawable,native.Array<number>>);
+							public constructor(param0: com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool, param1: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<globalAndroid.graphics.Bitmap, native.Array<number>>, param2: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<com.bumptech.glide.load.resource.gif.GifDrawable, native.Array<number>>);
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<globalAndroid.graphics.drawable.Drawable>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<native.Array<number>>;
 						}
 					}
@@ -5895,7 +5709,7 @@ declare module com {
 			export module load {
 				export module resource {
 					export module transcode {
-						export class GifDrawableBytesTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<com.bumptech.glide.load.resource.gif.GifDrawable,native.Array<number>> {
+						export class GifDrawableBytesTranscoder extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<com.bumptech.glide.load.resource.gif.GifDrawable, native.Array<number>> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.GifDrawableBytesTranscoder>;
 							public constructor();
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
@@ -5914,14 +5728,12 @@ declare module com {
 			export module load {
 				export module resource {
 					export module transcode {
-						export class ResourceTranscoder<Z, R>  extends java.lang.Object {
-							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any>>;
+						export class ResourceTranscoder<Z, R> extends java.lang.Object {
+							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any, any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								transcode(param0: com.bumptech.glide.load.engine.Resource<Z>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<R>;
-							});
+							public constructor(implementation: { transcode(param0: com.bumptech.glide.load.engine.Resource<Z>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<R> });
 							public constructor();
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<Z>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<R>;
 						}
@@ -5941,13 +5753,13 @@ declare module com {
 						export class TranscoderRegistry {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.TranscoderRegistry>;
 							public constructor();
-							public register(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any>): void;
-							public get(param0: java.lang.Class, param1: java.lang.Class): com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any>;
+							public register(param0: java.lang.Class, param1: java.lang.Class, param2: com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any, any>): void;
+							public get(param0: java.lang.Class, param1: java.lang.Class): com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any, any>;
 							public getTranscodeClasses(param0: java.lang.Class, param1: java.lang.Class): java.util.List;
 						}
 						export module TranscoderRegistry {
-							export class Entry<Z, R>  extends java.lang.Object {
-								public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.TranscoderRegistry.Entry<any,any>>;
+							export class Entry<Z, R> extends java.lang.Object {
+								public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.TranscoderRegistry.Entry<any, any>>;
 								public handles(param0: java.lang.Class<any>, param1: java.lang.Class<any>): boolean;
 							}
 						}
@@ -5964,11 +5776,11 @@ declare module com {
 			export module load {
 				export module resource {
 					export module transcode {
-						export class UnitTranscoder<Z>  extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any> {
+						export class UnitTranscoder<Z> extends com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any, any> {
 							public static class: java.lang.Class<com.bumptech.glide.load.resource.transcode.UnitTranscoder<any>>;
 							public constructor();
 							public transcode(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.Options): com.bumptech.glide.load.engine.Resource<any>;
-							public static get(): com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any,any>;
+							public static get(): com.bumptech.glide.load.resource.transcode.ResourceTranscoder<any, any>;
 						}
 					}
 				}
@@ -6014,11 +5826,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.manager.ConnectivityMonitor interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onStart(): void;
-						onStop(): void;
-						onDestroy(): void;
-					});
+					public constructor(implementation: { onStart(): void; onStop(): void; onDestroy(): void });
 					public constructor();
 					public onStart(): void;
 					public onStop(): void;
@@ -6030,9 +5838,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.manager.ConnectivityMonitor$ConnectivityListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							onConnectivityChanged(param0: boolean): void;
-						});
+						public constructor(implementation: { onConnectivityChanged(param0: boolean): void });
 						public constructor();
 						public onConnectivityChanged(param0: boolean): void;
 					}
@@ -6051,9 +5857,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.manager.ConnectivityMonitorFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						build(param0: globalAndroid.content.Context, param1: com.bumptech.glide.manager.ConnectivityMonitor.ConnectivityListener): com.bumptech.glide.manager.ConnectivityMonitor;
-					});
+					public constructor(implementation: { build(param0: globalAndroid.content.Context, param1: com.bumptech.glide.manager.ConnectivityMonitor.ConnectivityListener): com.bumptech.glide.manager.ConnectivityMonitor });
 					public constructor();
 					public build(param0: globalAndroid.content.Context, param1: com.bumptech.glide.manager.ConnectivityMonitor.ConnectivityListener): com.bumptech.glide.manager.ConnectivityMonitor;
 				}
@@ -6113,10 +5917,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.manager.Lifecycle interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						addListener(param0: com.bumptech.glide.manager.LifecycleListener): void;
-						removeListener(param0: com.bumptech.glide.manager.LifecycleListener): void;
-					});
+					public constructor(implementation: { addListener(param0: com.bumptech.glide.manager.LifecycleListener): void; removeListener(param0: com.bumptech.glide.manager.LifecycleListener): void });
 					public constructor();
 					public addListener(param0: com.bumptech.glide.manager.LifecycleListener): void;
 					public removeListener(param0: com.bumptech.glide.manager.LifecycleListener): void;
@@ -6135,11 +5936,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.manager.LifecycleListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onStart(): void;
-						onStop(): void;
-						onDestroy(): void;
-					});
+					public constructor(implementation: { onStart(): void; onStop(): void; onDestroy(): void });
 					public constructor();
 					public onStart(): void;
 					public onStop(): void;
@@ -6216,9 +6013,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.manager.RequestManagerRetriever$RequestManagerFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							build(param0: com.bumptech.glide.Glide, param1: com.bumptech.glide.manager.Lifecycle, param2: com.bumptech.glide.manager.RequestManagerTreeNode, param3: globalAndroid.content.Context): com.bumptech.glide.RequestManager;
-						});
+						public constructor(implementation: { build(param0: com.bumptech.glide.Glide, param1: com.bumptech.glide.manager.Lifecycle, param2: com.bumptech.glide.manager.RequestManagerTreeNode, param3: globalAndroid.content.Context): com.bumptech.glide.RequestManager });
 						public constructor();
 						public build(param0: com.bumptech.glide.Glide, param1: com.bumptech.glide.manager.Lifecycle, param2: com.bumptech.glide.manager.RequestManagerTreeNode, param3: globalAndroid.content.Context): com.bumptech.glide.RequestManager;
 					}
@@ -6237,9 +6032,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.manager.RequestManagerTreeNode interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						getDescendants(): java.util.Set<com.bumptech.glide.RequestManager>;
-					});
+					public constructor(implementation: { getDescendants(): java.util.Set<com.bumptech.glide.RequestManager> });
 					public constructor();
 					public getDescendants(): java.util.Set<com.bumptech.glide.RequestManager>;
 				}
@@ -6345,9 +6138,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.module.AppliesOptions interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						applyOptions(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideBuilder): void;
-					});
+					public constructor(implementation: { applyOptions(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideBuilder): void });
 					public constructor();
 					public applyOptions(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideBuilder): void;
 				}
@@ -6365,10 +6156,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.module.GlideModule interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						registerComponents(param0: globalAndroid.content.Context, param1: com.bumptech.glide.Glide, param2: com.bumptech.glide.Registry): void;
-						applyOptions(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideBuilder): void;
-					});
+					public constructor(implementation: { registerComponents(param0: globalAndroid.content.Context, param1: com.bumptech.glide.Glide, param2: com.bumptech.glide.Registry): void; applyOptions(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideBuilder): void });
 					public constructor();
 					public applyOptions(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideBuilder): void;
 					public registerComponents(param0: globalAndroid.content.Context, param1: com.bumptech.glide.Glide, param2: com.bumptech.glide.Registry): void;
@@ -6415,9 +6203,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.module.RegistersComponents interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						registerComponents(param0: globalAndroid.content.Context, param1: com.bumptech.glide.Glide, param2: com.bumptech.glide.Registry): void;
-					});
+					public constructor(implementation: { registerComponents(param0: globalAndroid.content.Context, param1: com.bumptech.glide.Glide, param2: com.bumptech.glide.Registry): void });
 					public constructor();
 					public registerComponents(param0: globalAndroid.content.Context, param1: com.bumptech.glide.Glide, param2: com.bumptech.glide.Registry): void;
 				}
@@ -6438,7 +6224,7 @@ declare module com {
 					public getEncoder(param0: java.lang.Class): com.bumptech.glide.load.Encoder<any>;
 				}
 				export module EncoderRegistry {
-					export class Entry<T>  extends java.lang.Object {
+					export class Entry<T> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.provider.EncoderRegistry.Entry<any>>;
 					}
 				}
@@ -6468,10 +6254,10 @@ declare module com {
 			export module provider {
 				export class LoadPathCache {
 					public static class: java.lang.Class<com.bumptech.glide.provider.LoadPathCache>;
-					public put(param0: java.lang.Class<any>, param1: java.lang.Class<any>, param2: java.lang.Class<any>, param3: com.bumptech.glide.load.engine.LoadPath<any,any,any>): void;
+					public put(param0: java.lang.Class<any>, param1: java.lang.Class<any>, param2: java.lang.Class<any>, param3: com.bumptech.glide.load.engine.LoadPath<any, any, any>): void;
 					public constructor();
-					public isEmptyLoadPath(param0: com.bumptech.glide.load.engine.LoadPath<any,any,any>): boolean;
-					public get(param0: java.lang.Class, param1: java.lang.Class, param2: java.lang.Class): com.bumptech.glide.load.engine.LoadPath<any,any,any>;
+					public isEmptyLoadPath(param0: com.bumptech.glide.load.engine.LoadPath<any, any, any>): boolean;
+					public get(param0: java.lang.Class, param1: java.lang.Class, param2: java.lang.Class): com.bumptech.glide.load.engine.LoadPath<any, any, any>;
 				}
 			}
 		}
@@ -6501,16 +6287,16 @@ declare module com {
 				export class ResourceDecoderRegistry {
 					public static class: java.lang.Class<com.bumptech.glide.provider.ResourceDecoderRegistry>;
 					public getDecoders(param0: java.lang.Class, param1: java.lang.Class): java.util.List;
-					public prepend(param0: string, param1: com.bumptech.glide.load.ResourceDecoder<any,any>, param2: java.lang.Class, param3: java.lang.Class): void;
+					public prepend(param0: string, param1: com.bumptech.glide.load.ResourceDecoder<any, any>, param2: java.lang.Class, param3: java.lang.Class): void;
 					public getResourceClasses(param0: java.lang.Class, param1: java.lang.Class): java.util.List;
 					public setBucketPriorityList(param0: java.util.List<string>): void;
 					public constructor();
-					public append(param0: string, param1: com.bumptech.glide.load.ResourceDecoder<any,any>, param2: java.lang.Class, param3: java.lang.Class): void;
+					public append(param0: string, param1: com.bumptech.glide.load.ResourceDecoder<any, any>, param2: java.lang.Class, param3: java.lang.Class): void;
 				}
 				export module ResourceDecoderRegistry {
-					export class Entry<T, R>  extends java.lang.Object {
-						public static class: java.lang.Class<com.bumptech.glide.provider.ResourceDecoderRegistry.Entry<any,any>>;
-						public constructor(param0: java.lang.Class<T>, param1: java.lang.Class<R>, param2: com.bumptech.glide.load.ResourceDecoder<T,R>);
+					export class Entry<T, R> extends java.lang.Object {
+						public static class: java.lang.Class<com.bumptech.glide.provider.ResourceDecoderRegistry.Entry<any, any>>;
+						public constructor(param0: java.lang.Class<T>, param1: java.lang.Class<R>, param2: com.bumptech.glide.load.ResourceDecoder<T, R>);
 						public handles(param0: java.lang.Class<any>, param1: java.lang.Class<any>): boolean;
 					}
 				}
@@ -6531,7 +6317,7 @@ declare module com {
 					public append(param0: java.lang.Class, param1: com.bumptech.glide.load.ResourceEncoder<any>): void;
 				}
 				export module ResourceEncoderRegistry {
-					export class Entry<T>  extends java.lang.Object {
+					export class Entry<T> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.provider.ResourceEncoderRegistry.Entry<any>>;
 					}
 				}
@@ -6544,7 +6330,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module request {
-				export abstract class BaseRequestOptions<T>  extends java.lang.Cloneable {
+				export abstract class BaseRequestOptions<T> extends java.lang.Cloneable {
 					public static class: java.lang.Class<com.bumptech.glide.request.BaseRequestOptions<any>>;
 					public autoClone(): any;
 					public isTransformationSet(): boolean;
@@ -6580,7 +6366,7 @@ declare module com {
 					public fitCenter(): any;
 					public getOnlyRetrieveFromCache(): boolean;
 					public getOverrideWidth(): number;
-					public getTransformations(): java.util.Map<java.lang.Class<any>,com.bumptech.glide.load.Transformation<any>>;
+					public getTransformations(): java.util.Map<java.lang.Class<any>, com.bumptech.glide.load.Transformation<any>>;
 					public getPlaceholderDrawable(): globalAndroid.graphics.drawable.Drawable;
 					public encodeFormat(param0: globalAndroid.graphics.Bitmap.CompressFormat): any;
 					public isTransformationAllowed(): boolean;
@@ -6663,7 +6449,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module request {
-				export class FutureTarget<R>  extends java.lang.Object {
+				export class FutureTarget<R> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.request.FutureTarget<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.request.FutureTarget<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
@@ -6709,16 +6495,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.request.Request interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						begin(): void;
-						clear(): void;
-						pause(): void;
-						isRunning(): boolean;
-						isComplete(): boolean;
-						isCleared(): boolean;
-						isAnyResourceSet(): boolean;
-						isEquivalentTo(param0: com.bumptech.glide.request.Request): boolean;
-					});
+					public constructor(implementation: { begin(): void; clear(): void; pause(): void; isRunning(): boolean; isComplete(): boolean; isCleared(): boolean; isAnyResourceSet(): boolean; isEquivalentTo(param0: com.bumptech.glide.request.Request): boolean });
 					public constructor();
 					public begin(): void;
 					public isAnyResourceSet(): boolean;
@@ -6743,15 +6520,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.request.RequestCoordinator interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						canSetImage(param0: com.bumptech.glide.request.Request): boolean;
-						canNotifyStatusChanged(param0: com.bumptech.glide.request.Request): boolean;
-						canNotifyCleared(param0: com.bumptech.glide.request.Request): boolean;
-						isAnyResourceSet(): boolean;
-						onRequestSuccess(param0: com.bumptech.glide.request.Request): void;
-						onRequestFailed(param0: com.bumptech.glide.request.Request): void;
-						getRoot(): com.bumptech.glide.request.RequestCoordinator;
-					});
+					public constructor(implementation: { canSetImage(param0: com.bumptech.glide.request.Request): boolean; canNotifyStatusChanged(param0: com.bumptech.glide.request.Request): boolean; canNotifyCleared(param0: com.bumptech.glide.request.Request): boolean; isAnyResourceSet(): boolean; onRequestSuccess(param0: com.bumptech.glide.request.Request): void; onRequestFailed(param0: com.bumptech.glide.request.Request): void; getRoot(): com.bumptech.glide.request.RequestCoordinator });
 					public constructor();
 					public getRoot(): com.bumptech.glide.request.RequestCoordinator;
 					public isAnyResourceSet(): boolean;
@@ -6782,7 +6551,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module request {
-				export class RequestFutureTarget<R>  extends java.lang.Object {
+				export class RequestFutureTarget<R> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.request.RequestFutureTarget<any>>;
 					public get(): R;
 					public isCancelled(): boolean;
@@ -6818,15 +6587,12 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module request {
-				export class RequestListener<R>  extends java.lang.Object {
+				export class RequestListener<R> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.request.RequestListener<any>>;
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.request.RequestListener<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException, param1: any, param2: com.bumptech.glide.request.target.Target<R>, param3: boolean): boolean;
-						onResourceReady(param0: R, param1: any, param2: com.bumptech.glide.request.target.Target<R>, param3: com.bumptech.glide.load.DataSource, param4: boolean): boolean;
-					});
+					public constructor(implementation: { onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException, param1: any, param2: com.bumptech.glide.request.target.Target<R>, param3: boolean): boolean; onResourceReady(param0: R, param1: any, param2: com.bumptech.glide.request.target.Target<R>, param3: com.bumptech.glide.load.DataSource, param4: boolean): boolean });
 					public constructor();
 					public onResourceReady(param0: R, param1: any, param2: com.bumptech.glide.request.target.Target<R>, param3: com.bumptech.glide.load.DataSource, param4: boolean): boolean;
 					public onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException, param1: any, param2: com.bumptech.glide.request.target.Target<R>, param3: boolean): boolean;
@@ -6884,11 +6650,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.request.ResourceCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onResourceReady(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.DataSource): void;
-						onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException): void;
-						getLock(): any;
-					});
+					public constructor(implementation: { onResourceReady(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.DataSource): void; onLoadFailed(param0: com.bumptech.glide.load.engine.GlideException): void; getLock(): any });
 					public constructor();
 					public onResourceReady(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.DataSource): void;
 					public getLock(): any;
@@ -6903,11 +6665,28 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module request {
-				export class SingleRequest<R>  extends java.lang.Object {
+				export class SingleRequest<R> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.request.SingleRequest<any>>;
 					public begin(): void;
 					public isAnyResourceSet(): boolean;
-					public static obtain(param0: globalAndroid.content.Context, param1: com.bumptech.glide.GlideContext, param2: any, param3: any, param4: java.lang.Class, param5: com.bumptech.glide.request.BaseRequestOptions<any>, param6: number, param7: number, param8: com.bumptech.glide.Priority, param9: com.bumptech.glide.request.target.Target<any>, param10: com.bumptech.glide.request.RequestListener<any>, param11: java.util.List, param12: com.bumptech.glide.request.RequestCoordinator, param13: com.bumptech.glide.load.engine.Engine, param14: com.bumptech.glide.request.transition.TransitionFactory<any>, param15: java.util.concurrent.Executor): com.bumptech.glide.request.SingleRequest<any>;
+					public static obtain(
+						param0: globalAndroid.content.Context,
+						param1: com.bumptech.glide.GlideContext,
+						param2: any,
+						param3: any,
+						param4: java.lang.Class,
+						param5: com.bumptech.glide.request.BaseRequestOptions<any>,
+						param6: number,
+						param7: number,
+						param8: com.bumptech.glide.Priority,
+						param9: com.bumptech.glide.request.target.Target<any>,
+						param10: com.bumptech.glide.request.RequestListener<any>,
+						param11: java.util.List,
+						param12: com.bumptech.glide.request.RequestCoordinator,
+						param13: com.bumptech.glide.load.engine.Engine,
+						param14: com.bumptech.glide.request.transition.TransitionFactory<any>,
+						param15: java.util.concurrent.Executor,
+					): com.bumptech.glide.request.SingleRequest<any>;
 					public onResourceReady(param0: com.bumptech.glide.load.engine.Resource<any>, param1: com.bumptech.glide.load.DataSource): void;
 					public isComplete(): boolean;
 					public onSizeReady(param0: number, param1: number): void;
@@ -6999,7 +6778,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class BaseTarget<Z>  extends com.bumptech.glide.request.target.Target<any> {
+					export abstract class BaseTarget<Z> extends com.bumptech.glide.request.target.Target<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.BaseTarget<any>>;
 						public constructor();
 						public onDestroy(): void;
@@ -7095,7 +6874,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class CustomTarget<T>  extends com.bumptech.glide.request.target.Target<any> {
+					export abstract class CustomTarget<T> extends com.bumptech.glide.request.target.Target<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.CustomTarget<any>>;
 						public constructor();
 						public onLoadStarted(param0: globalAndroid.graphics.drawable.Drawable): void;
@@ -7122,12 +6901,12 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class CustomViewTarget<T, Z>  extends com.bumptech.glide.request.target.Target<any> {
-						public static class: java.lang.Class<com.bumptech.glide.request.target.CustomViewTarget<any,any>>;
+					export abstract class CustomViewTarget<T, Z> extends com.bumptech.glide.request.target.Target<any> {
+						public static class: java.lang.Class<com.bumptech.glide.request.target.CustomViewTarget<any, any>>;
 						public view: any;
 						public getView(): any;
-						public clearOnDetach(): com.bumptech.glide.request.target.CustomViewTarget<any,any>;
-						public waitForLayout(): com.bumptech.glide.request.target.CustomViewTarget<any,any>;
+						public clearOnDetach(): com.bumptech.glide.request.target.CustomViewTarget<any, any>;
+						public waitForLayout(): com.bumptech.glide.request.target.CustomViewTarget<any, any>;
 						public constructor(param0: any);
 						public onResourceCleared(param0: globalAndroid.graphics.drawable.Drawable): void;
 						public onLoadStarted(param0: globalAndroid.graphics.drawable.Drawable): void;
@@ -7142,7 +6921,7 @@ declare module com {
 						public setRequest(param0: com.bumptech.glide.request.Request): void;
 						public removeCallback(param0: com.bumptech.glide.request.target.SizeReadyCallback): void;
 						/** @deprecated */
-						public useTagId(param0: number): com.bumptech.glide.request.target.CustomViewTarget<any,any>;
+						public useTagId(param0: number): com.bumptech.glide.request.target.CustomViewTarget<any, any>;
 						public onStart(): void;
 						public getSize(param0: com.bumptech.glide.request.target.SizeReadyCallback): void;
 					}
@@ -7288,7 +7067,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class ImageViewTarget<Z>  extends com.bumptech.glide.request.target.ViewTarget<globalAndroid.widget.ImageView,any> implements com.bumptech.glide.request.transition.Transition.ViewAdapter  {
+					export abstract class ImageViewTarget<Z> extends com.bumptech.glide.request.target.ViewTarget<globalAndroid.widget.ImageView, any> implements com.bumptech.glide.request.transition.Transition.ViewAdapter {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.ImageViewTarget<any>>;
 						public getView(): any;
 						public constructor();
@@ -7327,7 +7106,7 @@ declare module com {
 					export class ImageViewTargetFactory {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.ImageViewTargetFactory>;
 						public constructor();
-						public buildTarget(param0: globalAndroid.widget.ImageView, param1: java.lang.Class): com.bumptech.glide.request.target.ViewTarget<any,any>;
+						public buildTarget(param0: globalAndroid.widget.ImageView, param1: java.lang.Class): com.bumptech.glide.request.target.ViewTarget<any, any>;
 					}
 				}
 			}
@@ -7368,7 +7147,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export class PreloadTarget<Z>  extends com.bumptech.glide.request.target.CustomTarget<any> {
+					export class PreloadTarget<Z> extends com.bumptech.glide.request.target.CustomTarget<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.PreloadTarget<any>>;
 						public static obtain(param0: com.bumptech.glide.RequestManager, param1: number, param2: number): com.bumptech.glide.request.target.PreloadTarget<any>;
 						public onResourceReady(param0: any, param1: com.bumptech.glide.request.transition.Transition<any>): void;
@@ -7391,7 +7170,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class SimpleTarget<Z>  extends com.bumptech.glide.request.target.BaseTarget<any> {
+					export abstract class SimpleTarget<Z> extends com.bumptech.glide.request.target.BaseTarget<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.SimpleTarget<any>>;
 						public constructor();
 						public onResourceReady(param0: any, param1: com.bumptech.glide.request.transition.Transition<any>): void;
@@ -7420,9 +7199,7 @@ declare module com {
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.request.target.SizeReadyCallback interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							onSizeReady(param0: number, param1: number): void;
-						});
+						public constructor(implementation: { onSizeReady(param0: number, param1: number): void });
 						public constructor();
 						public onSizeReady(param0: number, param1: number): void;
 					}
@@ -7437,7 +7214,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export class Target<R>  extends com.bumptech.glide.manager.LifecycleListener {
+					export class Target<R> extends com.bumptech.glide.manager.LifecycleListener {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.Target<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.request.target.Target<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
@@ -7480,7 +7257,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class ThumbnailImageViewTarget<T>  extends com.bumptech.glide.request.target.ImageViewTarget<any> {
+					export abstract class ThumbnailImageViewTarget<T> extends com.bumptech.glide.request.target.ImageViewTarget<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.target.ThumbnailImageViewTarget<any>>;
 						public getView(): any;
 						public constructor();
@@ -7515,15 +7292,15 @@ declare module com {
 		export module glide {
 			export module request {
 				export module target {
-					export abstract class ViewTarget<T, Z>  extends com.bumptech.glide.request.target.BaseTarget<any> {
-						public static class: java.lang.Class<com.bumptech.glide.request.target.ViewTarget<any,any>>;
+					export abstract class ViewTarget<T, Z> extends com.bumptech.glide.request.target.BaseTarget<any> {
+						public static class: java.lang.Class<com.bumptech.glide.request.target.ViewTarget<any, any>>;
 						public view: any;
 						public getView(): any;
 						/** @deprecated */
 						public static setTagId(param0: number): void;
 						public constructor();
-						public clearOnDetach(): com.bumptech.glide.request.target.ViewTarget<any,any>;
-						public waitForLayout(): com.bumptech.glide.request.target.ViewTarget<any,any>;
+						public clearOnDetach(): com.bumptech.glide.request.target.ViewTarget<any, any>;
+						public waitForLayout(): com.bumptech.glide.request.target.ViewTarget<any, any>;
 						public constructor(param0: any);
 						public onLoadStarted(param0: globalAndroid.graphics.drawable.Drawable): void;
 						public getRequest(): com.bumptech.glide.request.Request;
@@ -7559,7 +7336,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export abstract class BitmapContainerTransitionFactory<R>  extends com.bumptech.glide.request.transition.TransitionFactory<any> {
+					export abstract class BitmapContainerTransitionFactory<R> extends com.bumptech.glide.request.transition.TransitionFactory<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.BitmapContainerTransitionFactory<any>>;
 						public build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<any>;
 						public getBitmap(param0: any): globalAndroid.graphics.Bitmap;
@@ -7643,7 +7420,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class NoTransition<R>  extends com.bumptech.glide.request.transition.Transition<any> {
+					export class NoTransition<R> extends com.bumptech.glide.request.transition.Transition<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.NoTransition<any>>;
 						public constructor();
 						public static getFactory(): com.bumptech.glide.request.transition.TransitionFactory<any>;
@@ -7651,7 +7428,7 @@ declare module com {
 						public static get(): com.bumptech.glide.request.transition.Transition<any>;
 					}
 					export module NoTransition {
-						export class NoAnimationFactory<R>  extends com.bumptech.glide.request.transition.TransitionFactory<any> {
+						export class NoAnimationFactory<R> extends com.bumptech.glide.request.transition.TransitionFactory<any> {
 							public static class: java.lang.Class<com.bumptech.glide.request.transition.NoTransition.NoAnimationFactory<any>>;
 							public constructor();
 							public build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<any>;
@@ -7668,14 +7445,12 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class Transition<R>  extends java.lang.Object {
+					export class Transition<R> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.Transition<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.request.transition.Transition<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							transition(param0: R, param1: com.bumptech.glide.request.transition.Transition.ViewAdapter): boolean;
-						});
+						public constructor(implementation: { transition(param0: R, param1: com.bumptech.glide.request.transition.Transition.ViewAdapter): boolean });
 						public constructor();
 						public transition(param0: R, param1: com.bumptech.glide.request.transition.Transition.ViewAdapter): boolean;
 					}
@@ -7685,11 +7460,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.request.transition.Transition$ViewAdapter interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								getView(): globalAndroid.view.View;
-								getCurrentDrawable(): globalAndroid.graphics.drawable.Drawable;
-								setDrawable(param0: globalAndroid.graphics.drawable.Drawable): void;
-							});
+							public constructor(implementation: { getView(): globalAndroid.view.View; getCurrentDrawable(): globalAndroid.graphics.drawable.Drawable; setDrawable(param0: globalAndroid.graphics.drawable.Drawable): void });
 							public constructor();
 							public getCurrentDrawable(): globalAndroid.graphics.drawable.Drawable;
 							public getView(): globalAndroid.view.View;
@@ -7707,14 +7478,12 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class TransitionFactory<R>  extends java.lang.Object {
+					export class TransitionFactory<R> extends java.lang.Object {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.TransitionFactory<any>>;
 						/**
 						 * Constructs a new instance of the com.bumptech.glide.request.transition.TransitionFactory<any> interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 						 */
-						public constructor(implementation: {
-							build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<R>;
-						});
+						public constructor(implementation: { build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<R> });
 						public constructor();
 						public build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<R>;
 					}
@@ -7729,7 +7498,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class ViewAnimationFactory<R>  extends com.bumptech.glide.request.transition.TransitionFactory<any> {
+					export class ViewAnimationFactory<R> extends com.bumptech.glide.request.transition.TransitionFactory<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.ViewAnimationFactory<any>>;
 						public build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<any>;
 						public constructor(param0: number);
@@ -7756,7 +7525,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class ViewPropertyAnimationFactory<R>  extends com.bumptech.glide.request.transition.TransitionFactory<any> {
+					export class ViewPropertyAnimationFactory<R> extends com.bumptech.glide.request.transition.TransitionFactory<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.ViewPropertyAnimationFactory<any>>;
 						public constructor(param0: com.bumptech.glide.request.transition.ViewPropertyTransition.Animator);
 						public build(param0: com.bumptech.glide.load.DataSource, param1: boolean): com.bumptech.glide.request.transition.Transition<any>;
@@ -7772,7 +7541,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class ViewPropertyTransition<R>  extends com.bumptech.glide.request.transition.Transition<any> {
+					export class ViewPropertyTransition<R> extends com.bumptech.glide.request.transition.Transition<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.ViewPropertyTransition<any>>;
 						public constructor(param0: com.bumptech.glide.request.transition.ViewPropertyTransition.Animator);
 						public transition(param0: any, param1: com.bumptech.glide.request.transition.Transition.ViewAdapter): boolean;
@@ -7783,9 +7552,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.request.transition.ViewPropertyTransition$Animator interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								animate(param0: globalAndroid.view.View): void;
-							});
+							public constructor(implementation: { animate(param0: globalAndroid.view.View): void });
 							public constructor();
 							public animate(param0: globalAndroid.view.View): void;
 						}
@@ -7801,7 +7568,7 @@ declare module com {
 		export module glide {
 			export module request {
 				export module transition {
-					export class ViewTransition<R>  extends com.bumptech.glide.request.transition.Transition<any> {
+					export class ViewTransition<R> extends com.bumptech.glide.request.transition.Transition<any> {
 						public static class: java.lang.Class<com.bumptech.glide.request.transition.ViewTransition<any>>;
 						public transition(param0: any, param1: com.bumptech.glide.request.transition.Transition.ViewAdapter): boolean;
 					}
@@ -7811,9 +7578,7 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.request.transition.ViewTransition$ViewTransitionAnimationFactory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								build(param0: globalAndroid.content.Context): globalAndroid.view.animation.Animation;
-							});
+							public constructor(implementation: { build(param0: globalAndroid.content.Context): globalAndroid.view.animation.Animation });
 							public constructor();
 							public build(param0: globalAndroid.content.Context): globalAndroid.view.animation.Animation;
 						}
@@ -7940,15 +7705,15 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module util {
-				export class CachedHashCodeArrayMap<K, V>  extends androidx.collection.ArrayMap<any,any> {
-					public static class: java.lang.Class<com.bumptech.glide.util.CachedHashCodeArrayMap<any,any>>;
+				export class CachedHashCodeArrayMap<K, V> extends androidx.collection.ArrayMap<any, any> {
+					public static class: java.lang.Class<com.bumptech.glide.util.CachedHashCodeArrayMap<any, any>>;
 					public setValueAt(param0: number, param1: any): any;
 					public constructor();
 					public clear(): void;
 					public removeAt(param0: number): any;
 					public hashCode(): number;
 					public put(param0: any, param1: any): any;
-					public putAll(param0: androidx.collection.SimpleArrayMap<any,any>): void;
+					public putAll(param0: androidx.collection.SimpleArrayMap<any, any>): void;
 				}
 			}
 		}
@@ -8016,7 +7781,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module util {
-				export class FixedPreloadSizeProvider<T>  extends com.bumptech.glide.ListPreloader.PreloadSizeProvider<any> {
+				export class FixedPreloadSizeProvider<T> extends com.bumptech.glide.ListPreloader.PreloadSizeProvider<any> {
 					public static class: java.lang.Class<com.bumptech.glide.util.FixedPreloadSizeProvider<any>>;
 					public getPreloadSize(param0: any, param1: number, param2: number): native.Array<number>;
 					public constructor(param0: number, param1: number);
@@ -8044,8 +7809,8 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module util {
-				export class LruCache<T, Y>  extends java.lang.Object {
-					public static class: java.lang.Class<com.bumptech.glide.util.LruCache<any,any>>;
+				export class LruCache<T, Y> extends java.lang.Object {
+					public static class: java.lang.Class<com.bumptech.glide.util.LruCache<any, any>>;
 					public getSize(param0: Y): number;
 					public put(param0: T, param1: Y): Y;
 					public getCount(): number;
@@ -8130,8 +7895,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.bumptech.glide.util.Synthetic interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-					});
+					public constructor(implementation: {});
 					public constructor();
 				}
 			}
@@ -8174,7 +7938,7 @@ declare module com {
 	export module bumptech {
 		export module glide {
 			export module util {
-				export class ViewPreloadSizeProvider<T>  extends java.lang.Object {
+				export class ViewPreloadSizeProvider<T> extends java.lang.Object {
 					public static class: java.lang.Class<com.bumptech.glide.util.ViewPreloadSizeProvider<any>>;
 					public setView(param0: globalAndroid.view.View): void;
 					public constructor();
@@ -8183,7 +7947,7 @@ declare module com {
 					public constructor(param0: globalAndroid.view.View);
 				}
 				export module ViewPreloadSizeProvider {
-					export class SizeViewTarget extends com.bumptech.glide.request.target.CustomViewTarget<globalAndroid.view.View,any> {
+					export class SizeViewTarget extends com.bumptech.glide.request.target.CustomViewTarget<globalAndroid.view.View, any> {
 						public static class: java.lang.Class<com.bumptech.glide.util.ViewPreloadSizeProvider.SizeViewTarget>;
 						public onResourceReady(param0: any, param1: com.bumptech.glide.request.transition.Transition<any>): void;
 						public onLoadFailed(param0: globalAndroid.graphics.drawable.Drawable): void;
@@ -8214,18 +7978,16 @@ declare module com {
 						public static threadSafeList(param0: number): androidx.core.util.Pools.Pool;
 					}
 					export module FactoryPools {
-						export class Factory<T>  extends java.lang.Object {
+						export class Factory<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.util.pool.FactoryPools.Factory<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.util.pool.FactoryPools$Factory interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								create(): T;
-							});
+							public constructor(implementation: { create(): T });
 							public constructor();
 							public create(): T;
 						}
-						export class FactoryPool<T>  extends androidx.core.util.Pools.Pool<any> {
+						export class FactoryPool<T> extends androidx.core.util.Pools.Pool<any> {
 							public static class: java.lang.Class<com.bumptech.glide.util.pool.FactoryPools.FactoryPool<any>>;
 							public acquire(): any;
 							public release(param0: any): boolean;
@@ -8235,20 +7997,16 @@ declare module com {
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.util.pool.FactoryPools$Poolable interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								getVerifier(): com.bumptech.glide.util.pool.StateVerifier;
-							});
+							public constructor(implementation: { getVerifier(): com.bumptech.glide.util.pool.StateVerifier });
 							public constructor();
 							public getVerifier(): com.bumptech.glide.util.pool.StateVerifier;
 						}
-						export class Resetter<T>  extends java.lang.Object {
+						export class Resetter<T> extends java.lang.Object {
 							public static class: java.lang.Class<com.bumptech.glide.util.pool.FactoryPools.Resetter<any>>;
 							/**
 							 * Constructs a new instance of the com.bumptech.glide.util.pool.FactoryPools$Resetter interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 							 */
-							public constructor(implementation: {
-								reset(param0: T): void;
-							});
+							public constructor(implementation: { reset(param0: T): void });
 							public constructor();
 							public reset(param0: T): void;
 						}
@@ -8361,11 +8119,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnGestureListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onDrag(param0: number, param1: number): void;
-						onFling(param0: number, param1: number, param2: number, param3: number): void;
-						onScale(param0: number, param1: number, param2: number): void;
-					});
+					public constructor(implementation: { onDrag(param0: number, param1: number): void; onFling(param0: number, param1: number, param2: number, param3: number): void; onScale(param0: number, param1: number, param2: number): void });
 					public constructor();
 					public onDrag(param0: number, param1: number): void;
 					public onFling(param0: number, param1: number, param2: number, param3: number): void;
@@ -8385,9 +8139,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnMatrixChangedListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onMatrixChanged(param0: globalAndroid.graphics.RectF): void;
-					});
+					public constructor(implementation: { onMatrixChanged(param0: globalAndroid.graphics.RectF): void });
 					public constructor();
 					public onMatrixChanged(param0: globalAndroid.graphics.RectF): void;
 				}
@@ -8405,9 +8157,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnOutsidePhotoTapListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onOutsidePhotoTap(param0: globalAndroid.widget.ImageView): void;
-					});
+					public constructor(implementation: { onOutsidePhotoTap(param0: globalAndroid.widget.ImageView): void });
 					public constructor();
 					public onOutsidePhotoTap(param0: globalAndroid.widget.ImageView): void;
 				}
@@ -8425,9 +8175,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnPhotoTapListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onPhotoTap(param0: globalAndroid.widget.ImageView, param1: number, param2: number): void;
-					});
+					public constructor(implementation: { onPhotoTap(param0: globalAndroid.widget.ImageView, param1: number, param2: number): void });
 					public constructor();
 					public onPhotoTap(param0: globalAndroid.widget.ImageView, param1: number, param2: number): void;
 				}
@@ -8445,9 +8193,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnScaleChangedListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onScaleChange(param0: number, param1: number, param2: number): void;
-					});
+					public constructor(implementation: { onScaleChange(param0: number, param1: number, param2: number): void });
 					public constructor();
 					public onScaleChange(param0: number, param1: number, param2: number): void;
 				}
@@ -8465,9 +8211,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnSingleFlingListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onFling(param0: globalAndroid.view.MotionEvent, param1: globalAndroid.view.MotionEvent, param2: number, param3: number): boolean;
-					});
+					public constructor(implementation: { onFling(param0: globalAndroid.view.MotionEvent, param1: globalAndroid.view.MotionEvent, param2: number, param3: number): boolean });
 					public constructor();
 					public onFling(param0: globalAndroid.view.MotionEvent, param1: globalAndroid.view.MotionEvent, param2: number, param3: number): boolean;
 				}
@@ -8485,9 +8229,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnViewDragListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onDrag(param0: number, param1: number): void;
-					});
+					public constructor(implementation: { onDrag(param0: number, param1: number): void });
 					public constructor();
 					public onDrag(param0: number, param1: number): void;
 				}
@@ -8505,9 +8247,7 @@ declare module com {
 					/**
 					 * Constructs a new instance of the com.github.chrisbanes.photoview.OnViewTapListener interface with the provided implementation. An empty constructor exists calling super() when extending the interface class.
 					 */
-					public constructor(implementation: {
-						onViewTap(param0: globalAndroid.view.View, param1: number, param2: number): void;
-					});
+					public constructor(implementation: { onViewTap(param0: globalAndroid.view.View, param1: number, param2: number): void });
 					public constructor();
 					public onViewTap(param0: globalAndroid.view.View, param1: number, param2: number): void;
 				}
@@ -10215,7 +9955,7 @@ declare module com {
 						public static ViewStubCompat_android_id: number;
 						public static ViewStubCompat_android_inflatedId: number;
 						public static ViewStubCompat_android_layout: number;
-						public static <clinit>(): void;
+						public static<clinit>(): void;
 					}
 				}
 			}
@@ -10958,4 +10698,3 @@ declare module jp {
 //com.bumptech.glide.util.pool.FactoryPools.Factory:1
 //com.bumptech.glide.util.pool.FactoryPools.FactoryPool:1
 //com.bumptech.glide.util.pool.FactoryPools.Resetter:1
-

@@ -11,19 +11,20 @@ export class ImageZoom extends ImageZoomBase {
 	}
 
 	public createNativeView() {
-		return new com.github.chrisbanes.photoview.PhotoView(this._context);
+		return new com.otaliastudios.zoom.ZoomImageView(this._context);
 	}
 
 	[minZoomScaleProperty.setNative](scale: number) {
-		if (this.nativeView && isNumber(scale)) {
-			this.nativeView.setMinimumScale(scale);
-			this.nativeView.setScaleLevels(Number(scale), Number(0.5833333333333334 * this.maxZoom), Number(this.maxZoom));
+		const nativeView = this.nativeView as com.otaliastudios.zoom.ZoomImageView;
+		if (nativeView && isNumber(scale)) {
+			nativeView.setMinZoom(scale);
 		}
 	}
 
 	[maxZoomScaleProperty.setNative](scale: number) {
-		if (this.nativeView && isNumber(scale)) {
-			this.nativeView.setScaleLevels(Number(this.minZoom), Number(0.5833333333333334 * scale), Number(scale));
+		const nativeView = this.nativeView as com.otaliastudios.zoom.ZoomImageView;
+		if (nativeView && isNumber(scale)) {
+			nativeView.setMaxZoom(scale);
 		}
 	}
 
@@ -44,7 +45,6 @@ export class ImageZoom extends ImageZoomBase {
 	}
 
 	public initNativeView() {
-		this.nativeView.setScaleLevels(Number(this.minZoom), Number(0.5833333333333334 * this.maxZoom), Number(this.maxZoom));
 		this.manager = com.bumptech.glide.Glide.with(this._context);
 
 		if (this.src) {

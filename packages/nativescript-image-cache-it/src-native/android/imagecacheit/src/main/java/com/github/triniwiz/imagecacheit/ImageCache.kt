@@ -14,6 +14,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import java.io.File
+import java.lang.ref.WeakReference
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -29,11 +30,11 @@ class ImageCache {
     private var executorService: ExecutorService? = null
 
     @JvmStatic
-    private var mContext: Context? = null
+    private var mContext: WeakReference<Context>? = null
 
     @JvmStatic
     fun init(context: Context?) {
-      if (context != mContext) {
+      if (context != mContext?.get()) {
         manager = null
       }
       if (manager == null) {
@@ -46,7 +47,7 @@ class ImageCache {
       if (executorService == null) {
         executorService = Executors.newCachedThreadPool()
       }
-      mContext = context
+      mContext = WeakReference(context)
     }
 
     @SuppressLint("CheckResult")

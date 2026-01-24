@@ -1,20 +1,14 @@
-allprojects {
-		repositories {
-			maven { url 'https://jitpack.io' }
-		}
-}
-
 repositories {
   mavenCentral()
   google()
 }
 
 dependencies {
-  implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+  implementation 'com.otaliastudios:zoomlayout:1.9.0'
   implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-  implementation 'com.github.bumptech.glide:okhttp3-integration:5.0.0-rc01'
-  implementation 'jp.wasabeef:glide-transformations:4.3.0'
-  implementation 'com.github.bumptech.glide:glide:5.0.0-rc01'
-  annotationProcessor 'com.github.bumptech.glide:compiler:5.0.0-rc01'
+  implementation 'com.github.bumptech.glide:okhttp3-integration:5.0.5'
+  implementation 'com.github.triniwiz:glide-transformations:8c057db924'
+  implementation 'com.github.bumptech.glide:glide:5.0.5'
+  annotationProcessor 'com.github.bumptech.glide:compiler:5.0.5'
   annotationProcessor 'androidx.annotation:annotation:1.9.1'
 }
