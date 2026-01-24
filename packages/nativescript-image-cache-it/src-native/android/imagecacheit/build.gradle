@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-  compileSdk 33
+  compileSdk 35
 
   defaultConfig {
-    minSdkVersion 17
-    targetSdkVersion 33
+    minSdkVersion 21
+    targetSdkVersion 35
 
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     consumerProguardFiles 'consumer-rules.pro'
@@ -34,6 +34,7 @@ android {
 repositories {
   mavenCentral()
   google()
+  maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -44,11 +45,11 @@ dependencies {
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
   implementation 'com.squareup.okhttp3:okhttp:4.11.0'
-  implementation 'com.github.bumptech.glide:okhttp3-integration:5.0.0-rc01'
+  implementation 'com.github.bumptech.glide:okhttp3-integration:5.0.5'
   implementation 'jp.wasabeef:glide-transformations:4.3.0'
-  implementation 'jp.co.cyberagent.android:gpuimage:2.1.0'
-  implementation 'com.github.bumptech.glide:glide:5.0.0-rc01'
-  kapt 'com.github.bumptech.glide:compiler:5.0.0-rc01'
+  implementation 'com.github.triniwiz:android-gpuimage:9a33c87c1f'
+  implementation 'com.github.bumptech.glide:glide:5.0.5'
+  kapt 'com.github.bumptech.glide:compiler:5.0.5'
   kapt 'androidx.annotation:annotation:1.9.1'
   implementation "androidx.core:core-ktx:1.13.1"
 }
