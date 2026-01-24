@@ -1,0 +1,17 @@
+repositories {
+    maven { url "https://jitpack.io" }
+}
+
+if (!project.hasProperty("tempBuild")) {
+	apply plugin: 'com.google.gms.google-services'
+}
+
+ dependencies {
+    api "com.github.klaviyo.klaviyo-android-sdk:analytics:3.3.0"
+    api "com.github.klaviyo.klaviyo-android-sdk:push-fcm:3.3.0"
+    implementation "com.github.klaviyo.klaviyo-android-sdk:core:3.3.0"
+
+    def computeFirebaseBomVersion = { -> project.hasProperty("firebaseBomVersion") ? firebaseBomVersion : "33.13.0" }
+    implementation platform("com.google.firebase:firebase-bom:${computeFirebaseBomVersion}")
+    implementation 'com.google.firebase:firebase-messaging'
+ }

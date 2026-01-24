@@ -1,0 +1,30 @@
+export const enum ProfileAttributeKey {
+	ADDRESS1 = 'address1',
+	ADDRESS2 = 'address2',
+	ANONYMOUS_ID = 'anonymousId',
+	CITY = 'city',
+	COUNTRY = 'country',
+	CUSTOM = 'custom',
+	EMAIL = 'email',
+	EXTERNAL_ID = 'externalId',
+	FIRST_NAME = 'firstName',
+	IMAGE = 'image',
+	LAST_NAME = 'lastName',
+	LATITUDE = 'latitude',
+	LONGITUDE = 'longitude',
+	ORGANIZATION = 'organization',
+	PHONE_NUMBER = 'phoneNumber',
+	PUSH_STATE = 'pushState',
+	PUSH_TOKEN = 'pushToken',
+	REGION = 'region',
+	TIMEZONE = 'timezone',
+	TITLE = 'title',
+	ZIP = 'zip',
+}
+
+export const enum EventName {
+	OPENED_APP = 'Opened App',
+	VIEWED_PRODUCT = 'Viewed Product',
+	ADDED_TO_CART = 'Added to Cart',
+	STARTED_CHECKOUT = 'Started Checkout',
+}
