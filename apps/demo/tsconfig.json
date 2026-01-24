@@ -69,6 +69,8 @@
 			"@triniwiz/nativescript-supabase-auth": ["../../packages/nativescript-supabase-auth/index.d.ts"],
 			"@triniwiz/nativescript-messenger": ["../../packages/nativescript-messenger/index.d.ts"],
 			"@triniwiz/nativescript-supabase-functions": ["../../packages/nativescript-supabase-functions/index.d.ts"],
+			"@triniwiz/nativescript-klaviyo-sdk": ["../../packages/nativescript-klaviyo-sdk/index.d.ts"],
+			"@triniwiz/nativescript-klaviyo-push-sdk": ["../../packages/nativescript-klaviyo-push-sdk/index.d.ts"],
 			"@triniwiz/nativescript-pdf": ["../../packages/nativescript-pdf/index.d.ts"]
 		}
 	}

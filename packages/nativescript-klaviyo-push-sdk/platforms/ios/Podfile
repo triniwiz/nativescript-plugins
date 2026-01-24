@@ -1,0 +1,1 @@
+pod 'GoogleUtilities/AppDelegateSwizzler', '~> 8.0.2'
