@@ -89,6 +89,19 @@ declare var CBLArrayFragment: {
 	prototype: CBLArrayFragment;
 };
 
+declare class CBLArrayIndexConfiguration extends CBLIndexConfiguration {
+
+	static alloc(): CBLArrayIndexConfiguration; // inherited from NSObject
+
+	static new(): CBLArrayIndexConfiguration; // inherited from NSObject
+
+	readonly path: string;
+
+	constructor(o: { path: string; expressions: NSArray<string> | string[]; });
+
+	initWithPathExpressions(path: string, expressions: NSArray<string> | string[]): this;
+}
+
 interface CBLArrayProtocol extends CBLArrayFragment, NSFastEnumeration, NSObjectProtocol {
 
 	count: number;
@@ -191,6 +204,10 @@ declare class CBLCollection extends NSObject implements CBLCollectionChangeObser
 
 	readonly count: number;
 
+	readonly database: CBLDatabase;
+
+	readonly fullName: string;
+
 	readonly name: string;
 
 	readonly scope: CBLScope;
@@ -209,11 +226,11 @@ declare class CBLCollection extends NSObject implements CBLCollectionChangeObser
 
 	addChangeListener(listener: (p1: CBLCollectionChange) => void): CBLListenerToken;
 
-	addChangeListenerWithQueueListener(queue: NSObject, listener: (p1: CBLCollectionChange) => void): CBLListenerToken;
+	addChangeListenerWithQueueListener(queue: NSObject & OS_dispatch_queue, listener: (p1: CBLCollectionChange) => void): CBLListenerToken;
 
 	addDocumentChangeListenerWithIDListener(id: string, listener: (p1: CBLDocumentChange) => void): CBLListenerToken;
 
-	addDocumentChangeListenerWithIDQueueListener(documentID: string, queue: NSObject, listener: (p1: CBLDocumentChange) => void): CBLListenerToken;
+	addDocumentChangeListenerWithIDQueueListener(documentID: string, queue: NSObject & OS_dispatch_queue, listener: (p1: CBLDocumentChange) => void): CBLListenerToken;
 
 	class(): typeof NSObject;
 
@@ -234,6 +251,8 @@ declare class CBLCollection extends NSObject implements CBLCollectionChangeObser
 	documentWithIDError(documentID: string): CBLDocument;
 
 	getDocumentExpirationWithIDError(documentID: string): Date;
+
+	indexWithNameError(name: string): CBLQueryIndex;
 
 	indexes(): NSArray<string>;
 
@@ -285,7 +304,7 @@ interface CBLCollectionChangeObservable extends NSObjectProtocol {
 
 	addChangeListener(listener: (p1: CBLCollectionChange) => void): CBLListenerToken;
 
-	addChangeListenerWithQueueListener(queue: NSObject, listener: (p1: CBLCollectionChange) => void): CBLListenerToken;
+	addChangeListenerWithQueueListener(queue: NSObject & OS_dispatch_queue, listener: (p1: CBLCollectionChange) => void): CBLListenerToken;
 }
 declare var CBLCollectionChangeObservable: {
 
@@ -296,9 +315,13 @@ declare class CBLCollectionConfiguration extends NSObject {
 
 	static alloc(): CBLCollectionConfiguration; // inherited from NSObject
 
+	static fromCollections(collections: NSArray<CBLCollection> | CBLCollection[]): NSArray<CBLCollectionConfiguration>;
+
 	static new(): CBLCollectionConfiguration; // inherited from NSObject
 
 	channels: NSArray<string>;
+
+	readonly collection: CBLCollection;
 
 	conflictResolver: CBLConflictResolverProtocol;
 
@@ -307,6 +330,10 @@ declare class CBLCollectionConfiguration extends NSObject {
 	pullFilter: (p1: CBLDocument, p2: CBLDocumentFlags) => boolean;
 
 	pushFilter: (p1: CBLDocument, p2: CBLDocumentFlags) => boolean;
+
+	constructor(o: { collection: CBLCollection; });
+
+	initWithCollection(collection: CBLCollection): this;
 }
 
 declare const enum CBLConcurrencyControl {
@@ -347,51 +374,44 @@ declare var CBLConflictResolverProtocol: {
 	prototype: CBLConflictResolverProtocol;
 };
 
-declare class CBLConsoleLogger extends NSObject implements CBLLogger {
+declare class CBLConsoleLogSink extends NSObject {
 
-	static alloc(): CBLConsoleLogger; // inherited from NSObject
+	static alloc(): CBLConsoleLogSink; // inherited from NSObject
 
-	static new(): CBLConsoleLogger; // inherited from NSObject
+	static new(): CBLConsoleLogSink; // inherited from NSObject
 
-	domains: CBLLogDomain;
+	readonly domains: CBLLogDomain;
 
-	level: CBLLogLevel;
+	readonly level: CBLLogLevel;
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+	constructor(o: { level: CBLLogLevel; });
 
-	readonly description: string; // inherited from NSObjectProtocol
+	constructor(o: { level: CBLLogLevel; domains: CBLLogDomain; });
 
-	readonly hash: number; // inherited from NSObjectProtocol
+	initWithLevel(level: CBLLogLevel): this;
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+	initWithLevelDomains(level: CBLLogLevel, domains: CBLLogDomain): this;
+}
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+declare class CBLCustomLogSink extends NSObject {
 
-	readonly  // inherited from NSObjectProtocol
+	static alloc(): CBLCustomLogSink; // inherited from NSObject
 
-	class(): typeof NSObject;
+	static new(): CBLCustomLogSink; // inherited from NSObject
 
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
+	readonly domains: CBLLogDomain;
 
-	isEqual(object: any): boolean;
+	readonly level: CBLLogLevel;
 
-	isKindOfClass(aClass: typeof NSObject): boolean;
+	readonly logSink: CBLLogSinkProtocol;
 
-	isMemberOfClass(aClass: typeof NSObject): boolean;
+	constructor(o: { level: CBLLogLevel; domains: CBLLogDomain; logSink: CBLLogSinkProtocol; });
 
-	logWithLevelDomainMessage(level: CBLLogLevel, domain: CBLLogDomain, message: string): void;
+	constructor(o: { level: CBLLogLevel; logSink: CBLLogSinkProtocol; });
 
-	performSelector(aSelector: string): any;
+	initWithLevelDomainsLogSink(level: CBLLogLevel, domains: CBLLogDomain, logSink: CBLLogSinkProtocol): this;
 
-	performSelectorWithObject(aSelector: string, object: any): any;
-
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
-
-	respondsToSelector(aSelector: string): boolean;
-
-	retainCount(): number;
-
-	self(): this;
+	initWithLevelLogSink(level: CBLLogLevel, logSink: CBLLogSinkProtocol): this;
 }
 
 declare class CBLDatabase extends NSObject implements CBLQueryFactory {
@@ -404,15 +424,9 @@ declare class CBLDatabase extends NSObject implements CBLQueryFactory {
 
 	static deleteDatabaseInDirectoryError(name: string, directory: string): boolean;
 
-	static log(): CBLLog;
-
 	static new(): CBLDatabase; // inherited from NSObject
 
 	readonly config: CBLDatabaseConfiguration;
-
-	readonly count: number;
-
-	readonly indexes: NSArray<string>;
 
 	readonly name: string;
 
@@ -434,14 +448,6 @@ declare class CBLDatabase extends NSObject implements CBLQueryFactory {
 
 	constructor(o: { name: string; });
 
-	addChangeListener(listener: (p1: CBLDatabaseChange) => void): CBLListenerToken;
-
-	addChangeListenerWithQueueListener(queue: NSObject, listener: (p1: CBLDatabaseChange) => void): CBLListenerToken;
-
-	addDocumentChangeListenerWithIDListener(id: string, listener: (p1: CBLDocumentChange) => void): CBLListenerToken;
-
-	addDocumentChangeListenerWithIDQueueListener(id: string, queue: NSObject, listener: (p1: CBLDocumentChange) => void): CBLListenerToken;
-
 	class(): typeof NSObject;
 
 	close(): boolean;
@@ -454,10 +460,6 @@ declare class CBLDatabase extends NSObject implements CBLQueryFactory {
 
 	createCollectionWithNameScopeError(name: string, scope: string): CBLCollection;
 
-	createIndexWithConfigNameError(config: CBLIndexConfiguration, name: string): boolean;
-
-	createIndexWithNameError(index: CBLIndex, name: string): boolean;
-
 	createQueryError(query: string): CBLQuery;
 
 	defaultCollection(): CBLCollection;
@@ -468,17 +470,7 @@ declare class CBLDatabase extends NSObject implements CBLQueryFactory {
 
 	deleteCollectionWithNameScopeError(name: string, scope: string): boolean;
 
-	deleteDocumentConcurrencyControlError(document: CBLDocument, concurrencyControl: CBLConcurrencyControl): boolean;
-
-	deleteDocumentError(document: CBLDocument): boolean;
-
-	deleteIndexForNameError(name: string): boolean;
-
-	documentWithID(id: string): CBLDocument;
-
 	getBlob(properties: NSDictionary<any, any>): CBLBlob;
-
-	getDocumentExpirationWithID(documentID: string): Date;
 
 	inBatchUsingBlock(error: interop.Pointer | interop.Reference<NSError>, block: () => void): boolean;
 
@@ -492,8 +484,6 @@ declare class CBLDatabase extends NSObject implements CBLQueryFactory {
 
 	isMemberOfClass(aClass: typeof NSObject): boolean;
 
-	objectForKeyedSubscript(documentID: string): CBLDocumentFragment;
-
 	performMaintenanceError(type: CBLMaintenanceType): boolean;
 
 	performSelector(aSelector: string): any;
@@ -502,42 +492,17 @@ declare class CBLDatabase extends NSObject implements CBLQueryFactory {
 
 	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
 
-	purgeDocumentError(document: CBLDocument): boolean;
-
-	purgeDocumentWithIDError(documentID: string): boolean;
-
-	removeChangeListenerWithToken(token: CBLListenerToken): void;
-
 	respondsToSelector(aSelector: string): boolean;
 
 	retainCount(): number;
 
 	saveBlobError(blob: CBLBlob): boolean;
 
-	saveDocumentConcurrencyControlError(document: CBLMutableDocument, concurrencyControl: CBLConcurrencyControl): boolean;
-
-	saveDocumentConflictHandlerError(document: CBLMutableDocument, conflictHandler: (p1: CBLMutableDocument, p2: CBLDocument) => boolean): boolean;
-
-	saveDocumentError(document: CBLMutableDocument): boolean;
-
 	scopeWithNameError(name: string): CBLScope;
 
 	scopes(): NSArray<CBLScope>;
 
 	self(): this;
-
-	setDocumentExpirationWithIDExpirationError(documentID: string, date: Date): boolean;
-}
-
-declare class CBLDatabaseChange extends NSObject {
-
-	static alloc(): CBLDatabaseChange; // inherited from NSObject
-
-	static new(): CBLDatabaseChange; // inherited from NSObject
-
-	readonly database: CBLDatabase;
-
-	readonly documentIDs: NSArray<string>;
 }
 
 declare class CBLDatabaseConfiguration extends NSObject {
@@ -547,6 +512,8 @@ declare class CBLDatabaseConfiguration extends NSObject {
 	static new(): CBLDatabaseConfiguration; // inherited from NSObject
 
 	directory: string;
+
+	fullSync: boolean;
 
 	constructor(o: { config: CBLDatabaseConfiguration; });
 
@@ -701,6 +668,8 @@ declare class CBLDocument extends NSObject implements CBLDictionaryProtocol, NSM
 
 	readonly sequence: number;
 
+	readonly timestamp: number;
+
 	readonly count: number; // inherited from CBLDictionaryProtocol
 
 	readonly debugDescription: string; // inherited from NSObjectProtocol
@@ -717,6 +686,8 @@ declare class CBLDocument extends NSObject implements CBLDictionaryProtocol, NSM
 
 	readonly  // inherited from NSObjectProtocol
 	[Symbol.iterator](): Iterator<any>;
+
+	_getRevisionHistory(): string;
 
 	arrayForKey(key: string): CBLArray;
 
@@ -784,8 +755,6 @@ declare class CBLDocumentChange extends NSObject {
 	static new(): CBLDocumentChange; // inherited from NSObject
 
 	readonly collection: CBLCollection;
-
-	readonly database: CBLDatabase;
 
 	readonly documentID: string;
 }
@@ -998,51 +967,29 @@ declare const CBLErrorWebSocketProtocolError: number;
 
 declare const CBLErrorWrongFormat: number;
 
-declare class CBLFileLogger extends NSObject implements CBLLogger {
+declare class CBLFileLogSink extends NSObject {
 
-	static alloc(): CBLFileLogger; // inherited from NSObject
+	static alloc(): CBLFileLogSink; // inherited from NSObject
 
-	static new(): CBLFileLogger; // inherited from NSObject
+	static new(): CBLFileLogSink; // inherited from NSObject
 
-	config: CBLLogFileConfiguration;
+	readonly directory: string;
 
-	level: CBLLogLevel;
+	readonly level: CBLLogLevel;
 
-	readonly debugDescription: string; // inherited from NSObjectProtocol
+	readonly maxFileSize: number;
 
-	readonly description: string; // inherited from NSObjectProtocol
+	readonly maxKeptFiles: number;
 
-	readonly hash: number; // inherited from NSObjectProtocol
+	readonly usePlaintext: boolean;
 
-	readonly isProxy: boolean; // inherited from NSObjectProtocol
+	constructor(o: { level: CBLLogLevel; directory: string; });
 
-	readonly superclass: typeof NSObject; // inherited from NSObjectProtocol
+	constructor(o: { level: CBLLogLevel; directory: string; usePlaintext: boolean; maxKeptFiles: number; maxFileSize: number; });
 
-	readonly  // inherited from NSObjectProtocol
+	initWithLevelDirectory(level: CBLLogLevel, directory: string): this;
 
-	class(): typeof NSObject;
-
-	conformsToProtocol(aProtocol: any /* Protocol */): boolean;
-
-	isEqual(object: any): boolean;
-
-	isKindOfClass(aClass: typeof NSObject): boolean;
-
-	isMemberOfClass(aClass: typeof NSObject): boolean;
-
-	logWithLevelDomainMessage(level: CBLLogLevel, domain: CBLLogDomain, message: string): void;
-
-	performSelector(aSelector: string): any;
-
-	performSelectorWithObject(aSelector: string, object: any): any;
-
-	performSelectorWithObjectWithObject(aSelector: string, object1: any, object2: any): any;
-
-	respondsToSelector(aSelector: string): boolean;
-
-	retainCount(): number;
-
-	self(): this;
+	initWithLevelDirectoryUsePlaintextMaxKeptFilesMaxFileSize(level: CBLLogLevel, directory: string, usePlainText: boolean, maxKeptFiles: number, maxFileSize: number): this;
 }
 
 declare class CBLFragment extends NSObject implements CBLArrayFragment, CBLDictionaryFragment, CBLFragmentProtocol {
@@ -1171,9 +1118,15 @@ declare class CBLFullTextIndexConfiguration extends CBLIndexConfiguration {
 
 	readonly language: string;
 
+	readonly where: string;
+
 	constructor(o: { expression: NSArray<string> | string[]; ignoreAccents: boolean; language: string; });
 
+	constructor(o: { expression: NSArray<string> | string[]; where: string; ignoreAccents: boolean; language: string; });
+
 	initWithExpressionIgnoreAccentsLanguage(expressions: NSArray<string> | string[], ignoreAccents: boolean, language: string): this;
+
+	initWithExpressionWhereIgnoreAccentsLanguage(expressions: NSArray<string> | string[], where: string, ignoreAccents: boolean, language: string): this;
 }
 
 declare class CBLFullTextIndexItem extends NSObject {
@@ -1220,6 +1173,8 @@ interface CBLIndexable extends NSObjectProtocol {
 
 	deleteIndexWithNameError(name: string): boolean;
 
+	indexWithNameError(name: string): CBLQueryIndex;
+
 	indexes(): NSArray<string>;
 }
 declare var CBLIndexable: {
@@ -1236,22 +1191,7 @@ declare var CBLListenerToken: {
 	prototype: CBLListenerToken;
 };
 
-declare class CBLLog extends NSObject {
-
-	static alloc(): CBLLog; // inherited from NSObject
-
-	static new(): CBLLog; // inherited from NSObject
-
-	readonly console: CBLConsoleLogger;
-
-	custom: CBLLogger;
-
-	readonly file: CBLFileLogger;
-}
-
 declare const enum CBLLogDomain {
-
-	kCBLLogDomainAll = 31,
 
 	kCBLLogDomainDatabase = 1,
 
@@ -1259,26 +1199,17 @@ declare const enum CBLLogDomain {
 
 	kCBLLogDomainReplicator = 4,
 
-	kCBLLogDomainNetwork = 8
-}
+	kCBLLogDomainNetwork = 8,
 
-declare class CBLLogFileConfiguration extends NSObject {
+	kCBLLogDomainListener = 16,
 
-	static alloc(): CBLLogFileConfiguration; // inherited from NSObject
+	kCBLLogDomainPeerDiscovery = 32,
 
-	static new(): CBLLogFileConfiguration; // inherited from NSObject
+	kCBLLogDomainMDNS = 64,
 
-	readonly directory: string;
+	kCBLLogDomainMultipeer = 512,
 
-	maxRotateCount: number;
-
-	maxSize: number;
-
-	usePlainText: boolean;
-
-	constructor(o: { directory: string; });
-
-	initWithDirectory(directory: string): this;
+	kCBLLogDomainAll = 1023
 }
 
 declare const enum CBLLogLevel {
@@ -1296,16 +1227,27 @@ declare const enum CBLLogLevel {
 	kCBLLogLevelNone = 5
 }
 
-interface CBLLogger extends NSObjectProtocol {
+interface CBLLogSinkProtocol extends NSObjectProtocol {
 
-	level: CBLLogLevel;
-
-	logWithLevelDomainMessage(level: CBLLogLevel, domain: CBLLogDomain, message: string): void;
+	writeLogWithLevelDomainMessage(level: CBLLogLevel, domain: CBLLogDomain, message: string): void;
 }
-declare var CBLLogger: {
+declare var CBLLogSinkProtocol: {
 
-	prototype: CBLLogger;
+	prototype: CBLLogSinkProtocol;
 };
+
+declare class CBLLogSinks extends NSObject {
+
+	static alloc(): CBLLogSinks; // inherited from NSObject
+
+	static new(): CBLLogSinks; // inherited from NSObject
+
+	static console: CBLConsoleLogSink;
+
+	static custom: CBLCustomLogSink;
+
+	static file: CBLFileLogSink;
+}
 
 declare const enum CBLMaintenanceType {
 
@@ -1992,13 +1934,11 @@ declare class CBLQuery extends NSObject {
 
 	addChangeListener(listener: (p1: CBLQueryChange) => void): CBLListenerToken;
 
-	addChangeListenerWithQueueListener(queue: NSObject, listener: (p1: CBLQueryChange) => void): CBLListenerToken;
+	addChangeListenerWithQueueListener(queue: NSObject & OS_dispatch_queue, listener: (p1: CBLQueryChange) => void): CBLListenerToken;
 
 	execute(): CBLQueryResultSet;
 
 	explain(): string;
-
-	removeChangeListenerWithToken(token: CBLListenerToken): void;
 }
 
 declare class CBLQueryArrayExpression extends NSObject {
@@ -2114,10 +2054,6 @@ declare class CBLQueryDataSource extends NSObject {
 
 	static collectionAs(collection: CBLCollection, alias: string): CBLQueryDataSource;
 
-	static database(database: CBLDatabase): CBLQueryDataSource;
-
-	static databaseAs(database: CBLDatabase, alias: string): CBLQueryDataSource;
-
 	static new(): CBLQueryDataSource; // inherited from NSObject
 }
 
@@ -2187,8 +2123,6 @@ declare class CBLQueryExpression extends NSObject {
 
 	isNotValued(): CBLQueryExpression;
 
-	isNullOrMissing(): CBLQueryExpression;
-
 	isValued(): CBLQueryExpression;
 
 	lessThan(expression: CBLQueryExpression): CBLQueryExpression;
@@ -2202,8 +2136,6 @@ declare class CBLQueryExpression extends NSObject {
 	multiply(expression: CBLQueryExpression): CBLQueryExpression;
 
 	notEqualTo(expression: CBLQueryExpression): CBLQueryExpression;
-
-	notNullOrMissing(): CBLQueryExpression;
 
 	orExpression(expression: CBLQueryExpression): CBLQueryExpression;
 
@@ -2221,28 +2153,13 @@ declare var CBLQueryFactory: {
 	prototype: CBLQueryFactory;
 };
 
-declare class CBLQueryFullTextExpression extends NSObject {
-
-	static alloc(): CBLQueryFullTextExpression; // inherited from NSObject
-
-	static indexWithName(name: string): CBLQueryFullTextExpression;
-
-	static new(): CBLQueryFullTextExpression; // inherited from NSObject
-
-	match(query: string): CBLQueryExpression;
-}
-
 declare class CBLQueryFullTextFunction extends NSObject {
 
 	static alloc(): CBLQueryFullTextFunction; // inherited from NSObject
 
-	static matchWithIndexNameQuery(indexName: string, query: string): CBLQueryExpression;
-
 	static matchWithIndexQuery(index: CBLQueryIndexExpressionProtocol, query: string): CBLQueryExpression;
 
 	static new(): CBLQueryFullTextFunction; // inherited from NSObject
-
-	static rank(indexName: string): CBLQueryExpression;
 
 	static rankWithIndex(index: CBLQueryIndexExpressionProtocol): CBLQueryExpression;
 }
@@ -2341,6 +2258,17 @@ declare class CBLQueryFunction extends NSObject {
 	static truncDigits(expression: CBLQueryExpression, digits: CBLQueryExpression): CBLQueryExpression;
 
 	static upper(expression: CBLQueryExpression): CBLQueryExpression;
+}
+
+declare class CBLQueryIndex extends NSObject {
+
+	static alloc(): CBLQueryIndex; // inherited from NSObject
+
+	static new(): CBLQueryIndex; // inherited from NSObject
+
+	readonly collection: CBLCollection;
+
+	readonly name: string;
 }
 
 interface CBLQueryIndexExpressionProtocol extends NSObjectProtocol {
@@ -2639,23 +2567,17 @@ declare class CBLReplicator extends NSObject {
 
 	addChangeListener(listener: (p1: CBLReplicatorChange) => void): CBLListenerToken;
 
-	addChangeListenerWithQueueListener(queue: NSObject, listener: (p1: CBLReplicatorChange) => void): CBLListenerToken;
+	addChangeListenerWithQueueListener(queue: NSObject & OS_dispatch_queue, listener: (p1: CBLReplicatorChange) => void): CBLListenerToken;
 
 	addDocumentReplicationListener(listener: (p1: CBLDocumentReplication) => void): CBLListenerToken;
 
-	addDocumentReplicationListenerWithQueueListener(queue: NSObject, listener: (p1: CBLDocumentReplication) => void): CBLListenerToken;
+	addDocumentReplicationListenerWithQueueListener(queue: NSObject & OS_dispatch_queue, listener: (p1: CBLDocumentReplication) => void): CBLListenerToken;
 
 	initWithConfig(config: CBLReplicatorConfiguration): this;
 
 	isDocumentPendingCollectionError(documentID: string, collection: CBLCollection): boolean;
 
-	isDocumentPendingError(documentID: string): boolean;
-
-	pendingDocumentIDs(): NSSet<string>;
-
 	pendingDocumentIDsForCollectionError(collection: CBLCollection): NSSet<string>;
-
-	removeChangeListenerWithToken(token: CBLListenerToken): void;
 
 	start(): void;
 
@@ -2700,17 +2622,9 @@ declare class CBLReplicatorConfiguration extends NSObject {
 
 	authenticator: CBLAuthenticator;
 
-	channels: NSArray<string>;
-
-	readonly collections: NSArray<CBLCollection>;
-
-	conflictResolver: CBLConflictResolverProtocol;
+	readonly collections: NSArray<CBLCollectionConfiguration>;
 
 	continuous: boolean;
-
-	readonly database: CBLDatabase;
-
-	documentIDs: NSArray<string>;
 
 	enableAutoPurge: boolean;
 
@@ -2726,33 +2640,17 @@ declare class CBLReplicatorConfiguration extends NSObject {
 
 	pinnedServerCertificate: any;
 
-	pullFilter: (p1: CBLDocument, p2: CBLDocumentFlags) => boolean;
-
-	pushFilter: (p1: CBLDocument, p2: CBLDocumentFlags) => boolean;
-
 	replicatorType: CBLReplicatorType;
 
 	readonly target: CBLEndpoint;
 
+	constructor(o: { collections: NSArray<CBLCollectionConfiguration> | CBLCollectionConfiguration[]; target: CBLEndpoint; });
+
 	constructor(o: { config: CBLReplicatorConfiguration; });
 
-	constructor(o: { database: CBLDatabase; target: CBLEndpoint; });
-
-	constructor(o: { target: CBLEndpoint; });
-
-	addCollectionConfig(collection: CBLCollection, config: CBLCollectionConfiguration): void;
-
-	addCollectionsConfig(collections: NSArray<any> | any[], config: CBLCollectionConfiguration): void;
-
-	collectionConfig(collection: CBLCollection): CBLCollectionConfiguration;
+	initWithCollectionsTarget(collections: NSArray<CBLCollectionConfiguration> | CBLCollectionConfiguration[], target: CBLEndpoint): this;
 
 	initWithConfig(config: CBLReplicatorConfiguration): this;
-
-	initWithDatabaseTarget(database: CBLDatabase, target: CBLEndpoint): this;
-
-	initWithTarget(target: CBLEndpoint): this;
-
-	removeCollection(collection: CBLCollection): void;
 }
 
 interface CBLReplicatorProgress {
@@ -2788,6 +2686,8 @@ declare class CBLScope extends NSObject {
 	static alloc(): CBLScope; // inherited from NSObject
 
 	static new(): CBLScope; // inherited from NSObject
+
+	readonly database: CBLDatabase;
 
 	readonly name: string;
 
@@ -2875,9 +2775,15 @@ declare class CBLValueIndexConfiguration extends CBLIndexConfiguration {
 
 	static new(): CBLValueIndexConfiguration; // inherited from NSObject
 
+	readonly where: string;
+
 	constructor(o: { expression: NSArray<string> | string[]; });
 
+	constructor(o: { expression: NSArray<string> | string[]; where: string; });
+
 	initWithExpression(expressions: NSArray<string> | string[]): this;
+
+	initWithExpressionWhere(expressions: NSArray<string> | string[], where: string): this;
 }
 
 declare class CBLValueIndexItem extends NSObject {
@@ -2905,21 +2811,15 @@ declare var kCBLBlobType: string;
 
 declare var kCBLDefaultCollectionName: string;
 
+declare var kCBLDefaultDatabaseFullSync: boolean;
+
+declare var kCBLDefaultFileLogSinkMaxKeptFiles: number;
+
+declare var kCBLDefaultFileLogSinkMaxSize: number;
+
+declare var kCBLDefaultFileLogSinkUsePlaintext: boolean;
+
 declare var kCBLDefaultFullTextIndexIgnoreAccents: boolean;
-
-declare var kCBLDefaultListenerDisableTls: boolean;
-
-declare var kCBLDefaultListenerEnableDeltaSync: boolean;
-
-declare var kCBLDefaultListenerPort: number;
-
-declare var kCBLDefaultListenerReadOnly: boolean;
-
-declare var kCBLDefaultLogFileMaxRotateCount: number;
-
-declare var kCBLDefaultLogFileMaxSize: number;
-
-declare var kCBLDefaultLogFileUsePlainText: boolean;
 
 declare var kCBLDefaultReplicatorAcceptParentCookies: boolean;
 
@@ -2931,11 +2831,11 @@ declare var kCBLDefaultReplicatorEnableAutoPurge: boolean;
 
 declare var kCBLDefaultReplicatorHeartbeat: number;
 
-declare var kCBLDefaultReplicatorMaxAttemptWaitTime: number;
-
 declare var kCBLDefaultReplicatorMaxAttemptsContinuous: number;
 
 declare var kCBLDefaultReplicatorMaxAttemptsSingleShot: number;
+
+declare var kCBLDefaultReplicatorMaxAttemptsWaitTime: number;
 
 declare var kCBLDefaultReplicatorSelfSignedCertificateOnly: boolean;
 

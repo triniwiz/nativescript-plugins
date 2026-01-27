@@ -1195,8 +1195,8 @@ export class Collection {
 							callback(owner, deserialize(change.getDocumentIDs()));
 						}
 					},
-				})
-			)
+				}),
+			),
 		);
 	}
 
@@ -1214,8 +1214,8 @@ export class Collection {
 							callback(id, owner);
 						}
 					},
-				})
-			)
+				}),
+			),
 		);
 	}
 
@@ -1676,7 +1676,7 @@ function asyncNext(queue, result) {
 				invoke(result) {
 					resolve(result);
 				},
-			})
+			}),
 		);
 	});
 }
@@ -1711,8 +1711,8 @@ export class Query {
 							callback(owner, ResultSet.fromNative(change.getResults()), change.getError());
 						}
 					},
-				})
-			)
+				}),
+			),
 		);
 	}
 
@@ -1721,18 +1721,77 @@ export class Query {
 	}
 }
 
+export class ReplicatorConfiguration {
+	remoteUrl: string;
+	direction: 'push' | 'pull' | 'both' = 'both';
+	continuous: boolean = false;
+	username: string = null;
+	password: string = null;
+	sessionId: string = null;
+	cookieName: string = null;
+	collections: Collection[] = [];
+	channels: Map<Collection, string[]> = new Map<Collection, string[]>();
+	autoPurge: boolean = true;
+	headers: Map<string, string> = new Map<string, string>();
+	constructor(remoteUrl: string, direction: 'push' | 'pull' | 'both' = 'both') {
+		this.remoteUrl = remoteUrl;
+		this.direction = direction;
+	}
+}
+
 export class Replicator {
 	replicator: com.couchbase.lite.Replicator;
 
-	constructor(remoteUrl: string, direction: 'push' | 'pull' | 'both') {
-		const uri = new com.couchbase.lite.URLEndpoint(new java.net.URI(remoteUrl));
-		const repConfig = new com.couchbase.lite.ReplicatorConfiguration(uri);
-		if (direction === 'pull') {
+	constructor(config: ReplicatorConfiguration) {
+		const uri = new com.couchbase.lite.URLEndpoint(new java.net.URI(config.remoteUrl));
+		const collections = new java.util.ArrayList();
+		for (const collection of config.collections) {
+			const configuration = new com.couchbase.lite.CollectionConfiguration(collection.native);
+			if (config.channels.has(collection)) {
+				const channels = config.channels.get(collection);
+				if (channels && channels.length > 0) {
+					configuration.setChannels(java.util.Arrays.asList(channels));
+				}
+			}
+			collections.add(configuration);
+		}
+		const repConfig = new com.couchbase.lite.ReplicatorConfiguration(collections, uri);
+		if (config.direction === 'pull') {
 			repConfig.setType(com.couchbase.lite.ReplicatorType.PULL);
-		} else if (direction === 'push') {
+		} else if (config.direction === 'push') {
 			repConfig.setType(com.couchbase.lite.ReplicatorType.PUSH);
 		} else {
 			repConfig.setType(com.couchbase.lite.ReplicatorType.PUSH_AND_PULL);
+		}
+
+		if ('continuous' in config) {
+			repConfig.setContinuous(config.continuous);
+		}
+
+		if (config.username && config.password) {
+			repConfig.setAuthenticator(new com.couchbase.lite.BasicAuthenticator(config.username, config.password));
+		}
+
+		if ('autoPurge' in config) {
+			repConfig.setAutoPurgeEnabled(config.autoPurge);
+		}
+
+		if (config.headers && config.headers instanceof Map) {
+			if (config.headers.size > 0) {
+				const headers = new java.util.HashMap<string, string>();
+				for (const [key, value] of config.headers) {
+					headers.put(key, value);
+				}
+				repConfig.setHeaders(headers);
+			}
+		}
+
+		if (config.sessionId) {
+			if (config.cookieName) {
+				repConfig.setAuthenticator(new com.couchbase.lite.SessionAuthenticator(config.sessionId, config.cookieName));
+			} else {
+				repConfig.setAuthenticator(new com.couchbase.lite.SessionAuthenticator(config.sessionId));
+			}
 		}
 
 		this.replicator = new com.couchbase.lite.Replicator(repConfig);
@@ -1748,56 +1807,6 @@ export class Replicator {
 
 	isRunning() {
 		return this.replicator.getStatus().getActivityLevel() === com.couchbase.lite.ReplicatorActivityLevel.BUSY;
-	}
-
-	setContinuous(isContinuous: boolean) {
-		const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-		newConfig.setContinuous(isContinuous);
-		this.replicator = new com.couchbase.lite.Replicator(newConfig);
-	}
-
-	setSessionId(sessionId: string) {
-		const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-		newConfig.setAuthenticator(new com.couchbase.lite.SessionAuthenticator(sessionId));
-		this.replicator = new com.couchbase.lite.Replicator(newConfig);
-	}
-
-	setSessionIdAndCookieName(sessionId: string, cookieName: string) {
-		const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-		newConfig.setAuthenticator(new com.couchbase.lite.SessionAuthenticator(sessionId, cookieName));
-		this.replicator = new com.couchbase.lite.Replicator(newConfig);
-	}
-
-	setUserNameAndPassword(username: string, password: string) {
-		const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-		newConfig.setAuthenticator(new com.couchbase.lite.BasicAuthenticator(username, password));
-		this.replicator = new com.couchbase.lite.Replicator(newConfig);
-	}
-
-	addCollection(collection: Collection) {
-		const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-		const config = new com.couchbase.lite.CollectionConfiguration();
-		newConfig.addCollection(collection.native, config);
-		this.replicator = new com.couchbase.lite.Replicator(newConfig);
-	}
-
-	addCollections(collections: Collection[]) {
-		if (global.Array.isArray(collections)) {
-			const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-			const config = new com.couchbase.lite.CollectionConfiguration();
-			newConfig.addCollections(java.util.Arrays.asList(collections), config);
-			this.replicator = new com.couchbase.lite.Replicator(newConfig);
-		}
-	}
-
-	setChannels(collection: Collection, channels: string[]) {
-		const newConfig = new com.couchbase.lite.ReplicatorConfiguration(this.replicator.getConfig());
-		const config = newConfig.collectionConfigurations.get(collection.native);
-		if (config) {
-			config.setChannels(java.util.Arrays.asList(channels));
-			newConfig.collectionConfigurations.put(collection.native, config);
-		}
-		this.replicator = new com.couchbase.lite.Replicator(newConfig);
 	}
 }
 

@@ -1642,16 +1642,84 @@ export class Query {
 	}
 }
 
+export class ReplicatorConfiguration {
+	remoteUrl: string;
+	direction: 'push' | 'pull' | 'both' = 'both';
+	continuous: boolean = false;
+	username: string = null;
+	password: string = null;
+	sessionId: string = null;
+	cookieName: string = null;
+	collections: Collection[] = [];
+	channels: Map<Collection, string[]> = new Map<Collection, string[]>();
+	autoPurge: boolean = true;
+	headers: Map<string, string> = new Map<string, string>();
+	networkInterface: string = null;
+	constructor(remoteUrl: string, direction: 'push' | 'pull' | 'both' = 'both') {
+		this.remoteUrl = remoteUrl;
+		this.direction = direction;
+	}
+}
+
 export class Replicator {
 	private _native: CBLReplicator;
-	constructor(remoteUrl: string, direction: 'push' | 'pull' | 'both') {
-		const repConfig = CBLReplicatorConfiguration.alloc().initWithTarget(CBLURLEndpoint.alloc().initWithURL(NSURL.URLWithString(remoteUrl)));
-		if (direction === 'pull') {
+	constructor(config: ReplicatorConfiguration) {
+		const collections = NSMutableArray.new<CBLCollectionConfiguration>();
+
+		if (config.collections && global.Array.isArray(config.collections)) {
+			for (const collection of config.collections) {
+				const configuration = CBLCollectionConfiguration.alloc().initWithCollection(collection.native);
+				if (config.channels.has(collection)) {
+					const channels = config.channels.get(collection);
+					if (channels && global.Array.isArray(channels)) {
+						configuration.channels = NSArray.arrayWithArray(channels);
+					}
+				}
+				collections.addObject(configuration);
+			}
+		}
+
+		const repConfig = CBLReplicatorConfiguration.alloc().initWithCollectionsTarget(collections, CBLURLEndpoint.alloc().initWithURL(NSURL.URLWithString(config.remoteUrl)));
+		if (config.direction === 'pull') {
 			repConfig.replicatorType = CBLReplicatorType.kCBLReplicatorTypePull;
-		} else if (direction === 'push') {
+		} else if (config.direction === 'push') {
 			repConfig.replicatorType = CBLReplicatorType.kCBLReplicatorTypePush;
 		} else {
 			repConfig.replicatorType = CBLReplicatorType.kCBLReplicatorTypePushAndPull;
+		}
+
+		if ('continuous' in config) {
+			repConfig.continuous = config.continuous;
+		}
+
+		if (config.username && config.password) {
+			repConfig.authenticator = CBLBasicAuthenticator.alloc().initWithUsernamePassword(config.username, config.password);
+		}
+
+		if (config.sessionId) {
+			if (config.cookieName) {
+				repConfig.authenticator = CBLSessionAuthenticator.alloc().initWithSessionIDCookieName(config.sessionId, config.cookieName);
+			} else {
+				repConfig.authenticator = CBLSessionAuthenticator.alloc().initWithSessionID(config.sessionId);
+			}
+		}
+
+		if ('autoPurge' in config) {
+			repConfig.enableAutoPurge = config.autoPurge;
+		}
+
+		if (config.headers && config.headers instanceof Map) {
+			if (config.headers.size > 0) {
+				const headers = NSMutableDictionary.new<string, string>();
+				for (const [key, value] of config.headers) {
+					headers.setValueForKey(value, key);
+				}
+				repConfig.headers = headers;
+			}
+		}
+
+		if (config.networkInterface) {
+			repConfig.networkInterface = config.networkInterface;
 		}
 
 		this._native = CBLReplicator.alloc().initWithConfig(repConfig);
@@ -1674,60 +1742,6 @@ export class Replicator {
 			return this.native.status.activity === CBLReplicatorActivityLevel.kCBLReplicatorBusy;
 		}
 		return false;
-	}
-
-	setContinuous(isContinuous: boolean) {
-		const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-		newConfig.continuous = isContinuous;
-		this._native = CBLReplicator.alloc().initWithConfig(newConfig);
-	}
-
-	setUserNameAndPassword(username: string, password: string) {
-		const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-		newConfig.authenticator = CBLBasicAuthenticator.alloc().initWithUsernamePassword(username, password);
-		this._native = CBLReplicator.alloc().initWithConfig(newConfig);
-	}
-
-	addCollection(collection: Collection) {
-		const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-		newConfig.addCollectionConfig(collection.native, newConfig);
-		this._native = CBLReplicator.alloc().initWithConfig(newConfig);
-	}
-
-	addCollections(collections: Collection[]) {
-		if (global.Array.isArray(collections)) {
-			const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-			newConfig.addCollectionsConfig(
-				collections.map((collection) => collection.native),
-				newConfig,
-			);
-			this._native = CBLReplicator.alloc().initWithConfig(newConfig);
-		}
-	}
-
-	setChannels(collection: Collection, channels: string[]) {
-		const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-		const oldConfig = newConfig.collectionConfig(collection.native);
-		if (oldConfig != null) {
-			oldConfig.channels = NSArray.arrayWithArray(channels);
-		} else {
-			const config = CBLCollectionConfiguration.new();
-			config.channels = NSArray.arrayWithArray(channels);
-			newConfig.addCollectionConfig(collection.native, config);
-			this._native = CBLReplicator.alloc().initWithConfig(newConfig);
-		}
-	}
-
-	setSessionIdAndCookieName(sessionId: string, cookieName: string) {
-		const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-		newConfig.authenticator = CBLSessionAuthenticator.alloc().initWithSessionIDCookieName(sessionId, cookieName);
-		this._native = CBLReplicator.alloc().initWithConfig(newConfig);
-	}
-
-	setSessionId(sessionId: string) {
-		const newConfig = CBLReplicatorConfiguration.alloc().initWithConfig(this.native.config);
-		newConfig.authenticator = CBLSessionAuthenticator.alloc().initWithSessionID(sessionId);
-		this._native = CBLReplicator.alloc().initWithConfig(newConfig);
 	}
 }
 

@@ -331,28 +331,31 @@ export declare class CouchBase extends Common {
 	inBatch(batch: () => void): void;
 }
 
-export declare class Replicator extends ReplicatorBase {
+export declare class ReplicatorConfiguration {
+	remoteUrl: string;
+	direction: 'push' | 'pull' | 'both';
+	continuous: boolean;
+	username: string;
+	password: string;
+	sessionId: string;
+	cookieName: string;
+	collections: Collection[];
+	channels: Map<Collection, string[]>;
+	autoPurge: boolean;
+	headers: Map<string, string>;
+	networkInterface: string;
+	constructor(remoteUrl: string);
 	constructor(remoteUrl: string, direction: 'push' | 'pull' | 'both');
+}
+
+export declare class Replicator extends ReplicatorBase {
+	constructor(config: ReplicatorConfiguration);
 
 	start(): void;
 
 	stop(): void;
 
 	isRunning(): boolean;
-
-	setContinuous(isContinuous: boolean): void;
-
-	setUserNameAndPassword(username: string, password: string): any;
-
-	setChannels(collection: Collection, channels: string[]): any;
-
-	addCollection(collection: Collection);
-
-	addCollections(collections: Collection[]);
-
-	setSessionIdAndCookieName(sessionId: string, cookieName: string): any;
-
-	setSessionId(sessionId: string): any;
 }
 
 export class Stream {
