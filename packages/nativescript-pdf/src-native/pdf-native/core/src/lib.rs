@@ -113,12 +113,12 @@ impl PdfImage {
             image_data: data,
             width,
             height,
-            format: PdfBitmapFormat::BGRA
+            format: PdfBitmapFormat::BGRA,
         })
     }
 
     pub fn bitmap(&mut self) -> Result<PdfBitmap, PdfiumError> {
-         unsafe {
+        unsafe {
             PdfBitmap::from_bytes(
                 self.width
                     .try_into()

@@ -145,7 +145,7 @@ class MainActivity : AppCompatActivity() {
       */
 
       val res = resources.openRawResource(R.drawable.deadpool_textless)
-      image = PdfImage.fromData(res.readBytes())
+      image = PdfImage.fromData(res.readBytes(), 500, 500)
 //      val dp = File(cacheDir, "dp.pdf")
 
     /*  if (dp.exists()) {

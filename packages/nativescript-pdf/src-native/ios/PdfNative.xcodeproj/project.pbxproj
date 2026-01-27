@@ -42,6 +42,9 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		F1FBE3692E0C131A0088943A /* Exceptions for "PdfNative" folder in "PdfNative" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			attributesByRelativePath = {
+				libs/pdfium.xcframework = (Required, );
+			};
 			publicHeaders = (
 				include/pdf_core.h,
 				include/pdf_native.h,
@@ -282,6 +285,7 @@
 				ENABLE_MODULE_VERIFIER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/PdfNative/include\"";
+				FRAMEWORK_SEARCH_PATHS = ("$(PROJECT_DIR)/PdfNative/libs");
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
@@ -300,18 +304,20 @@
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=arm64]" = (
 					"$(inherited)",
 					"-L\"$(PROJECT_DIR)/PdfNative/libs\"",
+					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios/debug\"",
 					"-Wl,-no_compact_unwind",
-					"-framework",
-					pdfium,
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64/libpdfium.dylib\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
 				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=arm64]" = (
 					"$(inherited)",
 					"-L\"$(PROJECT_DIR)/PdfNative/libs\"",
+					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios-sim/debug\"",
 					"-Wl,-no_compact_unwind",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
 					"-lpdfnative",
 					"-ObjC",
 					"-lc++",
@@ -320,10 +326,10 @@
 				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=x86_64]" = (
 					"$(inherited)",
 					"-L\"$(PROJECT_DIR)/PdfNative/libs\"",
+					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/x86_64-apple-ios/debug\"",
 					"-Wl,-no_compact_unwind",
-					"-framework",
-					pdfium,
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
@@ -357,6 +363,7 @@
 				ENABLE_MODULE_VERIFIER = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = "\"$(SRCROOT)/PdfNative/include\"";
+				FRAMEWORK_SEARCH_PATHS = ("$(PROJECT_DIR)/PdfNative/libs");
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.1;
@@ -375,30 +382,30 @@
 				"OTHER_LDFLAGS[sdk=iphoneos*][arch=arm64]" = (
 					"$(inherited)",
 					"-L\"$(PROJECT_DIR)/PdfNative/libs\"",
+					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios/release\"",
 					"-Wl,-no_compact_unwind",
-					"-framework",
-					pdfium,
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64/libpdfium.dylib\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
 				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=arm64]" = (
 					"$(inherited)",
 					"-L\"$(PROJECT_DIR)/PdfNative/libs\"",
+					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios-sim/release\"",
 					"-Wl,-no_compact_unwind",
-					"-framework",
-					pdfium,
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
 				"OTHER_LDFLAGS[sdk=iphonesimulator*][arch=x86_64]" = (
 					"$(inherited)",
 					"-L\"$(PROJECT_DIR)/PdfNative/libs\"",
+					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/x86_64-apple-ios/release\"",
 					"-Wl,-no_compact_unwind",
-					"-framework",
-					pdfium,
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
 					"-lpdfnative",
 					"-ObjC",
 				);

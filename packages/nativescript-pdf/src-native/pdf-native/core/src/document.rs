@@ -1191,7 +1191,7 @@ impl<'a> PdfNativeDocument<'a> {
     }
 
     pub fn current_page(&self) -> c_uint {
-        self.data.lock().current_page.into()
+        self.data.lock().current_page as c_uint
     }
 
     pub fn count(&self) -> c_int {

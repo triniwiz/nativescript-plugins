@@ -36,7 +36,7 @@ public class NSCPdfMargin: NSObject {
   }
   
   public static func `default`(uniform: Float = 0) -> NSCPdfMargin{
-    var ret = NSCPdfMargin(uniform: uniform)
+    let ret = NSCPdfMargin(uniform: uniform)
     ret.topChanged = false
     ret.leftChanged = false
     ret.bottomChanged = false
@@ -45,7 +45,7 @@ public class NSCPdfMargin: NSObject {
   }
   
   public static func `default`(left: Float = 0, right: Float = 0, top: Float = 0, bottom: Float = 0) -> NSCPdfMargin{
-    var ret = NSCPdfMargin(left, right, top, bottom)
+    let ret = NSCPdfMargin(left, right, top, bottom)
     ret.topChanged = false
     ret.leftChanged = false
     ret.bottomChanged = false

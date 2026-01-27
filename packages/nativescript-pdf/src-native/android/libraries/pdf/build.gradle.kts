@@ -37,7 +37,7 @@ android {
 cargo {
   module = "../../../pdf-native"
   libname = "pdfnative"
-
+//  targets = listOf("arm64")
 //  targets = listOf("arm64", "x86")
   targets = listOf("arm", "arm64", "x86", "x86_64")
   apiLevels = mapOf(
@@ -46,8 +46,8 @@ cargo {
     "x86" to 21,
     "x86_64" to 21
   )
-  profile = "release"
-  verbose = false
+  profile = "debug"
+  verbose = true
 
   exec = { spec, toolchain ->
     spec.environment("RUSTFLAGS", "-C link-arg=-Wl,--hash-style=sysv -C link-arg=-Wl,-z,max-page-size=16384")

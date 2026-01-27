@@ -3,7 +3,7 @@
 	"version": "0.0.0",
 	"license": "MIT",
 	"scripts": {
-		"setup": "npx rimraf node_modules package-lock.json dist tmp yarn.lock && yarn",
+		"setup": "npx rimraf node_modules package-lock.json dist && npm i",
 		"postinstall": "husky && npx ts-patch install",
 		"start": "nps",
 		"add": "nx g @nativescript/plugin-tools:add-package",
@@ -37,7 +37,7 @@
 		"@nativescript-community/perms": "~2.3.6",
 		"@nativescript/angular": "^19.0.0",
 		"@nativescript/core": "~8.9.0",
-		"@nativescript/plugin-tools": "5.5.1",
+		"@nativescript/plugin-tools": "5.5.3",
 		"@nativescript/types": "~8.9.0",
 		"@nativescript/webpack": "~5.0.21",
 		"@nestjs/common": "^9.0.0",
@@ -68,7 +68,7 @@
 		"rxjs": "~7.8.0",
 		"sass": "1.72.0",
 		"socket.io": "^4.1.1",
-		"svelte": "3.24.1",
+		"svelte": "4.2.20",
 		"svelte-native": "~1.0.4",
 		"ts-jest": "28.0.8",
 		"tslib": "^2.0.0",
@@ -91,6 +91,5 @@
 	},
 	"resolutions": {
 		"sass": "1.72.0"
-	},
-	"packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+	}
 }

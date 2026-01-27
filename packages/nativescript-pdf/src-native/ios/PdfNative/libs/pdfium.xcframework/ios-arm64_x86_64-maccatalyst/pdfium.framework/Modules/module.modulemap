@@ -1,5 +1,0 @@
-framework module pdfium {
-  umbrella header "pdfium.h"
-  export *
-  module * { export * }
-}

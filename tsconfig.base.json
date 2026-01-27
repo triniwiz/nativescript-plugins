@@ -44,6 +44,8 @@
 			"@triniwiz/nativescript-image-cache-it/angular": ["packages/nativescript-image-cache-it/angular/index.ts"],
 			"@triniwiz/nativescript-image-zoom": ["packages/nativescript-image-zoom/index.d.ts"],
 			"@triniwiz/nativescript-imageoptimize": ["packages/nativescript-imageoptimize/index.d.ts"],
+			"@triniwiz/nativescript-klaviyo-push-sdk": ["packages/nativescript-klaviyo-push-sdk/index.d.ts"],
+			"@triniwiz/nativescript-klaviyo-sdk": ["packages/nativescript-klaviyo-sdk/index.d.ts"],
 			"@triniwiz/nativescript-messenger": ["packages/nativescript-messenger/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-core": ["packages/nativescript-mongo-stitch-core/index.d.ts"],
 			"@triniwiz/nativescript-mongo-stitch-sdk": ["packages/nativescript-mongo-stitch-sdk/index.d.ts"],
@@ -53,6 +55,7 @@
 			"@triniwiz/nativescript-pager": ["packages/nativescript-pager/index.d.ts"],
 			"@triniwiz/nativescript-pager/angular": ["packages/nativescript-pager/angular/index.ts"],
 			"@triniwiz/nativescript-parsesdk": ["packages/nativescript-parsesdk/index.d.ts"],
+			"@triniwiz/nativescript-pdf": ["packages/nativescript-pdf/index.d.ts"],
 			"@triniwiz/nativescript-popup": ["packages/nativescript-popup/index.d.ts"],
 			"@triniwiz/nativescript-pubnub": ["packages/nativescript-pubnub/index.d.ts"],
 			"@triniwiz/nativescript-pusher-beams": ["packages/nativescript-pusher-beams/index.d.ts"],
@@ -83,10 +86,7 @@
 			"@triniwiz/nativescript-yogalayout": ["packages/nativescript-yogalayout/index.d.ts"],
 			"@triniwiz/nativescript-yogalayout/angular": ["packages/nativescript-yogalayout/angular/index.ts"],
 			"@triniwiz/nativescript-youtubeplayer": ["packages/nativescript-youtubeplayer/index.d.ts"],
-			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"],
-			"@triniwiz/nativescript-klaviyo-sdk": ["packages/nativescript-klaviyo-sdk/index.d.ts"],
-			"@triniwiz/nativescript-klaviyo-push-sdk": ["packages/nativescript-klaviyo-push-sdk/index.d.ts"],
-			"@triniwiz/nativescript-pdf": ["packages/nativescript-pdf/index.d.ts"]
+			"@triniwiz/nativescript-youtubeplayer/angular": ["packages/nativescript-youtubeplayer/angular/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]
