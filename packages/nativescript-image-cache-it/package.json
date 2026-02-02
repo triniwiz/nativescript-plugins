@@ -1,6 +1,6 @@
 {
   "name": "@triniwiz/nativescript-image-cache-it",
-  "version": "8.0.0",
+  "version": "8.0.1",
   "description": "Image caching plugin for NativeScript",
   "main": "index",
   "typings": "index.d.ts",
