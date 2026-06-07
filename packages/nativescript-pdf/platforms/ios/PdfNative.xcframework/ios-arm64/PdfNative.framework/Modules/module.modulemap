@@ -7,5 +7,4 @@ framework module PdfNative {
 
 module PdfNative.Swift {
   header "PdfNative-Swift.h"
-  requires objc
 }
