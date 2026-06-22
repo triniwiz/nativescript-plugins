@@ -307,7 +307,7 @@
 					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios/debug\"",
 					"-Wl,-no_compact_unwind",
-					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64/libpdfium.dylib\"",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64/pdfium.framework/pdfium\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
@@ -317,7 +317,7 @@
 					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios-sim/debug\"",
 					"-Wl,-no_compact_unwind",
-					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/pdfium.framework/pdfium\"",
 					"-lpdfnative",
 					"-ObjC",
 					"-lc++",
@@ -329,7 +329,7 @@
 					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/x86_64-apple-ios/debug\"",
 					"-Wl,-no_compact_unwind",
-					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/pdfium.framework/pdfium\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
@@ -385,7 +385,7 @@
 					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios/release\"",
 					"-Wl,-no_compact_unwind",
-					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64/libpdfium.dylib\"",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64/pdfium.framework/pdfium\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
@@ -395,7 +395,7 @@
 					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/aarch64-apple-ios-sim/release\"",
 					"-Wl,-no_compact_unwind",
-					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/pdfium.framework/pdfium\"",
 					"-lpdfnative",
 					"-ObjC",
 				);
@@ -405,7 +405,7 @@
 					"-L\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator\"",
 					"-L\"$(SRCROOT)/../pdf-native/target/x86_64-apple-ios/release\"",
 					"-Wl,-no_compact_unwind",
-					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/libpdfium.dylib\"",
+					"\"$(PROJECT_DIR)/PdfNative/libs/pdfium.xcframework/ios-arm64_x86_64-simulator/pdfium.framework/pdfium\"",
 					"-lpdfnative",
 					"-ObjC",
 				);

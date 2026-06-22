@@ -50,7 +50,7 @@
 		</data>
 		<key>Modules/PdfNative.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		OcPFCE4nEm1D33UL+7AZKA4OYIs=
+		ILgyql9BMtkM8DhhV0abV/+B+IU=
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
@@ -70,7 +70,7 @@
 		</data>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		PonXhRdoCRmyThbEt4l4uFtSfa4=
+		zNfhDhR7E1X41Nf4cQfqG6wHTJA=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
@@ -153,7 +153,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			9dtnLpVsVq5pg2/CrKVFmMiDzt07B0QNL+am8/uX7nU=
+			QzYylvctdtlcGmM+/HaoXv3eDQF7Pj8SsN8URzQrAOg=
 			</data>
 		</dict>
 		<key>Modules/PdfNative.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
@@ -188,7 +188,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			UG1flyD9Ni+oMKdO3A+5zjxY7GpaH2rwvyGcWFkcScc=
+			EBXLwvg67IednWCEFNqblb8DoOARrPsIHh67ocp5XVo=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
