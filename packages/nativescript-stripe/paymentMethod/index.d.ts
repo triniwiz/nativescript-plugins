@@ -103,13 +103,20 @@ export declare class PaymentMethodCardWalletSamsungPay implements IPaymentMethod
 }
 
 export declare class PaymentMethodCardWallet implements IPaymentMethodCardWallet {
-	readonly masterpass: PaymentMethodCardWalletMasterpass;
+	readonly masterpass?: PaymentMethodCardWalletMasterpass;
 	readonly type: PaymentMethodCardWalletType;
-	readonly visaCheckout: PaymentMethodCardWalletVisaCheckout;
-	readonly amex: PaymentMethodCardWalletAmexExpressCheckout;
-	readonly applePay: PaymentMethodCardWalletApplePay;
-	readonly googlePay: PaymentMethodCardWalletGooglePay;
-	readonly samsungPay: PaymentMethodCardWalletSamsungPay;
+	readonly visaCheckout?: PaymentMethodCardWalletVisaCheckout;
+	/**
+	 * Android only. The iOS SDK exposes detail objects for masterpass and
+	 * visaCheckout alone; for every other wallet only `type` is available.
+	 */
+	readonly amex?: PaymentMethodCardWalletAmexExpressCheckout;
+	/** Android only. See `amex`. */
+	readonly applePay?: PaymentMethodCardWalletApplePay;
+	/** Android only. See `amex`. */
+	readonly googlePay?: PaymentMethodCardWalletGooglePay;
+	/** Android only. See `amex`. */
+	readonly samsungPay?: PaymentMethodCardWalletSamsungPay;
 
 	private constructor();
 

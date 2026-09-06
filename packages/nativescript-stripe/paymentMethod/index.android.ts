@@ -200,6 +200,9 @@ export class PaymentMethodCardWallet implements IPaymentMethodCardWallet {
 	}
 
 	public static fromNative(wallet: com.stripe.android.model.wallets.Wallet) {
+		if (!wallet) {
+			return undefined;
+		}
 		return new PaymentMethodCardWallet(wallet);
 	}
 }
@@ -218,7 +221,6 @@ export class PaymentMethodCard implements IPaymentMethodCard {
 	readonly wallet: PaymentMethodCardWallet;
 
 	private constructor(paymentCard: com.stripe.android.model.PaymentMethod.Card) {
-		console.log(paymentCard.brand);
 		this.brand = GetBrand(paymentCard.brand);
 		this.checks = PaymentMethodCardChecks.fromNative(paymentCard.checks);
 		this.country = paymentCard.country;

@@ -78,6 +78,10 @@ export class DemoSharedNativescriptStripe extends DemoSharedBase {
 	paymentMethod: PaymentMethod;
 
 	confirmSetupIntent() {
+		if (!this.paymentMethod) {
+			this.set('confirm', 'Create a PaymentMethod first');
+			return;
+		}
 		const service = new StripeService();
 		service
 			.createSetupIntent()
@@ -91,6 +95,25 @@ export class DemoSharedNativescriptStripe extends DemoSharedBase {
 			})
 			.catch((e) => {
 				console.log('confirmSetupIntent: error', e);
+			});
+	}
+
+	// Completes an intent the backend confirmed but that still needs the
+	// customer to authenticate. Available on both platforms; on Android the
+	// returnUrl argument is ignored.
+	authenticateSetupIntent() {
+		const service = new StripeService();
+		service
+			.createSetupIntent()
+			.then((data) => {
+				this.stripe.authenticateSetupIntent(data.secret, 'stripedemo://stripe', (error, intent) => {
+					console.log('authenticateSetupIntent: ', intent);
+					console.log('authenticateSetupIntent error: ', error);
+					this.set('confirm', error ? error.message : this.formatSetupIntent(intent));
+				});
+			})
+			.catch((e) => {
+				console.log('authenticateSetupIntent: error', e);
 			});
 	}
 
