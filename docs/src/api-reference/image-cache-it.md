@@ -17,6 +17,7 @@
 | :-------------:     |:-------------:        |:-------------:| :-----:            |
 | :white_check_mark:|:white_check_mark:     |:white_check_mark:|    :white_check_mark:| 
 
+- [Performance](image-cache-it.md#performance)
 - [Properties()](image-cache-it.md#properties)
 - [Static Properties()](image-cache-it.md#static-properties)
 - [Methods()](image-cache-it.md#methods)
@@ -75,6 +76,29 @@ import { ImageCacheIt } from '@triniwiz/nativescript-image-cache-it';
 ImageCacheIt.enableAutoMM();
 ```
 
+## Performance
+
+A remote image is decoded at its full size unless you say otherwise, so a
+2000x2000 photo shown in a 200x200 cell holds a hundred times more memory than
+it needs. `decodeWidth` and `decodeHeight` tell the decoder to downsample as it
+reads:
+
+```xml
+<ui:ImageCacheIt src="{{ url }}" width="200" height="200" decodeWidth="200" decodeHeight="200"/>
+```
+
+Set them to the size the image is actually displayed at. They apply to the
+initial load as well as to later `src` changes, and changing either re-requests
+the image at the new size. Android only - the iOS backend decodes to the view's
+size on its own.
+
+In a list, also give `placeHolder` a small local image so scrolling has
+something to show while a cell's image is still in flight, and leave `priority`
+at `Normal` unless a particular image should jump the queue.
+
+`ImageCacheIt.enableAutoMM()` hooks the cache into the device's low-memory
+events, so add it to your app's entry point.
+
 ## API
 
 ### Properties
@@ -95,8 +119,9 @@ ImageCacheIt.enableAutoMM();
 | loadMode | async   | `sync | async` | :white_check_mark: | :white_check_mark: |  |
 | isLoading | false   | boolean | :white_check_mark: | :white_check_mark: |  |
 | progress | 0   | number | :white_check_mark: | :white_check_mark: |  |
-| isLoading | false   | boolean | :white_check_mark: | :white_check_mark: |  |
 | headers | undefined   | Map<string,string> | :white_check_mark: | :white_check_mark: |  |
+| decodeWidth | 0   | number | :x: | :white_check_mark: | Decode the image at this width. See [Performance](image-cache-it.md#performance) |
+| decodeHeight | 0   | number | :x: | :white_check_mark: | Decode the image at this height. See [Performance](image-cache-it.md#performance) |
 
 ### Static Properties
 
@@ -123,8 +148,8 @@ ImageCacheIt.enableAutoMM();
 | Method    | Type  |    iOS  | Android |  Notes |
 | :---      |:---:  | :---:  | :---:  | :---: |
 | getItem(src: string, headers?: Map<string, string>)   | `Promise<string>` | :white_check_mark:  | :white_check_mark: | cache remote url then returns local path if url has not been cached before |
-| deleteItem(src: string)   | `Promise<any>` | :white_check_mark:  | :x: | deletes local item cached for the url supplied |
-| hasItem(src: string)   | `Promise<any>` | :white_check_mark:  | :white_check_mark: | resolves if an item is currently cached for remote url supplied. |
+| deleteItem(src: string)   | `Promise<any>` | :white_check_mark:  | :x: | deletes local item cached for the url supplied. Rejects on Android, whose cache offers no per-item removal - use `clear()` |
+| hasItem(src: string)   | `Promise<boolean>` | :white_check_mark:  | :white_check_mark: | resolves true when an item is cached for the url supplied. |
 | clear()   | `Promise<any>` | :white_check_mark:  | :white_check_mark: |  |
 | enableAutoMM   | void| :white_check_mark:  | :white_check_mark: |  |
 | disableAutoMM   | void| :white_check_mark:  | :white_check_mark: |  |

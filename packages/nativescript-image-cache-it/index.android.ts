@@ -160,7 +160,9 @@ export class ImageCacheIt extends ImageCacheItBase {
 		const jsonProps = {
 			priority: this.priority,
 		};
-		const color = this._getOverlayColor(this.overlayColor);
+		// overLayColor is a CssProperty, so it lives on the style rather than on
+		// the view - reading this.overlayColor here always found undefined.
+		const color = this._getOverlayColor(this.style['overLayColor']);
 		if (color !== null) {
 			jsonProps['overlayColor'] = color;
 		}
@@ -181,7 +183,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 		} else if (src instanceof ImageSource) {
 			src = src.android;
 		}
-		this.nativeView.batch(JSON.stringify(jsonProps), src, 0, 0, keepAspectRatio, false, true, this._handleSource(this.errorHolder), this._handleSource(this.placeHolder), this._handleSource(this.fallback));
+		this.nativeView.batch(JSON.stringify(jsonProps), src, this.decodeWidth ?? 0, this.decodeHeight ?? 0, keepAspectRatio, false, true, this._handleSource(this.errorHolder), this._handleSource(this.placeHolder), this._handleSource(this.fallback));
 	}
 
 	private _calculateKeepAspectRatio(): boolean {
@@ -294,29 +296,30 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	private static _setSrc(context: any, src: any, nativeView?: any, base?: ImageCacheIt) {
-		if (nativeView) {
-			const decodeWidth = base?.decodeWidth ?? 0;
-			const decodeHeight = base?.decodeHeight ?? 0;
-			const keepAspectRatio = base._calculateKeepAspectRatio();
-			if (isNullOrUndefined(src)) {
-				nativeView.setSource(null, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-			} else {
-				const image = ImageCacheIt.getImage(context, src);
-				if (isString(image)) {
-					nativeView.setSource(android.net.Uri.parse(image), decodeWidth, decodeHeight, keepAspectRatio, false, true);
-				} else if (isNumber(image) || image instanceof java.lang.Integer) {
-					nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-				} else if (image instanceof java.io.File) {
-					nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-				} else {
-					nativeView.setSource(image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
-				}
-			}
+		if (!nativeView) {
+			return;
 		}
+		const decodeWidth = base?.decodeWidth ?? 0;
+		const decodeHeight = base?.decodeHeight ?? 0;
+		const keepAspectRatio = base ? base._calculateKeepAspectRatio() : true;
+		const image = isNullOrUndefined(src) ? null : ImageCacheIt.getImage(context, src);
+		// A remote src stays a string until here; everything else is already the
+		// native file, resource id or bitmap Glide wants.
+		nativeView.setSource(isString(image) ? android.net.Uri.parse(image) : image, decodeWidth, decodeHeight, keepAspectRatio, false, true);
 	}
 
 	[common.srcProperty.setNative](src: any) {
 		ImageCacheIt._setSrc(this._context, src, this.nativeView, this);
+	}
+
+	// Decoding at the display size is what keeps the bitmap small, so a change
+	// to either dimension has to re-request the image.
+	[common.decodeWidthProperty.setNative]() {
+		ImageCacheIt._setSrc(this._context, this.src, this.nativeView, this);
+	}
+
+	[common.decodeHeightProperty.setNative]() {
+		ImageCacheIt._setSrc(this._context, this.src, this.nativeView, this);
 	}
 
 	[common.priorityProperty.getDefault](): common.Priority {
@@ -483,21 +486,19 @@ export class ImageCacheIt extends ImageCacheItBase {
 		});
 	}
 
+	/** iOS only - the Android cache exposes clear() but no per-item removal. */
 	public static deleteItem(src: string): Promise<any> {
-		return new Promise<any>((resolve, reject) => {
-			// TODO
-			resolve(undefined);
-		});
+		return Promise.reject(new ImageCacheItError('deleteItem is not supported on Android; use ImageCacheIt.clear()'));
 	}
 
-	public static hasItem(src: string): Promise<any> {
+	public static hasItem(src: string): Promise<boolean> {
 		this._init();
-		return new Promise<any>((resolve, reject) => {
+		return new Promise<boolean>((resolve, reject) => {
 			com.github.triniwiz.imagecacheit.ImageCache.hasItem(
 				src,
 				new com.github.triniwiz.imagecacheit.ImageCache.Callback({
 					onSuccess(value) {
-						resolve(undefined);
+						resolve(!!value);
 					},
 					onError(error) {
 						reject(ImageCacheItError.fromNative(error));

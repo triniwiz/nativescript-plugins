@@ -10,6 +10,10 @@ export class DemoSharedNativescriptImageCacheIt extends DemoSharedBase {
 	public progress: ObservableArray<number>;
 	public newImg: string;
 	public stretch = 'none';
+	// The cells are 150x150; decoding at that size instead of the image's own is
+	// the difference between a few hundred KB and several MB per row. Android
+	// only - the iOS backend already decodes to the view.
+	public decodeSize = 150;
 
 	getUUID(): string {
 		if (global.isIOS) {
@@ -258,19 +262,32 @@ export class DemoSharedNativescriptImageCacheIt extends DemoSharedBase {
 		this.set('newImg', '');
 	}
 
+	toggleDecode() {
+		// 0 turns downsampling off, so the image decodes at its natural size.
+		this.set('decodeSize', this.decodeSize ? 0 : 150);
+		console.log('decodeSize', this.decodeSize);
+	}
+
+	async checkCached() {
+		const url = 'https://source.unsplash.com/random/800x600';
+		console.log('hasItem', url, await ImageCacheIt.hasItem(url));
+	}
+
 	deleteRandom() {
 		const listView = Frame.topmost().getViewById('listView') as any;
-		ImageCacheIt.deleteItem('https://source.unsplash.com/random/800x600').then(() => {
-			ImageCacheIt.getItem('https://source.unsplash.com/random/800x600')
-				.then((j) => {
-					if (listView) {
-						listView.refresh();
-					}
-				})
-				.catch((e) => {
-					console.log(e);
-				});
-		});
+		const url = 'https://source.unsplash.com/random/800x600';
+		// deleteItem is iOS only; on Android the cache offers clear() alone.
+		ImageCacheIt.deleteItem(url)
+			.catch(() => ImageCacheIt.clear())
+			.then(() => ImageCacheIt.getItem(url))
+			.then(() => {
+				if (listView) {
+					listView.refresh();
+				}
+			})
+			.catch((e) => {
+				console.log(e);
+			});
 	}
 
 	onTapEven(event) {

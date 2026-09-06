@@ -1,4 +1,4 @@
-import { fallbackProperty, filterProperty, headersProperty, ImageCacheItBase, imageSourceProperty, loadModeProperty, overlayColorProperty, Priority, priorityProperty, srcProperty, stretchProperty, tintColorProperty } from './common';
+import { errorHolderProperty, fallbackProperty, filterProperty, headersProperty, ImageCacheItBase, imageSourceProperty, loadModeProperty, overlayColorProperty, placeHolderProperty, Priority, priorityProperty, srcProperty, stretchProperty, tintColorProperty, Transition, transitionProperty } from './common';
 import { Color, knownFolders, path as fsPath, Length, ImageSource, Trace, Application, Screen, Utils } from '@nativescript/core';
 
 export class ImageCacheItError extends Error {
@@ -175,16 +175,39 @@ export class ImageCacheIt extends ImageCacheItBase {
 		return fileName;
 	}
 
-	[fallbackProperty.setNative](src: any) {
+	/** An ImageSource, a UIImage, or a file/resource path. */
+	private _toUIImage(src: any): UIImage {
 		if (src === undefined || src === null) {
+			return null;
+		}
+		if (src instanceof UIImage) {
+			return src;
 		}
 		if (src instanceof ImageSource) {
-			this.nativeViewProtected.fallback = src.ios;
-		} else if (src instanceof UIImage) {
-			this.nativeViewProtected.fallback = src;
-		} else if (typeof src === 'string') {
-			this.nativeViewProtected.fallback = ImageSource.fromFileOrResourceSync(this.getFileName(src))?.ios ?? null;
+			return src.ios;
 		}
+		if (typeof src === 'string') {
+			return ImageSource.fromFileOrResourceSync(this.getFileName(src))?.ios ?? null;
+		}
+		return null;
+	}
+
+	[fallbackProperty.setNative](src: any) {
+		this.nativeViewProtected.fallback = this._toUIImage(src);
+	}
+
+	// placeHolder and errorHolder were never wired up on iOS, though the native
+	// view carries both.
+	[placeHolderProperty.setNative](src: any) {
+		this.nativeViewProtected.placeHolder = this._toUIImage(src);
+	}
+
+	[errorHolderProperty.setNative](src: any) {
+		this.nativeViewProtected.errorHolder = this._toUIImage(src);
+	}
+
+	[transitionProperty.setNative](value: any) {
+		this.nativeViewProtected.transition = value === Transition.Fade ? NSCImageCacheItTransition.Fade : NSCImageCacheItTransition.None;
 	}
 
 	[srcProperty.setNative](src: any) {
@@ -192,11 +215,18 @@ export class ImageCacheIt extends ImageCacheItBase {
 			return;
 		}
 		if (typeof src === 'string') {
-			if (src.startsWith('~/')) {
-				this.nativeViewProtected.src = this.getFileName(src);
-			} else {
-				this.nativeViewProtected.src = src;
-			}
+			// `src` takes a path or a URL; ~/ has to be resolved first.
+			this.nativeViewProtected.src = src.startsWith('~/') ? this.getFileName(src) : src;
+			return;
+		}
+		if (src === null || src === undefined) {
+			this.nativeViewProtected.src = null;
+			return;
+		}
+		// An already-decoded image has nothing to fetch, so it goes straight in.
+		const image = this._toUIImage(src);
+		if (image) {
+			this.nativeViewProtected.setImageSource(image);
 		}
 	}
 
@@ -253,7 +283,7 @@ export class ImageCacheIt extends ImageCacheItBase {
 		if (typeof value === 'string') {
 			this.nativeViewProtected.overlayColor = new Color(value).ios;
 		} else {
-			this.nativeViewProtected.imageTint = value?.ios ?? null;
+			this.nativeViewProtected.overlayColor = value?.ios ?? null;
 		}
 	}
 
@@ -280,14 +310,10 @@ export class ImageCacheIt extends ImageCacheItBase {
 		}
 	}
 
-	public static hasItem(src: string): Promise<any> {
-		return new Promise<any>((resolve, reject) => {
+	public static hasItem(src: string): Promise<boolean> {
+		return new Promise<boolean>((resolve) => {
 			NSCImageCacheItView.hasItem(src, (has) => {
-				if (has) {
-					resolve(undefined);
-				} else {
-					reject();
-				}
+				resolve(!!has);
 			});
 		});
 	}
@@ -325,10 +351,10 @@ export class ImageCacheIt extends ImageCacheItBase {
 	}
 
 	public static enableAutoMM() {
-		ImageCacheIt.enableAutoMM();
+		NSCImageCacheItView.enableAutoMM();
 	}
 
 	public static disableAutoMM() {
-		ImageCacheIt.disableAutoMM();
+		NSCImageCacheItView.disableAutoMM();
 	}
 }

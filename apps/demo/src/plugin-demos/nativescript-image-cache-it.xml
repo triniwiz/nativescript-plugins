@@ -4,21 +4,28 @@
     <ActionBar title="nativescript-image-cache-it" icon="" class="action-bar">
     </ActionBar>
   </Page.actionBar>
-  <GridLayout width="100%" height="100%" rows="auto,*">
+  <GridLayout width="100%" height="100%" rows="auto,auto,*">
     <GridLayout columns="*,auto,auto">
       <TextField text="{{newImg}}"/>
       <Button col="1" text="Add Image" tap="{{addImage}}"/>
-      <Button tap="{{ deleteRandom }}" text="Delete Random"/>
+      <Button col="2" tap="{{ deleteRandom }}" text="Delete Random"/>
     </GridLayout>
 
 
-    <ListView id="listView" row="1" items="{{ images }}" itemTemplateSelector="$index % 2 === 0 ? 'even' : 'odd'">
+    <GridLayout row="1" columns="auto,auto">
+      <Button text="{{ 'decode: ' + (decodeSize ? decodeSize : 'off') }}" tap="{{ toggleDecode }}"/>
+      <Button col="1" text="Check Cached" tap="{{ checkCached }}"/>
+    </GridLayout>
+
+    <ListView id="listView" row="2" items="{{ images }}" itemTemplateSelector="$index % 2 === 0 ? 'even' : 'odd'">
       <ListView.itemTemplates>
         <template key="even">
           <GridLayout rows="150" columns="150,*" paddingLeft="10">
             <ui:ImageCacheIt loaded="{{$parents['ListView'].imageLoaded}}" fallback="~/nativescript-image-cache-it/assets/mario-plant.png"
                              headers="{{ auth ? auth : defaultHeaders }}"
                              placeHolder="{{ $parents['ListView'].placeHolder }}" stretch="aspectFill"
+                             decodeWidth="{{ $parents['ListView'].decodeSize }}"
+                             decodeHeight="{{ $parents['ListView'].decodeSize }}"
                              tap="{{$parents['ListView'].onTapEven}}" class="even" src="{{url}}"/>
             <stack-layout col="1">
               <Label text="{{url}}"/>
@@ -31,6 +38,8 @@
           <GridLayout rows="150" columns="150,*" paddingLeft="10">
             <ui:ImageCacheIt loaded="{{$parents['ListView'].imageLoaded}}" headers="{{ auth ? auth : defaultHeaders }}"
                              placeHolder="res://law" errorHolder="res://error" stretch="fill"
+                             decodeWidth="{{ $parents['ListView'].decodeSize }}"
+                             decodeHeight="{{ $parents['ListView'].decodeSize }}"
                              tap="{{$parents['ListView'].onTapOdd}}" class="odd"
                              src="{{url}}"/>
             <stack-layout col="1">

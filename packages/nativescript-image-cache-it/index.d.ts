@@ -11,9 +11,11 @@ export declare class ImageCacheIt extends ImageCacheItBase {
 
 	public static getItem(src: string): Promise<string>;
 
+	/** iOS only - the Android cache exposes clear() but no per-item removal. */
 	public static deleteItem(src: string): Promise<any>;
 
-	public static hasItem(src: string): Promise<any>;
+	/** Whether `src` is in the cache. */
+	public static hasItem(src: string): Promise<boolean>;
 
 	public static clear(): Promise<any>;
 
