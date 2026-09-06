@@ -3,9 +3,20 @@
         <ActionBar title="nativescript-accordion" icon="" class="action-bar">
         </ActionBar>
     </Page.actionBar>
-  <StackLayout class="p-20">
-    <Button text="View Multi Template" tap="goToMulti"/>
-    <accordion:Accordion height="100%" items="{{items}}" allowMultiple="false" selectedIndexes="{{selectedIndexes}}">
+  <GridLayout rows="auto, *" class="p-20">
+    <WrapLayout row="0">
+      <Button text="Expand All" tap="{{expandAll}}"/>
+      <Button text="Collapse All" tap="{{collapseAll}}"/>
+      <Button text="Select First" tap="{{selectFirst}}"/>
+      <Button text="Select Last" tap="{{selectLast}}"/>
+      <Button text="{{ 'allowMultiple: ' + allowMultiple }}" tap="{{toggleAllowMultiple}}"/>
+    </WrapLayout>
+
+    <accordion:Accordion row="1" height="100%" items="{{items}}" allowMultiple="{{allowMultiple}}"
+                         selectedIndexes="{{selectedIndexes}}"
+                         loaded="{{accordionLoaded}}"
+                         itemHeaderTap="{{onItemHeaderTap}}"
+                         itemContentTap="{{onItemContentTap}}">
 
       <accordion:Accordion.headerTemplate>
         <StackLayout  backgroundColor="green" >
@@ -34,5 +45,5 @@
         </StackLayout>
       </accordion:Accordion.footerTemplate>
     </accordion:Accordion>
-  </StackLayout>
+  </GridLayout>
 </Page>

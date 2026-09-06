@@ -52,6 +52,8 @@ export class Accordion extends AccordionBase {
 	public _realizedItemContentTemplates = new Map<string, Map<android.view.View, View>>();
 	public _realizedFooterTemplates = new Map<string, Map<android.view.View, View>>();
 
+	protected _contentRowOffset = 0;
+
 	_itemsMap: Map<any, any>;
 	_headerMap: Map<any, any>;
 	_footerMap: Map<any, any>;
@@ -61,19 +63,19 @@ export class Accordion extends AccordionBase {
 		super();
 		this._itemsMap = new Map();
 		this._headerMap = new Map();
-		this._itemsMap = new Map();
+		this._footerMap = new Map();
 		this._expandedViews = new Map();
 	}
 
 	expandAll() {
-		const length = this.items.length;
+		const length = this.items ? this.items.length : 0;
 		for (let i = 0; i < length; i++) {
 			this.expandItem(i);
 		}
 	}
 
 	collapseAll() {
-		const length = this.items.length;
+		const length = this.items ? this.items.length : 0;
 		for (let i = 0; i < length; i++) {
 			this.collapseItem(i);
 		}
@@ -124,12 +126,17 @@ export class Accordion extends AccordionBase {
 			new android.widget.ExpandableListView.OnChildClickListener({
 				onChildClick(listView: android.widget.ExpandableListView, view: android.view.View, groupPosition: number, childPosition: number, id: number): boolean {
 					let owner = that.get();
-					const data = owner._getChildData(groupPosition, childPosition);
+					const childIndex = owner._toChildIndex(childPosition);
+					if (childIndex < 0) {
+						// the header or footer row, which carries no child data
+						return false;
+					}
+					const data = owner._getChildData(groupPosition, childIndex);
 					let args = {
 						eventName: AccordionBase.itemContentTapEvent,
 						data: data,
 						object: owner,
-						childIndex: childPosition,
+						childIndex: childIndex,
 						index: groupPosition,
 						view: null,
 						ios: null,
@@ -171,22 +178,14 @@ export class Accordion extends AccordionBase {
 					owner.itemCollapsed(groupPosition);
 					const oldIndexes = owner.selectedIndexes.slice();
 
-					const newIndexes = oldIndexes.filter((item) => {
-						if (item !== groupPosition) {
-							return item;
-						}
-					});
+					const newIndexes = oldIndexes.filter((item) => item !== groupPosition);
 					selectedIndexesProperty.nativeValueChange(owner, newIndexes);
 				},
 			}),
 		);
 		this._listAdapter = new AccordionListAdapter(new WeakRef(this));
 		this.nativeView.setAdapter(this._listAdapter);
-		if (this.selectedIndexes) {
-			this.selectedIndexes.forEach((item) => {
-				this.nativeView.expandGroup(item);
-			});
-		}
+		this._applySelectedIndexes(this.selectedIndexes);
 
 		if (this._androidViewId < 0) {
 			this._androidViewId = android.view.View.generateViewId();
@@ -228,18 +227,42 @@ export class Accordion extends AccordionBase {
 		this._listAdapter.notifyDataSetChanged();
 	}
 
-	updateNativeIndexes(oldIndexes: any, newIndexes: any) {}
+	updateNativeIndexes(oldIndexes: any, newIndexes: any) {
+		this._applySelectedIndexes(newIndexes);
+	}
+
+	/**
+	 * Bring the expanded groups in line with `selectedIndexes`.
+	 *
+	 * The property carries the complete set of expanded groups, so a group that
+	 * has dropped out of it has to be collapsed - expanding the listed ones is
+	 * not enough on its own.
+	 */
+	private _applySelectedIndexes(value: any) {
+		if (!this.nativeViewProtected) {
+			return;
+		}
+		const selected = Array.isArray(value) ? value : [];
+		const count = this.items ? this.items.length : 0;
+		for (let i = 0; i < count; i++) {
+			const shouldExpand = selected.indexOf(i) !== -1;
+			if (shouldExpand === this.nativeViewProtected.isGroupExpanded(i)) {
+				continue;
+			}
+			if (shouldExpand) {
+				this.nativeViewProtected.expandGroup(i);
+			} else {
+				this.nativeViewProtected.collapseGroup(i);
+			}
+		}
+	}
 
 	[selectedIndexesProperty.getDefault](): any {
 		return [];
 	}
 
 	[selectedIndexesProperty.setNative](value: any) {
-		if (value) {
-			value.forEach((item) => {
-				this.nativeView.expandGroup(item);
-			});
-		}
+		this._applySelectedIndexes(value);
 	}
 
 	public updateNativeItems(oldItems: any, newItems: any) {}
@@ -411,17 +434,11 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 			return false;
 		}
 		if (owner.items && i < owner.items.length) {
-			let getItem = owner._getChildData(i, childPosition);
-			const item = typeof getItem === 'function' ? getItem.call(owner.items, i) : owner.items[i];
-
-			if (item) {
-				let childItems = item[owner.childItems];
-				if (!childItems) return null;
-				let childItem = childItems.getItem;
-				return childItem ? childItem.call(childItems, childPosition) : childItems[childPosition];
-			}
-
-			return null;
+			// childPosition is a row: the header and footer rows sit alongside the
+			// content rows and map to no child.
+			const childIndex = owner._toChildIndex(childPosition);
+			const child = childIndex < 0 ? undefined : owner._getChildData(i, childIndex);
+			return child === undefined ? null : child;
 		}
 
 		return null;
@@ -482,8 +499,6 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 
 		let args = notifyForHeaderOrFooterAtIndex(owner, view ? view.nativeView : null, view, AccordionBase.itemHeaderLoadingEvent, groupPosition);
 
-		owner.notify(args);
-
 		if (!args.view) {
 			args.view = owner._getDefaultItemHeaderContent(groupPosition);
 		}
@@ -524,7 +539,7 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 
 	getGroupCount(): number {
 		const owner = this.owner ? this.owner.get() : null;
-		return owner.items && owner.items.length ? owner.items.length : 0;
+		return owner && owner.items && owner.items.length ? owner.items.length : 0;
 	}
 
 	getChildView(groupPosition: number, childPosition: number, isLastChild: boolean, convertView: android.view.View, parent: android.view.ViewGroup) {
@@ -532,12 +547,6 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 
 		if (!owner) {
 			return null;
-		}
-
-		let totalItemCount = (owner.items ? owner.items.length : 0) + (owner._getHasHeader() ? 1 : 0) + (owner._getHasFooter() ? 1 : 0);
-
-		if (groupPosition === totalItemCount - 1) {
-			owner.notify({ eventName: AccordionBase.loadMoreItemsEvent, object: owner });
 		}
 
 		if (childPosition === 0 && owner._getHasHeader()) {
@@ -558,15 +567,13 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 
 			let args = notifyForHeaderOrFooterAtIndex(owner, view ? view.nativeView : null, view, AccordionBase.headerLoadingEvent, groupPosition);
 
-			owner.notify(args);
-
 			if (!args.view) {
 				args.view = owner._getDefaultHeaderContent(groupPosition);
 			}
 
 			if (args.view) {
 				if (owner._effectiveHeaderRowHeight > -1) {
-					args.view.height = owner.footerRowHeight;
+					args.view.height = owner.headerRowHeight;
 				}
 
 				owner._prepareHeaderItem(args.view, groupPosition);
@@ -616,15 +623,13 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 
 			let args = notifyForHeaderOrFooterAtIndex(owner, view ? view.nativeView : null, view, AccordionBase.footerLoadingEvent, groupPosition);
 
-			owner.notify(args);
-
 			if (!args.view) {
 				args.view = owner._getDefaultFooterContent(groupPosition);
 			}
 
 			if (args.view) {
 				if (owner._effectiveFooterRowHeight > -1) {
-					args.view.height = owner.itemContentRowHeight;
+					args.view.height = owner.footerRowHeight;
 				}
 
 				owner._prepareFooterItem(args.view, groupPosition);
@@ -670,12 +675,11 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 			view = template.createView();
 		}
 
-		let args = notifyForItemAtIndex(owner, view ? view.nativeView : null, view, AccordionBase.itemContentLoadingEvent, groupPosition, childPosition - (owner._getHasHeader() ? 1 : 0));
-
-		owner.notify(args);
+		const childIndex = owner._toChildIndex(childPosition);
+		let args = notifyForItemAtIndex(owner, view ? view.nativeView : null, view, AccordionBase.itemContentLoadingEvent, groupPosition, childIndex);
 
 		if (!args.view) {
-			args.view = owner._getDefaultItemContentContent(groupPosition, childPosition);
+			args.view = owner._getDefaultItemContentContent(groupPosition, childIndex);
 		}
 
 		if (args.view) {
@@ -683,7 +687,7 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 				args.view.height = owner.itemContentRowHeight;
 			}
 
-			owner._prepareItemContent(args.view, groupPosition, childPosition);
+			owner._prepareItemContent(args.view, groupPosition, childIndex);
 			if (!args.view.parent) {
 				// Proxy containers should not get treated as layouts.
 				// Wrap them in a real layout as well.
@@ -714,24 +718,27 @@ class AccordionListAdapter extends android.widget.BaseExpandableListAdapter {
 
 	getChildId(i: number, childPosition: number): number {
 		const owner = this.owner ? this.owner.get() : null;
-		let item = this.getChild(i, childPosition);
 		let id = parseInt(`${i}${childPosition}`);
-		if (owner && item && owner.items) {
-			id = owner.childIdGenerator(item, i, childPosition, owner.items);
+		if (owner && owner.items) {
+			const childIndex = owner._toChildIndex(childPosition);
+			const item = childIndex < 0 ? null : owner._getChildData(i, childIndex);
+			if (item) {
+				id = owner.childIdGenerator(item, i, childIndex, owner.items);
+			}
 		}
 		return long(id);
 	}
 
 	getChildrenCount(groupPosition: number): number {
 		const owner = this.owner ? this.owner.get() : null;
-		if (owner && owner.items && owner._getParentData(groupPosition)) {
-			if (typeof owner._getParentData(groupPosition).get === 'function') {
-				return owner._getParentData(groupPosition).get(owner.childItems).length + (owner._getHasHeader() ? 1 : 0) + (owner._getHasFooter() ? 1 : 0);
-			} else {
-				return owner._getParentData(groupPosition)[owner.childItems].length + (owner._getHasHeader() ? 1 : 0) + (owner._getHasFooter() ? 1 : 0);
-			}
+		if (!owner || !owner.items) {
+			return 0;
 		}
-		return 0;
+		const childItems = owner._getChildItems(groupPosition);
+		if (!childItems) {
+			return 0;
+		}
+		return childItems.length + (owner._getHasHeader() ? 1 : 0) + (owner._getHasFooter() ? 1 : 0);
 	}
 
 	isChildSelectable(groupPosition: number, childPosition: number) {
