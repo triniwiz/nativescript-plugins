@@ -75,6 +75,7 @@ export class Pager extends PagerBase {
 	lastEvent = 0;
 	private _lastSpacing = 0;
 	private _lastPeaking = 0;
+	private _peakingApplied = false;
 	private compositeTransformer: any;
 	private marginTransformer: any;
 	private _transformers: any[];
@@ -203,17 +204,35 @@ export class Pager extends PagerBase {
 		}
 	}
 
+	/**
+	 * A peek of `p` is `p` of padding on both ends of the scroll axis with
+	 * clipping switched off, so the adjacent pages show through it while the
+	 * current page stays centered.
+	 *
+	 * ViewPager2 forwards padding and both clip flags to its internal
+	 * RecyclerView, so setting them here is enough.
+	 */
 	private _setPeaking(value: any) {
-		const size = this.convertToSize(value);
-		const newPeaking = size !== this._lastPeaking;
-		if (newPeaking) {
-			this.pager.setClipToPadding(false);
-			const left = this.orientation === 'horizontal' ? size : 0;
-			const top = this.orientation === 'horizontal' ? 0 : size;
-			this.pager.setPadding(left, top, left, top);
-			this.pager.setClipChildren(false);
-			this._lastPeaking = size;
+		if (!this.pager) {
+			return;
 		}
+		const size = this.convertToSize(value);
+		if (size === this._lastPeaking && this._peakingApplied) {
+			return;
+		}
+		const horizontal = this.orientation === 'horizontal';
+		const left = horizontal ? size : 0;
+		const top = horizontal ? 0 : size;
+		this.pager.setClipToPadding(size === 0);
+		this.pager.setClipChildren(size === 0);
+		this.pager.setPadding(left, top, left, top);
+		if (size > 0) {
+			// The peeked neighbour has to be laid out to be visible at all, so a
+			// peek needs at least one offscreen page on either side.
+			this.pager.setOffscreenPageLimit(Math.max(2, this.pagesCount > 0 ? this.pagesCount : 3));
+		}
+		this._lastPeaking = size;
+		this._peakingApplied = true;
 	}
 
 	[spacingProperty.setNative](value: any) {
@@ -415,11 +434,13 @@ export class Pager extends PagerBase {
 	}
 
 	private _updateScrollPosition() {
-		const index = this.circularMode ? this.selectedIndex + 1 : this.selectedIndex;
+		const index = this.toNativeIndex(this.selectedIndex);
 		if (this.pager.getCurrentItem() !== index) {
-			this.indicatorView.setInteractiveAnimation(false);
+			if (this.indicatorView) {
+				this.indicatorView.setInteractiveAnimation(false);
+				this.indicatorView.setSelected(this.selectedIndex);
+			}
 			this.pager.setCurrentItem(index, false);
-			this._indicatorView.setSelected(this.selectedIndex);
 		}
 		setTimeout(() => {
 			this._initAutoPlay(this.autoPlay);
@@ -446,7 +467,7 @@ export class Pager extends PagerBase {
 
 	[selectedIndexProperty.setNative](value: number) {
 		if (this.isLoaded && this.isLayoutValid && this.pager) {
-			const index = this.circularMode ? value + 1 : value;
+			const index = this.toNativeIndex(value);
 			if (this.pager.getCurrentItem() !== index) {
 				//   this.indicatorView.setInteractiveAnimation(!this.disableAnimation);
 				this.pager.setCurrentItem(index, !this.disableAnimation);
@@ -459,7 +480,8 @@ export class Pager extends PagerBase {
 
 	public scrollToIndexAnimated(index: number, animate: boolean) {
 		if (this.pager) {
-			this.pager.setCurrentItem(index, animate);
+			// `index` is a real item index; the pager works in native page space.
+			this.pager.setCurrentItem(this.toNativeIndex(index), animate);
 		}
 	}
 
@@ -625,11 +647,27 @@ export class Pager extends PagerBase {
 	}
 
 	_nextIndex(): number {
-		let next = this.selectedIndex + 1;
-		if (next > this.lastIndex) {
-			return 0;
+		const next = this.selectedIndex + 1;
+		return next > this.lastIndex ? 0 : next;
+	}
+
+	/**
+	 * Advance one page for autoplay.
+	 *
+	 * In circularMode this animates *into* the trailing clone rather than
+	 * assigning `selectedIndex`, which is clamped to the real item range and so
+	 * could never carry the pager past the last page. The wrap handler snaps
+	 * back to the real first page once the scroll settles.
+	 */
+	_advance() {
+		if (this.circularMode && this.pager) {
+			const next = this.pager.getCurrentItem() + 1;
+			if (next < this.itemCount) {
+				this.pager.setCurrentItem(next, true);
+				return;
+			}
 		}
-		return next;
+		this.selectedIndex = this._nextIndex();
 	}
 
 	_initAutoPlay(value: boolean) {
@@ -644,21 +682,10 @@ export class Pager extends PagerBase {
 		} else {
 			if (this.isLayoutValid && !this._autoPlayInterval) {
 				this._autoPlayInterval = setInterval(() => {
-					this.selectedIndex = this._nextIndex();
+					this._advance();
 				}, this.autoPlayDelay);
 			}
 		}
-	}
-
-	get itemCount(): number {
-		return this._childrenCount ? this._childrenCount + (this.circularMode ? 2 : 0) : 0;
-	}
-
-	get lastIndex(): number {
-		if (this.items && this.items.length === 0) {
-			return 0;
-		}
-		return this.circularMode ? this.itemCount - 3 : this.itemCount - 1;
 	}
 }
 
@@ -702,10 +729,13 @@ function initPagerChangeCallback() {
 		onPageScrolled(position, positionOffset, positionOffsetPixels) {
 			const owner = this.owner && this.owner.get();
 			if (owner && owner.isLayoutValid) {
-				if (owner.circularMode) {
-					position = owner.pagerAdapter.getPosition(position);
-				}
-				const offset = position * positionOffsetPixels;
+				// `position` arrives in native page space. The scroll offset has to
+				// be computed there, before mapping to a real index for the payload.
+				const vertical = owner.orientation === 'vertical';
+				const pageSize = vertical ? owner.pager.getHeight() - owner.pager.getPaddingTop() - owner.pager.getPaddingBottom() : owner.pager.getWidth() - owner.pager.getPaddingLeft() - owner.pager.getPaddingRight();
+				const offset = position * pageSize + positionOffsetPixels;
+				const onClonePage = owner.wrapTarget(position) !== -1;
+				position = owner.toRealIndex(position);
 				if (owner.orientation === 'vertical') {
 					owner._horizontalOffset = 0;
 					owner._verticalOffset = offset;
@@ -722,12 +752,14 @@ function initPagerChangeCallback() {
 						scrollY: owner.verticalOffset,
 					});
 				}
-				if (owner.items && position === owner.pagerAdapter.lastIndex() - owner.loadMoreCount) {
+				if (owner.items && position === owner.lastIndex - owner.loadMoreCount) {
 					owner.notify({ eventName: LOADMOREITEMS, object: owner });
 				}
 
 				if (owner.showIndicator && owner.indicatorView) {
-					const progress = Pager.getProgress(owner.indicatorView, position, positionOffset, false);
+					// The indicator counts real pages, so a clone contributes no
+					// fractional progress of its own.
+					const progress = onClonePage ? [position, 0] : Pager.getProgress(owner.indicatorView, position, positionOffset, false);
 					const selectingPosition = progress[0];
 					const selectingProgress = progress[1];
 					owner.indicatorView.setInteractiveAnimation(true);
@@ -767,30 +799,29 @@ function initPagerChangeCallback() {
 					owner.lastEvent = 0;
 				}
 				if (owner.isLayoutValid && state === androidx.viewpager2.widget.ViewPager2.SCROLL_STATE_IDLE) {
-					// ts-ignore
-					const count = owner.pagerAdapter.getItemCount();
 					const index = owner.pager.getCurrentItem();
-					if (owner.circularMode) {
-						if (index === 0) {
-							// last item
-							owner.indicatorView.setInteractiveAnimation(false);
-							owner.pager.setCurrentItem(count - 2, false);
-							selectedIndexProperty.nativeValueChange(owner, count - 3);
-							owner.indicatorView.setSelected(count - 3);
-							owner.indicatorView.setInteractiveAnimation(true);
-						} else if (index === count - 1) {
-							// first item
-							owner.indicatorView.setInteractiveAnimation(false);
-							owner.indicatorView.setSelected(0);
-							owner.pager.setCurrentItem(1, false);
-							selectedIndexProperty.nativeValueChange(owner, 0);
-							owner.indicatorView.setInteractiveAnimation(true);
-						} else {
-							selectedIndexProperty.nativeValueChange(owner, index - 1);
+					const wrapTo = owner.wrapTarget(index);
+					const indicator = owner.indicatorView;
+					if (wrapTo !== -1) {
+						// Settled on a clone page: hop to the real page it mirrors. Both
+						// render the same content and the hop is unanimated, so it is
+						// invisible - but the indicator must not animate across it.
+						const real = owner.toRealIndex(wrapTo);
+						if (indicator) {
+							indicator.setInteractiveAnimation(false);
+							indicator.setSelected(real);
+						}
+						owner.pager.setCurrentItem(wrapTo, false);
+						selectedIndexProperty.nativeValueChange(owner, real);
+						if (indicator) {
+							indicator.setInteractiveAnimation(true);
 						}
 					} else {
-						selectedIndexProperty.nativeValueChange(owner, index);
-						owner.indicatorView.setSelected(index);
+						const real = owner.toRealIndex(index);
+						selectedIndexProperty.nativeValueChange(owner, real);
+						if (indicator) {
+							indicator.setSelected(real);
+						}
 					}
 				}
 			}
@@ -847,31 +878,14 @@ function initPagerRecyclerAdapter() {
 
 		getPosition(index: number): number {
 			const owner = this.owner && this.owner.get();
-			let position = index;
-			if (owner && owner.circularMode) {
-				if (position === 0) {
-					position = this.lastDummy();
-				} else if (position === this.firstDummy()) {
-					position = 0;
-				} else {
-					position = position - 1;
-				}
-			}
-			return position;
+			return owner ? owner.toRealIndex(index) : index;
 		}
 
 		onBindViewHolder(holder: any, index: number): void {
 			const owner = this.owner ? this.owner.get() : null;
 			if (owner) {
-				if (owner.circularMode) {
-					if (index === 0) {
-						index = this.lastDummy();
-					} else if (index === this.firstDummy()) {
-						index = 0;
-					} else {
-						index = index - 1;
-					}
-				}
+				// A clone page binds the same data item as the real page it mirrors.
+				index = owner.toRealIndex(index);
 				const bindingContext = owner._getDataItem(index);
 				let args = <ItemEventData>{
 					eventName: ITEMLOADING,
@@ -924,25 +938,7 @@ function initPagerRecyclerAdapter() {
 
 		lastIndex(): number {
 			const owner = this.owner && this.owner.get();
-			if (owner) {
-				if (owner.items.length === 0) {
-					return 0;
-				}
-				return owner.circularMode ? this.getItemCount() - 3 : this.getItemCount() - 1;
-			}
-			return 0;
-		}
-
-		firstDummy() {
-			const count = this.getItemCount();
-			if (count === 0) {
-				return 0;
-			}
-			return this.getItemCount() - 1;
-		}
-
-		lastDummy() {
-			return this.lastIndex();
+			return owner ? owner.lastIndex : 0;
 		}
 
 		hasStableIds(): boolean {

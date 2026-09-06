@@ -77,6 +77,8 @@ export class DemoSharedNativescriptPager extends DemoSharedBase {
 	circularMode: boolean = false;
 	showIndicator: boolean = false;
 	autoPlay: boolean = false;
+	peaking = 0;
+	spacing = 0;
 
 	// itemsCount: number = 0;
 	get toSlice() {
@@ -261,6 +263,25 @@ export class DemoSharedNativescriptPager extends DemoSharedBase {
 		console.log('circularMode', state, this.get('circularMode'));
 	}
   
+
+	// Steps through peek/spacing combinations so the adjacent-page reveal can be
+	// eyeballed, including alongside circularMode where the clone pages have to
+	// peek identically to the real ones.
+	_peekSteps = [
+		{ peaking: 0, spacing: 0 },
+		{ peaking: 40, spacing: 0 },
+		{ peaking: 40, spacing: 10 },
+		{ peaking: 80, spacing: 20 },
+	];
+	_peekStep = 0;
+
+	cyclePeek() {
+		this._peekStep = (this._peekStep + 1) % this._peekSteps.length;
+		const step = this._peekSteps[this._peekStep];
+		this.set('peaking', step.peaking);
+		this.set('spacing', step.spacing);
+		console.log('peek', step.peaking, 'spacing', step.spacing);
+	}
 
 	getRandomInt(min, max) {
 		min = Math.ceil(min);

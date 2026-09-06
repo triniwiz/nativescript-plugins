@@ -42,6 +42,9 @@ export class Pager extends PagerBase {
 	private _indicatorView: any;
 	private _observableArrayInstance: ObservableArray<any>;
 	_isAnimatedScrolling: boolean = false;
+	private _lastSpacing = -1;
+	private _lastPeaking = -1;
+	private _lastVertical: boolean = undefined;
 	_scrollingToIndex = -1;
 	_isInit: boolean = false;
 
@@ -93,27 +96,115 @@ export class Pager extends PagerBase {
 		this._setIndicator(this.indicator);
 		this._delegate = UICollectionDelegateImpl.initWithOwner(new WeakRef(this));
 		this._setNativeClipToBounds();
+		this._updateLayoutGeometry();
 		this._initAutoPlay(this.autoPlay);
 	}
 
 	_getRealWidthHeight(): { width: number; height: number } {
-		let height = 0;
-		let width = 0;
-		width = (Utils.layout.toDeviceIndependentPixels(this._effectiveItemWidth) - (this.perPage * 2 * this._getSpacing() + this._getPeaking() * 2)) / this.perPage;
-		height = (Utils.layout.toDeviceIndependentPixels(this._effectiveItemHeight) - (this.perPage * 2 * this._getSpacing() + this._getPeaking() * 2)) / this.perPage;
-		return { height, width };
+		const spacing = this._getSpacing();
+		const peaking = this._getPeaking();
+		return {
+			width: this._computePageLength(Utils.layout.toDeviceIndependentPixels(this._effectiveItemWidth), peaking, spacing),
+			height: this._computePageLength(Utils.layout.toDeviceIndependentPixels(this._effectiveItemHeight), peaking, spacing),
+		};
+	}
+
+	/**
+	 * Applies peek and spacing to the flow layout.
+	 *
+	 * The peek is a section inset on both ends of the scroll axis rather than a
+	 * smaller page: that reveals the adjacent pages *and* keeps the first and
+	 * last page centered when they are selected. Spacing is the line spacing
+	 * along the scroll axis - UICollectionViewFlowLayout defaults it to 10, so
+	 * it has to be set even when the user asked for 0.
+	 */
+	_updateLayoutGeometry() {
+		if (!this._layout) {
+			return;
+		}
+		const spacing = this._getSpacing();
+		const peaking = this._getPeaking();
+		const vertical = this.orientation === 'vertical';
+		// onLayout runs this on every pass, so nothing is touched unless a value
+		// actually moved - invalidateLayout would otherwise trigger another
+		// layout and re-measure every visible cell for no reason.
+		if (spacing === this._lastSpacing && peaking === this._lastPeaking && vertical === this._lastVertical) {
+			return;
+		}
+		this._lastSpacing = spacing;
+		this._lastPeaking = peaking;
+		this._lastVertical = vertical;
+		this._layout.minimumLineSpacing = spacing;
+		this._layout.minimumInteritemSpacing = 0;
+		this._layout.sectionInset = vertical ? { top: peaking, left: 0, bottom: peaking, right: 0 } : { top: 0, left: peaking, bottom: 0, right: peaking };
+		this._layout.invalidateLayout();
+	}
+
+	/**
+	 * Distance from one page origin to the next along the scroll axis.
+	 *
+	 * With the peek expressed as a section inset, a centered page `i` sits at
+	 * exactly `i * stride`, so page position follows from the offset alone -
+	 * no contentSize percentage, which skews as soon as insets are involved.
+	 */
+	_pageStride(): number {
+		const size = this._getRealWidthHeight();
+		const length = this.orientation === 'vertical' ? size.height : size.width;
+		return length + this._getSpacing();
+	}
+
+	/** Fractional native page index derived from the current scroll offset. */
+	_pageProgress(): number {
+		const stride = this._pageStride();
+		if (!this.pager || stride <= 0) {
+			return 0;
+		}
+		const offset = this.orientation === 'vertical' ? this.pager.contentOffset.y : this.pager.contentOffset.x;
+		const progress = offset / stride;
+		return Number.isFinite(progress) ? progress : 0;
+	}
+
+	/** Native page index the pager has settled on. */
+	_nativeIndexFromOffset(): number {
+		if (this.itemCount === 0) {
+			return 0;
+		}
+		return Math.max(0, Math.min(Math.round(this._pageProgress()), this.itemCount - 1));
+	}
+
+	/**
+	 * When a scroll settles on one of the clone pages, jump to the matching real
+	 * page. The jump is unanimated and both pages render identical content, so
+	 * it is invisible. Returns true when it wrapped.
+	 */
+	_wrapIfNeeded(nativeIndex: number): boolean {
+		const target = this.wrapTarget(nativeIndex);
+		if (target === -1 || !this.pager) {
+			return false;
+		}
+		this.pager.scrollToItemAtIndexPathAtScrollPositionAnimated(NSIndexPath.indexPathForItemInSection(target, 0), this.orientation === 'vertical' ? UICollectionViewScrollPosition.CenteredVertically : UICollectionViewScrollPosition.CenteredHorizontally, false);
+		selectedIndexProperty.nativeValueChange(this, this.toRealIndex(target));
+		return true;
 	}
 
 	_nextIndex(): number {
+		const next = this.selectedIndex + 1;
+		return next > this.lastIndex ? 0 : next;
+	}
+
+	/**
+	 * Advance one page for autoplay.
+	 *
+	 * In circularMode this animates *into* the trailing clone instead of
+	 * assigning `selectedIndex`, because `selectedIndex` is clamped to the real
+	 * item range and so could never carry the pager past the last page. The
+	 * wrap handler snaps back to the real first page once the scroll settles.
+	 */
+	_advance() {
 		if (this.circularMode) {
-			// TODO
-			return 0;
+			this._scrollToNativeIndexAnimated(this.toNativeIndex(this.selectedIndex) + 1, true);
 		} else {
-			let next = this.selectedIndex + 1;
-			if (next > this.lastIndex) {
-				return 0;
-			}
-			return next;
+			this.selectedIndex = this._nextIndex();
 		}
 	}
 
@@ -129,47 +220,10 @@ export class Pager extends PagerBase {
 		} else {
 			if (this.isLayoutValid && !this._autoPlayInterval) {
 				this._autoPlayInterval = setInterval(() => {
-					this.selectedIndex = this._nextIndex();
+					this._advance();
 				}, this.autoPlayDelay);
 			}
 		}
-	}
-
-	getPosition(index: number): number {
-		let position = index;
-		if (this.circularMode) {
-			if (position === 0) {
-				position = this.lastDummy;
-			} else if (position === this.firstDummy) {
-				position = 0;
-			} else {
-				position = position - 1;
-			}
-		}
-		return position;
-	}
-
-	get itemCount(): number {
-		return this._childrenCount ? this._childrenCount + (this.circularMode ? 2 : 0) : 0;
-	}
-
-	get lastIndex(): number {
-		if (this.items && this.items.length === 0) {
-			return 0;
-		}
-		return this.circularMode ? this.itemCount - 3 : this.itemCount - 1;
-	}
-
-	get firstDummy(): number {
-		const count = this.itemCount;
-		if (count === 0) {
-			return 0;
-		}
-		return this.itemCount - 1;
-	}
-
-	get lastDummy(): number {
-		return this.lastIndex;
 	}
 
 	// @ts-ignore
@@ -223,6 +277,8 @@ export class Pager extends PagerBase {
 		} else {
 			this._layout.scrollDirection = UICollectionViewScrollDirection.Vertical;
 		}
+		// The peek inset is applied to whichever axis now scrolls.
+		this._updateLayoutGeometry();
 	}
 
 	public eachChildView(callback: (child: View) => boolean): void {
@@ -354,23 +410,27 @@ export class Pager extends PagerBase {
 		if (this._childrenCount === 0) {
 			return;
 		}
-		let maxMinIndex = -1;
 		const max = this._childrenCount - 1;
-		if (index < 0) {
-			maxMinIndex = 0;
-		} else if (index > max) {
-			maxMinIndex = max;
-		} else {
-			maxMinIndex = index;
-		}
+		const real = index < 0 ? 0 : index > max ? max : index;
+		this._scrollToNativeIndexAnimated(this.toNativeIndex(real), animate);
+	}
 
-		if (maxMinIndex === -1) {
-			maxMinIndex = 0;
+	/**
+	 * Scroll to a native page index, which in circularMode may be one of the two
+	 * clone pages - that is how autoplay animates forward past the last item.
+	 */
+	_scrollToNativeIndexAnimated(nativeIndex: number, animate: boolean) {
+		if (!this.pager || this.itemCount === 0) {
+			return;
 		}
-
+		const clamped = Math.max(0, Math.min(nativeIndex, this.itemCount - 1));
+		if (animate && clamped !== this._nativeIndexFromOffset()) {
+			this._isAnimatedScrolling = true;
+			this._scrollingToIndex = clamped;
+		}
 		dispatch_async(main_queue, () => {
-			this.pager.scrollToItemAtIndexPathAtScrollPositionAnimated(NSIndexPath.indexPathForItemInSection(maxMinIndex, 0), this.orientation === 'vertical' ? UICollectionViewScrollPosition.CenteredVertically : UICollectionViewScrollPosition.CenteredHorizontally, !!animate);
-			selectedIndexProperty.nativeValueChange(this, maxMinIndex);
+			this.pager.scrollToItemAtIndexPathAtScrollPositionAnimated(NSIndexPath.indexPathForItemInSection(clamped, 0), this.orientation === 'vertical' ? UICollectionViewScrollPosition.CenteredVertically : UICollectionViewScrollPosition.CenteredHorizontally, !!animate);
+			selectedIndexProperty.nativeValueChange(this, this.toRealIndex(clamped));
 		});
 	}
 
@@ -537,6 +597,9 @@ export class Pager extends PagerBase {
 	public onLayout(left: number, top: number, right: number, bottom: number) {
 		super.onLayout(left, top, right, bottom);
 		this.pager.frame = this.nativeView.bounds;
+		// peaking/spacing are percentage-capable, so they can only be resolved
+		// once the pager has a measured size.
+		this._updateLayoutGeometry();
 		if (this.indicatorView && this.indicatorView.intrinsicContentSize) {
 			this.indicatorView.center = CGPointMake(this.nativeView.center.x, this.nativeView.bounds.size.height - this.indicatorView.intrinsicContentSize.height);
 		}
@@ -676,10 +739,12 @@ export class Pager extends PagerBase {
 		if (height === 0) {
 			height = Utils.layout.toDeviceIndependentPixels(this._effectiveItemHeight);
 		}
+		const spacing = this._getSpacing();
+		const peaking = this._getPeaking();
 		if (this.orientation === 'vertical') {
-			height = (height - (this._getSpacing() * 2 + this._getPeaking() * 2)) / this.perPage;
+			height = this._computePageLength(height, peaking, spacing);
 		} else {
-			width = (width - (this._getSpacing() * 2 + this._getPeaking() * 2)) / this.perPage;
+			width = this._computePageLength(width, peaking, spacing);
 		}
 		if (Number.isNaN(width)) {
 			width = 0;
@@ -744,7 +809,7 @@ class UICollectionDelegateImpl extends NSObject implements UICollectionViewDeleg
 				owner._updateScrollPosition();
 				owner._isInit = true;
 			}
-			if (owner.items && owner.loadMoreCount !== -1 && indexPath.row === owner.lastIndex - owner.loadMoreCount) {
+			if (owner.items && owner.loadMoreCount !== -1 && owner.toRealIndex(indexPath.row) === owner.lastIndex - owner.loadMoreCount) {
 				owner.notify<EventData>({
 					eventName: LOADMOREITEMS,
 					object: owner,
@@ -777,9 +842,12 @@ class UICollectionDelegateImpl extends NSObject implements UICollectionViewDeleg
 	public scrollViewDidEndScrollingAnimation(scrollView: UIScrollView): void {
 		let owner = this._owner ? this._owner.get() : null;
 		if (owner) {
-			selectedIndexProperty.nativeValueChange(owner, owner._scrollingToIndex);
+			const settled = owner._scrollingToIndex === -1 ? owner._nativeIndexFromOffset() : owner._scrollingToIndex;
 			owner._isAnimatedScrolling = false;
 			owner._scrollingToIndex = -1;
+			if (!owner._wrapIfNeeded(settled)) {
+				selectedIndexProperty.nativeValueChange(owner, owner.toRealIndex(settled));
+			}
 			owner.notify({
 				eventName: Pager.swipeEvent,
 				object: owner,
@@ -790,30 +858,19 @@ class UICollectionDelegateImpl extends NSObject implements UICollectionViewDeleg
 	public scrollViewDidScroll(scrollView: UIScrollView): void {
 		let owner = this._owner.get();
 		if (owner) {
-			let width: number;
-			let offset: number;
-			let size = owner._getRealWidthHeight();
-			let total: number;
-			let percent: number;
-			if (owner.orientation === 'vertical') {
-				width = size.height;
-				offset = scrollView.contentOffset.y;
-				total = scrollView.contentSize.height - scrollView.bounds.size.height;
-			} else {
-				width = size.width;
-				offset = scrollView.contentOffset.x;
-				total = scrollView.contentSize.width - scrollView.bounds.size.width;
-			}
-			percent = offset / total;
-			let progress = percent * (owner.itemCount - 1);
-			if (owner.indicatorView && owner.indicatorView.setWithProgressAnimated && !Number.isNaN(progress)) {
-				owner.indicatorView.progress = progress;
+			const progress = owner._pageProgress();
+			const nativeIndex = owner._nativeIndexFromOffset();
+			const realIndex = owner.toRealIndex(nativeIndex);
+			if (owner.indicatorView && owner.indicatorView.setWithProgressAnimated) {
+				// The indicator only ever counts real pages; across a clone the
+				// fractional progress belongs to a page the user cannot select,
+				// so it snaps to the real index instead.
+				owner.indicatorView.progress = owner.circularMode ? realIndex : progress;
 			}
 			if (!owner._isAnimatedScrolling) {
-				const index = parseInt(progress.toFixed(0), 10);
-				if (owner.selectedIndex !== index && !Number.isNaN(index)) {
+				if (owner.selectedIndex !== realIndex) {
 					owner._scrollingToIndex = -1;
-					selectedIndexProperty.nativeValueChange(owner, index);
+					selectedIndexProperty.nativeValueChange(owner, realIndex);
 				}
 			}
 			owner.notify({
@@ -836,23 +893,10 @@ class UICollectionDelegateImpl extends NSObject implements UICollectionViewDeleg
 	public scrollViewDidEndDecelerating(scrollView: UIScrollView): void {
 		let owner = this._owner.get();
 		if (owner) {
-			let width: number;
-			let offset: number;
-			let size = owner._getRealWidthHeight();
-			let total: number;
-			let percent: number;
-			if (owner.orientation === 'vertical') {
-				width = size.height;
-				offset = scrollView.contentOffset.y;
-				total = scrollView.contentSize.height - scrollView.bounds.size.height;
-			} else {
-				width = size.width;
-				offset = scrollView.contentOffset.x;
-				total = scrollView.contentSize.width - scrollView.bounds.size.width;
+			const settled = owner._nativeIndexFromOffset();
+			if (!owner._wrapIfNeeded(settled)) {
+				selectedIndexProperty.nativeValueChange(owner, owner.toRealIndex(settled));
 			}
-			percent = offset / total;
-			const progress = percent * (owner.itemCount - 1);
-			selectedIndexProperty.nativeValueChange(owner, Math.round(progress));
 		}
 	}
 
@@ -892,17 +936,8 @@ class UICollectionViewDataSourceImpl extends NSObject implements UICollectionVie
 			count = owner._childrenCount;
 			if (owner.circularMode) {
 				count = owner.itemCount;
-				switch (indexPath.row) {
-					case 0:
-						indexPath = NSIndexPath.indexPathForRowInSection(owner.lastDummy, 0);
-						break;
-					case owner.firstDummy:
-						indexPath = NSIndexPath.indexPathForRowInSection(0, 0);
-						break;
-					default:
-						indexPath = NSIndexPath.indexPathForRowInSection(indexPath.row - 1, 0);
-						break;
-				}
+				// A clone page renders the same content as the real page it mirrors.
+				indexPath = NSIndexPath.indexPathForRowInSection(owner.toRealIndex(indexPath.row), 0);
 			}
 		}
 		if (owner && !owner.items && count > 0) {
@@ -964,7 +999,7 @@ class UICollectionViewDataSourceImpl extends NSObject implements UICollectionVie
 	public collectionViewNumberOfItemsInSection(collectionView: UICollectionView, section: number): number {
 		const owner = this._owner ? this._owner.get() : null;
 		if (!owner) return 0;
-		return owner.circularMode ? owner.itemCount : owner._childrenCount;
+		return owner.itemCount;
 	}
 
 	public numberOfSectionsInCollectionView(collectionView: UICollectionView): number {
