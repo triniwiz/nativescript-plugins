@@ -1,5 +1,5 @@
 import { DemoSharedBase } from '../utils';
-import { Blob, CouchBase, MutableArray, MutableDocument, QueryBuilder, QueryLogicalOperator, Replicator } from '@triniwiz/nativescript-couchbase';
+import { Blob, CouchBase, MutableArray, MutableDocument, QueryBuilder, QueryLogicalOperator, Replicator, ReplicatorConfiguration } from '@triniwiz/nativescript-couchbase';
 import { ObservableArray } from '@nativescript/core';
 import { getFile, getJSON } from '@nativescript/core/http';
 
@@ -60,9 +60,11 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 		}
 		console.timeEnd('allResults');
 
-		// this.replicator = new Replicator('ws://192.168.0.10:4984/tns-couchbase', 'both', this.db.defaultCollection);
-		// this.replicator.addCollection(this.db.defaultCollection);
-		// this.replicator.setContinuous(true);
+		// Point SYNC_URL at a Sync Gateway to try replication.
+		// const config = new ReplicatorConfiguration(SYNC_URL, 'both');
+		// config.collections = [this.db.defaultCollection];
+		// config.continuous = true;
+		// this.replicator = new Replicator(config);
 		this.db.defaultCollection.addChangeListener((collection, documentIDs) => {
 			for (let change of documentIDs) {
 				const doc = collection.getDocument(change);
@@ -90,9 +92,23 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 				}
 			}
 		});
-		//this.replicator.start();
-		// const query = this.db.query();
-		// this.items.push(...query);
+		// this.replicator?.start();
+	}
+
+	// Exercises the accessors that were only available on one platform: a blob's
+	// wrapped content stream, and reading nested values back off a document.
+	inspectLatest() {
+		const collection = this.db.defaultCollection;
+		const doc = collection.getDocument('triniwiz');
+		if (!doc) {
+			console.log('inspectLatest: no document yet');
+			return;
+		}
+		console.log('keys', doc.getKeys());
+		console.log('array', doc.getArray('large_array')?.count);
+		console.log('dictionary', doc.getDictionary('address')?.toJSON());
+		const image = doc.getBlob('image');
+		console.log('blob', image?.contentType, image?.length, 'stream', !!image?.contentStream);
 	}
 
 	addLargeItem() {
@@ -112,7 +128,7 @@ export class DemoSharedNativescriptCouchbase extends DemoSharedBase {
 	}
 
 	nukeIt() {
-		//this.replicator.stop();
+		this.replicator?.stop();
 		this.db.destroyDatabase();
 		this.db = null;
 		this.items.splice(0);

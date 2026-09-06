@@ -21,27 +21,17 @@
 
 You can use Couchbase Lite as a standalone embedded database within your mobile apps, or with [Sync Gateway](https://docs.couchbase.com/sync-gateway/current/introduction.html) and [Couchbase Server](https://docs.couchbase.com/home/server.html) to provide a complete cloud to edge synchronized solution
 
-- [CouchBase(...)](couchbase.md#couchbase-2)
-- [close()](couchbase.md#close)
-- [createDocument(...)](couchbase.md#createdocument)
-- [setBlob(...)](couchbase.md#setblob)
-- [getBlob(...)](couchbase.md#getblob)
-- [getDocument(...)](couchbase.md#getDocument)
-- [getDocuments(...)](couchbase.md#getDocuments)
-- [updateDocument(...)](couchbase.md#updateDocument)
-- [deleteDocument(...)](couchbase.md#deleteDocument)
-- [destroyDatabase(...)](couchbase.md#destroydatabase)
-- [query(...)](couchbase.md#query)
-- [createReplication(...)](couchbase.md#createreplication)
-- [createPullReplication(...)](couchbase.md#createpullreplication)
-- [createPushReplication(...)](couchbase.md#createpushreplication)
-- [addDatabaseChangeListener(...)](couchbase.md#adddatabasechangelistener)
-- [removeDatabaseChangeListener(...)](couchbase.md#removedatabasechangelistener)
-- [addDocumentChangeListener(...)](couchbase.md#adddocumentchangelistener)
-- [removeDocumentChangeListener(...)](couchbase.md#removedocumentchangelistener)
-- [inBatch(...)](couchbase.md#inbatch)
-- [Classes](couchbase.md#classes)
-- [Intefaces](couchbase.md#interfaces)
+- [Usage](couchbase.md#usage)
+- [Collections and scopes](couchbase.md#collections-and-scopes)
+- [Documents](couchbase.md#documents)
+- [Blobs](couchbase.md#blobs)
+- [Queries](couchbase.md#queries)
+- [Listening for changes](couchbase.md#listening-for-changes)
+- [Indexes](couchbase.md#indexes)
+- [Transactions](couchbase.md#transactions)
+- [Replication](couchbase.md#replication)
+- [API](couchbase.md#api)
+- [Interfaces](couchbase.md#interfaces)
 - [Enums](couchbase.md#enums)
 - [Types](couchbase.md#types)
 
@@ -80,451 +70,255 @@ The minimum required platform is version 10
 
 ## Usage
 
+Documents live in collections, collections live in scopes, and every database
+has a `_default` collection in the `_default` scope.
+
 ```ts
-import { CouchBase, ConcurrencyMode } from '@triniwiz/nativescript-couchbase';
+import { CouchBase, MutableDocument } from '@triniwiz/nativescript-couchbase';
+
 const database = new CouchBase('my-database');
+const collection = database.defaultCollection;
 
-const documentId = database.createDocument({
-	firstname: 'O',
-	lastname: 'Fortune',
-	address: {
-		country: 'Trinidad and Tobago',
-	},
-	twitter: 'https://www.twitter.com/triniwiz',
-});
+collection.save(new MutableDocument('triniwiz').setString('firstname', 'Osei').setString('lastname', 'Fortune'));
 
-const person = database.getDocument(documentId);
+const person = collection.getDocument('triniwiz');
+console.log(person.getString('firstname'));
 
-database.updateDocument(documentId, {
-	firstname: 'Osei',
-	lastname: 'Fortune',
-	twitter: 'https://www.twitter.com/triniwiz',
-});
-
-// Default concurrency mode is FailOnConflict if you don't pass it
-const isDeleted = database.deleteDocument(documentId, ConcurrencyMode.FailOnConflict);
+collection.delete(person);
 ```
 
-### Synchronization with Couchbase Sync Gateway and Couchbase Server
+### Collections and scopes
 
 ```ts
-import { CouchBase } from '@triniwiz/nativescript-couchbase';
-const database = new CouchBase('my-database');
+const collection = database.createCollection('people'); // in the default scope
+const inScope = database.createCollection('people', 'contacts');
 
-const push = database.createPushReplication('ws://sync-gateway-host:4984/my-database');
-push.setUserNameAndPassword('user', 'password');
-const pull = database.createPullReplication('ws://sync-gateway-host:4984/my-database');
-pull.setSessionId('SomeId');
-pull.setSessionIdAndCookieName('SomeId', 'SomeCookieName');
+database.getCollection('people');
+database.deleteCollection('people');
 
-push.setContinuous(true);
-pull.setContinuous(true);
-push.start();
-pull.start();
+database.defaultScope.collections; // Collection[]
+collection.scope; // the Scope it belongs to
+collection.count; // documents in the collection
 ```
 
-### Listening for Changes
+### Documents
 
-#### Datebase
+A `Document` is read-only. Call `toMutable()` to get a `MutableDocument` you can
+change, then save it back to the collection.
 
 ```ts
-database.addDatabaseChangeListener(function (changes) {
-	for (var i = 0; i < changes.length; i++) {
-		const documentId = changes[i];
-		console.log(documentId);
+const doc = new MutableDocument('some-id') // omit the id for a generated one
+	.setString('firstname', 'Osei')
+	.setLong('visits', 3)
+	.setDate('joined', new Date())
+	.setBoolean('active', true);
+
+collection.save(doc);
+
+// Default concurrency mode is LastWriteWins if you don't pass one
+collection.save(doc, ConcurrencyMode.FailOnConflict);
+
+const updated = collection.getDocument('some-id').toMutable();
+updated.setString('firstname', 'O');
+collection.save(updated);
+
+collection.purge('some-id'); // remove without replicating a deletion
+collection.setDocumentExpiration('some-id', new Date(Date.now() + 86400000));
+```
+
+Setters return the document, so they chain. Getters come in typed pairs:
+`getString`, `getFloat`, `getDouble`, `getLong`, `getBoolean`, `getBlob`,
+`getArray`, `getDictionary`, and `getValue` for whatever is there. `toJSON()`
+returns the whole document as a plain object.
+
+### Blobs
+
+```ts
+import { Blob } from '@triniwiz/nativescript-couchbase';
+
+const blob = Blob.fromFile('image/png', '~/images/logo.png');
+collection.save(new MutableDocument('logo').setBlob('image', blob));
+
+const stored = collection.getDocument('logo').getBlob('image');
+stored.contentType; // 'image/png'
+stored.length;
+stored.content; // the bytes
+```
+
+`Blob.fromFile` accepts `file://` and absolute paths on both platforms, `~/` for
+app-relative paths, and `res://` for a bundled resource. Android additionally
+accepts a `content:` URI.
+
+### Queries
+
+```ts
+import { QueryBuilder, QueryMeta } from '@triniwiz/nativescript-couchbase';
+
+const query = new QueryBuilder()
+	.setSelect([QueryMeta.ALL, QueryMeta.ID])
+	.setFrom(collection)
+	.setWhere([{ property: 'firstname', comparison: 'equalTo', value: 'Osei' }])
+	.setOrder([{ property: 'firstname', direction: 'desc' }])
+	.setLimit(20)
+	.setOffset(0)
+	.build();
+
+for (const result of query.execute()) {
+	console.log(result);
+}
+```
+
+`setSelect` defaults to `[QueryMeta.ALL, QueryMeta.ID]`. `execute()` returns a
+`ResultSet`, which is iterable and also has `allResults()`.
+
+### Listening for changes
+
+```ts
+const collectionListener = collection.addChangeListener((collection, documentIDs) => {
+	for (const id of documentIDs) {
+		console.log(id, collection.getDocument(id)?.toJSON());
 	}
 });
+
+const documentListener = collection.addDocumentChangeListener('triniwiz', (id, collection) => {
+	console.log(collection.getDocument(id)?.toJSON());
+});
+
+const queryListener = query.addChangeListener((query, results, error) => {
+	console.log(results.allResults());
+});
+
+// each returns a Listener
+collectionListener.remove();
 ```
 
-#### Document
+### Indexes
 
 ```ts
-database.addDocumentChangeListener('document-id-to-watch', function (documentId) {
-	console.log(documentId);
-});
-```
+import { ValueIndexConfiguration, FullTextIndexConfiguration } from '@triniwiz/nativescript-couchbase';
 
-### Query
+collection.createIndex('by-name', new ValueIndexConfiguration(['firstname', 'lastname']));
+collection.createIndex('search', new FullTextIndexConfiguration(['bio']).setLanguage('en').ignoreAccents(true));
 
-```ts
-const results = database.query({
-	select: [], // Leave empty to query for all
-	from: 'otherDatabaseName', // Omit or set null to use current db
-	where: [{ property: 'firstName', comparison: 'equalTo', value: 'Osei' }],
-	order: [{ property: 'firstName', direction: 'desc' }],
-	limit: 2,
-});
+collection.indexes; // string[]
+collection.deleteIndex('by-name');
 ```
 
 ### Transactions
 
-Using the method `inBatch` to run group of database operations in a batch/transaction. Use this when performing bulk write operations like multiple inserts/updates; it saves the overhead of multiple database commits, greatly improving performance.
+`inBatch` runs a group of operations as one commit. Use it for bulk writes - it
+saves the overhead of committing each one separately.
 
 ```ts
-import { CouchBase } from '@triniwiz/nativescript-couchbase';
-const database = new CouchBase('my-database');
-
 database.inBatch(() => {
-    const documentId = database.createDocument({
-        "firstname": "O",
-        "lastname": "Fortune",
-        "address": {
-            "country": "Trinidad and Tobago"
-        }
-        "twitter": "https://www.twitter.com/triniwiz"
-    });
-
-    const person = database.getDocument(documentId);
-
-
-    database.updateDocument(documentId, {
-        "firstname": "Osei",
-        "lastname": "Fortune",
-        "twitter": "https://www.twitter.com/triniwiz"
-    });
-
-    const isDeleted = database.deleteDocument(documentId);
+	for (const person of people) {
+		collection.save(new MutableDocument(person.id).setString('firstname', person.firstname));
+	}
 });
+```
+
+### Replication
+
+A `Replicator` is built from a `ReplicatorConfiguration`, which is plain data.
+
+```ts
+import { Replicator, ReplicatorConfiguration } from '@triniwiz/nativescript-couchbase';
+
+const config = new ReplicatorConfiguration('ws://sync-gateway-host:4984/my-database', 'both');
+config.collections = [collection];
+config.continuous = true;
+config.username = 'user';
+config.password = 'password';
+config.channels = new Map([[collection, ['channel-a']]]);
+
+const replicator = new Replicator(config);
+replicator.start();
+replicator.isRunning();
+replicator.stop();
 ```
 
 ## API
 
-### CouchBase(...)
-
-```ts
-new CouchBase('nsDB');
-```
-
-Creates or opens a database
-
-| Param |  Type  |
-| :---: | :----: |
-| name  | string |
-
-**Returns**: [CouchBase](couchbase.md#couchbase-2)
-
----
-
-### close()
-
-```ts
- close(): void;
-```
-
-Closes the currently opened database
-
----
-
-### createDocument(...)
-
-```ts
- createDocument(data: Object, documentId?: string, concurrencyMode?: ConcurrencyMode): string;
-```
-
-Creates a new document
-
-|      Param      |                      Type                       |
-| :-------------: | :---------------------------------------------: |
-|      data       |                     Object                      |
-|   documentId    |                     string                      | \*set optional id of the created document |
-| concurrencyMode | [ConcurrencyMode](couchbase.md#concurrencymode) |
-
-**Returns**: <code>string</code>
-
----
-
-### setBlob(...)
-
-```ts
- setBlob(id: string, name: string, blob: any, mimeType?: string, concurrencyMode?: ConcurrencyMode): void;
-```
-
-|      Param      |                      Type                       |
-| :-------------: | :---------------------------------------------: |
-|       id        |                     string                      |
-|      name       |                     string                      |
-|      blob       |                       any                       |
-|    mimeType     |                     string                      |
-| concurrencyMode | [ConcurrencyMode](couchbase.md#concurrencymode) |
-
-Adds a blob to a document
-
----
-
-### getBlob(...)
-
-```ts
- getBlob(id: string, name: string): Blob;
-```
-
-| Param |  Type  |
-| :---: | :----: |
-|  id   | string |
-| name  | string |
-
-Gets a blob from a document
-
-**Returns**: <code>[Blob](coucbase.md#blob)</code>
-
----
-
-### getDocument(...)
-
-```ts
- getDocument(documentId: string): Object;
-```
-
-|   Param    |  Type  |
-| :--------: | :----: |
-| documentId | string |
-
-Gets a document
-
-**Return**: <code>Object</code>
-
----
-
-### getDocuments(...)
-
-```ts
- getDocuments(documentIds: string[]): Object[];
-```
-
-|    Param    |   Type   |
-| :---------: | :------: |
-| documentIds | string[] |
-
-Get a list of documents by id
-
-**Return**: <code>Object[]</code>
-
----
-
-### updateDocument(...)
-
-```ts
- updateDocument(documentId: string, data: Object, concurrencyMode?: ConcurrencyMode): boolean;
-```
-
-|      Param      |                      Type                       |
-| :-------------: | :---------------------------------------------: |
-|   documentId    |                     string                      |
-|      data       |                     Object                      |
-| concurrencyMode | [ConcurrencyMode](couchbase.md#concurrencymode) |
-
-Updates a document
-
-**Return**: <code>Boolean</code>
-
----
-
-### deleteDocument(...)
-
-```ts
- deleteDocument(documentId: string, concurrencyMode?: ConcurrencyMode): boolean;
-```
-
-|   Param    |                      Type                       |
-| :--------: | :---------------------------------------------: |
-| documentId |                     string                      |
-|    data    | [ConcurrencyMode](couchbase.md#concurrencymode) |
-
-Deletes a document
-
-**Return**: <code>Boolean</code>
-
----
-
-### destroyDatabase(...)
-
-```ts
- destroyDatabase(): void;
-```
-
-Destroys the currently opened database
-
----
-
-### query(...)
-
-```ts
- query(query?: Query): Array<Object>;
-```
-
-| Param |             Type              |
-| :---: | :---------------------------: |
-| query | [Query](couchbase.md#query-2) |
-
-Queries the currently opened database
-
-**Returns**: `Array<Object>`
-
----
-
-### createReplication(...)
-
-```ts
- createReplication(remoteUrl: string, direction: 'push' | 'pull' | 'both'): Replicator;
-```
-
-|   Param   |  Type   |
-| :-------: | :-----: |
-| remoteUrl | string  |
-| direction | `'push' | 'pull' | 'both'` |
-
-Creates a replicator which can be used later on to sync updates with a remote database
-
-**Returns**: <code>[Replicator](couchbase.md#replicator)</code>
-
----
-
-### createPullReplication(...)
-
-```ts
- createPullReplication(remoteUrl: string, username?: string, password?: string): Replicator;
-```
-
-|   Param   |  Type  |
-| :-------: | :----: |
-| remoteUrl | string |
-| username  | string |
-| password  | string |
-
-Creates a pull replicator which can be used later on to sync updates with a remote database
-
-**Returns**: <code>[Replicator](couchbase.md#replicator)</code>
-
----
-
-### createPushReplication(...)
-
-```ts
- createPushReplication(remoteUrl: string, username?: string, password?: string): Replicator;
-```
-
-|   Param   |  Type  |
-| :-------: | :----: |
-| remoteUrl | string |
-| username  | string |
-| password  | string |
-
-Creates a push replicator which can be used later on to sync updates with a remote database
-
-**Returns**: <code>[Replicator](couchbase.md#replicator)</code>
-
----
-
-### addDatabaseChangeListener(...)
-
-```ts
- addDatabaseChangeListener(callback: (ids: string[]) => void): void;
-```
-
-|  Param   |          Type           |
-| :------: | :---------------------: |
-| callback | (ids: string[]) => void |
-
-Adds a database change listener
-
----
-
-### removeDatabaseChangeListener(...)
-
-```ts
-  removeDatabaseChangeListener(callback: (ids: string[]) => void): void;
-```
-
-|  Param   |          Type           |
-| :------: | :---------------------: |
-| callback | (ids: string[]) => void |
-
-Removes a database change listener
-
----
-
-### addDocumentChangeListener(...)
-
-```ts
- addDocumentChangeListener(documentId: string, callback: (id: string) => void): void;
-```
-
-|  Param   |                   Type                   |
-| :------: | :--------------------------------------: |
-| callback | (documentId: string, id: string) => void |
-
-Adds a document change listener
-
----
-
-### removeDocumentChangeListener(...)
-
-```ts
-  removeDocumentChangeListener(callback: (id: string) => void): void;
-```
-
-|  Param   |         Type         |
-| :------: | :------------------: |
-| callback | (id: string) => void |
-
-Removes a document change listener
-
----
-
-### inBatch(...)
-
-```ts
- inBatch(batch: () => void): void;
-```
-
-| Param |   Type   |
-| :---: | :------: |
-| batch | Function |
-
-Runs a group of operations in a batch. Use this when performing bulk write operations like multiple create/update; it saves the overhead of multiple database commits, greatly improving performance.
-
----
-
-## Classes
+### CouchBase
+
+| Member | Description |
+| --- | --- |
+| `new CouchBase(name)` | Open, or create, a database. |
+| `defaultCollection` | The `_default` collection. |
+| `defaultScope` | The `_default` scope. |
+| `createCollection(name, scope?)` | Create a collection, in the default scope unless one is named. |
+| `getCollection(name, scope?)` | An existing collection, or `null`. |
+| `deleteCollection(name, scope?)` | Delete a collection and its documents. |
+| `createQuery(query)` | Build a `Query` from an N1QL string. |
+| `inBatch(fn)` | Run `fn` as a single commit. |
+| `close()` | Close the database. |
+| `destroyDatabase()` | Close and delete the database from disk. |
+
+### Collection
+
+| Member | Description |
+| --- | --- |
+| `name`, `scope`, `count` | Identity and document count. |
+| `save(document, concurrencyMode?)` | Write a `MutableDocument`. |
+| `delete(document, concurrencyMode?)` | Delete a document, replicating the deletion. |
+| `purge(documentOrId)` | Remove a document locally without replicating. |
+| `getDocument(id)` | A `Document`, or `null`. |
+| `getDocumentExpiration(id)` / `setDocumentExpiration(id, date)` | Read or set a document's expiry. |
+| `addChangeListener(cb)` | Notified with the ids that changed. Returns a `Listener`. |
+| `addDocumentChangeListener(id, cb)` | Notified when one document changes. Returns a `Listener`. |
+| `createIndex(name, index)`, `deleteIndex(name)`, `indexes` | Manage indexes. |
+| `close()` | Close the collection. |
+
+### QueryBuilder
+
+`setSelect`, `setFrom`, `setWhere`, `setGroupBy`, `setOrder`, `setLimit` and
+`setOffset` each return the builder; `build()` returns a `Query`.
 
 ### Replicator
 
-|                              Method                              |  Type   |
-| :--------------------------------------------------------------: | :-----: |
-|                             start()                              |  void   |
-|                              stop()                              |  void   |
-|                           isRunning()                            | boolean |
-|               setContinuous(isContinuous: boolean)               |  void   |
-|    setUserNameAndPassword(username: string, password: string)    |  void   |
-|                 setChannels(channels: string[])                  |  void   |
-| setSessionIdAndCookieName(sessionId: string, cookieName: string) |  void   |
-|                 setSessionId(sessionId: string)                  |  void   |
+| Member | Description |
+| --- | --- |
+| `new Replicator(config)` | Build from a `ReplicatorConfiguration`. |
+| `start()` / `stop()` | Start and stop replicating. |
+| `isRunning()` | Whether it is currently replicating. |
+
+### ReplicatorConfiguration
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `remoteUrl` | `string` | — | Sync Gateway endpoint. |
+| `direction` | `'push' \| 'pull' \| 'both'` | `'both'` | Which way to replicate. |
+| `continuous` | `boolean` | `false` | Keep replicating rather than running once. |
+| `collections` | `Collection[]` | `[]` | Collections to replicate. |
+| `channels` | `Map<Collection, string[]>` | empty | Channels to pull, per collection. |
+| `username` / `password` | `string` | `null` | Basic authentication. |
+| `sessionId` / `cookieName` | `string` | `null` | Session authentication. |
+| `headers` | `Map<string, string>` | empty | Extra request headers. |
+| `autoPurge` | `boolean` | `true` | Purge documents the user loses access to. |
+| `networkInterface` | `string` | `null` | iOS only. The Android SDK has no equivalent and ignores it. |
 
 ### Blob
 
-|     Prop      |       Type       |
-| :-----------: | :--------------: |
-|      ios      |       any        |
-|    android    |       any        |
-|    content    |       any        |
-| contentStream |       any        |
-|  contentType  |       any        |
-|    length     |      number      |
-|    digest     |      string      |
-|  properties   | Map<string, any> |
+| Member | Type | Description |
+| --- | --- | --- |
+| `Blob.fromFile(mimeType, file)` | `Blob` | From a file path or URI. |
+| `Blob.fromBytes(mimeType, content)` | `Blob` | From raw bytes. |
+| `content` | `any` | The bytes. |
+| `contentStream` | `Stream` | A stream over the content. |
+| `contentType` | `string` | The mime type. |
+| `length` | `number` | Size in bytes. |
+| `digest` | `string` | Content digest. |
+| `properties` | `Map<string, any>` | Blob metadata. |
+| `toJSON()` | `any` | The blob's JSON representation. |
+
+### Platform differences
+
+| API | Note |
+| --- | --- |
+| `ReplicatorConfiguration.networkInterface` | iOS only; ignored on Android. |
+| `Blob.fromFile` with a `content:` URI | Android only. |
 
 ## Interfaces
-
-### Query
-
-|  Prop   |                      Type                       |
-| :-----: | :---------------------------------------------: |
-| select  |                      any[]                      |
-|  where  | [QueryWhereItem](couchbase.md#querywhereitem)[] |
-| groupBy |                       any                       |
-|  order  | [QueryOrderItem](couchbase.md#queryorderitem)[] |
-|  limit  |                       any                       |
-| offset  |                       any                       |
-|  from   |                     string                      |
 
 ### QueryWhereItem
 
