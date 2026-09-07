@@ -197,6 +197,8 @@ export class MutableArray extends Array {
 export class Document {
 	readonly native;
 
+	getKeys(): string[];
+
 	getString(key: string): string;
 
 	getFloat(key: string): number;
@@ -209,6 +211,10 @@ export class Document {
 
 	getBlob(key: string): Blob;
 
+	getArray(key: string): Array;
+
+	getDictionary(key: string): Dictionary;
+
 	getValue(key: string): ValueType;
 
 	toJSON();
@@ -217,7 +223,7 @@ export class Document {
 }
 
 export class MutableDocument extends Omit<Document, 'toMutable'> {
-	constructor(id?: string | ValueType);
+	constructor(id?: string | ObjectType);
 
 	readonly native;
 
@@ -360,6 +366,10 @@ export declare class Replicator extends ReplicatorBase {
 
 export class Stream {
 	readonly native;
+
+	readonly android;
+
+	readonly ios;
 }
 
 export class Blob {
@@ -367,7 +377,13 @@ export class Blob {
 
 	static fromBytes(mimeType: string, content: any): Blob;
 
+	static fromNative(blob: any): Blob | null;
+
 	readonly native;
+
+	readonly android;
+
+	readonly ios;
 
 	readonly content: any;
 
@@ -380,6 +396,8 @@ export class Blob {
 	readonly digest: string;
 
 	readonly properties: Map<string, any>;
+
+	toJSON(): any;
 }
 
 export class QueryBuilder {

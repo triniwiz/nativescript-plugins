@@ -29,6 +29,10 @@ export function nukeIt(args) {
 	page.bindingContext.nukeIt();
 }
 
+export function inspectLatest(args) {
+	page.bindingContext.inspectLatest();
+}
+
 export function goToSearch(args) {
 	Frame.topmost().navigate('~/plugin-demos/extras/nativescript-couchbase-search/nativescript-couchbase-search');
 }

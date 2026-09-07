@@ -1,22 +1,11 @@
 import { knownFolders, path, Utils } from '@nativescript/core';
 import { ValueType, ObjectType, QueryWhereItem, QueryOrderItem, QueryComparisonOperator, ConcurrencyMode } from '.';
+import { QueryArrayOperator, QueryLogicalOperator, QueryMeta, ReplicatorConfiguration } from './common';
+
+export { QueryMeta, QueryLogicalOperator, QueryArrayOperator, ReplicatorConfiguration } from './common';
 
 declare const kotlin;
 let didInit = false;
-
-export enum QueryMeta {
-	ALL = 'COUCHBASE_ALL',
-	ID = 'COUCHBASE_ID',
-}
-
-export enum QueryLogicalOperator {
-	AND = 'and',
-	OR = 'or',
-}
-
-export enum QueryArrayOperator {
-	CONTAINS = 'contains',
-}
 
 const numberHasDecimals = function (item: number) {
 	return !(item % 1 === 0);
@@ -953,6 +942,14 @@ export class Document {
 		return this.native.getLong(key);
 	}
 
+	getArray(key: string): Array {
+		return Array.fromNative(this.native.getArray(key) as com.couchbase.lite.Array);
+	}
+
+	getDictionary(key: string): Dictionary {
+		return Dictionary.fromNative(this.native.getDictionary(key) as com.couchbase.lite.Dictionary);
+	}
+
 	getValue(key: string): ValueType {
 		return deserialize(this.native.getValue(key));
 	}
@@ -973,7 +970,8 @@ export class Document {
 export class MutableDocument extends Document {
 	_native: com.couchbase.lite.MutableDocument;
 
-	constructor(id?: string | com.couchbase.lite.MutableDocument) {
+	/** A document id, an object to seed the document with, or a native document. */
+	constructor(id?: string | ObjectType | com.couchbase.lite.MutableDocument) {
 		super();
 		if (id instanceof com.couchbase.lite.MutableDocument) {
 			this._native = id;
@@ -984,7 +982,7 @@ export class MutableDocument extends Document {
 		} else {
 			this._native = new com.couchbase.lite.MutableDocument();
 
-			if (id != null || (id != undefined && typeof id === 'object')) {
+			if (id != null && typeof id === 'object') {
 				Object.keys(id).forEach((key) => {
 					serialize(id[key], this._native, key);
 				});
@@ -1289,9 +1287,10 @@ export class Collection {
 }
 
 export class Stream {
-	private _native: NSInputStream;
-	static fromNative(stream: NSInputStream): Stream {
-		if (stream instanceof NSInputStream) {
+	private _native: java.io.InputStream;
+
+	static fromNative(stream: java.io.InputStream): Stream {
+		if (stream instanceof java.io.InputStream) {
 			const ret = new Stream();
 			ret._native = stream;
 			return ret;
@@ -1300,6 +1299,10 @@ export class Stream {
 	}
 
 	get native() {
+		return this._native;
+	}
+
+	get android() {
 		return this._native;
 	}
 }
@@ -1721,24 +1724,6 @@ export class Query {
 	}
 }
 
-export class ReplicatorConfiguration {
-	remoteUrl: string;
-	direction: 'push' | 'pull' | 'both' = 'both';
-	continuous: boolean = false;
-	username: string = null;
-	password: string = null;
-	sessionId: string = null;
-	cookieName: string = null;
-	collections: Collection[] = [];
-	channels: Map<Collection, string[]> = new Map<Collection, string[]>();
-	autoPurge: boolean = true;
-	headers: Map<string, string> = new Map<string, string>();
-	constructor(remoteUrl: string, direction: 'push' | 'pull' | 'both' = 'both') {
-		this.remoteUrl = remoteUrl;
-		this.direction = direction;
-	}
-}
-
 export class Replicator {
 	replicator: com.couchbase.lite.Replicator;
 
@@ -1873,9 +1858,13 @@ export class Blob {
 		return this.native.getContent();
 	}
 
-	get contentStream(): any {
+	private _stream: Stream;
+	get contentStream(): Stream | null {
 		if (!this.native) return null;
-		return this.native.getContentStream();
+		if (this._stream === undefined) {
+			this._stream = Stream.fromNative(this.native.getContentStream());
+		}
+		return this._stream;
 	}
 
 	get contentType(): string {
@@ -1889,14 +1878,14 @@ export class Blob {
 	}
 
 	get digest(): string {
-		if (!this.android) return null;
+		if (!this.native) return null;
 		return this.native.digest();
 	}
 
 	get properties(): Map<string, any> {
 		const map = new Map();
-		if (!this.android) return map;
-		const nativeMap = this.android.getProperties();
+		if (!this.native) return map;
+		const nativeMap = this.native.getProperties();
 		const mapKeys = nativeMap.keySet();
 		const mapKeysArray = mapKeys.toArray();
 		const length = mapKeysArray.length;
@@ -1906,5 +1895,9 @@ export class Blob {
 			map.set(key, value);
 		}
 		return map;
+	}
+
+	toJSON() {
+		return JSON.parse(this.native.toJSON());
 	}
 }
