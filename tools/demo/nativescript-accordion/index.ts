@@ -1,9 +1,11 @@
 import {DemoSharedBase} from '../utils';
-import {ObservableArray} from "@nativescript/core";
+import {EventData, ObservableArray} from "@nativescript/core";
 
 export class DemoSharedNativescriptAccordion extends DemoSharedBase {
   public items: ObservableArray<any>;
   public selectedIndexes = [0, 1];
+  public allowMultiple = true;
+  private _accordion: any;
 
   constructor() {
     super();
@@ -44,5 +46,47 @@ export class DemoSharedNativescriptAccordion extends DemoSharedBase {
         }]
       }
     ]);
+  }
+
+  accordionLoaded(args: EventData) {
+    this._accordion = args.object;
+  }
+
+  toggleAllowMultiple() {
+    this.set('allowMultiple', !this.allowMultiple);
+    // allowMultiple is a plain accessor rather than a Property, so the view has
+    // to be told; collapsing everything also clears any now-illegal second
+    // expanded section.
+    if (this._accordion) {
+      this._accordion.allowMultiple = this.allowMultiple;
+      this._accordion.collapseAll();
+    }
+    this.set('selectedIndexes', []);
+  }
+
+  expandAll() {
+    this._accordion?.expandAll();
+  }
+
+  collapseAll() {
+    this._accordion?.collapseAll();
+  }
+
+  // Drives the sections through the property rather than the view, which has to
+  // collapse what it drops as well as expand what it gains.
+  selectFirst() {
+    this.set('selectedIndexes', [0]);
+  }
+
+  selectLast() {
+    this.set('selectedIndexes', [this.items.length - 1]);
+  }
+
+  onItemContentTap(args: any) {
+    console.log('itemContentTap', 'index', args.index, 'childIndex', args.childIndex, 'text', args.data && args.data.text);
+  }
+
+  onItemHeaderTap(args: any) {
+    console.log('itemHeaderTap', 'index', args.parentIndex);
   }
 }

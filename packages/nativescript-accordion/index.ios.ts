@@ -260,6 +260,8 @@ export class Accordion extends AccordionBase {
     }
   }
 
+  protected _contentRowOffset = 1;
+
   _selectedIndexesUpdatedFromNative(newIndexes: any) {
     selectedIndexesProperty.nativeValueChange(this, newIndexes);
   }
@@ -473,6 +475,8 @@ export class Accordion extends AccordionBase {
       this._preparingItemContentCell = true;
       let view: ChildItemView = cell.view;
 
+      const childIndex = this._toChildIndex(indexPath.row);
+
       if (!view) {
         view = this._getItemContentTemplate(indexPath.section, indexPath.row).createView();
       }
@@ -481,7 +485,7 @@ export class Accordion extends AccordionBase {
         eventName: AccordionBase.itemContentLoadingEvent,
         object: this,
         index: indexPath.section,
-        childIndex: (indexPath.row - (1 + (this._getHasHeader() ? 1 : 0))),
+        childIndex: childIndex,
         view: view,
         ios: null,
         android: undefined
@@ -489,7 +493,7 @@ export class Accordion extends AccordionBase {
 
       this.notify(args);
 
-      view = args.view || this._getDefaultItemContentContent(indexPath.section, indexPath.row);
+      view = args.view || this._getDefaultItemContentContent(indexPath.section, childIndex);
 
       // Proxy containers should not get treated as layouts.
       // Wrap them in a real layout as well.
@@ -508,8 +512,8 @@ export class Accordion extends AccordionBase {
         cell.owner = new WeakRef(view);
       }
 
-      this._prepareItemContent(view, indexPath.section, indexPath.row);
-      view._accordionChildItemIndex = indexPath.row;
+      this._prepareItemContent(view, indexPath.section, childIndex);
+      view._accordionChildItemIndex = childIndex;
       view._accordionItemIndex = indexPath.section;
       this._map.set(cell, view);
 
@@ -718,6 +722,12 @@ export class Accordion extends AccordionBase {
     if (this._expandedViews)
       if (newIndexes.toString() === Array.from(this._expandedViews.keys()).toString()) return;
     if (allowMultiple) {
+      Array.from(this._expandedViews.keys()).forEach((index) => {
+        if (newIndexes.indexOf(index) === -1) {
+          this._expandedViews.delete(index);
+          this._indexSet.removeIndex(index as number);
+        }
+      });
       newIndexes.forEach(index => {
         if (!this._expandedViews.get(index)) {
           this._expandedViews.set(index, true);
@@ -727,8 +737,7 @@ export class Accordion extends AccordionBase {
       this.ios.reloadData();
     } else {
       if (newIndexes.length > 0) {
-        const index = newIndexes.length - 1;
-        const newItems = [index];
+        const index = newIndexes[newIndexes.length - 1];
         if (this._expandedViews) {
           this._expandedViews.clear();
         }
@@ -759,13 +768,15 @@ export class Accordion extends AccordionBase {
       this._expandedViews.set(length - 1, true);
       this._indexSet.addIndex(length - 1);
       this.ios.reloadData();
+      this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
       return;
     }
     for (let i = 0; i < length; i++) {
       this._expandedViews.set(i, true);
-      this._indexSet.addIndex(0);
+      this._indexSet.addIndex(i);
     }
     this.ios.reloadData();
+    this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
   }
 
   collapseAll(): void {
@@ -774,65 +785,59 @@ export class Accordion extends AccordionBase {
     }
     this._indexSet.removeAllIndexes();
     this.ios.reloadData();
+    this._selectedIndexesUpdatedFromNative([]);
   }
 
   collapseItem(index: number) {
     if (this._expandedViews.has(index)) {
       this._expandedViews.delete(index);
       this._indexSet.removeIndex(index);
-      this.ios.reloadData();
+      this.itemCollapsed(index);
+      this._reloadSection(index);
+      this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
     }
   }
 
+  private _reloadSection(index: number) {
+    const section = NSMutableIndexSet.alloc().initWithIndex(index);
+    this.ios.reloadSectionsWithRowAnimation(section, UITableViewRowAnimation.Automatic);
+  }
+
+  /**
+   * Expand a section, collapsing whichever one was open when allowMultiple is
+   * off. Matches the Android behaviour, where expandItem always expands - a tap
+   * on an already open header goes through _toggleItem instead.
+   */
   expandItem(index: number) {
-    const reloadSection = (index: number) => {
-      let section = NSMutableIndexSet.alloc().initWithIndex(index);
-      this.ios.reloadSectionsWithRowAnimation(section, UITableViewRowAnimation.Automatic);
-    };
-
-    const removeSection = (index: number) => {
-      let section = NSMutableIndexSet.alloc().initWithIndex(index);
-      this.ios.reloadSectionsWithRowAnimation(section, UITableViewRowAnimation.Bottom);
-    };
-    const allowMultiple = String(this.allowMultiple) === 'true';
-
-    if (allowMultiple) {
-      if (!this._expandedViews.get(index)) {
-        this.itemExpanded(index);
-        this._expandedViews.set(index, true);
-        this._indexSet.addIndex(index);
-      } else {
-        this._expandedViews.delete(index);
-        this._indexSet.removeIndex(index);
-        this.itemCollapsed(index);
-      }
-      reloadSection(index);
-      this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
-    } else {
-
-      if (this._expandedViews.has(index)) {
-        this._expandedViews.delete(index);
-        this._indexSet.removeIndex(index);
-        this.itemCollapsed(index);
-        reloadSection(index);
-      } else if (this._expandedViews.size > 0) {
-        const old = this._expandedViews.keys().next().value;
+    if (this._expandedViews.has(index)) {
+      return;
+    }
+    if (String(this.allowMultiple) !== 'true') {
+      Array.from(this._expandedViews.keys()).forEach((old: number) => {
         this._expandedViews.delete(old);
         this._indexSet.removeIndex(old);
-        reloadSection(old);
         this.itemCollapsed(old);
-        this._expandedViews.set(index, true);
-        this._indexSet.addIndex(index);
-        reloadSection(index);
-        this.itemExpanded(index);
-      } else {
-        this._expandedViews.set(index, true);
-        this._indexSet.addIndex(index);
-        this.itemExpanded(index);
-        reloadSection(index);
-      }
-      this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
+        this._reloadSection(old);
+      });
     }
+    this._expandedViews.set(index, true);
+    this._indexSet.addIndex(index);
+    this.itemExpanded(index);
+    this._reloadSection(index);
+    this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
+  }
+
+  /** Expand a collapsed section, collapse an expanded one. Drives the header tap. */
+  _toggleItem(index: number) {
+    if (this._expandedViews.has(index)) {
+      this._expandedViews.delete(index);
+      this._indexSet.removeIndex(index);
+      this.itemCollapsed(index);
+      this._reloadSection(index);
+      this._selectedIndexesUpdatedFromNative(Array.from(this._expandedViews.keys()));
+      return;
+    }
+    this.expandItem(index);
   }
 
   itemIsExpanded(index: number): boolean {
@@ -1319,38 +1324,13 @@ export class UITableViewRowHeightDelegateImpl extends NSObject implements UITabl
 
   public tableViewWillDisplayCellForRowAtIndexPath(tableView: UITableView, cell: UITableViewCell, indexPath: NSIndexPath) {
     let owner = this._owner.get();
-    if (owner && (indexPath.row === owner.items.length - 1)) {
+    if (owner && owner.items && indexPath.section === owner.items.length - 1) {
       owner.notify({eventName: Accordion.loadMoreItemsEvent, object: owner});
     }
   }
 
   public tableViewWillSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): NSIndexPath {
-    let owner = this._owner.get();
-    const ios = tableView.cellForRowAtIndexPath(indexPath);
-    const total = tableView.numberOfRowsInSection(indexPath.section);
-    let args = {
-      eventName: '',
-      data: null,
-      object: owner,
-      childIndex: undefined,
-      index: null,
-      view: null,
-      ios: ios,
-      android: undefined
-    };
-
-    if (indexPath.row === 0) {
-      handleTap(owner, indexPath.section, ios);
-    } else if (indexPath.row === 1 && owner._getHasHeader()) {
-    } else if (indexPath.row !== 0 && indexPath.row === total - 1 && owner._getHasFooter()) {
-    } else {
-      const data = owner._getChildData(indexPath.section, indexPath.row);
-      args.index = indexPath.section;
-      args.childIndex = indexPath.row;
-      args.eventName = AccordionBase.itemContentTapEvent;
-      args.data = data;
-      owner.notify(args);
-    }
+    handleRowSelection(this._owner.get(), tableView, indexPath);
     return indexPath;
   }
 
@@ -1513,33 +1493,7 @@ export class UITableViewDelegateImpl extends NSObject implements UITableViewDele
   }
 
   public tableViewWillSelectRowAtIndexPath(tableView: UITableView, indexPath: NSIndexPath): NSIndexPath {
-    let owner = this._owner.get();
-    const ios = tableView.cellForRowAtIndexPath(indexPath);
-    const total = tableView.numberOfRowsInSection(indexPath.section);
-
-    let args = {
-      eventName: '',
-      data: null,
-      object: owner,
-      childIndex: undefined,
-      index: null,
-      view: null,
-      ios: ios,
-      android: undefined
-    };
-
-    if (indexPath.row === 0) {
-      handleTap(owner, indexPath.section, ios);
-    } else if (indexPath.row === 1 && owner._getHasHeader()) {
-    } else if (indexPath.row !== 0 && indexPath.row === total - 1 && owner._getHasFooter()) {
-    } else {
-      const data = owner._getChildData(indexPath.section, indexPath.row);
-      args.index = indexPath.section;
-      args.childIndex = indexPath.row;
-      args.eventName = AccordionBase.itemContentTapEvent;
-      args.data = data;
-      owner.notify(args);
-    }
+    handleRowSelection(this._owner.get(), tableView, indexPath);
     return indexPath;
   }
 
@@ -1557,6 +1511,41 @@ export class UITableViewDelegateImpl extends NSObject implements UITableViewDele
   }
 }
 
+/**
+ * Row taps: row 0 is the item header and toggles the section, the header and
+ * footer template rows are inert, and everything else is child content.
+ */
+function handleRowSelection(owner: Accordion, tableView: UITableView, indexPath: NSIndexPath) {
+  if (!owner) {
+    return;
+  }
+  const ios = tableView.cellForRowAtIndexPath(indexPath);
+  const total = tableView.numberOfRowsInSection(indexPath.section);
+
+  if (indexPath.row === 0) {
+    handleTap(owner, indexPath.section, ios);
+    return;
+  }
+  if (indexPath.row === 1 && owner._getHasHeader()) {
+    return;
+  }
+  if (indexPath.row === total - 1 && owner._getHasFooter()) {
+    return;
+  }
+
+  const childIndex = owner._toChildIndex(indexPath.row);
+  owner.notify({
+    eventName: AccordionBase.itemContentTapEvent,
+    data: owner._getChildData(indexPath.section, childIndex),
+    object: owner,
+    childIndex: childIndex,
+    index: indexPath.section,
+    view: null,
+    ios: ios,
+    android: undefined
+  });
+}
+
 function handleTap(owner, current, view) {
 
   const data = owner._getParentData(current);
@@ -1571,72 +1560,7 @@ function handleTap(owner, current, view) {
   };
   owner.notify(_args);
 
-  const reloadSection = (index: number) => {
-    let section = NSMutableIndexSet.alloc().initWithIndex(index);
-    owner.ios.reloadSectionsWithRowAnimation(section, UITableViewRowAnimation.Automatic);
-  };
-
-  const removeSection = (index: number) => {
-    let section = NSMutableIndexSet.alloc().initWithIndex(index);
-    owner.ios.reloadSectionsWithRowAnimation(section, UITableViewRowAnimation.Bottom);
-  };
-  const allowMultiple = String(owner.allowMultiple) === 'true';
-
-
-  /**
-   *  Checks the allowMultiple property
-   */
-  if (allowMultiple) {
-    /**
-     * Checks if the current tapped header is expanded
-     * If expanded close item then remove  item from the indexSet
-     */
-    if (!owner._expandedViews.get(current)) {
-      owner.itemExpanded(current);
-      owner._expandedViews.set(current, true);
-      owner._indexSet.addIndex(current);
-    } else {
-      owner._expandedViews.delete(current);
-      owner._indexSet.removeIndex(current);
-      owner.itemCollapsed(current);
-    }
-    /**
-     * Call reload to expand or collapse section
-     */
-    reloadSection(current);
-    owner._selectedIndexesUpdatedFromNative(Array.from(owner._expandedViews.keys()));
-  } else {
-
-    if (owner._expandedViews.has(current)) {
-      owner._expandedViews.delete(current);
-      owner._indexSet.removeIndex(current);
-      owner.itemCollapsed(current);
-      reloadSection(current);
-      // owner.ios.reloadData();
-    } else if (owner._expandedViews.size > 0) {
-      const old = owner._expandedViews.keys().next().value;
-      owner._expandedViews.delete(old);
-      owner._indexSet.removeIndex(old);
-      reloadSection(old);
-      owner.itemCollapsed(old);
-      owner._expandedViews.set(current, true);
-      owner._indexSet.addIndex(current);
-      reloadSection(current);
-      owner.itemExpanded(current);
-    } else {
-      owner._expandedViews.set(current, true);
-      owner._indexSet.addIndex(current);
-      owner.itemExpanded(current);
-      reloadSection(current);
-    }
-    owner._selectedIndexesUpdatedFromNative(Array.from(owner._expandedViews.keys()));
-
-    /**
-     * Call reload to collapse section
-     */
-    // owner.ios.reloadData();
-
-  }
+  owner._toggleItem(current);
 }
 
 @NativeClass()

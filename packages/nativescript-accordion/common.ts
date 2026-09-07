@@ -100,7 +100,7 @@ export abstract class AccordionBase extends ContainerView {
   private _childIdGenerator: (item: any, index: number, childIndex: number, items: any) => number = (_item: any, index: number) => index;
 
   get childIdGenerator(): (item: any, index: number, childIndex: number, items: any) => number {
-    return this._itemIdGenerator;
+    return this._childIdGenerator;
   }
 
   set childIdGenerator(generatorFn: (item: any, index: number, childIndex: number, items: any) => number) {
@@ -297,10 +297,10 @@ export abstract class AccordionBase extends ContainerView {
   public _getItemContentTemplate(index: number, childIndex: number): KeyedTemplate {
     let templateKey = 'default';
     if (this.itemContentTemplateSelector) {
-      const _childIndex = (global.isIOS ? childIndex - 1 : childIndex);
-      let dataItem = this._getChildData(index, this._getHasHeader() ? _childIndex - 1 : _childIndex);
-      const items = (<ItemsSource>this.items).getItem ? (<ItemsSource>this.items).getItem(index)[this.childItems] : this.items[this.childItems];
-      templateKey = this._itemContentTemplateSelector(dataItem, index, childIndex, items);
+      const _childIndex = this._toChildIndex(childIndex);
+      let dataItem = this._getChildData(index, _childIndex);
+      const items = this._getChildItems(index);
+      templateKey = this._itemContentTemplateSelector(dataItem, index, _childIndex, items);
     }
 
     for (let i = 0, length = this._itemContentTemplatesInternal.length; i < length; i++) {
@@ -425,8 +425,38 @@ export abstract class AccordionBase extends ContainerView {
   }
 
   _getChildData(parentIndex: number, childIndex: number) {
-    let items = <any>this.items;
-    return items.getItem ? items.getItem(parentIndex)[this.childItems][childIndex] : items[parentIndex][this.childItems][childIndex];
+    const items = this._getChildItems(parentIndex);
+    return items ? (items.getItem ? items.getItem(childIndex) : items[childIndex]) : undefined;
+  }
+
+  /** The child collection of the item at `parentIndex`. */
+  _getChildItems(parentIndex: number) {
+    const parent = this._getParentData(parentIndex);
+    if (!parent) {
+      return undefined;
+    }
+    return typeof parent.get === 'function' ? parent.get(this.childItems) : parent[this.childItems];
+  }
+
+  /**
+   * Rows a section spends on something other than child content, before the
+   * first content row.
+   *
+   * Android hands out group and child rows separately, so a child row 0 is
+   * already the first content row; iOS lays a section out as one flat list of
+   * rows whose row 0 is the item header. Everything else - the optional header
+   * template - is common to both.
+   */
+  protected _contentRowOffset = 0;
+
+  /**
+   * Native content row -> index into the item's child collection.
+   *
+   * Every native callback works in row space, while `items` and the events the
+   * plugin raises are in child-index space, so each crossing goes through here.
+   */
+  _toChildIndex(row: number): number {
+    return row - this._contentRowOffset - (this._getHasHeader() ? 1 : 0);
   }
 
   get allowMultiple() {
