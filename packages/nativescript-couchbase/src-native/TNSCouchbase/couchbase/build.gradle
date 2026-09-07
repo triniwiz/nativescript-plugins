@@ -29,6 +29,6 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    api 'com.couchbase.lite:couchbase-lite-android:2.8.1'
+    api 'com.couchbase.lite:couchbase-lite-android:4.1.0'
 
 }
