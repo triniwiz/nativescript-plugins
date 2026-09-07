@@ -142,9 +142,11 @@ export class PaymentMethodCardWallet implements IPaymentMethodCardWallet {
 
 	constructor(wallet: STPPaymentMethodCardWallet) {
 		this.native = wallet;
-		this.masterpass = new PaymentMethodCardWalletMasterpass(wallet.masterpass);
+		// Only the wallet matching `type` is populated - a Google Pay wallet has
+		// no masterpass detail - so these have to go through fromNative.
+		this.masterpass = PaymentMethodCardWalletMasterpass.fromNative(wallet.masterpass);
 		this.type = toPaymentMethodCardWalletType(wallet.type);
-		this.visaCheckout = new PaymentMethodCardWalletVisaCheckout(wallet.visaCheckout);
+		this.visaCheckout = PaymentMethodCardWalletVisaCheckout.fromNative(wallet.visaCheckout);
 	}
 
 	public static fromNative(native: STPPaymentMethodCardWallet) {

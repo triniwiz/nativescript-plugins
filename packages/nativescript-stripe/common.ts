@@ -82,6 +82,10 @@ export function toPaymentMethodCardWalletType(type: any): PaymentMethodCardWalle
 				return PaymentMethodCardWalletType.Unknown;
 		}
 	}
+
+	// Android derives the wallet type from the concrete Wallet subclass in
+	// PaymentMethodCardWallet rather than from a type constant.
+	return PaymentMethodCardWalletType.Unknown;
 }
 
 export function toCardFundingType(type: any): CardFundingType {
@@ -451,11 +455,24 @@ export interface IPaymentMethodCardWalletSamsungPay {
 }
 
 export interface IPaymentMethodCardWallet {
-	readonly masterpass: IPaymentMethodCardWalletMasterpass;
+	/** Only the wallet matching `type` is populated. */
+	readonly masterpass?: IPaymentMethodCardWalletMasterpass;
 
 	readonly type: PaymentMethodCardWalletType;
 
-	readonly visaCheckout: IPaymentMethodCardWalletVisaCheckout;
+	readonly visaCheckout?: IPaymentMethodCardWalletVisaCheckout;
+
+	/** Android only - iOS carries no detail object for these wallets. */
+	readonly amex?: IPaymentMethodCardWalletAmexExpressCheckout;
+
+	/** Android only. See `amex`. */
+	readonly applePay?: IPaymentMethodCardWalletApplePay;
+
+	/** Android only. See `amex`. */
+	readonly googlePay?: IPaymentMethodCardWalletGooglePay;
+
+	/** Android only. See `amex`. */
+	readonly samsungPay?: IPaymentMethodCardWalletSamsungPay;
 }
 
 export interface IPaymentMethodCard {

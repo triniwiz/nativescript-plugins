@@ -188,8 +188,12 @@ export class StripeThreeDSUICustomization {
 }
 
 export class Stripe {
-	constructor(apiKey: string) {
+	constructor(apiKey: string, stripeAccountId?: string) {
 		STPPaymentConfiguration.sharedConfiguration.publishableKey = apiKey;
+		STPAPIClient.sharedClient.publishableKey = apiKey;
+		if (stripeAccountId) {
+			this.setStripeAccount(stripeAccountId);
+		}
 	}
 
 	setStripeAccount(accountId: string) {
@@ -926,21 +930,24 @@ export enum StripeRedirectState {
 
 export class StripeRedirectSession {
 	native: STPRedirectContext;
-	readonly state: StripeRedirectState;
+	state: StripeRedirectState = StripeRedirectState.NotStarted;
 
 	constructor(paymentIntent: StripePaymentIntent, cb: (error: Error, clientSecret: string) => void) {
 		this.native = STPRedirectContext.alloc().initWithPaymentIntentCompletion(paymentIntent.native, (clientSecret, error) => {
-			cb(new Error(error.localizedDescription), clientSecret);
-			//callback(cb, (clientSecret) => clientSecret)
+			// A cancelled flow completes with neither a secret nor an error.
+			this.state = error ? StripeRedirectState.Cancelled : StripeRedirectState.Completed;
+			cb(error ? new Error(error.localizedDescription) : null, clientSecret);
 		});
 	}
 
 	startRedirectFlow(view: View = null): void {
 		const vc = view?.viewController ?? (Frame.topmost().currentPage.ios || this._rootViewController);
+		this.state = StripeRedirectState.InProgress;
 		this.native.startRedirectFlowFromViewController(vc);
 	}
 
 	cancel(): void {
+		this.state = StripeRedirectState.Cancelled;
 		this.native.cancel();
 	}
 

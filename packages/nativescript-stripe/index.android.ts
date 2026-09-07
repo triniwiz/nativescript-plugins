@@ -34,6 +34,20 @@ import {Source} from './source';
 
 export {init} from './utils';
 
+/**
+ * A JS Error for whatever the SDK threw or handed back.
+ *
+ * Java exceptions carry their text on getMessage/getLocalizedMessage; anything
+ * thrown by the plugin itself is already an Error and is passed through.
+ */
+function toError(error: any): Error {
+  if (error instanceof Error) {
+    return error;
+  }
+  const message = error?.getMessage?.() || error?.getLocalizedMessage?.();
+  return message ? new Error(message) : new Error(String(error));
+}
+
 export class Address implements IAddress {
   readonly address: com.stripe.android.model.Address;
   readonly addressBuilder: com.stripe.android.model.Address.Builder;
@@ -574,6 +588,33 @@ export class Stripe {
     return this._stripe;
   }
 
+  /**
+   * Run `launch`, then hand the activity result it produces to `deliver`.
+   *
+   * The Stripe SDK completes these flows through an activity rather than a
+   * callback, so the result has to be picked up from the application's
+   * activityResult event and routed back to the caller.
+   */
+  private _withActivityResult(launch: (activity: any) => void, deliver: (requestCode: number, intent: any) => void, cb: (error: Error, result: any) => void) {
+    const activity = Application.android.foregroundActivity;
+    const onResult = (args: AndroidActivityResultEventData) => {
+      Application.android.off('activityResult', onResult);
+      try {
+        deliver(args.requestCode, args.intent);
+      } catch (error) {
+        cb(toError(error), null);
+      }
+    };
+    Application.android.on('activityResult', onResult);
+    try {
+      launch(activity);
+    } catch (error) {
+      // nothing will arrive, so the listener would otherwise sit there forever
+      Application.android.off('activityResult', onResult);
+      cb(toError(error), null);
+    }
+  }
+
   createCardToken(card: CardParams, cb: (error: Error, token: Token) => void): void {
     if (!card) {
       if (typeof cb === 'function') {
@@ -591,7 +632,7 @@ export class Stripe {
         },
         onError: function (error) {
           if (typeof cb === 'function') {
-            cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
+            cb(toError(error), null);
           }
         },
       })
@@ -616,7 +657,7 @@ export class Stripe {
         },
         onError(error) {
           if (typeof cb === 'function') {
-            cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
+            cb(toError(error), null);
           }
         },
       })
@@ -638,14 +679,13 @@ export class Stripe {
           cb(null, PaymentMethod.fromNative(result));
         },
         onError: (error: any) => {
-          cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
+          cb(toError(error), null);
         },
       });
       this.stripe.createPaymentMethod(params, apiResultCallback);
     } catch (error) {
       if (typeof cb === 'function') {
-        const message = error?.getMessage?.() ?? error?.getLocalizedMessage?.();
-        cb(message ? new Error(message) : error, null);
+        cb(toError(error), null);
       }
     }
   }
@@ -659,74 +699,79 @@ export class Stripe {
             cb(null, StripePaymentIntent.fromNative(result));
           },
           onError: (error: any) => {
-            const message = error?.getMessage?.() ?? error?.getLocalizedMessage?.();
-            cb(message ? new Error(message) : error, null);
+            cb(toError(error), null);
           },
         })
       );
       //const pi = this.stripe.retrievePaymentIntentSynchronous(clientSecret);
       //cb(null, StripePaymentIntent.fromNative(pi));
     } catch (error) {
-      const message = error?.getMessage?.() ?? error?.getLocalizedMessage?.();
-      cb(message ? new Error(message) : error, null);
+      cb(toError(error), null);
     }
+  }
+
+  private _setupResultCallback(cb: (error: Error, pm: StripeSetupIntent) => void) {
+    return new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
+      onSuccess: (result: com.stripe.android.SetupIntentResult) => {
+        cb(null, StripeSetupIntent.fromNative(result.getIntent()));
+      },
+      onError: (error: any) => {
+        cb(toError(error), null);
+      },
+    });
+  }
+
+  private _paymentResultCallback(cb: (error: Error, pm: StripePaymentIntent) => void) {
+    return new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
+      onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
+        cb(null, StripePaymentIntent.fromNative(result.getIntent()));
+      },
+      onError: (error: any) => {
+        cb(toError(error), null);
+      },
+    });
   }
 
   confirmSetupIntent(paymentMethodId: string, clientSecret: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
-    try {
-      const activity = Application.android.foregroundActivity;
-
-      const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.SetupIntentResult>({
-        onSuccess: (result: com.stripe.android.SetupIntentResult) => {
-          cb(null, StripeSetupIntent.fromNative(result.getIntent()));
-        },
-        onError: (error) => {
-          cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
-        },
-      });
-
-
-      const result = (args: AndroidActivityResultEventData) => {
-        this.stripe.onSetupResult(args.requestCode, args.intent, resultCb);
-        Application.android.off('activityResult', result);
-      };
-
-      Application.android.on('activityResult', result);
-
-
-      (com as any).github.triniwiz.stripe.Stripe.confirmSetupIntent(this.stripe, activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native);
-    } catch (error) {
-      console.log(error);
-      const message = error?.getMessage?.() ?? error?.getLocalizedMessage?.();
-      cb(message ? new Error(message) : error, null);
-    }
+    const resultCb = this._setupResultCallback(cb);
+    this._withActivityResult(
+      (activity) => (com as any).github.triniwiz.stripe.Stripe.confirmSetupIntent(this.stripe, activity, new StripeSetupIntentParams(paymentMethodId, clientSecret).native),
+      (requestCode, intent) => this.stripe.onSetupResult(requestCode, intent, resultCb),
+      cb
+    );
   }
 
   confirmPaymentIntent(piParams: StripePaymentIntentParams, cb: (error: Error, pm: StripePaymentIntent) => void): void {
-    try {
-      const activity = Application.android.foregroundActivity;
+    const resultCb = this._paymentResultCallback(cb);
+    this._withActivityResult(
+      (activity) => this.stripe.confirmPayment(activity, piParams.native),
+      (requestCode, intent) => this.stripe.onPaymentResult(requestCode, intent, resultCb),
+      cb
+    );
+  }
 
-      const resultCb = new com.stripe.android.ApiResultCallback<com.stripe.android.PaymentIntentResult>({
-        onSuccess: (result: com.stripe.android.PaymentIntentResult) => {
-          cb(null, StripePaymentIntent.fromNative(result.getIntent()));
-        },
-        onError: (error: any) => {
-          cb(new Error(error.getMessage() || error.getLocalizedMessage()), null);
-        },
-      });
+  /**
+   * `returnUrl` is accepted for parity with iOS, where it is passed to the
+   * payment handler. On Android the return URL belongs to the confirm params
+   * the intent was created with, so it is not used here.
+   */
+  authenticatePaymentIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripePaymentIntent) => void): void {
+    const resultCb = this._paymentResultCallback(cb);
+    this._withActivityResult(
+      (activity) => this.stripe.handleNextActionForPayment(activity, clientSecret),
+      (requestCode, intent) => this.stripe.onPaymentResult(requestCode, intent, resultCb),
+      cb
+    );
+  }
 
-      const result = (args: AndroidActivityResultEventData) => {
-        this.stripe.onPaymentResult(args.requestCode, args.intent, resultCb);
-        Application.android.off('activityResult', result);
-      };
-
-      Application.android.on('activityResult', result);
-
-      this.stripe.confirmPayment(activity, piParams.native);
-    } catch (error) {
-      const message = error?.getMessage?.() ?? error?.getLocalizedMessage?.();
-      cb(message ? new Error(message) : error, null);
-    }
+  /** See authenticatePaymentIntent for how `returnUrl` is treated. */
+  authenticateSetupIntent(clientSecret: string, returnUrl: string, cb: (error: Error, pm: StripeSetupIntent) => void): void {
+    const resultCb = this._setupResultCallback(cb);
+    this._withActivityResult(
+      (activity) => this.stripe.handleNextActionForSetupIntent(activity, clientSecret),
+      (requestCode, intent) => this.stripe.onSetupResult(requestCode, intent, resultCb),
+      cb
+    );
   }
 }
 

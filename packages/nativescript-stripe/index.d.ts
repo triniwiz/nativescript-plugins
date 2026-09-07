@@ -456,6 +456,11 @@ export enum StripeRedirectState {
 	Completed = 3,
 }
 
+/**
+ * iOS only. On Android a redirect is carried out by `confirmPaymentIntent`,
+ * which hands the flow to an activity and reports the result through its
+ * callback.
+ */
 export declare class StripeRedirectSession {
 	native: any;
 	readonly state: StripeRedirectState;

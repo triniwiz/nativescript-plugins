@@ -161,11 +161,12 @@ Create a Payment Session
 let paymentSession = new StripeStandardPaymentSession(page, customerSession, price, 'usd', listener);
 ```
 
-See [Stripe Docs](httpsope will require [Strong Customer Authentication](https://stripe.com/payments/strong-customer-authent://stripe.com/docs/mobile) for more information.
+See [Stripe Docs](https://stripe.com/docs/mobile) for more information.
 
 # Strong Customer Authentication
 
-PSD2 regulations in Eurication)
+PSD2 regulations in Europe will require
+[Strong Customer Authentication](https://stripe.com/payments/strong-customer-authentication)
 for some credit card purchases. Stripe supports this, though most of the work to make it happen is
 required on the backend server and in the mobile app, outside the `@triniwiz/nativescript-stripe` plugin.
 
@@ -238,6 +239,61 @@ Unfortunately, the only fix I've found for this is to follow the advice in that 
 Note: This may no longer be needed once this TypeScript [bug](https://github.com/Microsoft/TypeScript/issues/16671) is fixed.
 
 ## API
+
+### `Stripe`
+
+```ts
+const stripe = new Stripe('pk_test_...');
+// or, to act on behalf of a connected account
+const stripe = new Stripe('pk_test_...', 'acct_...');
+```
+
+| Method | Description |
+| --- | --- |
+| `setStripeAccount(accountId)` | Act on behalf of a connected account. Same as passing the id to the constructor. |
+| `createCardToken(card, cb)` | Create a token from a `CardParams`. |
+| `createSource(card, cb)` | Create a `Source` from a `CardParams`. |
+| `createPaymentMethod(card, cb)` | Create a `PaymentMethod` from a `CardParams`. |
+| `retrievePaymentIntent(clientSecret, cb)` | Fetch a `StripePaymentIntent`. |
+| `confirmPaymentIntent(params, cb)` | Confirm a payment intent, prompting for SCA when the card requires it. |
+| `confirmSetupIntent(paymentMethodId, clientSecret, cb)` | Confirm a setup intent. |
+| `authenticatePaymentIntent(clientSecret, returnUrl, cb)` | Complete an intent your backend has already confirmed but that needs customer authentication. |
+| `authenticateSetupIntent(clientSecret, returnUrl, cb)` | The setup-intent equivalent. |
+
+Every method reports through a `(error, result)` callback; `error` is `null` on
+success.
+
+::: warning returnUrl on Android
+`returnUrl` is used by the iOS payment handler. On Android the return URL
+belongs to the confirm params the intent was created with, so the argument is
+accepted for parity and ignored.
+:::
+
+### `CreditCardView`
+
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `showPostalCode` | `boolean` | `true` | Show the postal code field. |
+| `isUSZipRequired` | `boolean` | `false` | Require a US ZIP in the postal code field. |
+| `cardParams` | `CardParams` | — | The card the user has entered. Read it to add a name or address before charging. |
+
+| Event | Fired when |
+| --- | --- |
+| `numberChanged` | The card number changes. |
+| `expMonthChanged` / `expYearChanged` | The expiry changes. |
+| `cvcChanged` | The CVC changes. |
+| `postalCodeChanged` | The postal code changes. |
+
+### Platform differences
+
+| API | Note |
+| --- | --- |
+| `StripeRedirectSession` | iOS only. On Android a redirect is carried out inside `confirmPaymentIntent`, which hands the flow to an activity and reports the result through its callback. |
+| `PaymentMethodCardWallet.amex` / `.applePay` / `.googlePay` / `.samsungPay` | Android only. The iOS SDK carries detail objects for `masterpass` and `visaCheckout` alone; for other wallets only `type` is set. |
+| `StripeThreeDSUICustomization.init()` | iOS is a no-op; the customization is applied by the Android SDK. |
+
+Only the wallet matching `type` is populated, on either platform - read `type`
+first and then the matching field.
 
 ## TODO
 
