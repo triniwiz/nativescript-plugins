@@ -230,6 +230,96 @@ export abstract class PagerBase extends ContainerView implements AddChildFromBui
 		}
 	}
 
+	/**
+	 * Total number of native pages.
+	 *
+	 * In circularMode the native pager carries two extra clone pages so a swipe
+	 * can continue past either end: native page 0 clones the last real item and
+	 * the final native page clones the first one.
+	 */
+	get itemCount(): number {
+		return this._childrenCount ? this._childrenCount + (this.circularMode ? 2 : 0) : 0;
+	}
+
+	/** Highest valid real item index. */
+	get lastIndex(): number {
+		if (this.items && (this.items as any).length === 0) {
+			return 0;
+		}
+		return this.circularMode ? this.itemCount - 3 : this.itemCount - 1;
+	}
+
+	/** Native page holding the clone of the last real item. */
+	get leadingClone(): number {
+		return 0;
+	}
+
+	/** Native page holding the clone of the first real item. */
+	get trailingClone(): number {
+		const count = this.itemCount;
+		return count === 0 ? 0 : count - 1;
+	}
+
+	/**
+	 * Real item index -> native page index. `selectedIndex` is always in real
+	 * item space, so every value crossing into the native pager goes through here.
+	 */
+	toNativeIndex(realIndex: number): number {
+		return this.circularMode ? realIndex + 1 : realIndex;
+	}
+
+	/** Native page index -> real item index. */
+	toRealIndex(nativeIndex: number): number {
+		if (!this.circularMode || this.itemCount === 0) {
+			return nativeIndex;
+		}
+		if (nativeIndex === this.leadingClone) {
+			return this.lastIndex;
+		}
+		if (nativeIndex === this.trailingClone) {
+			return 0;
+		}
+		return nativeIndex - 1;
+	}
+
+	/** @deprecated use toRealIndex */
+	getPosition(index: number): number {
+		return this.toRealIndex(index);
+	}
+
+	/**
+	 * The native page to silently jump to once a scroll settles on a clone page,
+	 * or -1 when the current page is a real one and no wrap is needed.
+	 */
+	wrapTarget(nativeIndex: number): number {
+		if (!this.circularMode || this.itemCount === 0) {
+			return -1;
+		}
+		if (nativeIndex === this.leadingClone) {
+			// Settled on the clone of the last item: jump to the real last item.
+			return this.toNativeIndex(this.lastIndex);
+		}
+		if (nativeIndex === this.trailingClone) {
+			// Settled on the clone of the first item: jump to the real first item.
+			return this.toNativeIndex(0);
+		}
+		return -1;
+	}
+
+	/**
+	 * Length of one page along the scroll axis.
+	 *
+	 * A peek of `p` reserves `p` on both the leading and trailing edge so the
+	 * adjacent pages show through, and `perPage` pages are separated by
+	 * `perPage - 1` gaps of `spacing`. All three arguments must already be in the
+	 * same unit space as the value being returned.
+	 */
+	_computePageLength(available: number, peaking: number, spacing: number): number {
+		const perPage = Math.max(1, this.perPage || 1);
+		const length = (available - peaking * 2 - spacing * (perPage - 1)) / perPage;
+		return length > 0 ? length : 0;
+	}
+
 	public convertToSize(length): number {
 		let size = 0;
 		if (this.orientation === 'horizontal') {
@@ -432,6 +522,7 @@ disableSwipeProperty.register(PagerBase);
 export const perPageProperty = new Property<PagerBase, number>({
 	name: 'perPage',
 	defaultValue: 1,
+	affectsLayout: true,
 	valueConverter: (value) => {
 		return Number(value);
 	},

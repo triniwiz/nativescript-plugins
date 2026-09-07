@@ -16,7 +16,9 @@
              backgroundColor="lightsteelblue"
              showIndicator="{{ showIndicator }}"
              indicator="worm"
-             circularMode="false"
+             circularMode="{{ circularMode }}"
+             peaking="{{ peaking }}"
+             spacing="{{ spacing }}"
              indicatorColor="red"
              indicatorSelectedColor="blue"
              loadMoreItems="{{loadMoreItems}}"
@@ -44,6 +46,7 @@
         <Button text="Toggle Indicator" tap="{{toggleIndicator}}"/>
         <Button text="Toggle circularMode" tap="{{toggleCircularMode}}"/>
         <Button text="Toggle AutoPlay" tap="{{toggleAutoPlay}}"/>
+        <Button text="{{ 'Peek: ' + peaking + ' / Spacing: ' + spacing }}" tap="{{cyclePeek}}"/>
         <Button text="Prev" tap="{{prevPage}}"/>
         <Button text="Next" tap="{{nextPage}}"/>
         <Button text="First" tap="{{firstPage}}"/>
