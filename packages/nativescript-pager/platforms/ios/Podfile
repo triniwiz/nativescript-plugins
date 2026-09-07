@@ -1,1 +1,3 @@
-pod 'CHIPageControl', :git => 'https://github.com/triniwiz/CHIPageControl.git'
+# Pinned to a commit: the pod tracked the fork's default branch, so any two
+# builds could compile different code. This is the tip as it stood.
+pod 'CHIPageControl', :git => 'https://github.com/triniwiz/CHIPageControl.git', :commit => '4ded6d0c157d8a16c98ded0f875840b8c7c7fb2d'
