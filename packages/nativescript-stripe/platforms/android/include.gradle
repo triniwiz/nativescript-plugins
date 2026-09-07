@@ -10,7 +10,11 @@ dependencies {
   implementation('com.stripe:stripe-android:20.17.0'){
     transitive = true
   }
-  implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2'
-  implementation "androidx.lifecycle:lifecycle-livedata:2.2.0"
-  implementation "androidx.lifecycle:lifecycle-extensions:2.2.0"
+  // lifecycle-extensions was deprecated at 2.2.0 and never published again;
+  // its contents moved into the individual lifecycle artifacts.
+  // 2.11.0 is current, but 2.9+ raises the Kotlin and compileSdk floor - not
+  // worth pulling in while stripe-android is still on 20.x.
+  implementation "androidx.lifecycle:lifecycle-livedata:2.8.7"
+  // kotlinx-coroutines is pinned by stripe-android itself. Declaring an older
+  // version here only added a conflict for Gradle to resolve upward.
 }
